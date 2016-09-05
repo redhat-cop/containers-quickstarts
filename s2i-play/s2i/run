@@ -1,0 +1,13 @@
+#!/bin/sh
+
+PLAY_ARCHIVE=$(ls -1 /deployments/*.tgz)
+
+tar -vxzf ${PLAY_ARCHIVE} --strip 1 -C /deployments
+
+PLAY_EXEC=$(find /deployments/bin/ -type f ! -name "*.*")
+
+if [ ! -z "${APPLICATION_SECRET}" ]; then
+    APPLICATION_SECRET_PARAM="-Dplay.crypto.secret=${APPLICATION_SECRET}"
+fi
+
+eval ${PLAY_EXEC} ${APPLICATION_SECRET_PARAM} -Dhttp.port=8080 ${JAVA_OPTS_EXT}
