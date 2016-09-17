@@ -1,0 +1,349 @@
+{
+    "kind": "List",
+    "apiVersion": "v1",
+    "items": [
+		{
+			"kind": "Template",
+			"apiVersion": "v1",
+			"metadata": {
+				"annotations": {
+					"description": "Play Framework builder and sample application",
+					"iconClass": "icon-play",
+					"tags": "play,java"
+				},
+				"name": "play-framework-quickstart-rhel"
+			},
+			"labels": {
+				"template": "play-framework-quickstart-rhel"
+			},
+			"parameters": [
+				{
+					"description": "The name for the Play Framework builder.",
+					"displayName": "Play builder name",
+					"name": "PLAY_BUILDER_NAME",
+					"value": "s2i-play",
+					"required": true
+				},
+				{
+					"description": "Git source URI for Play Framework builder",
+					"displayName": "Play builder source url",
+					"name": "PLAY_BUILDER_SOURCE_REPOSITORY_URL",
+					"value": "https://github.com/redhat-cop/containers-quickstarts.git",
+					"required": true
+				},
+				{
+					"description": "Play Framework builder source branch/tag reference.",
+					"displayName": "Play builder source branch/tag reference.",
+					"name": "PLAY_BUILDER_SOURCE_REPOSITORY_REF",
+					"value": "master",
+					"required": false
+				},
+				{
+					"description": "Path within Git project to build containing the Play Framework builder; empty for root project directory.",
+					"displayName": "Play builder context directory.",
+					"name": "PLAY_BUILDER_CONTEXT_DIR",
+					"value": "s2i-play",
+					"required": false
+				},
+				{
+					"description": "The name for the Play Framework application.",
+					"displayName": "Play application name",
+					"name": "PLAY_APPLICATION_NAME",
+					"value": "play-app",
+					"required": true
+				},
+				{
+					"description": "Git source URI for Play Framework application",
+					"displayName": "Play application source url",
+					"name": "PLAY_APPLICATION_SOURCE_REPOSITORY_URL",
+					"value": "https://github.com/playframework/play-ebean-example.git",
+					"required": true
+				},
+				{
+					"description": "Play Framework application source branch/tag reference.",
+					"displayName": "Play application source branch/tag reference.",
+					"name": "PLAY_APPLICATION_SOURCE_REPOSITORY_REF",
+					"value": "master",
+					"required": false
+				},
+				{
+					"description": "Path within Git project to build containing the Play Framework application; empty for root project directory.",
+					"displayName": "Play application context directory.",
+					"name": "PLAY_APPLICATION_CONTEXT_DIR",
+					"value": "",
+					"required": false
+				},
+				{
+					"name": "PLAY_APPLICATION_HOSTNAME",
+					"displayName": "Play application route hostname.",
+					"description": "Custom hostname for Play Framework service route.  Leave blank for default hostname, e.g.: \u003capplication-name\u003e-\u003cproject\u003e.\u003cdefault-domain-suffix\u003e"
+				},
+				{
+					"name": "PLAY_APPLICATION_JAVA_OPTS_EXT",
+					"displayName": "Play application Java extra parameters.",
+					"description": "Extra java parameters for the Play Framework application",
+					"value": "-Dplay.evolutions.db.default.autoApply=true",
+					"required": false
+				}
+			],
+			"objects": [
+				{
+					"kind": "ImageStream",
+					"apiVersion": "v1",
+					"metadata": {
+						"name": "rhel7",
+						"labels": {
+							"build": "${PLAY_BUILDER_NAME}"
+						}
+					},
+					"spec": {
+						"dockerImageRepository": "registry.access.redhat.com/rhel7/rhel"
+					}
+				},
+				{
+					"kind": "ImageStream",
+					"apiVersion": "v1",
+					"metadata": {
+						"name": "${PLAY_BUILDER_NAME}",
+						"labels": {
+							"build": "${PLAY_BUILDER_NAME}"
+						}
+					}
+				},
+				{
+					"kind": "ImageStream",
+					"apiVersion": "v1",
+					"metadata": {
+						"name": "${PLAY_APPLICATION_NAME}",
+						"labels": {
+							"application": "${PLAY_APPLICATION_NAME}"
+						}
+					}
+				},
+				{
+					"kind": "BuildConfig",
+					"apiVersion": "v1",
+					"metadata": {
+						"name": "${PLAY_BUILDER_NAME}",
+						"labels": {
+							"build": "${PLAY_BUILDER_NAME}"
+						}
+					},
+					"spec": {
+						"triggers": [
+							{
+								"type": "ConfigChange"
+							},
+							{
+								"type": "ImageChange",
+								"imageChange": {}
+							}
+						],
+						"source": {
+							"type": "Git",
+							"git": {
+								"uri": "${PLAY_BUILDER_SOURCE_REPOSITORY_URL}",
+								"ref": "${PLAY_BUILDER_SOURCE_REPOSITORY_REF}"
+							},
+							"contextDir": "${PLAY_BUILDER_CONTEXT_DIR}"
+						},
+						"strategy": {
+							"type": "Docker",
+							"dockerStrategy": {
+								"from": {
+									"kind": "ImageStreamTag",
+									"name": "rhel7:7.2"
+								},
+								"dockerFilePath": "Dockerfile.rhel7"
+							}
+						},
+						"output": {
+							"to": {
+								"kind": "ImageStreamTag",
+								"name": "${PLAY_BUILDER_NAME}:latest"
+							}
+						}
+					}
+				},
+				{
+					"kind": "Route",
+					"apiVersion": "v1",
+					"metadata": {
+						"name": "${PLAY_APPLICATION_NAME}",
+						"labels": {
+							"application": "${PLAY_APPLICATION_NAME}"
+						},
+						"annotations": {
+							"description": "Route for application's http service."
+						}
+					},
+					"spec": {
+						"host": "${PLAY_APPLICATION_HOSTNAME}",
+						"to": {
+							"kind": "Service",
+							"name": "${PLAY_APPLICATION_NAME}"
+						},
+						"port": {
+							"targetPort": "8080-tcp"
+						}
+					}
+				},
+				{
+					"kind": "BuildConfig",
+					"apiVersion": "v1",
+					"metadata": {
+						"name": "${PLAY_APPLICATION_NAME}",
+						"labels": {
+							"application": "${PLAY_APPLICATION_NAME}"
+						}
+					},
+					"spec": {
+						"triggers": [
+							{
+								"type": "ConfigChange"
+							},
+							{
+								"type": "ImageChange",
+								"imageChange": {}
+							}
+						],
+						"source": {
+							"type": "Git",
+							"git": {
+								"uri": "${PLAY_APPLICATION_SOURCE_REPOSITORY_URL}",
+								"ref": "${PLAY_APPLICATION_SOURCE_REPOSITORY_REF}"
+							},
+							"contextDir": "${PLAY_APPLICATION_CONTEXT_DIR}"
+						},
+						"strategy": {
+							"type": "Source",
+							"sourceStrategy": {
+								"from": {
+									"kind": "ImageStreamTag",
+									"name": "${PLAY_BUILDER_NAME}:latest"
+								}
+							}
+						},
+						"output": {
+							"to": {
+								"kind": "ImageStreamTag",
+								"name": "${PLAY_APPLICATION_NAME}:latest"
+							}
+						}
+					}
+				},
+				{
+					"kind": "Service",
+					"apiVersion": "v1",
+					"metadata": {
+						"name": "${PLAY_APPLICATION_NAME}",
+						"labels": {
+							"application": "${PLAY_APPLICATION_NAME}"
+						},
+						"annotations": {
+							"description": "The play server's http port."
+						}
+					},
+					"spec": {
+						"ports": [
+							{
+								"name": "8080-tcp",
+								"protocol": "TCP",
+								"port": 8080,
+								"targetPort": 8080
+							}
+						],
+						"selector": {
+							"application": "${PLAY_APPLICATION_NAME}",
+							"deploymentconfig": "${PLAY_APPLICATION_NAME}"
+						},
+						"type": "ClusterIP",
+						"sessionAffinity": "None"
+					}
+				},
+				{
+					"kind": "DeploymentConfig",
+					"apiVersion": "v1",
+					"metadata": {
+						"name": "${PLAY_APPLICATION_NAME}",
+						"labels": {
+							"app": "${PLAY_APPLICATION_NAME}"
+						}
+					},
+					"spec": {
+						"strategy": {
+							"type": "Rolling",
+							"rollingParams": {
+								"updatePeriodSeconds": 1,
+								"intervalSeconds": 1,
+								"timeoutSeconds": 600,
+								"maxUnavailable": "25%",
+								"maxSurge": "25%"
+							},
+							"resources": {}
+						},
+						"triggers": [
+							{
+								"type": "ConfigChange"
+							},
+							{
+								"type": "ImageChange",
+								"imageChangeParams": {
+									"automatic": true,
+									"containerNames": [
+										"${PLAY_APPLICATION_NAME}"
+									],
+									"from": {
+										"kind": "ImageStreamTag",
+										"name": "${PLAY_APPLICATION_NAME}:latest"
+									}
+								}
+							}
+						],
+						"replicas": 1,
+						"test": false,
+						"selector": {
+							"application": "${PLAY_APPLICATION_NAME}",
+							"deploymentconfig": "${PLAY_APPLICATION_NAME}"
+						},
+						"template": {
+							"metadata": {
+								"labels": {
+									"application": "${PLAY_APPLICATION_NAME}",
+									"deploymentconfig": "${PLAY_APPLICATION_NAME}"
+								}
+							},
+							"spec": {
+								"containers": [
+									{
+										"name": "${PLAY_APPLICATION_NAME}",
+										"image": "${PLAY_APPLICATION_NAME}",
+										"ports": [
+											{
+												"containerPort": 8080,
+												"protocol": "TCP"
+											}
+										],
+										"env": [
+											{
+												"name": "JAVA_OPTS_EXT",
+												"value": "${PLAY_APPLICATION_JAVA_OPTS_EXT}"
+											}
+										],
+										"resources": {},
+										"terminationMessagePath": "/dev/termination-log",
+										"imagePullPolicy": "Always"
+									}
+								],
+								"restartPolicy": "Always",
+								"terminationGracePeriodSeconds": 30,
+								"dnsPolicy": "ClusterFirst",
+								"securityContext": {}
+							}
+						}
+					}
+				}
+			]
+		}
+	]
+}
