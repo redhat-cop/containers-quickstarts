@@ -1,0 +1,2 @@
+# this file is needed to make the copy operation not fail when there is nothig to copy.
+# probably there are better implementation.
