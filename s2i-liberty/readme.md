@@ -21,6 +21,7 @@ This demonstration describes how to produce a new Source to Image (S2I) runtime 
 		* [Binary Source](#binary-source)
 	* [Create the build config](#create-the-build-config)	
 	* [Create A New Application](#create-a-new-application)
+    * [Considerations on HTTP session failover](#considerations-on-http-session-failover)	
 
 
 ## Overview
@@ -153,6 +154,8 @@ The liberty runtime image expects:
 * any deployable artifacts in the $WORKDIR/artifacts directory
 * any [Liberty configuration files] (http://www.ibm.com/support/knowledgecenter/SSAW57_liberty/com.ibm.websphere.wlp.nd.doc/ae/cwlp_config.html) in the $WORKDIR/config directory 
 
+As you can notice the runtimeArtifacts section mentions files by name. This implies that for this process to work the artifact created by the builder image have to be always the same. I expect improvements on this front in future releases of OpenShigt but for now this is a constraint that must be kept in mind.
+
 ### Create a new Application
 
 To demonstrate the usage of the newly created builder and runtime images, a Jee example application will be built and deployed to Liberty using the Source to Image process. 
@@ -184,3 +187,10 @@ oc logs builds/<build_name>
 *Note: Replace `<build_name>` with the name of the build found in the previous command.*
 
 Once the build completes, the application will be deployed.
+
+## Considerations on http session failover
+
+When liberty is deployed in a cloud environment certain limitation applies as explained in this [document](http://www.ibm.com/support/knowledgecenter/en/SSD28V_8.5.5/com.ibm.websphere.wlp.core.doc/ae/cwlp_paas_restrict.html).
+With respect to the http session failover, two techniques generally apply:
+1. session replication: Liberty does not support session replication out-of-the-box. This feature can be implemented by integrating with eXtremeScale, as described in this [article]().  
+2. session persistence: it is possible to persist the session using any database that support a JDBC connection. This [article](http://www.ibm.com/support/knowledgecenter/en/SSD28V_8.5.5/com.ibm.websphere.base.doc/ae/tprs_cnfp.html) explains how to configure Liberty to do so.
