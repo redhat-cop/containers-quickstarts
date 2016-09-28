@@ -192,5 +192,6 @@ Once the build completes, the application will be deployed.
 
 When liberty is deployed in a cloud environment certain limitation applies as explained in this [document](http://www.ibm.com/support/knowledgecenter/en/SSD28V_8.5.5/com.ibm.websphere.wlp.core.doc/ae/cwlp_paas_restrict.html).
 With respect to the http session failover, two techniques generally apply:
-1. session replication: Liberty does not support session replication out-of-the-box. This feature can be implemented by integrating with eXtremeScale, as described in this [article]().  
+
+1. session replication: Liberty does not support session replication out-of-the-box. This feature can be implemented by integrating with eXtremeScale, as described in this [article](http://www.ibm.com/support/knowledgecenter/SSTVLU_8.6.0/com.ibm.websphere.extremescale.doc/cxshttpsession.html?view=embed).  
 2. session persistence: it is possible to persist the session using any database that support a JDBC connection. This [article](http://www.ibm.com/support/knowledgecenter/en/SSD28V_8.5.5/com.ibm.websphere.base.doc/ae/tprs_cnfp.html) explains how to configure Liberty to do so.
