@@ -1,0 +1,8 @@
+#!/bin/bash
+
+# copy anything in $WORKDIR/artifacts to dropins
+cp $WORKDIR/artifacts/* /config/dropins/
+# copy anything in $WORKDIR/config to config
+cp $WORKDIR/config/*  /config
+
+exit $rc
