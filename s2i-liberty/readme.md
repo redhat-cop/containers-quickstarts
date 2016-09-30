@@ -170,12 +170,12 @@ Let's break down the command in further detail
 
 * `oc new-app` - OpenShift command to create a a new application
 * `-i=hello-world` - Name of the ImageStream that contains the result of the build config that uses the extended s2i process
-* `--name=play-app` - Name to be applied to the newly created resources
+* `--name=hello-app` - Name to be applied to the newly created resources
 
 The build that was triggered by the `new-app` command can be found by executing the following command:
 
 ```
-oc get builds -l=app=play-app
+oc get builds -l=app=hello-app
 ```
 
 View the build logs by executing the following command:
