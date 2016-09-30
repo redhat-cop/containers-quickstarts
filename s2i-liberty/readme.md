@@ -36,7 +36,7 @@ With this approach we decouple the build phase and the builder image from the ru
 
 ### Environment Specifications
 
-This demo should be run on an installation of OpenShift Enterprise V3.3
+This demo should be run on an installation of OpenShift Container Platform V3.3
 
 ### Template Files
 
@@ -52,7 +52,7 @@ None
 
 ## Setup Instructions
 
-There is no specific requirements necessary for this demonstration. The presenter should have an OpenShift Enterprise 3.3 environment available with access to the public Internet and the OpenShift Command Line Tools installed on their machine.
+There is no specific requirements necessary for this demonstration. The presenter should have an OpenShift Container Platform 3.3 environment available with access to the public Internet and the OpenShift Command Line Tools installed on their machine.
 
 ## Presenter Notes
 
@@ -67,7 +67,7 @@ Using the OpenShift CLI, login to the OpenShift environment.
 oc login <OpenShift_Master_API_Address>
 ```
 
-Create a new project called *play-demo*
+Create a new project called *liberty-demo*
 
 
 ```
@@ -85,7 +85,7 @@ In this example we will use a pre-existing builder image that can build maven ba
 The content used to produce the Liberty runtime image can originate from a Git repository. Execute the following command to start a new image build using the git source strategy.:
 
 ```
-oc new-build websphere-liberty:webProfile7~https://github.com/raffaelespazzoli/containers-quickstarts --context-dir=s2i-liberty --name=liberty-runtime-s2i --strategy=docker
+oc new-build websphere-liberty:webProfile7~https://github.com/redhat-cop/containers-quickstarts --context-dir=s2i-liberty --name=liberty-runtime-s2i --strategy=docker
 ```
 
 Let's break down the command in further detail
