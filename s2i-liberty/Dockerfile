@@ -9,7 +9,7 @@ LABEL io.openshift.s2i.scripts-url=image:///usr/local/s2i \
       io.s2i.scripts-url=image:///usr/local/s2i \
       io.k8s.description="Platform for building and running JEE applications on IBM WebSphere Liberty Profile" \
       io.k8s.display-name="Liberty 16.0.0_03" \
-      io.openshift.expose-services="9080:http, 9443:https" \
+      io.openshift.expose-services="9080/http:http, 9443/https:https" \
       io.openshift.tags="runner,liberty" 
 
 ENV STI_SCRIPTS_PATH="/usr/local/s2i" \ 
@@ -26,13 +26,16 @@ RUN useradd -u 1001 -r -g 0 -s /sbin/nologin \
     chown -R 1001:0 /logs && \
     mkdir -p $WORKDIR/artifacts && \
     mkdir -p $WORKDIR/config && \
-    chown -R 1001:0 $WORKDIR
+    chown -R 1001:0 $WORKDIR && \
+    ln $STI_SCRIPTS_PATH/assemble-runtime $STI_SCRIPTS_PATH/assemble
     
 COPY ./placeholder.txt $WORKDIR/artifacts
 COPY ./placeholder.txt $WORKDIR/config
 
 WORKDIR $WORKDIR
 
+EXPOSE 7777
+
 USER 1001
 
-CMD ["/opt/ibm/wlp/bin/server", "run", "defaultServer"]
+CMD ["/opt/ibm/wlp/bin/server", "debug", "defaultServer"]

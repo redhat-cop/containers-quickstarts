@@ -1,2 +1,2 @@
 #!/bin/bash
-/opt/ibm/wlp/bin/server run defaultServer
+/opt/ibm/wlp/bin/server debug defaultServer
