@@ -2,4 +2,4 @@
 
 export JAVA_DEBUG="-Dwas.debug.mode=true -Dcom.ibm.websphere.ras.inject.at.transform=true -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=${WLP_DEBUG_ADDRESS}"
 
-/opt/ibm/wlp/bin/server run defaultServer
+/opt/ibm/wlp/bin/server run defaultServer -Dwas.debug.mode=true -Dcom.ibm.websphere.ras.inject.at.transform=true -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=${WLP_DEBUG_ADDRESS}
