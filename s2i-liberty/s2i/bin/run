@@ -1,5 +1,5 @@
 #!/bin/bash
 
-export JAVA_DEBUG="-Dwas.debug.mode=true -Dcom.ibm.websphere.ras.inject.at.transform=true -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=${WLP_DEBUG_ADDRESS}"
+echo JAVA_DEBUG="-Dwas.debug.mode=true -Dcom.ibm.websphere.ras.inject.at.transform=true -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=${WLP_DEBUG_ADDRESS}" >> /opt/ibm/wlp/usr/servers/defaultServer/server.env
 
-/opt/ibm/wlp/bin/server run defaultServer -Dwas.debug.mode=true -Dcom.ibm.websphere.ras.inject.at.transform=true -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=${WLP_DEBUG_ADDRESS}
+/opt/ibm/wlp/bin/server run defaultServer

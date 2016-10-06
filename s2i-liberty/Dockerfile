@@ -14,7 +14,7 @@ LABEL io.openshift.s2i.scripts-url=image:///usr/local/s2i \
 
 ENV STI_SCRIPTS_PATH="/usr/local/s2i" \ 
     WORKDIR="/usr/local/workdir" \
-    WLP_DEBUG_ADDRESS="8787"
+    WLP_DEBUG_ADDRESS="7777"
 
 # Copy the S2I scripts from the specific language image to $STI_SCRIPTS_PATH
 COPY ./s2i/bin/ $STI_SCRIPTS_PATH
@@ -28,14 +28,14 @@ RUN useradd -u 1001 -r -g 0 -s /sbin/nologin \
     mkdir -p $WORKDIR/artifacts && \
     mkdir -p $WORKDIR/config && \
     chown -R 1001:0 $WORKDIR && \
-    ln $STI_SCRIPTS_PATH/assemble-runtime $STI_SCRIPTS_PATH/assemble
+    ln $STI_SCRIPTS_PATH/assemble-runtime $STI_SCRIPTS_PATH/assemble && \ 
     
 COPY ./placeholder.txt $WORKDIR/artifacts
 COPY ./placeholder.txt $WORKDIR/config
 
 WORKDIR $WORKDIR
 
-EXPOSE 8787
+EXPOSE $WLP_DEBUG_ADDRESS
 
 USER 1001
 
