@@ -141,7 +141,7 @@ The second s2i build grabs the artifacts created by the first image and puts the
 
 Run the following command:
 ```
-oc new-build --image-stream=liberty-runtime-s2i --name=hello-world --strategy=source --source-image=hello-world-artifacts --source-image-path=/opt/eap/standalone/deployments/hello-world-war-1.0.0.war:artifacts
+oc new-build --image-stream=liberty-runtime-s2i --name=hello-world --source-image=hello-world-artifacts --source-image-path=/opt/eap/standalone/deployments/hello-world-war-1.0.0.war:artifacts
 ```
 
 

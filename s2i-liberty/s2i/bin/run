@@ -1,6 +1,6 @@
 #!/bin/bash
 
-#uncomment this to enable debug, slows down the server considerably
+#comment this line to disable debug
 echo $'\n'JAVA_DEBUG="-Dwas.debug.mode=true -Dcom.ibm.websphere.ras.inject.at.transform=true -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=${WLP_DEBUG_ADDRESS}"$'\n' >> /opt/ibm/wlp/usr/servers/defaultServer/server.env
 
 /opt/ibm/wlp/bin/server run defaultServer
