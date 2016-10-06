@@ -29,7 +29,9 @@ This demonstration describes how to produce a new Source to Image (S2I) runtime 
 OpenShift provides several out of the box Source to Image builder images. To support deployments in Liberty, a new s2i builder image will be created to support a simplified deployment to OpenShift. Once the new image is produced, an example application will be deployed. 
 
 We will demonstrate two approaches to achieve this objective:
+
 1. two s2i builds. With this option the first s2i build builds an image with the right artifacts, the second s2i build grabs the artifacts from the first build and create the final runnable liberty image.  
+
 2. use the [extended builds approach](https://docs.openshift.com/container-platform/3.3/dev_guide/builds.html#extended-builds). This experimental feature chains the two previous build together creating a single build that does both the previous actions. 
 
 ## Bill of Materials
@@ -50,7 +52,7 @@ None
 
 * [Example JEE Application](https://github.com/efsavage/hello-world-war) -  Public repository for a simple JEE hello world app.
 
-## Two builds approach
+## Two build approach
 
 ### Setup Instructions
 
@@ -76,7 +78,7 @@ Create a new project called *liberty-demo*
 oc new-project liberty-demo
 ```
 
-### Produce Runtime Image
+### Produce s2i Liberty Image
 
 The Liberty runtime image can be created using the [Git](https://docs.openshift.com/enterprise/latest/dev_guide/builds.html#source-code) or [Binary](https://docs.openshift.com/enterprise/latest/dev_guide/builds.html#binary-source) build source
 
@@ -201,7 +203,7 @@ Create a new project called *liberty-demo*
 oc new-project liberty-demo
 ```
 
-### Produce Runtime Image
+### Produce s2i Liberty Image
 
 The Liberty runtime image can be created using the [Git](https://docs.openshift.com/enterprise/latest/dev_guide/builds.html#source-code) or [Binary](https://docs.openshift.com/enterprise/latest/dev_guide/builds.html#binary-source) build source
 

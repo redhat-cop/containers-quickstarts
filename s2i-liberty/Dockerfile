@@ -13,7 +13,8 @@ LABEL io.openshift.s2i.scripts-url=image:///usr/local/s2i \
       io.openshift.tags="runner,liberty" 
 
 ENV STI_SCRIPTS_PATH="/usr/local/s2i" \ 
-    WORKDIR="/usr/local/workdir"
+    WORKDIR="/usr/local/workdir" \
+    WLP_DEBUG_ADDRESS="8787"
 
 # Copy the S2I scripts from the specific language image to $STI_SCRIPTS_PATH
 COPY ./s2i/bin/ $STI_SCRIPTS_PATH
@@ -34,8 +35,8 @@ COPY ./placeholder.txt $WORKDIR/config
 
 WORKDIR $WORKDIR
 
-EXPOSE 7777
+EXPOSE 8787
 
 USER 1001
 
-CMD ["/opt/ibm/wlp/bin/server", "debug", "defaultServer"]
+CMD ["/opt/ibm/wlp/bin/server", "run", "defaultServer"]
