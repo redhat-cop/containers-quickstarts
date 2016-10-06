@@ -28,7 +28,7 @@ RUN useradd -u 1001 -r -g 0 -s /sbin/nologin \
     mkdir -p $WORKDIR/artifacts && \
     mkdir -p $WORKDIR/config && \
     chown -R 1001:0 $WORKDIR && \
-    ln $STI_SCRIPTS_PATH/assemble-runtime $STI_SCRIPTS_PATH/assemble && \ 
+    ln $STI_SCRIPTS_PATH/assemble-runtime $STI_SCRIPTS_PATH/assemble
     
 COPY ./placeholder.txt $WORKDIR/artifacts
 COPY ./placeholder.txt $WORKDIR/config
