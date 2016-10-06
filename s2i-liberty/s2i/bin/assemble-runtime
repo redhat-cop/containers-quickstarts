@@ -7,12 +7,12 @@ cp $WORKDIR/config/*  /config
 
 if [ -d "/tmp/src/artifacts" ]; then
   #echo copy anything in tmp/src/artifacts to dropins
-  cp tmp/src/artifacts/* /config/dropins/
+  cp /tmp/src/artifacts/* /config/dropins/
 fi
 
 if [ -d "/tmp/src/config" ]; then
   #echo copy anything in tmp/src/artifacts to dropins
-  cp tmp/src/config/* /config
+  cp /tmp/src/config/* /config
 fi
 
 exit $rc
