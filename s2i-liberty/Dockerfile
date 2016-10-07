@@ -50,4 +50,4 @@ EXPOSE $JOLOKIA_PORT
 
 USER 1001
 
-CMD ["/opt/ibm/wlp/bin/server", "run", "defaultServer"]
+CMD ["$STI_SCRIPTS_PATH/run"]
