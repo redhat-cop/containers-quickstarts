@@ -1,0 +1,10 @@
+#!/bin/sh
+
+. `dirname "$0"`/s2i-setup
+
+# Tar up maven repository for reuse in an incremental build
+if [ -d "${S2I_ARTIFACTS_DIR}/m2" ]; then
+   cd ${S2I_ARTIFACTS_DIR}
+   tar cf - m2
+   cd -
+fi
