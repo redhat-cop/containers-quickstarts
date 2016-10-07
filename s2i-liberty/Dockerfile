@@ -23,7 +23,10 @@ ENV STI_SCRIPTS_PATH="/usr/local/s2i" \
     JOLOKIA_VERSION="1.3.5"
 
 # Copy the S2I scripts from the specific language image to $STI_SCRIPTS_PATH
-COPY ./s2i/bin/ $STI_SCRIPTS_PATH
+COPY ./s2i/bin/ $STI_SCRIPTS_PATH \
+     ./placeholder.txt $WORKDIR/artifacts \
+     ./placeholder.txt $WORKDIR/config \
+     ./server.xml /opt/ibm/wlp/usr/servers/defaultServer
 
 RUN useradd -u 1001 -r -g 0 -s /sbin/nologin \
       -c "Default Application User" default && \
@@ -39,8 +42,7 @@ RUN useradd -u 1001 -r -g 0 -s /sbin/nologin \
     wget -O $WORKDIR/jolokia.war http://central.maven.org/maven2/org/jolokia/jolokia-war/${JOLOKIA_VERSION}/jolokia-war-${JOLOKIA_VERSION}.war
     
     
-COPY ./placeholder.txt $WORKDIR/artifacts
-COPY ./placeholder.txt $WORKDIR/config
+
 
 WORKDIR $WORKDIR
 
