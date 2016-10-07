@@ -28,6 +28,7 @@ COPY ./placeholder.txt $WORKDIR/artifacts
 COPY ./placeholder.txt $WORKDIR/config 
 COPY ./server.xml /opt/ibm/wlp/usr/servers/defaultServer
 
+
 RUN useradd -u 1001 -r -g 0 -s /sbin/nologin \
       -c "Default Application User" default && \
     chown -R 1001:0 /config && \
