@@ -14,7 +14,8 @@ LABEL io.openshift.s2i.scripts-url=image:///usr/local/s2i \
 
 ENV STI_SCRIPTS_PATH="/usr/local/s2i" \ 
     WORKDIR="/usr/local/workdir" \
-    WLP_DEBUG_ADDRESS="7777"
+    WLP_DEBUG_ADDRESS="7777" \
+    JOLOKIA_PORT="8778"
 
 # Copy the S2I scripts from the specific language image to $STI_SCRIPTS_PATH
 COPY ./s2i/bin/ $STI_SCRIPTS_PATH
@@ -28,7 +29,8 @@ RUN useradd -u 1001 -r -g 0 -s /sbin/nologin \
     mkdir -p $WORKDIR/artifacts && \
     mkdir -p $WORKDIR/config && \
     chown -R 1001:0 $WORKDIR && \
-    ln $STI_SCRIPTS_PATH/assemble-runtime $STI_SCRIPTS_PATH/assemble
+    ln $STI_SCRIPTS_PATH/assemble-runtime $STI_SCRIPTS_PATH/assemble &&\
+    wget -L -o $WORDIR/jolokia.jar http://search.maven.org/remotecontent?filepath=org/jolokia/jolokia-jvm/1.3.5/jolokia-jvm-1.3.5-agent.jar
     
 COPY ./placeholder.txt $WORKDIR/artifacts
 COPY ./placeholder.txt $WORKDIR/config
@@ -36,6 +38,7 @@ COPY ./placeholder.txt $WORKDIR/config
 WORKDIR $WORKDIR
 
 EXPOSE $WLP_DEBUG_ADDRESS
+EXPOSE $JOLOKIA_PORT
 
 USER 1001
 

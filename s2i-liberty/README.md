@@ -1,4 +1,8 @@
 
+erase binary build
+add patch command
+add jolokia
+
 # Liberty Source to Image Builder Demo
 
 This demonstration describes how to produce a new Source to Image (S2I) runtime image to deploy web application running on liberty on OpenShift.
@@ -52,8 +56,6 @@ None
 
 * [Example JEE Application](https://github.com/efsavage/hello-world-war) -  Public repository for a simple JEE hello world app.
 
-## Two build approach
-
 ### Setup Instructions
 
 There is no specific requirements necessary for this demonstration. The presenter should have an OpenShift Enterprise 3.3 environment available with access to the public Internet and the OpenShift Command Line Tools installed on their machine.
@@ -78,13 +80,13 @@ Create a new project called *liberty-demo*
 oc new-project liberty-demo
 ```
 
+## Two build approach
+
 ### Produce s2i Liberty Image
 
 The Liberty runtime image can be created using the [Git](https://docs.openshift.com/enterprise/latest/dev_guide/builds.html#source-code) or [Binary](https://docs.openshift.com/enterprise/latest/dev_guide/builds.html#binary-source) build source
 
 In this example we will use a pre-existing builder image that can build maven based apps: `registry.access.redhat.com/jboss-eap-7/eap70-openshift` 
-
-##### Git Source
 
 The content used to produce the Liberty runtime image can originate from a Git repository. Execute the following command to start a new image build using the git source strategy.:
 
@@ -106,27 +108,6 @@ Let's break down the command in further detail
 
 A new image called *s2i-liberty* was produced and can be used to build Liberty applications in the subsequent sections.
 
-##### Binary Source
-
-Instead of referencing a git repository, the content can be provided directly to the OpenShift build process using a binary source build. 
-
-The first step is to obtain the source code containing the builder. Once the code has been obtained, navigate to the folder containing the Play Framework *Dockerfile*, and execute the following command to start a new image build using the binary source strategy:
-
-```
-oc new-build websphere-liberty:webProfile7 --name=liberty-runtime-s2i --strategy=docker --from-dir=. --binary=true
-```
-
-Let's break down the command in further detail
-
-* `oc new-build` - OpenShift command to create a new build
-* `websphere-liberty:webProfile7` - The location of the base Docker image for which a new ImageStream will be created
-* `--from-dir` - Location of source code that will be used as the source for the build process. The contents will be tar'ed up and uploaded to the builder image.
-* `--name=s2i-liberty` - Name for the build and resulting image
-* `--strategy=docker` - Name of the OpenShift source strategy that is used to produce the new image
-* `--binary=true` - Specifies this build will be of a binary source type
-
-A new image called *s2i-liberty* was produced and can be used to build Play Framework applications in the subsequent sections.
-
 #### Create the first s2i build
 
 The first s2i build  will create the artifact. For this buld we will use the `jboss-eap-7/eap70-openshift` which is capable of building a maven project. 
@@ -135,6 +116,11 @@ Run the following command:
 ```
 oc new-build --docker-image=registry.access.redhat.com/jboss-eap-7/eap70-openshift --code=https://github.com/efsavage/hello-world-war --name=hello-world-artifacts
 ```
+wait for the build to complete, type:
+```
+oc logs -f bc/hello-world-artifacts
+```
+
 #### Create the second s2i build
 
 The second s2i build grabs the artifacts created by the first image and puts them in the expected locations in the Liberty image.
@@ -143,7 +129,10 @@ Run the following command:
 ```
 oc new-build --image-stream=liberty-runtime-s2i --name=hello-world --source-image=hello-world-artifacts --source-image-path=/opt/eap/standalone/deployments/hello-world-war-1.0.0.war:artifacts
 ```
-
+wait for the build to complete, type:
+```
+oc logs -f bc/hello-world
+```
 
 ### Create a new Application
 
@@ -161,47 +150,7 @@ Let's break down the command in further detail
 * `-i=hello-world` - Name of the ImageStream that contains the result of the build config that uses the extended s2i process
 * `--name=hello-world` - Name to be applied to the newly created resources
 
-The build that was triggered by the `new-app` command can be found by executing the following command:
-
-```
-oc get builds -l=app=hello-world
-```
-
-View the build logs by executing the following command:
-
-```
-oc logs builds/<build_name>
-```
-
-*Note: Replace `<build_name>` with the name of the build found in the previous command.*
-
-Once the build completes, the application will be deployed.
-
 ## Extended build approach
-
-### Setup Instructions
-
-There is no specific requirements necessary for this demonstration. The presenter should have an OpenShift Enterprise 3.3 environment available with access to the public Internet and the OpenShift Command Line Tools installed on their machine.
-
-### Presenter Notes
-
-The following steps are to be used to demonstrate two methods for producing the Source to Image builder image and deploying an application using the resulting image.
-
-#### Environment Setup
-
-Using the OpenShift CLI, login to the OpenShift environment.
-
-
-```
-oc login <OpenShift_Master_API_Address>
-```
-
-Create a new project called *liberty-demo*
-
-
-```
-oc new-project liberty-demo
-```
 
 ### Produce s2i Liberty Image
 
@@ -209,12 +158,10 @@ The Liberty runtime image can be created using the [Git](https://docs.openshift.
 
 In this example we will use a pre-existing builder image that can build maven based apps: `registry.access.redhat.com/jboss-eap-7/eap70-openshift` 
 
-##### Git Source
-
 The content used to produce the Liberty runtime image can originate from a Git repository. Execute the following command to start a new image build using the git source strategy.:
 
 ```
-oc new-build websphere-liberty:webProfile7~https://github.com/raffaelespazzoli/containers-quickstarts --context-dir=s2i-liberty --name=liberty-runtime-s2i --strategy=docker
+oc new-build websphere-liberty:webProfile7~https://github.com/redhat-cop/containers-quickstarts --context-dir=s2i-liberty --name=liberty-runtime-s2i --strategy=docker
 ```
 
 Let's break down the command in further detail
@@ -229,30 +176,9 @@ Let's break down the command in further detail
 
 *Note: If the repository was moved to a different location (such as a fork), be sure to reference to correct location.*
 
-A new image called *s2i-liberty* was produced and can be used to build Liberty applications in the subsequent sections.
+A new image called *liberty-runtime-s2i* was produced and can be used to build Liberty applications in the subsequent sections.
 
-##### Binary Source
-
-Instead of referencing a git repository, the content can be provided directly to the OpenShift build process using a binary source build. 
-
-The first step is to obtain the source code containing the builder. Once the code has been obtained, navigate to the folder containing the Play Framework *Dockerfile*, and execute the following command to start a new image build using the binary source strategy:
-
-```
-oc new-build websphere-liberty:webProfile7 --name=s2i-liberty --strategy=docker --from-dir=. --binary=true
-```
-
-Let's break down the command in further detail
-
-* `oc new-build` - OpenShift command to create a new build
-* `websphere-liberty:webProfile7` - The location of the base Docker image for which a new ImageStream will be created
-* `--from-dir` - Location of source code that will be used as the source for the build process. The contents will be tar'ed up and uploaded to the builder image.
-* `--name=s2i-liberty` - Name for the build and resulting image
-* `--strategy=docker` - Name of the OpenShift source strategy that is used to produce the new image
-* `--binary=true` - Specifies this build will be of a binary source type
-
-A new image called *s2i-liberty* was produced and can be used to build Play Framework applications in the subsequent sections.
-
-#### Create the first build config
+#### Create the build config
 
 In order to use the extended s2i process we need to configure the build config with some additional pieces of information. There does not appear to be a way to do this directly from the command line so we will use a two-phase approach.
 
@@ -260,8 +186,11 @@ First we will create a standard build config using the git source apporach expla
 ```
 oc new-build --docker-image=registry.access.redhat.com/jboss-eap-7/eap70-openshift --code=https://github.com/efsavage/hello-world-war --name=hello-world
 ```
-Second modify the newly created build config to look as follows:
+Second modify the newly created build config with the following patch command:
 ```
+oc patch bc  hello-world -p '
+  strategy:
+    type: Source
     sourceStrategy:
       from:
         kind: ImageStreamTag
@@ -271,7 +200,8 @@ Second modify the newly created build config to look as follows:
         name: 'liberty-runtime-s2i:latest'
       runtimeArtifacts:
         - sourcePath: /opt/eap/standalone/deployments/hello-world-war-1.0.0.war
-          destinationDir: artifacts
+          destinationDir: artifact
+   '
 ```
 notice that the source strategy has two additional sections:
 * `runtimeImage`: which defines the runtime image to be used during the build
@@ -300,22 +230,6 @@ Let's break down the command in further detail
 * `oc new-app` - OpenShift command to create a a new application
 * `-i=hello-world` - Name of the ImageStream that contains the result of the build config that uses the extended s2i process
 * `--name=hello-world` - Name to be applied to the newly created resources
-
-The build that was triggered by the `new-app` command can be found by executing the following command:
-
-```
-oc get builds -l=app=hello-world
-```
-
-View the build logs by executing the following command:
-
-```
-oc logs builds/<build_name>
-```
-
-*Note: Replace `<build_name>` with the name of the build found in the previous command.*
-
-Once the build completes, the application will be deployed.
 
 ## Considerations on http session failover
 

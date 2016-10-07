@@ -2,5 +2,5 @@
 
 #comment this line to disable debug
 echo $'\n'JAVA_DEBUG="-Dwas.debug.mode=true -Dcom.ibm.websphere.ras.inject.at.transform=true -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=${WLP_DEBUG_ADDRESS}"$'\n' >> /opt/ibm/wlp/usr/servers/defaultServer/server.env
-
+echo "-javaagent:$WORKDIR/jolokia.jar=port=$JOLOKIA_PORT,protocol=https,caCert=/var/run/secrets/kubernetes.io/serviceaccount/ca.crt,clientPrincipal=cn=system:master-proxy,useSslClientAuthentication=true,extraClientCheck=true,host=0.0.0.0,discoveryEnabled=false"$'\n' >> /opt/ibm/wlp/usr/servers/defaultServer/server.env      
 /opt/ibm/wlp/bin/server run defaultServer
