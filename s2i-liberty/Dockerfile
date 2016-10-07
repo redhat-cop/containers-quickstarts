@@ -19,7 +19,8 @@ ENV STI_SCRIPTS_PATH="/usr/local/s2i" \
     JOLOKIA_PORT="8778" \
     ENABLE_DEBUG="false" \ 
     ENABLE_JOLOKIA="true" \
-    S2I_DESTINATION="/tmp"
+    S2I_DESTINATION="/tmp" \
+    JOLOKIA_VERSION="1.3.5"
 
 # Copy the S2I scripts from the specific language image to $STI_SCRIPTS_PATH
 COPY ./s2i/bin/ $STI_SCRIPTS_PATH
@@ -34,7 +35,7 @@ RUN useradd -u 1001 -r -g 0 -s /sbin/nologin \
     mkdir -p $WORKDIR/config && \
     chown -R 1001:0 $WORKDIR && \
     ln $STI_SCRIPTS_PATH/assemble-runtime $STI_SCRIPTS_PATH/assemble &&\
-    wget -L -o $WORDIR/jolokia.jar http://search.maven.org/remotecontent?filepath=org/jolokia/jolokia-jvm/1.3.5/jolokia-jvm-1.3.5-agent.jar
+    wget -L -o $WORKDIR/jolokia.jar http://central.maven.org/maven2/org/jolokia/jolokia-jvm/${JOLOKIA_VERSION}/jolokia-jvm-${JOLOKIA_VERSION}-agent.jar
     
 COPY ./placeholder.txt $WORKDIR/artifacts
 COPY ./placeholder.txt $WORKDIR/config
