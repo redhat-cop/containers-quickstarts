@@ -35,8 +35,6 @@ RUN useradd -u 1001 -r -g 0 -s /sbin/nologin \
     chown -R 1001:0 /opt/ibm/wlp/usr/servers/defaultServer && \
     chown -R 1001:0 /opt/ibm/wlp/output && \
     chown -R 1001:0 /logs && \
-    mkdir -p $WORKDIR/artifacts && \
-    mkdir -p $WORKDIR/config && \
     chown -R 1001:0 $WORKDIR && \
     ln $STI_SCRIPTS_PATH/assemble-runtime $STI_SCRIPTS_PATH/assemble &&\
     wget -O $WORKDIR/jolokia.jar http://central.maven.org/maven2/org/jolokia/jolokia-jvm/${JOLOKIA_VERSION}/jolokia-jvm-${JOLOKIA_VERSION}-agent.jar &&\
