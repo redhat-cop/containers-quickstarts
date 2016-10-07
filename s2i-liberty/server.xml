@@ -11,12 +11,11 @@
     <httpEndpoint id="defaultHttpEndpoint"
                   host="*"
 		  		  httpPort="9080"
-                  httpsPort="9443" />
-    <httpEndpoint id="jolokiaHttpEndpoint"
-                  host="*"
-		  		  httpPort="${env.JOLOKIA_PORT}" />
+                  httpsPort="9443" 
+                  httpPort="${env.JOLOKIA_PORT}"/>
+     
+    <webApplication contextRoot="/" location="${env.WORKDIR}/jolokia.war"/>		  		  
     
-    <webApplication contextRoot="" location="${env.WORKDIR}/jolokia.war" httpEndpointRef="jolokiaHttpEndpoint"/>
 
     <!-- Automatically expand WAR files and EAR files -->
     <applicationManager autoExpand="true"/>
