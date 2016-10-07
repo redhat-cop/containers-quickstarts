@@ -10,12 +10,16 @@ LABEL io.openshift.s2i.scripts-url=image:///usr/local/s2i \
       io.k8s.description="Platform for building and running JEE applications on IBM WebSphere Liberty Profile" \
       io.k8s.display-name="Liberty 16.0.0_03" \
       io.openshift.expose-services="9080/http:http, 9443/https:https" \
-      io.openshift.tags="runner,liberty" 
+      io.openshift.tags="runner,liberty" \
+      io.openshift.s2i.destination="/tmp"
 
 ENV STI_SCRIPTS_PATH="/usr/local/s2i" \ 
     WORKDIR="/usr/local/workdir" \
     WLP_DEBUG_ADDRESS="7777" \
-    JOLOKIA_PORT="8778"
+    JOLOKIA_PORT="8778" \
+    WLP_ENABLE_DEBUG="false" \ 
+    ENABLE_JOLOKIA="true" \
+    S2I_DESTINATION="/tmp"
 
 # Copy the S2I scripts from the specific language image to $STI_SCRIPTS_PATH
 COPY ./s2i/bin/ $STI_SCRIPTS_PATH

@@ -5,14 +5,14 @@ cp $WORKDIR/artifacts/* /config/dropins/
 echo copy anything in $WORKDIR/config to config
 cp $WORKDIR/config/*  /config
 
-if [ -d "/tmp/src/artifacts" ]; then
-  #echo copy anything in tmp/src/artifacts to dropins
-  cp /tmp/src/artifacts/* /config/dropins/
+if [ -d "$S2I_DESTINATION/src/artifacts" ]; then
+  #echo copy anything in $S2I_DESTINATION/src/artifacts to dropins
+  cp $S2I_DESTINATION/src/artifacts/* /config/dropins/
 fi
 
-if [ -d "/tmp/src/config" ]; then
-  #echo copy anything in tmp/src/artifacts to dropins
-  cp /tmp/src/config/* /config
+if [ -d "$S2I_DESTINATION/src/config" ]; then
+  #echo copy anything in $S2I_DESTINATION/src/artifacts to dropins
+  cp $S2I_DESTINATION/src/config/* /config
 fi
 
 exit $rc
