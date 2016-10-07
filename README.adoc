@@ -1,6 +1,6 @@
 = Container Quickstarts by Red Hat's Community of Practice
 
-This repository is meant to help bootstrap users of OpenShift Container Platform get started in building and using Source-to-Image to build applications to run in OpenShift.
+This repository is meant to help bootstrap users of the OpenShift Container Platform to get started in building and using Source-to-Image to build applications to run in OpenShift.
 
 == Structure of a QuickStart
 
@@ -24,4 +24,4 @@ This repository is meant to help bootstrap users of OpenShift Container Platform
 
 == Quickstart Model Example
 
-For a good example of what a quickstart should look like, see the `s2i-play` directory as an example.
+For a good example of what a quickstart should look like, see the link:/s2i-play[S2I Play] directory.
