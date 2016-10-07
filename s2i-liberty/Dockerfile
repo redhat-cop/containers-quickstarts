@@ -35,7 +35,9 @@ RUN useradd -u 1001 -r -g 0 -s /sbin/nologin \
     mkdir -p $WORKDIR/config && \
     chown -R 1001:0 $WORKDIR && \
     ln $STI_SCRIPTS_PATH/assemble-runtime $STI_SCRIPTS_PATH/assemble &&\
-    wget -O $WORKDIR/jolokia.jar http://central.maven.org/maven2/org/jolokia/jolokia-jvm/${JOLOKIA_VERSION}/jolokia-jvm-${JOLOKIA_VERSION}-agent.jar
+    wget -O $WORKDIR/jolokia.jar http://central.maven.org/maven2/org/jolokia/jolokia-jvm/${JOLOKIA_VERSION}/jolokia-jvm-${JOLOKIA_VERSION}-agent.jar &&\
+    wget -O $WORKDIR/jolokia.war http://central.maven.org/maven2/org/jolokia/jolokia-war/${JOLOKIA_VERSION}/jolokia-war-${JOLOKIA_VERSION}.war
+    
     
 COPY ./placeholder.txt $WORKDIR/artifacts
 COPY ./placeholder.txt $WORKDIR/config
