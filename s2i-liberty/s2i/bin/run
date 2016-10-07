@@ -1,10 +1,9 @@
 #!/bin/bash
 
-#comment this line to disable debug
-if [ "$ENABLE_DEBUG" -eq "true" ]; then
+if [ "$ENABLE_DEBUG" == "true" ]; then
   echo $'\n'JAVA_DEBUG="-Dwas.debug.mode=true -Dcom.ibm.websphere.ras.inject.at.transform=true -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=${WLP_DEBUG_ADDRESS}"$'\n' >> /opt/ibm/wlp/usr/servers/defaultServer/server.env;
 fi
-if [ "$ENABLE_JOLOKIA" -eq "true" ]; then  
+if [ "$ENABLE_JOLOKIA" == "true" ]; then  
 	echo "-javaagent:$WORKDIR/jolokia.jar=port=$JOLOKIA_PORT,protocol=https,caCert=/var/run/secrets/kubernetes.io/serviceaccount/ca.crt,clientPrincipal=cn=system:master-proxy,useSslClientAuthentication=true,extraClientCheck=true,host=0.0.0.0,discoveryEnabled=false"$'\n' >> /opt/ibm/wlp/usr/servers/defaultServer/jvm.options;
 fi	      
 /opt/ibm/wlp/bin/server run defaultServer

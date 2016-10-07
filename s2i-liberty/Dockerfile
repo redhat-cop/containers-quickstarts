@@ -17,7 +17,7 @@ ENV STI_SCRIPTS_PATH="/usr/local/s2i" \
     WORKDIR="/usr/local/workdir" \
     WLP_DEBUG_ADDRESS="7777" \
     JOLOKIA_PORT="8778" \
-    WLP_ENABLE_DEBUG="false" \ 
+    ENABLE_DEBUG="false" \ 
     ENABLE_JOLOKIA="true" \
     S2I_DESTINATION="/tmp"
 
