@@ -14,12 +14,12 @@ LABEL io.openshift.s2i.scripts-url=image:///usr/local/s2i \
       io.openshift.s2i.destination="/tmp"
 
 ENV STI_SCRIPTS_PATH="/usr/local/s2i" \ 
-    WORKDIR="/usr/local/workdir" \
+    S2I_DESTINATION="/tmp" \
+    WORKDIR="$S2I_DESTINATION/src" \
     WLP_DEBUG_ADDRESS="7777" \
     JOLOKIA_PORT="8778" \
     ENABLE_DEBUG="false" \ 
     ENABLE_JOLOKIA="true" \
-    S2I_DESTINATION="/tmp" \
     JOLOKIA_VERSION="1.3.5"
 
 # Copy the S2I scripts from the specific language image to $STI_SCRIPTS_PATH
@@ -35,7 +35,7 @@ RUN useradd -u 1001 -r -g 0 -s /sbin/nologin \
     chown -R 1001:0 /opt/ibm/wlp/output && \
     chown -R 1001:0 /logs && \
     chown -R 1001:0 $WORKDIR && \
-    ln $STI_SCRIPTS_PATH/assemble-runtime $STI_SCRIPTS_PATH/assemble &&\    
+    ln $STI_SCRIPTS_PATH/assemble-runtime $STI_SCRIPTS_PATH/assemble    
 
 
 WORKDIR $WORKDIR
