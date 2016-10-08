@@ -15,7 +15,7 @@ LABEL io.openshift.s2i.scripts-url=image:///usr/local/s2i \
 
 ENV STI_SCRIPTS_PATH="/usr/local/s2i" \ 
     S2I_DESTINATION="/tmp" \
-    WORKDIR="$S2I_DESTINATION/src" \
+    WORKDIR="/tmp/src" \
     WLP_DEBUG_ADDRESS="7777" \
     JOLOKIA_PORT="8778" \
     ENABLE_DEBUG="false" \ 
