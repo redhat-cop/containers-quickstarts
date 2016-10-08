@@ -24,8 +24,6 @@ ENV STI_SCRIPTS_PATH="/usr/local/s2i" \
 
 # Copy the S2I scripts from the specific language image to $STI_SCRIPTS_PATH
 COPY ./s2i/bin/ $STI_SCRIPTS_PATH 
-COPY ./placeholder.txt $WORKDIR/artifacts 
-COPY ./placeholder.txt $WORKDIR/config 
 
 
 RUN useradd -u 1001 -r -g 0 -s /sbin/nologin \
