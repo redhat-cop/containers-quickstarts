@@ -13,19 +13,17 @@ This demonstration describes how to produce a new Source to Image (S2I) runtime 
 
 * [Overview](#overview)
 * [Bill of Materials](#bill-of-materials)
-	* [Environment Specifications](#environment-specifications)
-	* [Template Files](#template-files)
-	* [Config Files](#config-files)
-	* [External Source Code Repositories](#external-source-code-repositories)
 * [Setup Instructions](#setup-instructions)
-* [Presenter Notes](#presenter-notes)
-	* [Environment Setup](#environment-setup)
-	* [Produce Runtime Image](#produce-runtime-image)
-		* [Git Source](#git-source)
-		* [Binary Source](#binary-source)
-	* [Create the build config](#create-the-build-config)	
+* [Two Build Approach](#two-build-approach)
+	* [Produce s2i Liberty Image](#produce-s2i-liberty-image)
+	* [Create the First s2i Build](#create-the-first-s2i-build)
+	* [Create the Second s2i Build](#create-the-second-s2i-build)	
 	* [Create a new Application](#create-a-new-application)
-    * [Considerations on HTTP session failover](#considerations-on-http-session-failover)	
+* [Extended Build Approach](#extended-build-approach)
+    * [Produce s2i Liberty Image](#produce-the-s2i-liberty-image)
+    * [Create the build config](#create-the-build-config)
+    * [Create the new Application](#create-the-new-application)	
+* [Considerations on HTTP session failover](#considerations-on-http-session-failover)	
 
 
 ## Overview
@@ -56,7 +54,7 @@ None
 
 * [Example JEE Application](https://github.com/efsavage/hello-world-war) -  Public repository for a simple JEE hello world app.
 
-### Setup Instructions
+## Setup Instructions
 
 There is no specific requirements necessary for this demonstration. The presenter should have an OpenShift Enterprise 3.3 environment available with access to the public Internet and the OpenShift Command Line Tools installed on their machine.
 
@@ -91,7 +89,7 @@ In this example we will use a pre-existing builder image that can build maven ba
 The content used to produce the Liberty runtime image can originate from a Git repository. Execute the following command to start a new image build using the git source strategy.:
 
 ```
-oc new-build websphere-liberty:webProfile7~https://github.com/raffaelespazzoli/containers-quickstarts --context-dir=s2i-liberty --name=liberty-runtime-s2i --strategy=docker
+oc new-build websphere-liberty:webProfile7~https://github.com/redhat-cop/containers-quickstarts --context-dir=s2i-liberty --name=s2i-liberty --strategy=docker
 ```
 
 Let's break down the command in further detail
@@ -127,14 +125,14 @@ The second s2i build grabs the artifacts created by the first image and puts the
 
 Run the following command:
 ```
-oc new-build --image-stream=liberty-runtime-s2i --name=hello-world --source-image=hello-world-artifacts --source-image-path=/opt/eap/standalone/deployments/hello-world-war-1.0.0.war:artifacts
+oc new-build --image-stream=s2i-liberty --name=hello-world --source-image=hello-world-artifacts --source-image-path=/opt/eap/standalone/deployments/hello-world-war-1.0.0.war:artifacts
 ```
 wait for the build to complete, type:
 ```
 oc logs -f bc/hello-world
 ```
 
-### Create a new Application
+### Create the new Application
 
 To demonstrate the usage of the newly created builder and runtime images, a JEE example application will be built and deployed to Liberty using the Source to Image process. 
 
@@ -152,7 +150,7 @@ Let's break down the command in further detail
 
 ## Extended build approach
 
-### Produce s2i Liberty Image
+### Produce the s2i Liberty Image
 
 The Liberty runtime image can be created using the [Git](https://docs.openshift.com/enterprise/latest/dev_guide/builds.html#source-code) or [Binary](https://docs.openshift.com/enterprise/latest/dev_guide/builds.html#binary-source) build source
 
@@ -161,7 +159,7 @@ In this example we will use a pre-existing builder image that can build maven ba
 The content used to produce the Liberty runtime image can originate from a Git repository. Execute the following command to start a new image build using the git source strategy.:
 
 ```
-oc new-build websphere-liberty:webProfile7~https://github.com/redhat-cop/containers-quickstarts --context-dir=s2i-liberty --name=liberty-runtime-s2i --strategy=docker
+oc new-build websphere-liberty:webProfile7~https://github.com/redhat-cop/containers-quickstarts --context-dir=s2i-liberty --name=s2i-liberty --strategy=docker
 ```
 
 Let's break down the command in further detail
@@ -176,7 +174,7 @@ Let's break down the command in further detail
 
 *Note: If the repository was moved to a different location (such as a fork), be sure to reference to correct location.*
 
-A new image called *liberty-runtime-s2i* was produced and can be used to build Liberty applications in the subsequent sections.
+A new image called *s2i-liberty* was produced and can be used to build Liberty applications in the subsequent sections.
 
 #### Create the build config
 
@@ -197,7 +195,7 @@ oc patch bc  hello-world -p '
         name: 'eap70-openshift:latest'
       runtimeImage:
         kind: ImageStreamTag
-        name: 'liberty-runtime-s2i:latest'
+        name: 's2i-liberty:latest'
       runtimeArtifacts:
         - sourcePath: /opt/eap/standalone/deployments/hello-world-war-1.0.0.war
           destinationDir: artifact
@@ -230,6 +228,16 @@ Let's break down the command in further detail
 * `oc new-app` - OpenShift command to create a a new application
 * `-i=hello-world` - Name of the ImageStream that contains the result of the build config that uses the extended s2i process
 * `--name=hello-world` - Name to be applied to the newly created resources
+
+## Liberty s2i image environment variables
+
+You can set the following environment variable on containers running on images created with the Liberty s2i image:
+
+| Environment Variable | Default | Description |
+|----------------------|---------|-------------|
+| ENABLE_DEBUG         | false   | enable running the jvm in debug mode |
+| DEBUG_PORT           | 7777    | port on which the jvm will listen for a debugger |
+
 
 ## Considerations on http session failover
 
