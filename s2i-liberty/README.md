@@ -106,6 +106,11 @@ Let's break down the command in further detail
 
 A new image called *s2i-liberty* was produced and can be used to build Liberty applications in the subsequent sections.
 
+wait for the build to complete, type:
+```
+oc logs -f bc/s2i-liberty
+```
+
 #### Create the first s2i build
 
 The first s2i build  will create the artifact. For this buld we will use the `jboss-eap-7/eap70-openshift` which is capable of building a maven project. 
@@ -176,6 +181,11 @@ Let's break down the command in further detail
 
 A new image called *s2i-liberty* was produced and can be used to build Liberty applications in the subsequent sections.
 
+wait for the build to complete, type:
+```
+oc logs -f bc/s2i-liberty
+```
+
 #### Create the build config
 
 In order to use the extended s2i process we need to configure the build config with some additional pieces of information. There does not appear to be a way to do this directly from the command line so we will use a two-phase approach.
@@ -187,18 +197,23 @@ oc new-build --docker-image=registry.access.redhat.com/jboss-eap-7/eap70-openshi
 Second modify the newly created build config with the following patch command:
 ```
 oc patch bc  hello-world -p '
-  strategy:
-    type: Source
-    sourceStrategy:
-      from:
-        kind: ImageStreamTag
-        name: 'eap70-openshift:latest'
-      runtimeImage:
-        kind: ImageStreamTag
-        name: 's2i-liberty:latest'
-      runtimeArtifacts:
-        - sourcePath: /opt/eap/standalone/deployments/hello-world-war-1.0.0.war
-          destinationDir: artifact
+    "spec": {
+        "strategy": {
+            "sourceStrategy": {
+                "runtimeImage": {
+                    "kind": "ImageStreamTag",
+                    "name": "s2i-liberty:latest"
+                },
+                "runtimeArtifacts": [
+                    {
+                        "sourcePath": "/opt/eap/standalone/deployments/hello-world-war-1.0.0.war",
+                        "destinationDir": "artifacts"
+                    }
+                ]
+            }
+        }
+    }
+                    
    '
 ```
 notice that the source strategy has two additional sections:
@@ -212,6 +227,12 @@ The liberty runtime image expects:
 * any [Liberty configuration files] (http://www.ibm.com/support/knowledgecenter/SSAW57_liberty/com.ibm.websphere.wlp.nd.doc/ae/cwlp_config.html) in the $WORKDIR/config directory 
 
 As you can notice the runtimeArtifacts section mentions files by name. This implies that for this process to work the artifact created by the builder image have to be always the same. I expect improvements on this front in future releases of OpenShigt but for now this is a constraint that must be kept in mind.
+
+restart the build and wait for it to finish:
+
+```
+oc start-build -F hello-world
+```
 
 ### Create a new Application
 
