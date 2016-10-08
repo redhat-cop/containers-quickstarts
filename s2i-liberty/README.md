@@ -194,6 +194,10 @@ First we will create a standard build config using the git source apporach expla
 ```
 oc new-build --docker-image=registry.access.redhat.com/jboss-eap-7/eap70-openshift --code=https://github.com/efsavage/hello-world-war --name=hello-world
 ```
+wait for the build to complete, type the following:
+```
+oc logs -f bc/hello-world
+```
 Second modify the newly created build config with the following patch command:
 ```
 oc patch bc  hello-world -p '
@@ -234,7 +238,7 @@ restart the build and wait for it to finish:
 oc start-build -F hello-world
 ```
 
-### Create a new Application
+### Create the new Application
 
 To demonstrate the usage of the newly created builder and runtime images, a JEE example application will be built and deployed to Liberty using the Source to Image process. 
 
