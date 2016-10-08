@@ -26,7 +26,6 @@ ENV STI_SCRIPTS_PATH="/usr/local/s2i" \
 COPY ./s2i/bin/ $STI_SCRIPTS_PATH 
 COPY ./placeholder.txt $WORKDIR/artifacts 
 COPY ./placeholder.txt $WORKDIR/config 
-COPY ./server.xml /opt/ibm/wlp/usr/servers/defaultServer
 
 
 RUN useradd -u 1001 -r -g 0 -s /sbin/nologin \
@@ -36,17 +35,13 @@ RUN useradd -u 1001 -r -g 0 -s /sbin/nologin \
     chown -R 1001:0 /opt/ibm/wlp/output && \
     chown -R 1001:0 /logs && \
     chown -R 1001:0 $WORKDIR && \
-    ln $STI_SCRIPTS_PATH/assemble-runtime $STI_SCRIPTS_PATH/assemble &&\
-    wget -O $WORKDIR/jolokia.jar http://central.maven.org/maven2/org/jolokia/jolokia-jvm/${JOLOKIA_VERSION}/jolokia-jvm-${JOLOKIA_VERSION}-agent.jar &&\
-    wget -O $WORKDIR/jolokia.war http://central.maven.org/maven2/org/jolokia/jolokia-war/${JOLOKIA_VERSION}/jolokia-war-${JOLOKIA_VERSION}.war
-    
-    
+    ln $STI_SCRIPTS_PATH/assemble-runtime $STI_SCRIPTS_PATH/assemble &&\    
 
 
 WORKDIR $WORKDIR
 
 EXPOSE $WLP_DEBUG_ADDRESS
-EXPOSE $JOLOKIA_PORT
+#EXPOSE $JOLOKIA_PORT
 
 USER 1001
 
