@@ -1,8 +1,3 @@
-
-erase binary build
-add patch command
-add jolokia
-
 # Liberty Source to Image Builder Demo
 
 This demonstration describes how to produce a new Source to Image (S2I) runtime image to deploy web application running on liberty on OpenShift.
@@ -137,7 +132,7 @@ wait for the build to complete, type:
 oc logs -f bc/hello-world
 ```
 
-### Create the new Application
+### Create a new Application
 
 To demonstrate the usage of the newly created builder and runtime images, a JEE example application will be built and deployed to Liberty using the Source to Image process. 
 
