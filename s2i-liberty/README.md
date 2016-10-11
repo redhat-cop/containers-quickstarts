@@ -148,6 +148,23 @@ Let's break down the command in further detail
 * `-i=hello-world` - Name of the ImageStream that contains the result of the build config that uses the extended s2i process
 * `--name=hello-world` - Name to be applied to the newly created resources
 
+### Verify the newly deployed application
+
+You can now create a route to access the application:
+```
+oc expose service hello-world --port=9080
+```
+you can access the application by browsing to the newly created route.
+To verify where the route has been created type:
+```
+oc get route
+```
+The application will be available at the context: `hello-world-war-1.0.0`
+You can *curl* as follows:
+```
+curl -L http://\`oc get route | grep hello-world | awk '{print $2}'\`/hello-world-war-1.0.0
+```
+
 ## Extended build approach
 
 ### Produce the s2i Liberty Image
@@ -248,6 +265,23 @@ Let's break down the command in further detail
 * `oc new-app` - OpenShift command to create a a new application
 * `-i=hello-world` - Name of the ImageStream that contains the result of the build config that uses the extended s2i process
 * `--name=hello-world` - Name to be applied to the newly created resources
+
+### Verify the newly deployed application
+
+You can now create a route to access the application:
+```
+oc expose service hello-world --port=9080
+```
+you can access the application by browsing to the newly created route.
+To verify where the route has been created type:
+```
+oc get route
+```
+The application will be available at the context: `hello-world-war-1.0.0`
+You can *curl* as follows:
+```
+curl -L http://\`oc get route | grep hello-world | awk '{print $2}'\`/hello-world-war-1.0.0
+```
 
 ## Liberty s2i image environment variables
 
