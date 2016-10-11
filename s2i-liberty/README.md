@@ -164,7 +164,7 @@ oc get route
 The application will be available at the context: `hello-world-war-1.0.0`
 You can *curl* as follows:
 ```
-curl -L http://\`oc get route | grep hello-world | awk '{print $2}'\`/hello-world-war-1.0.0
+curl -L http://`oc get route | grep hello-world | awk '{print $2}'`/hello-world-war-1.0.0
 ```
 
 ## Extended build approach
