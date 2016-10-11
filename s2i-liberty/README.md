@@ -14,10 +14,12 @@ This demonstration describes how to produce a new Source to Image (S2I) runtime 
 	* [Create the First s2i Build](#create-the-first-s2i-build)
 	* [Create the Second s2i Build](#create-the-second-s2i-build)	
 	* [Create a new Application](#create-a-new-application)
+	* [Verify the application](#verify-the-application)	
 * [Extended Build Approach](#extended-build-approach)
     * [Produce s2i Liberty Image](#produce-the-s2i-liberty-image)
     * [Create the build config](#create-the-build-config)
-    * [Create the new Application](#create-the-new-application)	
+    * [Create the new Application](#create-the-new-application)
+    * [Verify the newly deployed application](#verify-the-newly-deployed-application)	
 * [Considerations on HTTP session failover](#considerations-on-http-session-failover)	
 
 
@@ -148,7 +150,7 @@ Let's break down the command in further detail
 * `-i=hello-world` - Name of the ImageStream that contains the result of the build config that uses the extended s2i process
 * `--name=hello-world` - Name to be applied to the newly created resources
 
-### Verify the newly deployed application
+### Verify the application
 
 You can now create a route to access the application:
 ```
@@ -280,7 +282,7 @@ oc get route
 The application will be available at the context: `hello-world-war-1.0.0`
 You can *curl* as follows:
 ```
-curl -L http://\`oc get route | grep hello-world | awk '{print $2}'\`/hello-world-war-1.0.0
+curl -L http://`oc get route | grep hello-world | awk '{print $2}'`/hello-world-war-1.0.0
 ```
 
 ## Liberty s2i image environment variables
