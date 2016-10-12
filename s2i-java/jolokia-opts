@@ -1,0 +1,78 @@
+#!/bin/sh
+
+dir=${AB_JOLOKIA_DIR:-/opt/jolokia}
+sep="="
+
+# Check whether a given config is contained in AB_JOLOKIA_OPTS
+is_in_jolokia_opts() {
+  local prop=$1
+  if [ -n "${AB_JOLOKIA_OPTS}" ] && [ x"${AB_JOLOKIA_OPTS}" != x"${AB_JOLOKIA_OPTS/${prop}/}" ]; then
+     echo "yes"
+  else
+     echo "no"
+  fi
+}
+
+if [ -z ${AB_JOLOKIA_OFF+x} ]; then
+   opts="-javaagent:$dir/jolokia.jar"
+   config=${AB_JOLOKIA_CONFIG:-$dir/jolokia.properties}
+   if [ -f "$config" ]; then
+      # Configuration takes precedence
+      opts="${opts}${sep}config=${config}"
+      sep=","
+      grep -q -e '^host' ${config} && host_in_config=1
+   fi
+   if [ -z ${AB_JOLOKIA_HOST+x} ] && [ -z ${host_in_config+x} ]; then
+      AB_JOLOKIA_HOST='0.0.0.0'
+   fi
+   if [ -n "$AB_JOLOKIA_HOST" ]; then
+      opts="${opts}${sep}host=${AB_JOLOKIA_HOST}"
+      sep=","
+   fi
+   if [ -n "$AB_JOLOKIA_PORT" ]; then
+      opts="${opts}${sep}port=${AB_JOLOKIA_PORT}"
+      sep=","
+   fi
+   if [ -n "$AB_JOLOKIA_USER" ]; then
+      opts="${opts}${sep}user=${AB_JOLOKIA_USER}"
+      sep=","
+   fi
+   if [ -n "$AB_JOLOKIA_PASSWORD" ]; then
+      opts="${opts}${sep}password=${AB_JOLOKIA_PASSWORD}"
+      sep=","
+   fi
+   if [ -n "$AB_JOLOKIA_HTTPS" ]; then
+      opts="${opts}${sep}protocol=https"
+      use_https=1
+      sep=","
+   fi
+   # Integration with OpenShift client cert auth is enabled
+   # by default if not explicitly turned off by setting to 'false'
+   if [ "x${AB_JOLOKIA_AUTH_OPENSHIFT}" != "xfalse" ] && [ -f "/var/run/secrets/kubernetes.io/serviceaccount/ca.crt" ]; then
+      auth_opts="useSslClientAuthentication=true,extraClientCheck=true"
+      if [ -z ${use_https+x} ]; then
+        auth_opts="${auth_opts},protocol=https"
+      fi
+      if [ $(is_in_jolokia_opts "caCert") != "yes" ]; then
+         auth_opts="${auth_opts},caCert=/var/run/secrets/kubernetes.io/serviceaccount/ca.crt"
+      fi
+      if [ $(is_in_jolokia_opts "clientPrincipal") != "yes" ]; then
+         if [  x"${AB_JOLOKIA_AUTH_OPENSHIFT}" != x"${AB_JOLOKIA_AUTH_OPENSHIFT/=/}" ]; then
+            # Supposed to contain a principal name to check
+            auth_opts="${auth_opts},clientPrincipal=`echo ${AB_JOLOKIA_AUTH_OPENSHIFT} | sed -e 's/ /\\\\ /g'`"
+         else
+            auth_opts="${auth_opts},clientPrincipal=cn=system:master-proxy"
+         fi
+      fi
+      opts="${opts}${sep}${auth_opts}"
+      sep=","
+   fi
+   # Add extra opts to the end
+   if [ -n "${AB_JOLOKIA_OPTS}" ]; then
+      opts="${opts}${sep}${AB_JOLOKIA_OPTS}"
+      sep=","
+   fi
+   if [ "x$sep" != 'x=' ] ; then
+     echo ${opts}
+   fi
+fi

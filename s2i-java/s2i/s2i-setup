@@ -1,0 +1,5 @@
+# Local vars setup with defaults
+S2I_DESTINATION=${S2I_DESTINATION:-/tmp}
+S2I_SOURCE_DIR="${S2I_DESTINATION}/src"
+S2I_ARTIFACTS_DIR="${S2I_DESTINATION}/artifacts"
+DEPLOYMENTS_DIR="/deployments"
