@@ -5,7 +5,7 @@ This repository is meant to help bootstrap users of the OpenShift Container Plat
 ## Structure of a QuickStart
 
 * Overview
-  ** README discussing what this demo does
+  * README discussing what this demo does
 * Bill Of Materials
   * Environment Specs -- describe the environment required to run this demo
   * Template files
