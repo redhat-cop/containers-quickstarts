@@ -54,12 +54,6 @@ RUN yum repolist > /dev/null && \
     groupadd -r java -g 1000 && \
     useradd -u 185 -r -g java -m -d /opt/java -s /sbin/nologin -c "Java user" java && \
 
-    # Install Maven
-    curl https://archive.apache.org/dist/maven/maven-3/${MAVEN_VERSION}/binaries/apache-maven-${MAVEN_VERSION}-bin.tar.gz | \
-    tar -xzf - -C /opt && \
-    ln -s /opt/apache-maven-${MAVEN_VERSION} /opt/maven && \
-    ln -s /opt/maven/bin/mvn /usr/bin/mvn && \
-
     # Install Jolokia
     mkdir -p /opt/jolokia && \
     curl http://central.maven.org/maven2/org/jolokia/jolokia-jvm/${JOLOKIA_VERSION}/jolokia-jvm-${JOLOKIA_VERSION}-agent.jar \
