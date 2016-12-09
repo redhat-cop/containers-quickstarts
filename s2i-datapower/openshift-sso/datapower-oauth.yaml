@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: OAuthClient
+metadata:
+  name: datapower-oauth
+redirectURIs:
+- https://datapower-svc-datapower.rhel-cdk.10.1.2.2.xip.io/oauth-callback
+secret: userSU3gEnd6svvo114EVRyC8R4nGsHfRKCW803Jjs5g6sK4xWTeb7rrhSeFqxgw0BI2

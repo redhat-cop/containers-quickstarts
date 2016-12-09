@@ -1,0 +1,14 @@
+#!/bin/busybox sh
+
+#if [ "$IMMUTABLE" = "true" ]; then
+# the | true suppresses the error message if the directory is empty
+#  cp $WORKDIR/config/* /drouter/config
+#  cp $WORKDIR/local/* /drouter/local | true
+#fi
+
+if [ ! "$(ls -A /drouter/config)" ]; then
+  cp -R $WORKDIR/config/* /drouter/config
+  cp -R $WORKDIR/local/* /drouter/local | true
+fi
+
+/bin/drouter

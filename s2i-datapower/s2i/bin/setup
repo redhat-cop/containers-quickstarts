@@ -1,0 +1,15 @@
+#!/bin/busybox sh
+
+adduser -u 1001 -G root -D -H -s /sbin/nologin default
+mkdir -p $WORKDIR/local
+mkdir -p $WORKDIR/config
+mkdir -p /tmp
+chmod a+x /usr/bin/fixpermissions.sh
+chmod a+x $STI_SCRIPTS_PATH/*
+fixpermissions.sh $WORKDIR
+fixpermissions.sh /drouter
+fixpermissions.sh /opt
+fixpermissions.sh /root/secure
+fixpermissions.sh /tmp
+cd /usr/bin
+ln -s /bin/busybox env

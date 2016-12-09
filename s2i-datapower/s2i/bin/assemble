@@ -1,0 +1,7 @@
+#!/bin/busybox sh
+
+# the | true suppresses the error message if the directory is empty
+cp -R $S2I_DESTINATION/src/local/* $WORKDIR/local | true
+cp -R $S2I_DESTINATION/src/config/* $WORKDIR/config | true
+
+exit $rc
