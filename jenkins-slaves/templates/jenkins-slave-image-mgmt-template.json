@@ -1,0 +1,110 @@
+{
+    "kind": "Template",
+    "apiVersion": "v1",
+    "metadata": {
+        "annotations": {
+            "description": "Zeppelin RHEL application template.",
+            "iconClass": "icon-java",
+            "tags": "java"
+        },
+        "name": "jenkins-slave-image-mgmt"
+    },
+    "labels": {
+        "template": "jenkins-slave-image-mgmt"
+    },
+    "parameters": [
+        {
+            "description": "The name for the Jenkins slave.",
+            "name": "JENKINS_SLAVE_NAME",
+            "value": "jenkins-slave-image-mgmt",
+            "required": true
+        },
+        {
+            "description": "Git source URI for application",
+            "name": "SOURCE_REPOSITORY_URL",
+            "value": "https://github.com/redhat-cop/containers-quickstarts.git",
+            "required": true
+        },
+        {
+            "description": "Git branch/tag reference",
+            "name": "SOURCE_REPOSITORY_REF",
+            "value": "master",
+            "required": false
+        },
+        {
+            "description": "Path within Git project to build; empty for root project directory.",
+            "name": "CONTEXT_DIR",
+            "value": "jenkins-slaves/jenkins-slave-image-mgmt",
+            "required": false
+        }
+    ],
+    "objects": [
+        {
+            "kind": "ImageStream",
+            "apiVersion": "v1",
+            "metadata": {
+                "name": "jenkins-slave-base-rhel7"
+            },
+            "spec": {
+                "dockerImageRepository": "registry.access.redhat.com/openshift3/jenkins-slave-base-rhel7"
+            }
+        },
+        {
+            "kind": "ImageStream",
+            "apiVersion": "v1",
+            "metadata": {
+                "name": "${JENKINS_SLAVE_NAME}",
+                "labels": {
+                    "role": "jenkins-slave"
+                },
+                "annotations": {
+                    "slave-label": "${JENKINS_SLAVE_NAME}"
+                }
+            }
+        },
+        {
+            "kind": "BuildConfig",
+            "apiVersion": "v1",
+            "metadata": {
+                "name": "${JENKINS_SLAVE_NAME}",
+                "labels": {
+                    "build": "${JENKINS_SLAVE_NAME}"
+                }
+            },
+            "spec": {
+                "runPolicy": "Serial",
+                "source": {
+                    "type": "Git",
+                    "git": {
+                        "uri": "${SOURCE_REPOSITORY_URL}",
+                        "ref": "${SOURCE_REPOSITORY_REF}"
+                    },
+                    "contextDir": "${CONTEXT_DIR}"
+                },
+                "strategy": {
+                    "type": "Docker",
+                    "dockerStrategy": {
+                        "from": {
+                            "kind": "ImageStreamTag",
+                            "name": "jenkins-slave-base-rhel7:latest"
+                        }
+                    }
+                },
+                "output": {
+                    "to": {
+                        "kind": "ImageStreamTag",
+                        "name": "${JENKINS_SLAVE_NAME}:latest"
+                    }
+                },
+                "triggers": [
+                    {
+                        "type": "ImageChange",
+                        "imageChange": {}
+                    }
+                ],
+                "resources": {},
+                "postCommit": {}
+            }
+        }
+    ]
+}
