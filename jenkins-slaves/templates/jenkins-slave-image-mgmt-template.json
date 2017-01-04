@@ -3,9 +3,9 @@
     "apiVersion": "v1",
     "metadata": {
         "annotations": {
-            "description": "Zeppelin RHEL application template.",
-            "iconClass": "icon-java",
-            "tags": "java"
+            "description": "Jenkins Image Management Slave Template.",
+            "iconClass": "icon-jenkins",
+            "tags": "jenkins,slave"
         },
         "name": "jenkins-slave-image-mgmt"
     },
