@@ -7,10 +7,10 @@
             "iconClass": "icon-java",
             "tags": "java,zookeeper"
         },
-        "name": "kafka-build"
+        "name": "zookeeper-build"
     },
     "labels": {
-        "template": "kafka-build"
+        "template": "zookeeper-build"
     },
     "parameters": [
         {
