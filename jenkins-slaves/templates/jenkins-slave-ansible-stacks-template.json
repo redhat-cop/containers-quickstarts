@@ -114,6 +114,10 @@
                             {
                                 "name": "ANSIBLE_STACKS_SOURCE_REPOSITORY_REF",
                                 "value": "${ANSIBLE_STACKS_SOURCE_REPOSITORY_REF}"
+                            },
+                            {
+                                "name": "ANSIBLE_YUM_REPO",
+                                "value": "${ANSIBLE_YUM_REPO}"
                             }
                         ]
                     }
