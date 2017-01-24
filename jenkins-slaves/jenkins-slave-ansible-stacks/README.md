@@ -19,17 +19,17 @@ oc process -f ../templates/jenkins-slave-ansible-stacks-template.json | oc creat
 
 Parameters may be passed to the template to specify:
 
-    * `ANSIBLE_YUM_REPO` (default rhel-7-server-ose-3.3-rpms) - Yum repository that provides ansible
+* `ANSIBLE_YUM_REPO` (default rhel-7-server-ose-3.3-rpms) - Yum repository that provides ansible
 
-    * `ANSIBLE_STACKS_SOURCE_REPOSITORY_URL` (https://github.com/rht-labs/ansible-stacks.git) - SCM for ansible-stacks
+* `ANSIBLE_STACKS_SOURCE_REPOSITORY_URL` (https://github.com/rht-labs/ansible-stacks.git) - SCM for ansible-stacks
 
-    * `ANSIBLE_STACKS_SOURCE_REPOSITORY_REF` (https://github.com/rht-labs/ansible-stacks.git) - SCM branch for ansible-stacks
+* `ANSIBLE_STACKS_SOURCE_REPOSITORY_REF` (https://github.com/rht-labs/ansible-stacks.git) - SCM branch for ansible-stacks
 
-    * `CONTEXT_DIR` (jenkins-slaves/jenkins-slave-ansible-stacks) - Reference pointing to this directory for docker build.
+* `CONTEXT_DIR` (jenkins-slaves/jenkins-slave-ansible-stacks) - Reference pointing to this directory for docker build.
 
-    * `SOURCE_REPOSITORY_URL` (https://github.com/redhat-cop/containers-quickstarts.git) - Source repo for docker build
+* `SOURCE_REPOSITORY_URL` (https://github.com/redhat-cop/containers-quickstarts.git) - Source repo for docker build
 
-    * `SOURCE_REPOSITORY_REF` (master) - Source branch for docker build
+* `SOURCE_REPOSITORY_REF` (master) - Source branch for docker build
 
 A new image build will be started automatically
 
