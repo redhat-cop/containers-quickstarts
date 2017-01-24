@@ -20,7 +20,7 @@
             "required": true
         },
         {
-            "description": "Git source URI for application",
+            "description": "Git source URI for application ",
             "name": "SOURCE_REPOSITORY_URL",
             "value": "https://github.com/redhat-cop/containers-quickstarts.git",
             "required": true
@@ -36,6 +36,24 @@
             "name": "CONTEXT_DIR",
             "value": "jenkins-slaves/jenkins-slave-ansible-stacks",
             "required": false
+        },
+        {
+            "description": "Git source URI for application",
+            "name": "ANSIBLE_STACKS_SOURCE_REPOSITORY_URL",
+            "value": "https://github.com/rht-labs/ansible-stacks.git",
+            "required": true
+        },
+        {
+            "description": "Git branch/tag reference",
+            "name": "ANSIBLE_STACKS_SOURCE_REPOSITORY_REF",
+            "value": "master",
+            "required": true
+        },
+        {
+            "description": "Git branch/tag reference",
+            "name": "ANSIBLE_YUM_REPO",
+            "value": "rhel-7-server-ose-3.3-rpms",
+            "required": true
         }
     ],
     "objects": [
@@ -87,7 +105,17 @@
                         "from": {
                             "kind": "ImageStreamTag",
                             "name": "jenkins-slave-base-rhel7:latest"
-                        }
+                        },
+                        "env": [
+                            {
+                                "name": "ANSIBLE_STACKS_SOURCE_REPOSITORY_URL",
+                                "value": "${ANSIBLE_STACKS_SOURCE_REPOSITORY_URL}"
+                            },
+                            {
+                                "name": "ANSIBLE_STACKS_SOURCE_REPOSITORY_REF",
+                                "value": "${ANSIBLE_STACKS_SOURCE_REPOSITORY_REF}"
+                            }
+                        ]
                     }
                 },
                 "output": {
