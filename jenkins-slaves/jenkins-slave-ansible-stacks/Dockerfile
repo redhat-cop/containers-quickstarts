@@ -11,11 +11,10 @@ LABEL com.redhat.component="jenkins-slave-ansible-stacks" \
 
 USER root
 
-RUN yum --enablerepo rhel-7-server-ose-3.3-rpms install -y \
+RUN yum --enablerepo ${ANSIBLE_YUM_REPO} install -y \
       ansible \
-      atomic-openshift-clients \
-      git && \
     yum clean all && \
-    git clone https://github.com/rht-labs/ansible-stacks.git /opt/ansible-stacks
+    git clone ${ANSIBLE_STACKS_SOURCE_REPOSITORY_URL} /opt/ansible-stacks && \
+    git checkout ${ANSIBLE_STACKS_SOURCE_REPOSITORY_REF}
 
 USER 1001
