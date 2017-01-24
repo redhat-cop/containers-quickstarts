@@ -15,6 +15,7 @@ RUN yum --enablerepo ${ANSIBLE_YUM_REPO} install -y \
       ansible \
     yum clean all && \
     git clone ${ANSIBLE_STACKS_SOURCE_REPOSITORY_URL} /opt/ansible-stacks && \
+    cd /opt/ansible-stacks && \
     git checkout ${ANSIBLE_STACKS_SOURCE_REPOSITORY_REF}
 
 USER 1001
