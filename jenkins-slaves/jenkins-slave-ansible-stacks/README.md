@@ -96,3 +96,24 @@ ansible-playbook local-file.yml -e resource_file=resources.yml
   }
 }
 ```
+
+## Ansible Issue with Anonymous User IDs
+
+In environments like OpenShift the user id assigned to the running process
+is randomly assigned. When Ansible sets up the environment for a local
+run it will attempt to resolve the UID of the current process and fail if
+it does not resolve. This is not an issue with jenkins slaves because
+the jenkins slave base environment initialization resolves this issue for
+us.
+
+If this image will be used outside of normal jenkins slave usage then
+this environment will need to be configured using code such as:
+
+```
+cat /etc/passwd > /tmp/nss_passwd
+echo "ansible:x:$(id -u):$(id -g}:ansible:/tmp:/bin/bash" >> /tmp/nss_passwd
+NSS_WRAPPER_PASSWD=/tmp/nss_passwd
+NSS_WRAPPER_GROUP=/etc/group
+LD_PRELOAD=libnss_wrapper.so
+export NSS_WRAPPER_PASSWD NSS_WRAPPER_GROUP LD_PRELOAD
+```
