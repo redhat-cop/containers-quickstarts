@@ -66,7 +66,7 @@ cd /tmp
 
 cat >ansible.cfg <<EOF
 [defaults]
-roles_path = /opt/ansible-stacks
+roles_path = /opt/ansible-stacks/roles
 EOF
 
 cat >local-file.yml <<EOF
