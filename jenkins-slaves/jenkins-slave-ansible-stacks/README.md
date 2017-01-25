@@ -61,7 +61,25 @@ node('jenkins-slave-ansible-stacks') {
   stage('Create Project') {
     sh """
 set +x
-cat >/tmp/stacks.yml <<EOF
+
+cd /tmp
+
+cat >ansible.cfg <<EOF
+[defaults]
+roles_path = /opt/ansible-stacks
+EOF
+
+cat >local-file.yml <<EOF
+- name: "Load up the infrastructure..."
+  hosts: localhost
+  vars_files:
+  - "{{ resource_file }}"
+  roles:
+  - role: openshift-defaults
+  - role: create-openshift-resources
+EOF
+
+cat resources.yml <<EOF
 openshift_clusters:
 - openshift_host_env: master.openshift.example.com
   openshift_resources:
@@ -71,7 +89,8 @@ openshift_clusters:
       environment_type: build
 EOF
 
-ansible-playbook /opt/ansible-stacks/playbooks/local-file.yaml -e resource_file=/tmp/stacks.yml -e oc_login="no"
+ansible-playbook local-file.yml -e resource_file=resources.yml -e oc_login="no"
     """
   }
+}
 ```
