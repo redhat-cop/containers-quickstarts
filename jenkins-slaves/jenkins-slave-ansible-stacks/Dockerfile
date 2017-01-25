@@ -11,6 +11,10 @@ LABEL com.redhat.component="jenkins-slave-ansible-stacks" \
 
 USER root
 
+ENV ANSIBLE_YUM_REPO=${ANSIBLE_YUM_REPO:-rhel-7-server-ose-3.3-rpms} \
+    ANSIBLE_STACKS_SOURCE_REPOSITORY_URL=${ANSIBLE_STACKS_SOURCE_REPOSITORY_URL:-https://github.com/rht-labs/ansible-stacks.git} \
+    ANSIBLE_STACKS_SOURCE_REPOSITORY_REF=${ANSIBLE_STACKS_SOURCE_REPOSITORY_REF:-master}
+
 RUN yum --enablerepo ${ANSIBLE_YUM_REPO} install -y \
       ansible \
     yum clean all && \
