@@ -79,17 +79,19 @@ cat >local-file.yml <<EOF
   - role: create-openshift-resources
 EOF
 
-cat resources.yml <<EOF
+cat >resources.yml <<EOF
 openshift_clusters:
-- openshift_host_env: master.openshift.example.com
+- openshift_host_env: master.openshift.example.com:8443
   openshift_resources:
     projects:
     - name: example
       display_name: Ansible Stacks Example
       environment_type: build
+openshift_user: username
+openshift_password: password
 EOF
 
-ansible-playbook local-file.yml -e resource_file=resources.yml -e oc_login="no"
+ansible-playbook local-file.yml -e resource_file=resources.yml
     """
   }
 }
