@@ -8,7 +8,7 @@ The objetive for this repository is to deploy the Pinpoint APM project (https://
 
 2. Import the template from source
 
-        # oc create -f https://raw.githubusercontent.com/makentenza/ocp-pinpoint-apm/master/kube/pinpoint-template-ephemetal.yaml
+        # oc create -f https://raw.githubusercontent.com/redhat-cop/containers-quickstarts/app_monitoring/ocp-pinpoint-apm/master/kube/pinpoint-template-ephemetal.yaml
 
 3. Create the new application from the imported template
 

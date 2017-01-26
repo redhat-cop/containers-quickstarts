@@ -22,7 +22,6 @@ objects:
 - apiVersion: v1
   kind: Service
   metadata:
-    creationTimestamp: null
     name: pinpoint-apm
   spec:
     ports:
@@ -39,7 +38,6 @@ objects:
 - apiVersion: v1
   kind: Service
   metadata:
-    creationTimestamp: null
     name: pinpoint-testapp
   spec:
     ports:
@@ -56,7 +54,6 @@ objects:
 - apiVersion: v1
   kind: Service
   metadata:
-    creationTimestamp: null
     name: pinpoint-collector
   spec:
     ports:
@@ -105,10 +102,11 @@ objects:
     source:
       type: Git
       git:
-        uri: https://github.com/makentenza/ocp-pinpoint-apm.git
+        uri: https://github.com/redhat-cop/containers-quickstarts.git
     strategy:
       type: "Docker"
       dockerStrategy:
+        dockerfilePath: app_monitoring/
         from:
           kind: "DockerImage"
           name: "centos:7"
@@ -129,7 +127,7 @@ objects:
       spec:
         containers:
         - name: "pinpoint"
-          image: "172.30.32.89:5000/pinpoint-apm/pinpoint"
+          image: "pinpoint"
           ports:
           - containerPort: 28080
             protocol: TCP
