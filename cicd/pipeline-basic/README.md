@@ -58,7 +58,7 @@ Both images can be built and provided to your cluster as follows:
 
 ```
 oc process -f jenkins-slaves/templates/jenkins-slave-image-mgmt-template.json | oc create -f - -n openshift
-oc process -f cicd/jenkins/jenkins-s2i.yml -v JENKINS_GIT_URL=https://github.com/redhat-cop/containers-quickstarts.git -v JENKINS_GIT_CONTEXT_DIR=cicd/jenkins | oc create -f - -n openshift
+oc process -f cicd/jenkins/jenkins-s2i.yml -v JENKINS_GIT_URL=https://github.com/redhat-cop/containers-quickstarts.git -v JENKINS_GIT_CONTEXT_DIR=cicd/jenkins-s2i | oc create -f - -n openshift
 ```
 
 ### 1. Create Lifecycle Stages
@@ -86,7 +86,7 @@ oc adm policy add-role-to-user edit system:serviceaccount:myapp-dev:jenkins -n m
 ### 2. Stand up Jenkins master in dev
 
 ```
-oc new-app --template=jenkins-ephemeral -n myapp-dev
+oc new-app --template=jenkins-ephemeral -p JENKINS_IMAGE_STREAM_TAG=jenkins2-s2i:latest -n myapp-dev
 ```
 
 ### 3. Create the Templates

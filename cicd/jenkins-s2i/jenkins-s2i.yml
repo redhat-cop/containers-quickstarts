@@ -43,7 +43,7 @@ objects:
     output:
       to:
         kind: ImageStreamTag
-        name: jenkins2:latest
+        name: jenkins2-s2i:latest
     source:
       type: Git
       contextDir: '2'
@@ -55,14 +55,6 @@ objects:
       sourceStrategy:
         from:
           kind: ImageStreamTag
-          name: jenkins-2:latest
+          name: jenkins:latest
           namespace: openshift
       type: Source
-# Jenkins Master
-- apiVersion: v1
-  kind: ImageStream
-  metadata:
-    labels:
-      app: jenkins
-      template: jenkins2-s2i
-    name: jenkins
