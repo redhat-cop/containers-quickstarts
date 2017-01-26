@@ -58,7 +58,7 @@ Both images can be built and provided to your cluster as follows:
 
 ```
 oc process -f jenkins-slaves/templates/jenkins-slave-image-mgmt-template.json | oc create -f - -n openshift
-oc process -f cicd/jenkins/jenkins-s2i.yml -v JENKINS_GIT_URL=https://github.com/redhat-cop/containers-quickstarts.git -v JENKINS_GIT_CONTEXT_DIR=cicd/jenkins-s2i | oc create -f - -n openshift
+oc process -f cicd/jenkins-s2i/jenkins-s2i.yml -v JENKINS_GIT_URL=https://github.com/redhat-cop/containers-quickstarts.git -v JENKINS_GIT_CONTEXT_DIR=cicd/jenkins-s2i | oc create -f - -n openshift
 ```
 
 ### 1. Create Lifecycle Stages
