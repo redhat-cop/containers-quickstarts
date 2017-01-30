@@ -1,1 +1,1 @@
-kubernetes:0.10
+kubernetes:0.9
