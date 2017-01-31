@@ -24,8 +24,8 @@ deploy() {
   oc new-project ${app_name}-prod --skip-config-write=true
 
   # Configure serviceaccount
-  oc adm policy add-role-to-user edit system:serviceaccount:${app_name}-dev:jenkins -n ${app_name}-stage
-  oc adm policy add-role-to-user edit system:serviceaccount:${app_name}-dev:jenkins -n ${app_name}-prod
+  oc policy add-role-to-user edit system:serviceaccount:${app_name}-dev:jenkins -n ${app_name}-stage
+  oc policy add-role-to-user edit system:serviceaccount:${app_name}-dev:jenkins -n ${app_name}-prod
 
   # Create jenkins master
   oc new-app --template=jenkins-ephemeral -p JENKINS_IMAGE_STREAM_TAG=jenkins2-s2i:latest -n ${app_name}-dev
