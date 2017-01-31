@@ -96,6 +96,11 @@ node('maven') {
        ${env.OC_CMD} start-build ${env.APP_NAME} --from-dir=oc-build --wait=true --follow=true || exit 1
        set +x
     """
+  }
+
+  stage('Verify Dev Deployment') {
+
+    openshiftVerifyDeployment(deploymentConfig: "${env.APP_NAME}")
 
     input "Promote Application to Stage?"
   }
@@ -110,23 +115,27 @@ node('maven') {
 
 }
 
-podTemplate(label: 'jenkins-slave-image-mgmt', cloud: 'openshift', containers: [
-  containerTemplate(name: 'jenkins-slave-image-mgmt', image: "${env.SKOPEO_SLAVE_IMAGE}")
+podTemplate(label: 'promotion-slave', cloud: 'openshift', containers: [
+  containerTemplate(name: 'jenkins-slave-image-mgmt', image: "${env.SKOPEO_SLAVE_IMAGE}", ttyEnabled: true, command: 'cat'),
+  containerTemplate(name: 'jnlp', image: 'jenkinsci/jnlp-slave:2.62-alpine', args: '${computer.jnlpmac} ${computer.name}')
 ]) {
 
-  node('jenkins-slave-image-mgmt') {
+  node('promotion-slave') {
 
     stage('Promote To Prod') {
-      sh """
 
-      set +x
-      imageRegistry=\$(${env.OC_CMD} get is ${env.APP_NAME} --template='{{ .status.dockerImageRepository }}' -n ${env.STAGE2} | cut -d/ -f1)
+      container('jenkins-slave-image-mgmt') {
+        sh """
 
-      strippedNamespace=\$(echo ${env.NAMESPACE} | cut -d/ -f1)
+        set +x
+        imageRegistry=\$(${env.OC_CMD} get is ${env.APP_NAME} --template='{{ .status.dockerImageRepository }}' -n ${env.STAGE2} | cut -d/ -f1)
 
-      echo "Promoting \${imageRegistry}/${env.STAGE2}/${env.APP_NAME} -> \${imageRegistry}/${env.STAGE3}/${env.APP_NAME}"
-      skopeo --tls-verify=false copy --src-creds openshift:${env.TOKEN} --dest-creds openshift:${env.TOKEN} docker://\${imageRegistry}/${env.STAGE2}/${env.APP_NAME} docker://\${imageRegistry}/${env.STAGE3}/${env.APP_NAME}
-      """
+        strippedNamespace=\$(echo ${env.NAMESPACE} | cut -d/ -f1)
+
+        echo "Promoting \${imageRegistry}/${env.STAGE2}/${env.APP_NAME} -> \${imageRegistry}/${env.STAGE3}/${env.APP_NAME}"
+        skopeo --tls-verify=false copy --src-creds openshift:${env.TOKEN} --dest-creds openshift:${env.TOKEN} docker://\${imageRegistry}/${env.STAGE2}/${env.APP_NAME} docker://\${imageRegistry}/${env.STAGE3}/${env.APP_NAME}
+        """
+      }
     }
   }
 }
