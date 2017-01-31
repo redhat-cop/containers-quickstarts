@@ -19,9 +19,9 @@ deploy() {
   fi
 
   # Create Projects
-  oc new-project ${app_name}-dev
-  oc new-project ${app_name}-stage
-  oc new-project ${app_name}-prod
+  oc adm new-project ${app_name}-dev
+  oc adm new-project ${app_name}-stage
+  oc adm new-project ${app_name}-prod
 
   # Configure serviceaccount
   oc adm policy add-role-to-user edit system:serviceaccount:${app_name}-dev:jenkins -n ${app_name}-stage
