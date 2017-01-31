@@ -41,14 +41,14 @@ The objetive for this repository is to deploy the Pinpoint APM project (https://
 
 4. Add the pinpoint service account to anyuid Security Context Constraint so root user could start processes inside de image
 
-        # oadm policy add-scc-to-user anyuid system:serviceaccount:pinpoint-apm:pinpoint
+        # oc adm policy add-scc-to-user anyuid system:serviceaccount:pinpoint-apm:pinpoint
 
-The reulting container will automatically start HBASE, Collector and Web UI services. The required routes will also created to expose Web UI and a Test Application. This Test Application must be manually started once the container is running.
+The resulting container will automatically start HBASE, Collector and Web UI services. The required routes will also created to expose Web UI and a Test Application. This Test Application must be manually started once the container is running.
 
         # oc rsh {Pod}
         # /pinpoint/quickstart/bin/start-testapp.sh &> /pinpoint/logs/testapp.out &
 
-#### ** Note that the Build process could take more than 30 minutes depending on your hardware and internet connection. A public image will be available in Docker Hub tu directly use it
+#### ** Note that the Build process could take more than 30 minutes depending on your hardware and internet connection. A public image will be available in Docker Hub to directly use it
 
 
 ## Overview

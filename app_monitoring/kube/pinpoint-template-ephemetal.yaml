@@ -103,10 +103,10 @@ objects:
       type: Git
       git:
         uri: https://github.com/redhat-cop/containers-quickstarts.git
+      contextDir: app_monitoring/
     strategy:
       type: "Docker"
       dockerStrategy:
-        dockerfilePath: app_monitoring/
         from:
           kind: "DockerImage"
           name: "centos:7"
