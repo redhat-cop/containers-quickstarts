@@ -44,6 +44,7 @@ https://github.com/etsauer/ticket-monster
 
 * One or Two OpenShift Container Platform Clusters
   * Either OCP 3.4, or OCP 3.3 with the Pipelines tech preview feature enabled.
+* Access to GitHub
 
 ## Implementation Instructions
 
@@ -61,32 +62,38 @@ oc process -f jenkins-slaves/templates/jenkins-slave-image-mgmt-template.json | 
 oc process -f cicd/jenkins-s2i/jenkins-s2i.yml -v JENKINS_GIT_URL=https://github.com/redhat-cop/containers-quickstarts.git -v JENKINS_GIT_CONTEXT_DIR=cicd/jenkins-s2i | oc create -f - -n openshift
 ```
 
+For convenience, create a local variable for the name of your app.
+
+```
+app_name=myapp
+```
+
 ### 1. Create Lifecycle Stages
 
 For the purposes of this demo, we are going to create three stages for our application to be promoted through.
 
 ```
-oc new-project myapp-dev
-oc new-project myapp-stage
+oc new-project ${app_name}-dev
+oc new-project ${app_name}-stage
 ```
 
 If you have a separate production cluster, create the prod project in the other cluster. Otherwise create it in the same cluster as the first two.
 
 ```
-oc new-project myapp-prod
+oc new-project ${app_name}-prod
 ```
 
 Additionally, you'll need to give access to Jenkins to be able to push images to your stage and prod projects. We can provide that access with the following:
 
 ```
-oc adm policy add-role-to-user edit system:serviceaccount:myapp-dev:jenkins -n myapp-stage
-oc adm policy add-role-to-user edit system:serviceaccount:myapp-dev:jenkins -n myapp-prod
+oc adm policy add-role-to-user edit system:serviceaccount:${app_name}-dev:jenkins -n ${app_name}-stage
+oc adm policy add-role-to-user edit system:serviceaccount:${app_name}-dev:jenkins -n ${app_name}-prod
 ```
 
 ### 2. Stand up Jenkins master in dev
 
 ```
-oc new-app --template=jenkins-ephemeral -p JENKINS_IMAGE_STREAM_TAG=jenkins2-s2i:latest -n myapp-dev
+oc new-app --template=jenkins-ephemeral -p JENKINS_IMAGE_STREAM_TAG=jenkins2-s2i:latest -n ${app_name}-dev
 ```
 
 ### 3. Create the Templates
@@ -101,8 +108,8 @@ oc create -f jws30-tomcat8-deployment.yml
 Or, if you'd like the templates to be available for the entire cluster, you can create the templates in your `openshift` project.
 
 ```
-oc create -f generic-java-jenkins-pipeline.yml -n openshift
-oc create -f jws30-tomcat8-deployment.yml -n openshift
+oc create -f cicd/pipeline-basic/generic-java-jenkins-pipeline.yml -n openshift
+oc create -f cicd/pipeline-basic/jws30-tomcat8-deployment.yml -n openshift
 ```
 ### 4. Instantiate Pipeline
 
@@ -110,13 +117,29 @@ Here are the steps to instantiate the pipeline.
 
 1. Deploy the deployment template to all three projects.
 ```
-oc new-app --template=jws30-tomcat8-deployment -p APPLICATION_NAME=myapp -n myapp-dev
-oc new-app --template=jws30-tomcat8-deployment -p APPLICATION_NAME=myapp -n myapp-stage
-oc new-app --template=jws30-tomcat8-deployment -p APPLICATION_NAME=myapp -n myapp-prod
+oc new-app --template=jws30-tomcat8-deployment -p APPLICATION_NAME=${app_name} -n ${app_name}-dev
+oc new-app --template=jws30-tomcat8-deployment -p APPLICATION_NAME=${app_name} -n ${app_name}-stage
+oc new-app --template=jws30-tomcat8-deployment -p APPLICATION_NAME=${app_name} -n ${app_name}-prod
 ```
 2. Deploy the pipeline template in dev only
 ```
-oc new-app --template=generic-java-jenkins-pipeline -p APPLICATION_NAME=myapp -n myapp-dev
+oc new-app --template=generic-java-jenkins-pipeline -p APPLICATION_NAME=${app_name} -n ${app_name}-dev
 ```
 
 At this point you should be able to go to the Web Console and following the pipeline by clicking in your `myapp-dev` project, and going to *Builds* -> *Pipelines*. At several points you will be prompted for input on the pipeline. You can interact with it by clicking on the _input required_ link, which takes you to Jenkins, where you can click the *Proceed* button. By the time you get through the end of the pipeline you should be able to visit the Route for your app deployed to the `myapp-prod` project to confirm that your image has been promoted through all stages.
+
+## Quicksart for Cheaters
+
+A quick test script has been created for testing convenience. Use as follows:
+
+To create a pipeline
+```
+cd containers-quickstarts
+cicd/pipeline deploy <app_name>
+```
+_Navigate to Web Cosole and follow the pipeline through to Production_
+
+Cleanup:
+```
+cicd/pipeline cleanup eric
+```

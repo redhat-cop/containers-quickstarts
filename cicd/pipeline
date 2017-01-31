@@ -1,0 +1,59 @@
+#!/bin/bash
+
+deploy() {
+  app_name=${1}
+  deploy_templates=${2:-1}
+
+  echo "Creating a pipeline for ${app_name} application..."
+  if [ ${deploy_templates} -eq 1 ]; then
+    oc process -f jenkins-slaves/templates/jenkins-slave-image-mgmt-template.json \
+      | oc create -f - -n openshift
+    oc process -f cicd/jenkins-s2i/jenkins-s2i.yml \
+      -v JENKINS_GIT_URL=https://github.com/redhat-cop/containers-quickstarts.git \
+      -v JENKINS_GIT_CONTEXT_DIR=cicd/jenkins-s2i \
+      | oc create -f - -n openshift
+    oc create -f cicd/pipeline-basic/generic-java-jenkins-pipeline.yml -n openshift
+    oc create -f cicd/pipeline-basic/jws30-tomcat8-deployment.yml -n openshift
+  else
+    echo "skipping template deployment"
+  fi
+
+  # Create Projects
+  oc new-project ${app_name}-dev
+  oc new-project ${app_name}-stage
+  oc new-project ${app_name}-prod
+
+  # Configure serviceaccount
+  oc adm policy add-role-to-user edit system:serviceaccount:${app_name}-dev:jenkins -n ${app_name}-stage
+  oc adm policy add-role-to-user edit system:serviceaccount:${app_name}-dev:jenkins -n ${app_name}-prod
+
+  # Create jenkins master
+  oc new-app --template=jenkins-ephemeral -p JENKINS_IMAGE_STREAM_TAG=jenkins2-s2i:latest -n ${app_name}-dev
+
+  # Create application deployments
+  oc new-app --template=jws30-tomcat8-deployment -p APPLICATION_NAME=${app_name} -n ${app_name}-dev
+  oc new-app --template=jws30-tomcat8-deployment -p APPLICATION_NAME=${app_name} -n ${app_name}-stage
+  oc new-app --template=jws30-tomcat8-deployment -p APPLICATION_NAME=${app_name} -n ${app_name}-prod
+
+  # Instantiate pipeline
+  oc new-app --template=generic-java-jenkins-pipeline -p APPLICATION_NAME=${app_name} -n ${app_name}-dev
+
+  echo "Done!"
+
+}
+
+cleanup() {
+  app_name=${1}
+
+  oc delete projects ${app_name}-dev ${app_name}-stage ${app_name}-prod
+}
+
+if [ "$(basename $PWD)" != "containers-quickstarts" ]; then
+  echo "You must be in the `containers-quickstarts` directory to run this script."
+  exit 1
+fi
+
+method=${1}
+app_name=${2}
+
+${method} ${app_name}

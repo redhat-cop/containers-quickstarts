@@ -40,53 +40,18 @@ node('maven') {
 
   stage('Build') {
 
-    // artifactoryMaven.tool = env.MAVEN_TOOL
-    // artifactoryMaven.deployer releaseRepo: env.ARTIFACTORY_DEPLOY_RELEASE_REPO, snapshotRepo: env.ARTIFACTORY_DEPLOY_SNAPSHOT_REPO, server: artifactory
-    // artifactoryMaven.resolver releaseRepo: env.ARTIFACTORY_RESOLVE_RELEASE_REPO, snapshotRepo:env.ARTIFACTORY_RESOLVE_SNAPSHOT_REPO, server: artifactory
-    // buildInfo.env.capture = true
-    // buildInfo.retention maxBuilds: 10, maxDays: 7, deleteBuildArtifacts: true
-    //
-    // artifactoryMaven.run pom: pomFileLocation , goals: 'clean install', buildInfo: buildInfo
-    // artifactory.publishBuildInfo buildInfo
-    sh "find / -name mvn || true"
-
     sh "${mvnCmd} clean install -DskipTests=true -f ${pomFileLocation}"
 
   }
 
-  // stage('SonarQube scan') {
-  //   withSonarQubeEnv {
-  //       artifactoryMaven.run pom: pomFileLocation, goals: 'org.sonarsource.scanner.maven:sonar-maven-plugin:3.2:sonar'
-  //   }
-  // }
-//             cp -rfv "${env.BUILD_CONTEXT_DIR}/target/*.\$t" oc-build/deployments/ 2> /dev/null || echo "No \$t files"
-
-
   stage('Build Image') {
 
     sh """
-       set -e
-       set -x
-
-       echo "Environment Variables:"
-       env
-
-       echo "Current Directory:"
-       pwd
-
        rm -rf oc-build && mkdir -p oc-build/deployments
-
-       echo "Directory Contents Before:"
-       find . -maxdepth 2
 
        for t in \$(echo "jar;war;ear" | tr ";" "\\n"); do
          cp -rfv ./target/*.\$t oc-build/deployments/ 2> /dev/null || echo "No \$t files"
        done
-
-       echo "Directory Contents After:"
-       find . -maxdepth 2
-
-       set +e
 
        for i in oc-build/deployments/*.war; do
           mv -v oc-build/deployments/\$(basename \$i) oc-build/deployments/ROOT.war
@@ -94,27 +59,43 @@ node('maven') {
        done
 
        ${env.OC_CMD} start-build ${env.APP_NAME} --from-dir=oc-build --wait=true --follow=true || exit 1
-       set +x
     """
   }
 
-  stage('Verify Dev Deployment') {
+  stage("Verify Deployment to ${env.STAGE1}") {
 
-    openshiftVerifyDeployment(deploymentConfig: "${env.APP_NAME}")
+    openshiftVerifyDeployment(deploymentConfig: "${env.APP_NAME}", namespace: "${STAGE1}", verifyReplicaCount: true)
 
     input "Promote Application to Stage?"
   }
 
-  stage('Promote To Stage') {
+  stage("Promote To ${env.STAGE2}") {
     sh """
     ${env.OC_CMD} tag ${env.STAGE1}/${env.APP_NAME}:latest ${env.STAGE2}/${env.APP_NAME}:latest
     """
+  }
+
+  stage("Verify Deployment to ${env.STAGE2}") {
+
+    openshiftVerifyDeployment(deploymentConfig: "${env.APP_NAME}", namespace: "${STAGE2}", verifyReplicaCount: true)
 
     input "Promote Application to Prod?"
   }
 
+  stage("Promote To ${env.STAGE3}") {
+    sh """
+    ${env.OC_CMD} tag ${env.STAGE2}/${env.APP_NAME}:latest ${env.STAGE3}/${env.APP_NAME}:latest
+    """
+  }
+
+  stage("Verify Deployment to ${env.STAGE3}") {
+
+    openshiftVerifyDeployment(deploymentConfig: "${env.APP_NAME}", namespace: "${STAGE3}", verifyReplicaCount: true)
+
+  }
 }
 
+/*
 podTemplate(label: 'promotion-slave', cloud: 'openshift', containers: [
   containerTemplate(name: 'jenkins-slave-image-mgmt', image: "${env.SKOPEO_SLAVE_IMAGE}", ttyEnabled: true, command: 'cat'),
   containerTemplate(name: 'jnlp', image: 'jenkinsci/jnlp-slave:2.62-alpine', args: '${computer.jnlpmac} ${computer.name}')
@@ -122,7 +103,7 @@ podTemplate(label: 'promotion-slave', cloud: 'openshift', containers: [
 
   node('promotion-slave') {
 
-    stage('Promote To Prod') {
+    stage("Promote To ${env.STAGE3}") {
 
       container('jenkins-slave-image-mgmt') {
         sh """
@@ -133,9 +114,18 @@ podTemplate(label: 'promotion-slave', cloud: 'openshift', containers: [
         strippedNamespace=\$(echo ${env.NAMESPACE} | cut -d/ -f1)
 
         echo "Promoting \${imageRegistry}/${env.STAGE2}/${env.APP_NAME} -> \${imageRegistry}/${env.STAGE3}/${env.APP_NAME}"
-        skopeo --tls-verify=false copy --src-creds openshift:${env.TOKEN} --dest-creds openshift:${env.TOKEN} docker://\${imageRegistry}/${env.STAGE2}/${env.APP_NAME} docker://\${imageRegistry}/${env.STAGE3}/${env.APP_NAME}
+        skopeo --tls-verify=false copy --remove-signatures --src-creds openshift:${env.TOKEN} --dest-creds openshift:${env.TOKEN} docker://\${imageRegistry}/${env.STAGE2}/${env.APP_NAME} docker://\${imageRegistry}/${env.STAGE3}/${env.APP_NAME}
         """
       }
     }
+
+    stage("Verify Deployment to ${env.STAGE3}") {
+
+      openshiftVerifyDeployment(deploymentConfig: "${env.APP_NAME}", namespace: "${STAGE3}", verifyReplicaCount: true)
+
+    }
+
   }
 }
+*/
+println "Application ${env.APP_NAME} is now in Production!"
