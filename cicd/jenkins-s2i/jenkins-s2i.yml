@@ -1,0 +1,60 @@
+apiVersion: v1
+kind: Template
+labels:
+  template: jenkins2-s2i
+  group: jenkins2-s2i
+metadata:
+  annotations:
+    description: Creates the Jenins2 image for CD Pipeline builds
+    iconClass: icon-jenkins
+    tags: instant-app,jenkins,cicd
+  name: jenkins2-s2i
+parameters:
+- description: Custom Jenkins for CD Pipeline SCM location
+  displayName: CD Jenkins Pipeline SCM URL
+  name: JENKINS_GIT_URL
+  required: true
+- description: Custom Jenkins for CD Pipeline SCM branch
+  displayName: CD Jenkins Pipeline SCM branch
+  name: JENKINS_GIT_BRANCH
+  required: true
+  value: 'master'
+- description: Context Directory inside of the Git repo
+  displayName: Context Directory
+  name: JENKINS_GIT_CONTEXT_DIR
+  value: ''
+objects:
+# Jenkins2
+- apiVersion: v1
+  kind: ImageStream
+  metadata:
+    labels:
+      app: jenkins2-s2i
+      template: jenkins2-s2i
+    name: jenkins2-s2i
+- apiVersion: v1
+  kind: BuildConfig
+  metadata:
+    labels:
+      application: jenkins2-s2i
+      template: jenkins2-s2i
+    name: jenkins2-s2i
+  spec:
+    output:
+      to:
+        kind: ImageStreamTag
+        name: jenkins2-s2i:latest
+    source:
+      type: Git
+      contextDir: '2'
+      git:
+        uri: "${JENKINS_GIT_URL}"
+        ref: "${JENKINS_GIT_BRANCH}"
+      contextDir: ${JENKINS_GIT_CONTEXT_DIR}
+    strategy:
+      sourceStrategy:
+        from:
+          kind: ImageStreamTag
+          name: jenkins:latest
+          namespace: openshift
+      type: Source
