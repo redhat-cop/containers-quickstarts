@@ -1,0 +1,111 @@
+#!/bin/bash
+
+function annotate_pod_as_initialized() {
+  echo annotating pod $POD_NAME as initialized
+  #Request Body: {"metadata":{"annotations":{"pod.alpha.kubernetes.io/initialized":"true"}}}
+  #curl -k -v -XPATCH  -H "Accept: application/json, */*" -H "Content-Type: application/strategic-merge-patch+json" -H "User-Agent: oc/v1.3.0+52492b4 (linux/amd64) kubernetes/52492b4" -H "Authorization: Bearer 2k-hQcHeRrMZc1i7yb_uLP_dOXCBhI0I4cemWv-bgP8" https://localhost:8443/api/v1/namespaces/mariadb-ha/pods/mariadb-ha-0
+  #PATCH https://localhost:8443/api/v1/namespaces/mariadb-ha/pods/mariadb-ha-0 200 OK in 23 milliseconds
+  token=`cat /var/run/secrets/kubernetes.io/serviceaccount/token`
+  curl -k -XPATCH  -H "Accept: application/json, */*" -H "Content-Type: application/strategic-merge-patch+json" -H "Authorization: Bearer $token" https://kubernetes.default.svc.cluster.local:443/api/v1/namespaces/mariadb-ha/pods/$POD_NAME -d '{"metadata":{"annotations":{"pod.alpha.kubernetes.io/initialized":"true"}}}' &>/dev/null
+  echo annotated pod $POD_NAME as initialized
+}
+
+function wait_for_mysql1() {
+  pid=$1 ; shift
+  
+  echo waiting for pid: $pid
+  
+  while [ true ]; do
+    if [ -d "/proc/$pid" ]; then
+      # mysqladmin --socket=/var/lib/mysql/mysql.sock ping && echo "MySQL started successfully" && return 0
+      mysqladmin --socket=/var/lib/mysql/mysql.sock ping &>/dev/null && echo "MySQL started successfully" && return 0
+    else
+      return 1
+    fi
+    echo "Waiting for MySQL to start ..."
+    sleep 1
+  done
+}
+
+export_vars=$(cgroup-limits); export $export_vars
+source ${CONTAINER_SCRIPTS_PATH}/common.sh
+set -eu
+
+[ -f ${CONTAINER_SCRIPTS_PATH}/validate-variables.sh ] && source ${CONTAINER_SCRIPTS_PATH}/validate-variables.sh
+
+
+
+export WSREP_PROVIDER=none
+
+# Process the MySQL configuration files
+log_info 'Processing MySQL configuration files ...'
+envsubst < ${CONTAINER_SCRIPTS_PATH}/my-base.cnf.template > /etc/my.cnf.d/base.cnf
+envsubst < ${CONTAINER_SCRIPTS_PATH}/my-paas.cnf.template > /etc/my.cnf.d/paas.cnf
+envsubst < ${CONTAINER_SCRIPTS_PATH}/my-tuning.cnf.template > /etc/my.cnf.d/tuning.cnf
+## adding galera config
+envsubst < ${CONTAINER_SCRIPTS_PATH}/my-galera.cnf.template > /etc/my.cnf.d/galera.cnf
+
+
+#echo printing galera.cnf
+#echo ###################
+#cat /etc/my.cnf.d/galera.cnf
+#echo ###################
+
+if [ ! -d "$MYSQL_DATADIR/mysql" ]; then
+  initialize_database "$@"
+else
+  start_local_mysql "$@"
+fi
+
+if [ -f ${CONTAINER_SCRIPTS_PATH}/passwd-change.sh ]; then
+  log_info 'Setting passwords ...'
+  source ${CONTAINER_SCRIPTS_PATH}/passwd-change.sh
+fi
+if [ -f ${CONTAINER_SCRIPTS_PATH}/post-init.sh ]; then
+  log_info 'Sourcing post-init.sh ...'
+  source ${CONTAINER_SCRIPTS_PATH}/post-init.sh
+fi
+
+# Restart the MySQL server with public IP bindings
+shutdown_local_mysql
+
+PETS=`nslookup -type=srv $HEADLESS_SVC_NAME | grep '=' | awk '{print $7}' | sed 's/.$//'`
+echo pets1 $PETS
+PETS=$(echo $PETS | sed -e 's/ /,/g')
+echo pets2 $PETS
+export PETS
+export WSREP_PROVIDER=/opt/rh/rh-mariadb101/root/usr/lib64/galera/libgalera_smm.so
+
+## adding galera cluster config
+envsubst < ${CONTAINER_SCRIPTS_PATH}/my-galera.cnf.template > /etc/my.cnf.d/galera.cnf
+
+# echo printing galera.cnf
+#echo ###################
+# cat /etc/my.cnf.d/galera.cnf
+#echo ###################
+
+## galera-specific
+set +e
+[ "$POD_NAME" == "$POD_PREFIX-0" -a "`nslookup -type=srv $HEADLESS_SVC_NAME | grep '=' | wc -l`" -le "1" ]
+export IS_FIRST=$?
+echo is_first $IS_FIRST
+set -e
+
+unset_env_vars
+
+# echo is_first after unset $IS_FIRST
+
+log_volume_info $MYSQL_DATADIR
+log_info 'Running final exec -- Only MySQL server logs after this point'
+
+if [ $IS_FIRST -eq 0 ]; then
+  ${MYSQL_PREFIX}/libexec/mysqld --defaults-file=$MYSQL_DEFAULTS_FILE --wsrep-new-cluster "$@" 2>&1 &
+  mysql_pid=$!
+else
+  ${MYSQL_PREFIX}/libexec/mysqld --defaults-file=$MYSQL_DEFAULTS_FILE "$@" 2>&1 &
+  mysql_pid=$!
+fi
+
+wait_for_mysql1 $mysql_pid
+annotate_pod_as_initialized
+wait

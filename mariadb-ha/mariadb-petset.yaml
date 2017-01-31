@@ -1,0 +1,98 @@
+# A headless service to create DNS records
+apiVersion: v1
+kind: Service
+metadata:
+  name: mariadb-ha
+  labels:
+    app: mariadb-ha
+spec:
+  ports:
+  - port: 3306
+    name: mariadb
+  clusterIP: None
+  selector:
+    app: mariadb-ha
+---
+apiVersion: apps/v1alpha1
+kind: PetSet
+metadata:
+  name: mariadb-ha
+spec:
+  serviceName: mariadb-ha
+  replicas: 3
+  template:
+    metadata:
+      labels:
+        app: mariadb-ha
+      annotations:
+        pod.alpha.kubernetes.io/initialized: "false"
+    spec:
+      containers:
+      - name: mariadb
+        imagePullPolicy: Always
+        image: docker-registry.default.svc.cluster.local:5000/mariadb-ha/mariadb-ha:latest
+        ports:
+        - containerPort: 3306
+          name: mariadb
+        - containerPort: 4567
+          name: galera
+        - containerPort: 4568
+          name: ist
+        - containerPort: 4444
+          name: sst
+        command: ["run-mysqld-galera"]
+        env:
+        - name: POD_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.name
+        - name: POD_NAMESPACE
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.namespace
+        - name: POD_IP
+          valueFrom:
+            fieldRef:
+              fieldPath: status.podIP
+        - name: POD_PREFIX
+          value: mariadb-ha
+        - name: HEADLESS_SVC_NAME
+          value: mariadb-ha
+        - name: MYSQL_USER
+          value: admin
+        - name: MYSQL_PASSWORD
+          value: admin
+        - name: MYSQL_DATABASE
+          value: mydb
+        - name: MYSQL_ROOT_PASSWORD
+          value: root
+        livenessProbe:
+          tcpSocket:
+            port: 3306
+          initialDelaySeconds: 30
+          timeoutSeconds: 1
+          periodSeconds: 10
+          successThreshold: 1
+          failureThreshold: 3
+        readinessProbe:
+          exec:
+            command:
+              - /opt/rh/rh-mariadb101/root/usr/bin/mysqladmin
+              - "--socket=/var/lib/mysql/mysql.sock"
+              - ping
+          initialDelaySeconds: 5
+          timeoutSeconds: 1
+          periodSeconds: 10
+          successThreshold: 1
+          failureThreshold: 3
+        volumeMounts:
+        - name: data
+          mountPath: /var/lib/mysql/data
+  volumeClaimTemplates:
+  - metadata:
+      name: data
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      resources:
+        requests:
+          storage: 1Gi
