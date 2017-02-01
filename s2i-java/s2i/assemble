@@ -50,7 +50,7 @@ function get_output_dir() {
 function copy_dir() {
   local src=$1
   local dest=$2
-  
+
   # Copy recursively and preserve ownership: -a
   cp -a ${src}/* ${dest}
 }
@@ -74,6 +74,37 @@ function copy_artifacts() {
 }
 
 function setup_maven() {
+
+  if [ -n "$HTTP_PROXY_HOST" -a -n "$HTTP_PROXY_PORT" ]; then
+    xml="<proxy>\
+         <id>genproxy</id>\
+         <active>true</active>\
+         <protocol>http</protocol>\
+         <host>$HTTP_PROXY_HOST</host>\
+         <port>$HTTP_PROXY_PORT</port>"
+    if [ -n "$HTTP_PROXY_USERNAME" -a -n "$HTTP_PROXY_PASSWORD" ]; then
+      xml="$xml\
+         <username>$HTTP_PROXY_USERNAME</username>\
+         <password>$HTTP_PROXY_PASSWORD</password>"
+    fi
+    if [ -n "$HTTP_PROXY_NONPROXYHOSTS" ]; then
+      xml="$xml\
+         <nonProxyHosts>$HTTP_PROXY_NONPROXYHOSTS</nonProxyHosts>"
+    fi
+  xml="$xml\
+       </proxy>"
+    sed -i "s|<!-- ### configured http proxy ### -->|$xml|" $HOME/.m2/settings.xml
+  fi
+
+  if [ -n "$MAVEN_MIRROR_URL" ]; then
+    xml="    <mirror>\
+      <id>mirror.default</id>\
+      <url>$MAVEN_MIRROR_URL</url>\
+      <mirrorOf>external:*</mirrorOf>\
+    </mirror>"
+    sed -i "s|<!-- ### configured mirrors ### -->|$xml|" $HOME/.m2/settings.xml
+  fi
+
   if [ -f "${S2I_SOURCE_DIR}/configuration/settings.xml" ]; then
     maven_env_args="${maven_env_args} -s ${S2I_SOURCE_DIR}/configuration/settings.xml"
     echo "Using custom maven settings from ${S2I_SOURCE_DIR}/configuration/settings.xml"
@@ -88,7 +119,7 @@ function build_maven() {
   local app_dir=$2
 
   # Default args: no tests, if a module is specified, only build this module
-  local maven_args=${MAVEN_ARGS:-package -DskipTests -e}
+  local maven_args=${MAVEN_ARGS:-package -DskipTests -e -Dfabric8.skip=true}
 
   echo "Found pom.xml ... "
   echo "Running 'mvn ${maven_env_args} ${maven_args} ${MAVEN_ARGS_APPEND}'"
@@ -125,29 +156,37 @@ function build_maven() {
 
 echo "=================================================================="
 echo "Starting S2I Java Build ....."
-build_dir=$(get_output_dir)
-check_error "Cannot get output dir: $build_dir" $?
 if [ -f "${S2I_SOURCE_DIR}/pom.xml" ]; then
-  echo "Maven build detected"
+  echo "S2I source build for Maven detected"
+  build_dir=$(get_output_dir)
+  check_error "Cannot get output dir: $build_dir" $?
   # If a pom.xml is present use maven
   setup_maven
   build_maven ${build_dir} ${DEPLOYMENTS_DIR}
-elif [ -f "${S2I_SOURCE_DIR}/Dockerfile" ] && [ -d "${S2I_SOURCE_DIR}/maven" ]; then
-  # This is a binary build.
-  echo "S2I binary build detected"
-  binary_dir="${S2I_SOURCE_DIR}/maven"
+elif [ -f "${S2I_SOURCE_DIR}/Dockerfile" ]; then
+  # This is a S2I binary build coming from fabric8-maven-plugin
+  echo "S2I binary build from fabric8-maven-plugin detected"
+  if [ -d "${S2I_SOURCE_DIR}/maven" ]; then
+    binary_dir="${S2I_SOURCE_DIR}/maven"
+  elif [ -d "${S2I_SOURCE_DIR}/deployments" ]; then
+    binary_dir="${S2I_SOURCE_DIR}/deployments"
+  elif [ $(find "${S2I_SOURCE_DIR}" -maxdepth 1 -type d | grep -v -e "^${S2I_SOURCE_DIR}$" | wc -l) == 1 ]; then
+    # Found a single directory, take this
+    binary_dir=$(find "${S2I_SOURCE_DIR}" -maxdepth 1 -type d | grep -v -e "^${S2I_SOURCE_DIR}$")
+  else
+    check_error "No single directory found in ${S2I_SOURCE_DIR} but:\n $(ls -l ${S2I_SOURCE_DIR})" 1
+  fi
   echo "Copying binaries from ${binary_dir} to ${DEPLOYMENTS_DIR} ..."
-  copy_dir ${binary_dir} ${DEPLOYMENTS_DIR}
-  check_error "copying ${binary_dir} to ${DEPLOYMENTS_DIR}" $?  
-elif [ -d "${S2I_SOURCE_DIR}" ] && [ `ls -1 | grep "^.*.jar$" | wc -l` -eq 1 ]; then
-  # This is a streamed binary build.
-  echo "S2I streamed binary build detected"
-  binary_dir="${S2I_SOURCE_DIR}"
-  echo "Copying streamed binaries from ${binary_dir} to ${DEPLOYMENTS_DIR} ..."
   copy_dir ${binary_dir} ${DEPLOYMENTS_DIR}
   check_error "copying ${binary_dir} to ${DEPLOYMENTS_DIR}" $?
 else
-  binary_dir="${ARTIFACT_DIR:-${S2I_SOURCE_DIR}/deployments}"
+  echo "S2I source build with plain binaries detected"
+  if [ -d "${S2I_SOURCE_DIR}/deployments" ]; then
+    default_binary_dir="${S2I_SOURCE_DIR}/deployments"
+  else
+    default_binary_dir="${S2I_SOURCE_DIR}"
+  fi
+  binary_dir="${ARTIFACT_DIR:-${default_binary_dir}}"
   # Assuming that the source already contains compiled artefacts
   echo "Copying binaries from ${binary_dir} to ${DEPLOYMENTS_DIR} ..."
   copy_dir ${binary_dir} ${DEPLOYMENTS_DIR}

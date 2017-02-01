@@ -1,5 +1,8 @@
 #!/bin/sh
 
+# Fail on a single failed command
+set -eo pipefail
+
 # ==========================================================
 # Generic run script for running arbitrary Java applications
 #
@@ -89,12 +92,18 @@ load_env() {
   fi
   export JAVA_APP_DIR
 
+  # Read in container limits and export the as environment variables
+  if [ -f "${script_dir}/container-limits" ]; then
+    source "${script_dir}/container-limits"
+  fi
+
   # JAVA_LIB_DIR defaults to JAVA_APP_DIR
   export JAVA_LIB_DIR="${JAVA_LIB_DIR:-${JAVA_APP_DIR}}"
   if [ -z "${JAVA_MAIN_CLASS}" ] && [ -z "${JAVA_APP_JAR}" ]; then
     JAVA_APP_JAR="$(auto_detect_jar_file ${JAVA_APP_DIR})"
     check_error "${JAVA_APP_JAR}"
   fi
+
   if [ "x${JAVA_APP_JAR}" != x ]; then
     local jar="$(get_jar_file ${JAVA_APP_JAR} ${JAVA_APP_DIR} ${JAVA_LIB_DIR})"
     check_error "${jar}"
@@ -104,7 +113,7 @@ load_env() {
   fi
 }
 
-# Check for stanarad-opts first, fallback to run-java-options in the path if not existing
+# Check for standard /opt/run-java-options first, fallback to run-java-options in the path if not existing
 run_java_options() {
   if [ -f "/opt/run-java-options" ]; then
     echo `sh /opt/run-java-options`
@@ -116,24 +125,19 @@ run_java_options() {
   fi
 }
 
-# Echo the proper options to switch on debugging
-debug_options() {
-  if [ "x${JAVA_ENABLE_DEBUG}" != "x" ]; then
-    local debug_port=${JAVA_DEBUG_PORT:-5005}
-    echo "-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=${debug_port}"
-  fi
-}
-
 # Combine all java options
 get_java_options() {
-  local script=$(readlink -f "$0")
-  local dir=$(dirname "$script")
-  kcontainer_java_opts=""
-  if [ -f "$dir/java-container-options" ]; then
-    container_java_opts=$($dir/java-container-options)
+  local dir=$(get_script_dir)
+  local java_opts
+  local debug_opts
+  if [ -f "$dir/java-default-options" ]; then
+    java_opts=$($dir/java-default-options)
   fi
-  # Normalize spaces (i.e. trim and elimate double spaces)
-  echo "${JAVA_OPTIONS} $(debug_options) $(run_java_options) ${container_java_opts}" | awk '$1=$1'
+  if [ -f "$dir/debug-options" ]; then
+    debug_opts=$($dir/debug-options)
+  fi
+  # Normalize spaces with awk (i.e. trim and elimate double spaces)
+  echo "${JAVA_OPTIONS} $(run_java_options) ${debug_opts} ${java_opts}" | awk '$1=$1'
 }
 
 # Read in a classpath either from a file with a single line, colon separated
