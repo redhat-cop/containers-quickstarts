@@ -1,21 +1,10 @@
 #!/bin/bash
 
+# Command line arguments given to this script
+args="$*"
+
 # Global S2I variable setup
 source `dirname "$0"`/s2i-setup
-
-# Setup Jolokia to accept basic auth, using a randomly generated password that is stored
-# in the container in the ${DEPLOYMENTS_DIR}/jolokia.pw file.
-AB_JOLOKIA_USER="jolokia"
-if [ -f "${DEPLOYMENTS_DIR}/jolokia.pw" ] ; then
-	AB_JOLOKIA_PASSWORD=`cat "${DEPLOYMENTS_DIR}/jolokia.pw"`
-else
-	AB_JOLOKIA_PASSWORD=`tr -cd '[:alnum:]' < /dev/urandom | fold -w30 | head -n1`
-	touch "${DEPLOYMENTS_DIR}/jolokia.pw"
-	chmod 600 "${DEPLOYMENTS_DIR}/jolokia.pw"
-	echo $AB_JOLOKIA_PASSWORD > "${DEPLOYMENTS_DIR}/jolokia.pw"
-fi
-export AB_JOLOKIA_USER
-export AB_JOLOKIA_PASSWORD
 
 # Always include jolokia-opts, which can be empty if switched off via env
 JAVA_OPTIONS="${JAVA_OPTIONS:+${JAVA_OPTIONS} }$(/opt/jolokia/jolokia-opts)"
@@ -26,8 +15,8 @@ export JAVA_OPTIONS JVM_ARGS
 
 if [ -f "${DEPLOYMENTS_DIR}/bin/run.sh" ]; then
     echo "Starting the application using the bundled ${DEPLOYMENTS_DIR}/bin/run.sh ..."
-    exec ${DEPLOYMENTS_DIR}/bin/run.sh
+    exec ${DEPLOYMENTS_DIR}/bin/run.sh $args ${JAVA_ARGS}
 else
     echo "Starting the Java application using /opt/run-java/run-java.sh ..."
-    exec /opt/run-java/run-java.sh
+    exec /opt/run-java/run-java.sh $args ${JAVA_ARGS}
 fi
