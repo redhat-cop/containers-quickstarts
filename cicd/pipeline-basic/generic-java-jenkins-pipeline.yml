@@ -53,7 +53,7 @@ objects:
       sourceStrategy:
         from:
           kind: ImageStreamTag
-          name: jboss-webserver30-tomcat8-openshift:1.2
+          name: ${IMAGE_STREAM_TAG_NAME}
           namespace: ${IMAGE_STREAM_NAMESPACE}
       type: Source
     triggers:
@@ -93,3 +93,7 @@ parameters:
   name: IMAGE_STREAM_NAMESPACE
   required: true
   value: openshift
+- description: Image stream tag for the image you'd like to use to build the application
+  name: IMAGE_STREAM_TAG_NAME
+  required: true
+  value: jboss-webserver30-tomcat8-openshift:1.2

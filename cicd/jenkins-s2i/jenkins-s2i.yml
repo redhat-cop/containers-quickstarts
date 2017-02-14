@@ -40,6 +40,8 @@ objects:
       template: jenkins2-s2i
     name: jenkins2-s2i
   spec:
+    triggers:
+    - type: "ConfigChange"
     output:
       to:
         kind: ImageStreamTag
