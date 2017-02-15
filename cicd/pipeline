@@ -68,7 +68,7 @@ cleanup() {
 }
 
 if [ "$(basename $PWD)" != "containers-quickstarts" ]; then
-  echo "You must be in the `containers-quickstarts` directory to run this script."
+  echo "You must be in the 'containers-quickstarts' directory to run this script."
   exit 1
 fi
 
