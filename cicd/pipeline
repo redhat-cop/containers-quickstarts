@@ -35,7 +35,7 @@ deploy() {
   oc new-app --template=${IMAGE_NAMESPACE}/jws30-tomcat8-deployment -p APPLICATION_NAME=${app_name} -n ${app_name}-prod
 
   # Instantiate pipeline
-  oc new-app --template=${IMAGE_NAMESPACE}/generic-java-jenkins-pipeline -p APPLICATION_NAME=${app_name} -p IMAGE_STREAM_NAMESPACE=${IMAGE_NAMESPACE} -n ${app_name}-dev
+  oc new-app --template=${IMAGE_NAMESPACE}/generic-java-jenkins-pipeline -p APPLICATION_NAME=${app_name} -n ${app_name}-dev
 
   echo "Done!"
 
