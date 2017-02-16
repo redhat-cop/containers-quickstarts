@@ -56,8 +56,6 @@ objects:
           name: ${IMAGE_STREAM_TAG_NAME}
           namespace: ${IMAGE_STREAM_NAMESPACE}
       type: Source
-    triggers:
-      - type: ImageChange
 parameters:
 - description: The name for the application.
   name: APPLICATION_NAME
