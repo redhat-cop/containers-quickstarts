@@ -26,7 +26,7 @@ The following diagram represent this approach.
 
 ![](media/Mariadb-ha-petset.png "")
 
-Note: This project uses PetSets currently not in tech preview (i.e. not supported) in OpenShift.
+Note: This project uses PetSets currently in tech preview (i.e. not supported) in OpenShift.
 
 ## create the mariadb ha cluster in OpenShift
 
