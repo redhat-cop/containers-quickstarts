@@ -28,6 +28,8 @@ The following diagram represent this approach.
 
 Note: This project uses PetSets currently in tech preview (i.e. not supported) in OpenShift.
 
+Also note: your nodes (at least those who execute docker builds) need to be able to access this repo `rhel-server-rhscl-7-rpms` in order to execute the build of the maria-db image.
+
 ## create the mariadb ha cluster in OpenShift
 
 Create a project
