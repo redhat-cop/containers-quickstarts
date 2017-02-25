@@ -1,6 +1,6 @@
 # S2I Java builder image 
 
-*Note: This image is a fork of the Java S2I builder from the [fabric8](https://github.com/fabric8io-images/s2i/tree/master/java/images/rhel) project. A first class supported Java S2I builder will be part of Fuse Integration Services 2.0 (Early 2017).*
+**Note: This example is deprecated. A Red Hat Supported Java image is available at [registry.access.redhat.com/redhat-openjdk-18/openjdk18-openshift](https://access.redhat.com/containers/#/repo/58ada5701fbe981673cd6b10/image/openshift)**
 
 This is a S2I builder image for Java builds whose result can be run directly without any further application server.
 
