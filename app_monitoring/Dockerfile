@@ -37,6 +37,7 @@ WORKDIR /pinpoint
 RUN git checkout tags/1.6.0
 RUN mvn install -Dmaven.test.skip=true -B
 
+# Comment out the following lines in case you get timeout errors while starting the stack
 #RUN sed -i '/^CLOSE_WAIT_TIME/c\CLOSE_WAIT_TIME=1000' /pinpoint/quickstart/bin/start-collector.sh && \
 #sed -i '/^CLOSE_WAIT_TIME/c\CLOSE_WAIT_TIME=1000' /pinpoint/quickstart/bin/start-web.sh && \
 #sed -i '/^CLOSE_WAIT_TIME/c\CLOSE_WAIT_TIME=1000' /pinpoint/quickstart/bin/start-testapp.sh
