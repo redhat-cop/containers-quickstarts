@@ -5,60 +5,64 @@ deploy() {
   app_name=${1}
   deploy_templates=${2:-1}
 
+  # Ensure image builds project exists
+  create_project ${IMAGE_NAMESPACE}
+
   echo "Creating a pipeline for ${app_name} application..."
   if [ ${deploy_templates} -eq 1 ]; then
-    create_or_update_from_template jenkins-slaves/templates/jenkins-slave-image-mgmt-template.json
-    create_or_update_from_template cicd/jenkins-s2i/jenkins-s2i.yml \
+    apply_template jenkins-slaves/templates/jenkins-slave-image-mgmt-template.json
+    apply_template cicd/jenkins-s2i/jenkins-s2i.yml \
       -v JENKINS_GIT_URL=https://github.com/redhat-cop/containers-quickstarts.git \
       -v JENKINS_GIT_CONTEXT_DIR=cicd/jenkins-s2i
-    create_or_update_template cicd/pipeline-basic/generic-java-jenkins-pipeline.yml
-    create_or_update_template cicd/pipeline-basic/jws30-tomcat8-deployment.yml
+    create_template cicd/pipeline-basic/generic-java-jenkins-pipeline.yml
+    create_template cicd/pipeline-basic/jws30-tomcat8-deployment.yml
   else
     echo "skipping template deployment"
   fi
 
   # Create Projects
-  oc new-project ${app_name}-dev --skip-config-write=true
-  oc new-project ${app_name}-stage --skip-config-write=true
-  oc new-project ${app_name}-prod --skip-config-write=true
+  create_project ${app_name}-dev
+  create_project ${app_name}-stage
+  create_project ${app_name}-prod
 
   # Configure serviceaccount
   oc policy add-role-to-user edit system:serviceaccount:${app_name}-dev:jenkins -n ${app_name}-stage
   oc policy add-role-to-user edit system:serviceaccount:${app_name}-dev:jenkins -n ${app_name}-prod
 
   # Create jenkins master
-  oc new-app --template=jenkins-ephemeral -p JENKINS_IMAGE_STREAM_TAG=jenkins2-s2i:latest -p NAMESPACE=${IMAGE_NAMESPACE} -n ${app_name}-dev
+  oc process openshift//jenkins-ephemeral JENKINS_IMAGE_STREAM_TAG=jenkins2-s2i:latest NAMESPACE=${IMAGE_NAMESPACE} | oc apply -f - -n ${app_name}-dev
 
   # Create application deployments
-  oc new-app --template=${IMAGE_NAMESPACE}/jws30-tomcat8-deployment -p APPLICATION_NAME=${app_name} -n ${app_name}-dev
-  oc new-app --template=${IMAGE_NAMESPACE}/jws30-tomcat8-deployment -p APPLICATION_NAME=${app_name} -n ${app_name}-stage
-  oc new-app --template=${IMAGE_NAMESPACE}/jws30-tomcat8-deployment -p APPLICATION_NAME=${app_name} -n ${app_name}-prod
+  oc process ${IMAGE_NAMESPACE}//jws30-tomcat8-deployment APPLICATION_NAME=${app_name} | oc apply -f - -n ${app_name}-dev
+  oc process ${IMAGE_NAMESPACE}//jws30-tomcat8-deployment APPLICATION_NAME=${app_name} | oc apply -f - -n ${app_name}-stage
+  oc process ${IMAGE_NAMESPACE}//jws30-tomcat8-deployment APPLICATION_NAME=${app_name} | oc apply -f - -n ${app_name}-prod
 
   # Instantiate pipeline
-  oc new-app --template=${IMAGE_NAMESPACE}/generic-java-jenkins-pipeline -p APPLICATION_NAME=${app_name} -n ${app_name}-dev
+  oc process ${IMAGE_NAMESPACE}//generic-java-jenkins-pipeline APPLICATION_NAME=${app_name} | oc apply -f - -n ${app_name}-dev
 
   echo "Done!"
 
 }
 
-create_or_update_from_template() {
+apply_template() {
   # For each of our templates we're going to first, attempt to create it, and if that fails, we'll replace it
   template=${1}
   shift
   args=${@}
   oc process -f ${template} ${args} \
-    | oc create -f - -n ${IMAGE_NAMESPACE} 2>/dev/null \
-    || oc process -f ${template} ${args} \
-    | oc replace -f- -n ${IMAGE_NAMESPACE}
+    | oc apply -f- -n ${IMAGE_NAMESPACE}
 }
 
-create_or_update_template() {
+create_template() {
   # For each of our templates we're going to first, attempt to create it, and if that fails, we'll replace it
   template=${1}
   shift
   args=${@}
-  oc create -f ${template} -n ${IMAGE_NAMESPACE} 2>/dev/null \
-    || oc replace -f ${template} -n ${IMAGE_NAMESPACE}
+  oc apply -f ${template} -n ${IMAGE_NAMESPACE}
+}
+
+create_project() {
+  oc new-project ${1} --skip-config-write=true 2>/dev/null
 }
 
 cleanup() {
