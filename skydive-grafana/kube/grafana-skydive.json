@@ -1,0 +1,155 @@
+{
+   "kind":"List",
+   "apiVersion":"v1",
+   "items":[
+        {
+            "apiVersion": "v1",
+            "kind": "ImageStream",
+            "metadata": {
+                "name": "grafana-skydive"
+            }
+        },
+        {
+            "apiVersion": "v1",
+            "kind": "ServiceAccount",
+            "metadata": {
+                "name": "grafana"
+            }
+        },
+        {
+            "kind": "Route",
+            "apiVersion": "v1",
+            "metadata": {
+                "name": "grafana-skydive"
+            },
+            "spec": {
+                "to": {
+                    "kind": "Service",
+                    "name": "grafana",
+                    "weight": 100
+                },
+                "port": {
+                    "targetPort": "grafana-web"
+                }
+            }
+        },
+        {
+            "apiVersion": "v1",
+            "kind": "BuildConfig",
+            "metadata": {
+                "name": "grafana-skydive"
+            },
+            "spec": {
+                "output": {
+                    "to": {
+                        "kind": "ImageStreamTag",
+                        "name": "grafana-skydive:latest"
+                    }
+                },
+                "source": {
+                    "contextDir": "skydive-grafana/docker/",
+                    "git": {
+                        "uri": "https://github.com/redhat-cop/containers-quickstarts.git"
+                    },
+                    "type": "Git"
+                },
+                "strategy": {
+                    "dockerStrategy": {
+                        "from": {
+                            "kind": "DockerImage",
+                            "name": "debian:jessie"
+                        }
+                    },
+                    "type": "Docker"
+                },
+                "triggers": [
+                    {
+                        "type": "ConfigChange"
+                    },
+                    {
+                        "type": "ImageChange"
+                    }
+                ]
+            }
+        },
+      {
+            "apiVersion": "v1",
+            "kind": "Service",
+            "metadata": {
+                "name": "grafana"
+            },
+            "spec": {
+                "ports": [
+                    {
+                        "name": "grafana-web",
+                        "port": 3000,
+                        "protocol": "TCP",
+                        "targetPort": 3000
+                    }
+                ],
+                "selector": {
+                    "name": "grafana-skydive"
+                },
+                "sessionAffinity": "None",
+                "type": "ClusterIP"
+            }
+        },
+      {
+          "apiVersion": "v1",
+          "kind": "DeploymentConfig",
+          "metadata": {
+              "name": "grafana-skydive"
+          },
+          "spec": {
+              "minReadySeconds": 0,
+              "paused": false,
+              "replicas": 1,
+              "revisionHistoryLimit": 2,
+              "strategy": {
+                  "type": "Rolling"
+              },
+              "template": {
+                  "metadata": {
+                      "labels": {
+                          "name": "grafana-skydive"
+                      }
+                  },
+                  "spec": {
+                      "containers": [
+                          {
+                              "image": "grafana-skydive",
+                              "name": "grafana-skydive",
+                              "ports": [
+                                  {
+                                      "containerPort": 3000,
+                                      "protocol": "TCP"
+                                  }
+                              ]
+                          }
+                      ],
+                      "serviceAccount": "grafana",
+                      "serviceAccountName": "grafana"
+                  }
+              },
+              "triggers": [
+                  {
+                      "type": "ConfigChange"
+                  },
+                  {
+                      "imageChangeParams": {
+                          "automatic": true,
+                          "containerNames": [
+                              "grafana-skydive"
+                          ],
+                          "from": {
+                              "kind": "ImageStreamTag",
+                              "name": "grafana-skydive:latest"
+                          }
+                      },
+                      "type": "ImageChange"
+                  }
+              ]
+          }
+      }
+    ]
+}
