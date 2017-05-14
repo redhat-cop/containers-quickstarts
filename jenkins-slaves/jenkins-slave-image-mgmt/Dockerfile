@@ -14,7 +14,7 @@ RUN yum repolist > /dev/null && \
     yum-config-manager --enable rhel-7-server-extras-rpms && \
     yum clean all && \
     INSTALL_PKGS="skopeo" && \
-    yum install -y --setopt=tsflags=nodocs install $INSTALL_PKGS && \
+    yum install -y --setopt=tsflags=nodocs $INSTALL_PKGS && \
     rpm -V $INSTALL_PKGS && \
     yum clean all
 
