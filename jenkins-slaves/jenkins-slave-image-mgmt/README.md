@@ -33,7 +33,7 @@ For existing Jenkins servers, the slave can be added by using the following step
 	1. Name: jenkins-slave-image-mgmt
 	2. Labels: jenkins-slave-image-mgmt 
 	3. Docker image
-		1. Using the `oc` command line, run `oc get is jenkins-slave-image-mgmt --template='{{ .status.dockerImageRepository }}`. A value similar to *172.30.186.87:5000/jenkins/jenkins-slave-image-mgmt* should be used
+		1. Using the `oc` command line, run `oc get is jenkins-slave-image-mgmt --template='{{ .status.dockerImageRepository }}'`. A value similar to *172.30.186.87:5000/jenkins/jenkins-slave-image-mgmt* should be used
 	4. Jenkins slave root directory: `/tmp`
 5. Click **Save** to apply the changes
 	
@@ -54,4 +54,5 @@ node('jenkins-slave-image-mgmt') {
 
     """
   }
+}
 ```
