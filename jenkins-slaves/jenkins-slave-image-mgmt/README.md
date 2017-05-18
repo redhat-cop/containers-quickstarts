@@ -15,7 +15,7 @@ A [template](../templates/jenkins-slave-image-mgmt-template.json) is available p
 Execute the following command to instantiate the template:
 
 ```
-oc process -f ../templates/jenkins-slave-image-mgmt-template.json | oc create -f-
+oc process -f ../templates/jenkins-slave-image-mgmt-template.json | oc apply -f-
 ```
 
 A new image build will be started automatically
