@@ -8,16 +8,14 @@ LABEL com.redhat.component="jenkins-slave-image-mgmt" \
       io.k8s.display-name="Jenkins Slave Image Management" \
       io.k8s.description="Image management tools on top of the jenkins slave base image" \
       io.openshift.tags="openshift,jenkins,slave,copy"
-
-ENV SKOPEO_BIN=https://github.com/sabre1041/ocp-support-resources/blob/master/skopeo/bin/skopeo?raw=true
-
 USER root
 
-COPY etc/policy.json /etc/containers/
-
-RUN curl -L -o /usr/bin/skopeo $SKOPEO_BIN && \
-    chmod +x /usr/bin/skopeo && \
-    chown -R 1001:0 /etc/containers $HOME /usr/bin/skopeo  && \
-    chmod -R g+rw /etc/containers $HOME /usr/bin/skopeo
+RUN yum repolist > /dev/null && \
+    yum-config-manager --enable rhel-7-server-extras-rpms && \
+    yum clean all && \
+    INSTALL_PKGS="skopeo" && \
+    yum install -y --setopt=tsflags=nodocs $INSTALL_PKGS && \
+    rpm -V $INSTALL_PKGS && \
+    yum clean all
 
 USER 1001
