@@ -1,0 +1,165 @@
+kind: Template
+apiVersion: v1
+metadata:
+  name: mongodb-statefulset-replication
+  annotations:
+    description: "MongoDB Replication Example (based on StatefulSet). You must have persistent volumes available in your cluster to use this template."
+    iconClass: "icon-mongodb"
+    tags: "database,mongodb,replication"
+parameters:
+  - name: MONGODB_USER
+    displayName: "MongoDB Connection Username"
+    description: "Username for MongoDB user that will be used for accessing the database."
+    generate: expression
+    from: "[a-zA-Z0-9]{3}"
+    required: true
+
+  - name: MONGODB_PASSWORD
+    displayName: "MongoDB Connection Password"
+    description: "Password for the MongoDB connection user."
+    generate: expression
+    from: "[a-zA-Z0-9]{16}"
+    required: true
+
+  - name: MONGODB_DATABASE
+    displayName: "MongoDB Database Name"
+    description: "Name of the MongoDB database accessed."
+    value: sampledb
+    required: true
+
+  - name: MONGODB_ADMIN_PASSWORD
+    displayName: "MongoDB Admin Password"
+    description: "Password for the database admin user."
+    generate: expression
+    from: "[a-zA-Z0-9]{16}"
+    required: true
+
+  - name: MONGODB_REPLICA_NAME
+    displayName: "Replica Set Name"
+    description: "The name of the replica set."
+    value: rs0
+    required: true
+
+  - name: MONGODB_KEYFILE_VALUE
+    displayName: "Keyfile Content"
+    description: "The value of the MongoDB keyfile (https://docs.mongodb.com/manual/core/security-internal-authentication/#internal-auth-keyfile)."
+    generate: expression
+    from: "[a-zA-Z0-9]{255}"
+    required: true
+
+  - name: MONGODB_IMAGE
+    displayName: "MongoDB Docker Image"
+    description: "A reference to a supported MongoDB Docker image."
+    value: "registry.access.redhat.com/rhscl/mongodb-32-rhel7:3.2"
+    required: true
+
+  - name: MONGODB_SERVICE_NAME
+    displayName: "OpenShift Service Name"
+    description: "The name of the OpenShift Service exposed for the database."
+    value: mongodb
+    required: true
+
+  - name: VOLUME_CAPACITY
+    displayName: "Volume Capacity"
+    description: "Volume space available for data, e.g. 512Mi, 2Gi."
+    value: "1Gi"
+    required: true
+
+  - name: MEMORY_LIMIT
+    displayName: "Memory Limit"
+    description: "Maximum amount of memory the container can use."
+    value: "512Mi"
+
+objects:
+  # A non-headless service which takes pod readiness into consideration
+  - kind: Service
+    apiVersion: v1
+    metadata:
+      name: "${MONGODB_SERVICE_NAME}"
+    spec:
+      # the list of ports that are exposed by this service
+      ports:
+        - name: mongodb
+          port: 27017
+      # will route traffic to pods having labels matching this selector
+      selector:
+        name: "${MONGODB_SERVICE_NAME}"
+
+  # A headless service to create DNS records
+  - kind: Service
+    apiVersion: v1
+    metadata:
+      name: "${MONGODB_SERVICE_NAME}-internal"
+      annotations:
+        service.alpha.kubernetes.io/tolerate-unready-endpoints: "true"
+    spec:
+      clusterIP: None
+      # the list of ports that are exposed by this service
+      ports:
+        - name: mongodb
+          port: 27017
+      # will route traffic to pods having labels matching this selector
+      selector:
+        name: "${MONGODB_SERVICE_NAME}"
+
+  - kind: StatefulSet
+    apiVersion: apps/v1beta1
+    metadata:
+      name: "${MONGODB_SERVICE_NAME}"
+    spec:
+      # pets get DNS/hostnames that follow the pattern: ${metadata.name}-NUM.${spec.serviceName}.default.svc.cluster.local
+      serviceName: "${MONGODB_SERVICE_NAME}-internal"
+      replicas: 3
+      # describes the pod that will be created if insufficient replicas are detected
+      template:
+        metadata:
+          # this label will be used for count running pods
+          labels:
+            name: "${MONGODB_SERVICE_NAME}"
+        spec:
+          containers:
+            - name: mongo-container
+              image: "${MONGODB_IMAGE}"
+              ports:
+                - containerPort: 27017
+              args:
+                - "run-mongod-pet"
+              volumeMounts:
+                - name: mongo-data
+                  mountPath: "/var/lib/mongodb/data"
+              env:
+                - name: MONGODB_USER
+                  value: "${MONGODB_USER}"
+                - name: MONGODB_PASSWORD
+                  value: "${MONGODB_PASSWORD}"
+                - name: MONGODB_DATABASE
+                  value: "${MONGODB_DATABASE}"
+                - name: MONGODB_ADMIN_PASSWORD
+                  value: "${MONGODB_ADMIN_PASSWORD}"
+                - name: MONGODB_REPLICA_NAME
+                  value: "${MONGODB_REPLICA_NAME}"
+                - name: MONGODB_KEYFILE_VALUE
+                  value: "${MONGODB_KEYFILE_VALUE}"
+                - name: MONGODB_SERVICE_NAME
+                  value: "${MONGODB_SERVICE_NAME}-internal"
+              resources:
+                limits:
+                  memory: "${MEMORY_LIMIT}"
+              readinessProbe:
+                exec:
+                  command:
+                    - stat
+                    - /tmp/initialized
+      volumeClaimTemplates:
+        - metadata:
+            name: mongo-data
+            annotations:
+              # Uncomment this if using dynamic volume provisioning.
+              # https://docs.openshift.org/latest/install_config/persistent_storage/dynamically_provisioning_pvs.html
+              # volume.alpha.kubernetes.io/storage-class: anything
+          spec:
+            # the volume can be mounted as read-write by a single node
+            accessModes: [ ReadWriteOnce ]
+            resources:
+              requests:
+                storage: "${VOLUME_CAPACITY}"
