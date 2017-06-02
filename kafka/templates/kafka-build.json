@@ -40,7 +40,7 @@
         {
             "description": "Base ImageStream Tag",
             "name": "BASE_IMAGESTREAMTAG",
-            "value": "rhel7:7.2",
+            "value": "rhel7:7.3",
             "required": true
         }
     ],

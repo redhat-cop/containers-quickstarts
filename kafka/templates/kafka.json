@@ -84,8 +84,8 @@
             }
         },
         {
-            "kind": "PetSet",
-            "apiVersion": "apps/v1alpha1",
+            "kind": "StatefulSet",
+            "apiVersion": "apps/v1beta1",
             "metadata": {
                 "name": "${APPLICATION_NAME}",
                 "labels": {

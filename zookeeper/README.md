@@ -9,7 +9,7 @@ Zookeeper is a centralized service for maintaining configuration information, na
 
 It makes use of the following technologies:
 
-* [PetSets](http://kubernetes.io/docs/concepts/abstractions/controllers/statefulsets/) (StatefulSets)
+* [StatefulSets](http://kubernetes.io/docs/concepts/abstractions/controllers/statefulsets/) 
 * [Headless Services](http://kubernetes.io/docs/user-guide/services/#headless-services)
 
 ## Prerequisites
@@ -47,7 +47,7 @@ A new image build will be kicked off automatically. It can be tracked by running
 
 Once the build completes successfully, the newly created image can be deployed to OpenShift.
 
-PetSets provide a way to effectively deploy stateful applications. However, it does not currently have the ability to resolve images backed by ImageStreams. To work around this limitation, the template for deploying zookeeper has a parameter that accepts the image reference. 
+StatefulSets provide a way to effectively deploy stateful applications. However, it does not currently have the ability to resolve images backed by ImageStreams. To work around this limitation, the template for deploying zookeeper has a parameter that accepts the image reference. 
 
 To locate the image reference of the previously built image, use the following command repository:
 
@@ -59,12 +59,12 @@ The response can be used as an input parameter *ZOOKEEPER_IMAGESTREAMTAG* for th
 The full command to both resolve the image reference and instantiate the zookeeper template is shown below:
 
 ```
-oc process -v=ZOOKEEPER_IMAGESTREAMTAG=$(oc get istag zookeeper:latest --template='{{.image.dockerImageReference}}') -f templates/zookeeper.json | oc create -f-
+oc process -p=ZOOKEEPER_IMAGESTREAMTAG=$(oc get istag zookeeper:latest --template='{{.image.dockerImageReference}}') -f templates/zookeeper.json | oc create -f-
 ```
 
 ## Verify the Deployment
 
-One of the benefits of a PetSet is the ability for each deployed instance to have its own backing storage. To verify storage was bound successfully, run `oc get pvc -l=application=zookeeper`. A result similar to the following should be displayed:
+One of the benefits of a StatefulSet is the ability for each deployed instance to have its own backing storage. To verify storage was bound successfully, run `oc get pvc -l=application=zookeeper`. A result similar to the following should be displayed:
 
 ```
 NAME                  STATUS    VOLUME    CAPACITY   ACCESSMODES   AGE
@@ -73,7 +73,7 @@ datadir-zookeeper-1   Bound     pv02      2Gi        RWO,RWX       49m
 datadir-zookeeper-2   Bound     pv03      3Gi        RWO,RWX       49m
 ```*Note: Volume names, access modes and capacities are dependent on the persistent storage deployed in the environment*
 
-Next, validate PetSet members are running and ready by executing `oc get pods -l=application=zookeeper`.  If three pods have a status of *RUNNING*, the containers have a status of *1/1*, and have a restart count of *0*, then zookeeper is deployed successfully. A successful deployment is shown below:
+Next, validate StatefulSet members are running and ready by executing `oc get pods -l=application=zookeeper`.  If three pods have a status of *RUNNING*, the containers have a status of *1/1*, and have a restart count of *0*, then zookeeper is deployed successfully. A successful deployment is shown below:
 
 ```
 NAME          READY     STATUS    RESTARTS   AGE
@@ -89,7 +89,7 @@ Validate the quorum configuration by creating a node on one instance and reading
 First create a node on the first zookeeper instance by using the `oc exec` command:
 
 ```
-oc exec zoo-0 -- /opt/zookeeper/bin/zkCli.sh create /foo bar;
+oc exec zookeeper-0 -- /opt/zookeeper/bin/zkCli.sh create /foo bar;
 ```
 
 If the node was successfully created, the following will appear:
