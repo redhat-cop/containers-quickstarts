@@ -1,0 +1,12 @@
+#!/bin/sh
+
+SOURCE_DIR=/tmp/src
+
+if [ ! -d "$SOURCE_DIR" ]; then
+   echo "Error: Source volume not mounted or available"
+   exit 1
+fi
+
+cd "$SOURCE_DIR"
+
+bundle exec jekyll serve --no-watch --host=0.0.0.0
