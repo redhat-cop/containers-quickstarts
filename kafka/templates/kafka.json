@@ -103,9 +103,6 @@
                     "metadata": {
                         "labels": {
                             "application": "${APPLICATION_NAME}"
-                        },
-                        "annotations": {
-                            "pod.alpha.kubernetes.io/initialized": "true"
                         }
                     },
                     "spec": {
