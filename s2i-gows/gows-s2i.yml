@@ -1,0 +1,47 @@
+kind: List
+apiVersion: v1
+items:
+- apiVersion: v1
+  kind: ImageStream
+  metadata:
+    name: copedia
+- apiVersion: v1
+  kind: BuildConfig
+  metadata:
+    annotations:
+    labels:
+      app: copedia
+    name: copedia
+  spec:
+    nodeSelector: null
+    output:
+      to:
+        kind: ImageStreamTag
+        name: copedia:latest
+    postCommit: {}
+    resources: {}
+    runPolicy: Serial
+    source:
+      images:
+      - from:
+          kind: ImageStreamTag
+          name: openshift-playbooks:latest
+        paths:
+        - destinationDir: .
+          sourcePath: /tmp/src/_site/
+    strategy:
+      sourceStrategy:
+        from:
+          kind: ImageStreamTag
+          name: s2i-gows:latest
+      type: Source
+    triggers:
+    - github:
+        secret: 8tgqCeSr_1g1WNduQDye
+      type: GitHub
+    - generic:
+        secret: VJ7h9-4-hASRL_EjZe9j
+      type: Generic
+    - type: ConfigChange
+    - imageChange:
+      type: ImageChange
