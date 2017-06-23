@@ -84,8 +84,8 @@
             }
         },
         {
-            "kind": "PetSet",
-            "apiVersion": "apps/v1alpha1",
+            "kind": "StatefulSet",
+            "apiVersion": "apps/v1beta1",
             "metadata": {
                 "name": "${APPLICATION_NAME}",
                 "labels": {
@@ -103,9 +103,6 @@
                     "metadata": {
                         "labels": {
                             "application": "${APPLICATION_NAME}"
-                        },
-                        "annotations": {
-                            "pod.alpha.kubernetes.io/initialized": "true"
                         }
                     },
                     "spec": {

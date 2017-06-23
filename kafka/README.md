@@ -9,12 +9,12 @@ Kafka is a distributed publish-subscribe messaging system that is designed to be
 
 It makes use of the following technologies:
 
-* [PetSets](http://kubernetes.io/docs/concepts/abstractions/controllers/statefulsets/) (StatefulSets)
+* [StatefulSets](http://kubernetes.io/docs/concepts/abstractions/controllers/statefulsets/) 
 * [Headless Services](http://kubernetes.io/docs/user-guide/services/#headless-services)
 
 ## Prerequisites
 
-The following prerequisites must be met prior to beginning to build and deploy Zookeeper
+The following prerequisites must be met prior to beginning to build and deploy Kafka
 
 * 6 [Persistent Volumes](https://docs.openshift.com/container-platform/3.3/architecture/additional_concepts/storage.html#architecture-additional-concepts-storage). 3 for Kafka and 3 for Zookeeper (see below)
 * OpenShift Command Line Tool
@@ -40,7 +40,7 @@ A new image build will be kicked off automatically. It can be tracked by running
 
 Once the build completes successfully, the newly created image can be deployed to OpenShift.
 
-PetSets provide a way to effectively deploy stateful applications. However, it does not currently have the ability to resolve images backed by ImageStreams. To work around this limitation, the template for deploying kafka has a parameter that accepts the image reference. 
+StatefulSets provide a way to effectively deploy stateful applications. However, it does not currently have the ability to resolve images backed by ImageStreams. To work around this limitation, the template for deploying kafka has a parameter that accepts the image reference. 
 
 To locate the image reference of the previously built image, use the following command repository:
 
@@ -52,12 +52,12 @@ The response can be used as an input parameter *KAFKA_IMAGESTREAMTAG* for the [t
 The full command to both resolve the image reference and instantiate the kafka template is shown below:
 
 ```
-oc process -v=KAFKA_IMAGESTREAMTAG=$(oc get istag kafka:latest --template='{{.image.dockerImageReference}}') -f templates/kafka.json | oc create -f-
+oc process -p=KAFKA_IMAGESTREAMTAG=$(oc get istag kafka:latest --template='{{.image.dockerImageReference}}') -f templates/kafka.json | oc create -f-
 ```
 
 ## Verify the Deployment
 
-One of the benefits of a PetSet is the ability for each deployed instance to have its own backing storage. To verify storage was bound successfully, run `oc get pvc -l=application=kafka`. A result similar to the following should be displayed:
+One of the benefits of a StatefulSet is the ability for each deployed instance to have its own backing storage. To verify storage was bound successfully, run `oc get pvc -l=application=kafka`. A result similar to the following should be displayed:
 
 ```
 NAME                  STATUS    VOLUME    CAPACITY   ACCESSMODES   AGE
@@ -66,7 +66,7 @@ datadir-kafka-1   Bound     pv02      2Gi        RWO,RWX       49m
 datadir-kafka-2   Bound     pv03      3Gi        RWO,RWX       49m
 ```*Note: Volume names, access modes and capacities are dependent on the persistent storage deployed in the environment*
 
-Next, validate PetSet members are running and ready by executing `oc get pods -l=application=kafka`.  If three pods have a status of *RUNNING*, the containers have a status of *1/1*, and have a restart count of *0*, then kafka is deployed successfully. A successful deployment is shown below:
+Next, validate StatefulSet members are running and ready by executing `oc get pods -l=application=kafka`.  If three pods have a status of *RUNNING*, the containers have a status of *1/1*, and have a restart count of *0*, then kafka is deployed successfully. A successful deployment is shown below:
 
 ```
 NAME          READY     STATUS    RESTARTS   AGE

@@ -105,8 +105,8 @@
             }
         },
         {
-            "kind": "PetSet",
-            "apiVersion": "apps/v1alpha1",
+            "kind": "StatefulSet",
+            "apiVersion": "apps/v1beta1",
             "metadata": {
                 "name": "${APPLICATION_NAME}",
                 "labels": {
@@ -125,10 +125,6 @@
                         "creationTimestamp": null,
                         "labels": {
                             "application": "${APPLICATION_NAME}"
-                        },
-                        "annotations": {
-                            "pod.alpha.kubernetes.io/initialized": "true",
-                            "scheduler.alpha.kubernetes.io/affinity": "{\n  \"podAntiAffinity\": {\n    \"requiredDuringSchedulingRequiredDuringExecution\": [{\n      \"labelSelector\": {\n        \"matchExpressions\": [{\n          \"key\": \"application\",\n          \"operator\": \"In\",\n          \"values\": [\"${APPLICATION_NAME}-headless\"]\n        }]\n      },\n      \"topologyKey\": \"kubernetes.io/hostname\"\n    }]\n  }\n}\n"
                         }
                     },
                     "spec": {
@@ -281,11 +277,7 @@
                         ],
                         "restartPolicy": "Always",
                         "terminationGracePeriodSeconds": 30,
-                        "dnsPolicy": "ClusterFirst",
-                        "securityContext": {
-                            "runAsUser": 1001,
-                            "fsGroup": 1001
-                        }
+                        "dnsPolicy": "ClusterFirst"
                     }
                 },
                 "volumeClaimTemplates": [
