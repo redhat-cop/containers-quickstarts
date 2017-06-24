@@ -16,7 +16,7 @@ This project demonstrates how to create an s2i Datapower image to facilitate Dat
 
 ## Create a Project 
 
-This is the project win which we will run the below commands, you can use a different project.
+This is the project in which we will run the below commands, you can use a different project.
 
 ```
 oc new-project datapower
@@ -24,10 +24,10 @@ oc new-project datapower
 
 ## Create the s2i-datapower Image
 
-This commands will create a build config whose outout will be the s2i-datapower.
+This commands will create a build config whose output will be the s2i-datapower.
 
 ```
-oc new-build https://github.com/raffaelespazzoli/containers-quickstarts#datapower --context-dir=s2i-datapower --name=s2i-datapower --strategy=docker
+oc new-build https://github.com/redhat-cop/containers-quickstarts --context-dir=s2i-datapower --name=s2i-datapower --strategy=docker
 ```
 The s2i-datapower image supports two use cases:
 
@@ -47,9 +47,9 @@ This is just one possbile approach to creating configuration. Any approach is fi
 to use the image in this mode issue the following commands
 
 ```
-oc new-app --docker-image=datapower/s2i-datapower -e DATAPOWER_ACCEPT_LICENSE=true -e DATAPOWER_WORKER_THREADS=4 --name=datapower
-oc set volume dc/datapower --add -m /drouter/config --name datapower-config -t pvc --claim-name=datapower-config --claim-size=1G
-oc set volume dc/datapower --add -m /drouter/local --name datapower-local -t pvc --claim-name=datapower-local --claim-size=1G
+oc new-app --image-stream=s2i-datapower -e DATAPOWER_ACCEPT_LICENSE=true -e DATAPOWER_WORKER_THREADS=4 --name=datapower
+oc set volume dc/datapower --add -m /drouter/config --name datapower-config -t pvc --claim-name=datapower-config --claim-size=1G --overwrite=true
+oc set volume dc/datapower --add -m /drouter/local --name datapower-local -t pvc --claim-name=datapower-local --claim-size=1G --overwrite=true
 oc create route passthrough datapower-svc --service datapower --port=8080
 oc create route passthrough datapower-console --service datapower --port=9090
 ``` 
@@ -105,15 +105,9 @@ oc create service account datapower
 oc adm policy add-scc-to-user anyuid -z datapower
 oc new-app --docker-image=datapower/s2i-datapower -e DATAPOWER_ACCEPT_LICENSE=true -e DATAPOWER_WORKER_THREADS=4 --name=datapower
 oc patch dc/datapower --patch '{"spec":{"template":{"spec":{"serviceAccountName": "datapower"}}}}'
-oc set volume dc/datapower --add -m /drouter/config --name datapower-config -t pvc --claim-name=datapower-config --claim-size=1G
-oc set volume dc/datapower --add -m /drouter/local --name datapower-local -t pvc --claim-name=datapower-local --claim-size=1G
+oc set volume dc/datapower --add -m /drouter/config --name datapower-config -t pvc --claim-name=datapower-config --claim-size=1G --overwrite=true
+oc set volume dc/datapower --add -m /drouter/local --name datapower-local -t pvc --claim-name=datapower-local --claim-size=1G --overwrite=true
 oc create route passthrough datapower-svc --service datapower --port=8080
 oc create route passthrough datapower-console --service datapower --port=9090
-```
-enabling openshift sso for an application
-
-```
-oc create -f ???
-
 ```
 
