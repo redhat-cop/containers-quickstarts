@@ -93,6 +93,10 @@
                                     {
                                         "name": "SKYDIVE_GRAPH_BACKEND",
                                         "value": "elasticsearch"
+                                    },
+                                    {
+                                        "name": "SKYDIVE_ETCD_LISTEN",
+                                        "value": "0.0.0.0:2379"
                                     }
                                 ],
                                 "image": "skydive/skydive",

@@ -1,9 +1,10 @@
-## Skydive for OCP and Grafana with skydive DataSource plugin
+# Skydive for OCP and Grafana with skydive DataSource plugin
 
 This repository is based in the Skydive Project (https://github.com/skydive-project/skydive), an open source real-time network topology and protocols analyzer.
 
 Use the following instructions to deploy the full stack, Skydive + Grafana with Skydive plugin. Note that the Skydive Agent is configured to get information from the SDN using ovs-multitenant plugin for this particular example:
 
+```
       # oc new-project skydive
       # oc create -f https://raw.githubusercontent.com/redhat-cop/containers-quickstarts/skydive-grafana/master/kube/skydive-template.json
       # oc adm policy add-scc-to-user privileged system:serviceaccount:skydive:default
@@ -21,6 +22,7 @@ Use the following instructions to deploy the full stack, Skydive + Grafana with 
       In order to deploy all the skydive agents across your Nodes, label them accordingly:
 
       # oc label nodes --all skydive=true
+```
 
 As soon as the agent Pods are running, you will see all your Cluster topology in your Skydive Analyzer Web Interface.
 
@@ -28,6 +30,7 @@ As soon as the agent Pods are running, you will see all your Cluster topology in
 
 Once the Skydive part is deployed we can now deploy the Grafana part:
 
+```
       # oc create -f https://raw.githubusercontent.com/redhat-cop/containers-quickstarts/skydive-grafana/master/kube/grafana-skydive.json
         imagestream "grafana-skydive" created
         serviceaccount "grafana" created
@@ -35,6 +38,7 @@ Once the Skydive part is deployed we can now deploy the Grafana part:
         service "grafana" created
         deploymentconfig "grafana-skydive" created
       # oc adm policy add-scc-to-user anyuid system:serviceaccount:skydive:grafana
+```
 
 This will build your Grafana image with skydive DataSource included and will deploy it. As soon as the Pod is running you will be able to access to Grafana using the created Route. Use the default user and password (admin/admin).
 
