@@ -7,7 +7,7 @@
 Here's a simple on-liner to get you started.
 
 ```
-oc new-app https://github.com/redhat-cop/containers-quickstarts.git --context-dir=s2i-gows/test-site --name=gows-test --docker-image=redhatcop/s2i-gows
+oc new-app https://github.com/redhat-cop/containers-quickstarts.git --context-dir=s2i-gows/demo --name=gows-test --docker-image=redhatcop/s2i-gows
 oc expose svc gows-test
 ```
 
@@ -15,7 +15,7 @@ oc expose svc gows-test
 
 GoWS is a webserver built to do nothing more than to serve static content web sites on the smallest possible footprint. This S2I-enabled image makes this one step easier by being able to stream that content straight into the image from source.
 
-This repo contains both a `Dockerfile` for building the image and a directory of [sample content](/s2i-gows/test-site).
+This repo contains both a `Dockerfile` for building the image and a directory of [sample content](/s2i-gows/demo).
 
 ## Bill of Materials
 
@@ -50,5 +50,6 @@ docker pull redhatcop/s2i-gows
 ## Building the Image
 
 ```
+cd ./image
 docker build -t redhatcop/s2i-gows .
 ```
