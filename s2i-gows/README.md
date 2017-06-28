@@ -7,7 +7,7 @@
 Here's a simple on-liner to get you started.
 
 ```
-oc new-app https://github.com/redhat-cop/containers-quickstarts.git --context-dir=s2i-gows/demo --name=gows-test --docker-image=redhatcop/s2i-gows
+oc new-app redhatcop/s2i-gows~https://github.com/redhat-cop/containers-quickstarts.git --context-dir=s2i-gows/demo --name=gows-test
 oc expose svc gows-test
 ```
 
