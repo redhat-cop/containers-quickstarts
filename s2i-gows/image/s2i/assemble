@@ -1,0 +1,21 @@
+#!/bin/sh
+
+# Default values
+GOWS_DIR=${GOWS_DIR:=/opt/site/static}
+SRC_DIR=${SRC_DIR:=/opt/site/src}
+
+# Functions
+if_failed() {
+  if [ $? -ne 0 ]; then
+    echo "ERROR: ${1}"
+    exit 1
+  fi
+}
+
+cp -r ${SRC_DIR} ${GOWS_DIR}
+if_failed "Failed to copy source: cp -r ${SRC_DIR}/* ${GOWS_DIR}"
+
+rm -r ${SRC_DIR}
+if_failed "Failed to clean up source directory: rm -r ${SRC_DIR}"
+
+echo "Assembly Complete!"
