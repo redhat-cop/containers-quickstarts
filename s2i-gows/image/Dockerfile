@@ -7,7 +7,6 @@ LABEL io.k8s.description="GoWS Web Server S2I Image" \
       io.openshift.s2i.destination="/opt/site"
 
 COPY s2i /usr/local/s2i
-ADD README.md /usr/local/s2i/usage.txt
 RUN mkdir -p /opt/site;\
     chgrp -R 0 /opt/site; \
     chgrp -R 0 /usr/local/s2i; \
