@@ -1,4 +1,4 @@
-FROM openshift3/jenkins-slave-base-rhel7
+FROM openshift/jenkins-slave-base-centos7
 
 ENV RUBY_VERSION 2.4
 
@@ -16,16 +16,13 @@ LABEL summary="$SUMMARY" \
       io.openshift.expose-services="8080:http" \
       io.openshift.tags="builder,ruby,ruby24,rh-ruby24" \
       com.redhat.component="rh-ruby24-docker" \
-      name="rhscl/ruby-24-rhel7" \
+      name="centos/ruby-24-centos7" \
       version="2.4" \
-      release="2.1"
+      release="1" \
+      maintainer="SoftwareCollections.org <sclorg@redhat.com>"
 
-RUN yum repolist > /dev/null && \
-    yum install -y yum-utils && \
-    yum-config-manager --disable \* &> /dev/null && \
-    yum-config-manager --enable rhel-server-rhscl-7-rpms && \
-    yum-config-manager --enable rhel-7-server-rpms && \
-    yum-config-manager --enable rhel-7-server-optional-rpms && \
+RUN yum install -y centos-release-scl && \
+    yum-config-manager --enable centos-sclo-rh-testing && \
     INSTALL_PKGS="rh-ruby24 rh-ruby24-ruby-devel rh-ruby24-rubygem-rake rh-ruby24-rubygem-bundler rh-nodejs6" && \
     yum install -y --setopt=tsflags=nodocs $INSTALL_PKGS && rpm -V $INSTALL_PKGS && \
     yum clean all -y
