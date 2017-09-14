@@ -26,3 +26,12 @@ RUN yum install -y centos-release-scl && \
     INSTALL_PKGS="rh-ruby24 rh-ruby24-ruby-devel rh-ruby24-rubygem-rake rh-ruby24-rubygem-bundler rh-nodejs6" && \
     yum install -y --setopt=tsflags=nodocs $INSTALL_PKGS && rpm -V $INSTALL_PKGS && \
     yum clean all -y
+
+# Copy extra files to the image.
+COPY ./root/ /
+
+ENV BASH_ENV=/opt/app-root/etc/scl_enable \
+  ENV=/opt/app-root/etc/scl_enable \
+  PROMPT_COMMAND=". /opt/app-root/etc/scl_enable"
+
+RUN chown -R 1001:0 /opt/app-root && chmod -R ug+rwx /opt/app-root
