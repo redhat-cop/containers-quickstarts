@@ -7,7 +7,11 @@ ENV SUMMARY="Platform for building and running Ruby $RUBY_VERSION applications" 
 building and running various Ruby $RUBY_VERSION applications and frameworks. \
 Ruby is the interpreted scripting language for quick and easy object-oriented programming. \
 It has many features to process text files and to do system management tasks (as in Perl). \
-It is simple, straight-forward, and extensible."
+It is simple, straight-forward, and extensible." \
+  BASH_ENV=/opt/app-root/etc/scl_enable \
+  ENV=/opt/app-root/etc/scl_enable \
+  PROMPT_COMMAND=". /opt/app-root/etc/scl_enable"
+
 
 LABEL summary="$SUMMARY" \
       description="$DESCRIPTION" \
@@ -29,9 +33,5 @@ RUN yum install -y centos-release-scl && \
 
 # Copy extra files to the image.
 COPY ./root/ /
-
-ENV BASH_ENV=/opt/app-root/etc/scl_enable \
-  ENV=/opt/app-root/etc/scl_enable \
-  PROMPT_COMMAND=". /opt/app-root/etc/scl_enable"
 
 RUN chown -R 1001:0 /opt/app-root && chmod -R ug+rwx /opt/app-root
