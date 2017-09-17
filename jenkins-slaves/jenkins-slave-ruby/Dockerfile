@@ -10,6 +10,7 @@ It has many features to process text files and to do system management tasks (as
 It is simple, straight-forward, and extensible." \
   BASH_ENV=/opt/app-root/etc/scl_enable \
   ENV=/opt/app-root/etc/scl_enable \
+  PATH=$PATH:/home/jenkins/bin \
   PROMPT_COMMAND=". /opt/app-root/etc/scl_enable"
 
 
