@@ -34,14 +34,14 @@ For existing Jenkins servers, the slave can be added by using the following step
 	1. Name: jenkins-slave-ruby
 	2. Labels: jenkins-slave-ruby
 	3. Docker image
-		1. Using the `oc` command line, run `oc get is jenkins-slave-ruby --template='{{ .status.dockerImageRepository }}'`. A value similar to *172.30.186.87:5000/jenkins/jenkins-slave-ruby* should be used
+		1. Using the `oc` command line, run `oc get is jenkins-slave-ruby --template='{{ .status.dockerImageRepository }}'`. A value similar to *docker-registry.default.svc:5000/jenkins/jenkins-slave-ruby* should be used
 	4. Jenkins slave root directory: `/tmp`
 5. Click **Save** to apply the changes
 
 
 ## Use within Jenkins Pipeline Script
 
-The following provides an example of how to make use of the image within a Jenkins [pipeline](https://jenkins.io/doc/book/pipeline/) script to execute the *inspect* function of the *skopeo* command line tool:
+The following provides an example of how to make use of the image within a Jenkins [pipeline](https://jenkins.io/doc/book/pipeline/) script to execute a simple install of dependencies:
 
 ```
 node('jenkins-slave-ruby') {
