@@ -49,6 +49,8 @@ node('jenkins-slave-ruby') {
   stage('Build Code') {
 
     sh """
+      echo "source 'https://rubygems.org'
+      gem 'nokogiri'" > Gemfile
       bundle install
       gem env
     """
