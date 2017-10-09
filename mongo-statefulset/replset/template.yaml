@@ -1,0 +1,206 @@
+kind: Template
+apiVersion: v1
+metadata:
+  name: mongodb-replset-on-openshift
+  annotations:
+    openshift.io/display-name: "MongoDB ReplicaSet"
+    description: "MongoDB Replica Set on OpenShift"
+    iconClass: "icon-mongodb"
+    tags: "database,mongodb,nosql"
+parameters:
+
+  - name: APP_NAME
+    displayName: "Application name"
+    value: "mongodb"
+    required: true
+
+  - name: MONGODB_USER
+    displayName: "MongoDB Connection Username"
+    description: "Username for MongoDB user that will be used for client connections"
+    generate: expression
+    from: "[a-zA-Z0-9]{3}"
+    required: true
+
+  - name: MONGODB_PASSWORD
+    displayName: "MongoDB Connection Password"
+    description: "Password for the MongoDB connection user."
+    generate: expression
+    from: "[a-zA-Z0-9]{16}"
+    required: true
+
+  - name: MONGODB_DATABASE
+    displayName: "MongoDB Database Name"
+    description: "Name of a sample MongoDB database to initialize"
+    value: sampledb
+    required: true
+
+  - name: MONGODB_ADMIN_PASSWORD
+    displayName: "MongoDB Admin Password"
+    description: "Password for the admin user."
+    generate: expression
+    from: "[a-zA-Z0-9]{16}"
+    required: true
+
+  - name: MONGODB_REPLSET_REPLICA_NAME
+    displayName: "Replica Set Name"
+    description: "The name of the replica set."
+    value: rs0
+    required: true
+
+  - name: MONGODB_KEYFILE_VALUE
+    displayName: "Keyfile Content"
+    description: "The value of the MongoDB keyfile for inter-cluster communication. Must be the same throughout the cluster. See (https://docs.mongodb.com/manual/core/security-internal-authentication/#internal-auth-keyfile)."
+    generate: expression
+    from: "[a-zA-Z0-9]{255}"
+    required: true
+
+  - name: MONGODB_IMAGE
+    displayName: "MongoDB Docker Image"
+    description: "A reference to a supported MongoDB Docker image."
+    value: "bornemannjs/mongodb-34:0.71"
+    required: true
+
+  - name: VOLUME_CAPACITY
+    displayName: "Volume Capacity"
+    description: "Volume space available for data, e.g. 512Mi, 2Gi."
+    value: "1Gi"
+    required: true
+
+  - name: MEMORY_LIMIT
+    displayName: "Memory Limit"
+    description: "Maximum amount of memory the container can use."
+    value: "512Mi"
+
+  - name: REPLSET_SEED
+    displayName: "Replica Set seed"
+    description: "For creating unique objects from this template in a multiple replica set environment. A value will be generated. Nothing to do here."
+    generate: expression
+    from: "[a-z]{3}"
+
+  - name: ADDITIONAL_STARTUP_OPTS
+    displayName: "Additional Startup Opts"
+    description: "Additional configuraiton options when starting the replica set"
+    required: false
+    value: ""
+
+objects:
+  # A headless service to create DNS records
+  - kind: Service
+    apiVersion: v1
+    metadata:
+      name: "${APP_NAME}-replset-internal-${REPLSET_SEED}"
+      labels:
+        app: "${APP_NAME}"
+        replset_seed: "${REPLSET_SEED}"
+      annotations:
+        service.alpha.kubernetes.io/tolerate-unready-endpoints: "true"
+    spec:
+      clusterIP: None
+      # the list of ports that are exposed by this service
+      ports:
+        - name: mongodb
+          port: 27017
+      # will route traffic to pods having labels matching this selector
+      selector:
+        name: "${APP_NAME}replset${REPLSET_SEED}"
+
+  - kind: StatefulSet
+    apiVersion: apps/v1beta1
+    metadata:
+      app: "${APP_NAME}"
+      name: "${APP_NAME}replset${REPLSET_SEED}"
+    spec:
+      # pets get DNS/hostnames that follow the pattern: ${metadata.name}-NUM.${spec.serviceName}.default.svc.cluster.local
+      serviceName: "${APP_NAME}-replset-internal-${REPLSET_SEED}"
+      replicas: 4
+      # describes the pod that will be created if insufficient replicas are detected
+      template:
+        metadata:
+          labels:
+            name: "${APP_NAME}replset${REPLSET_SEED}"
+            replset_seed: "${REPLSET_SEED}"
+            app: "${APP_NAME}"
+        spec:
+          containers:
+            - name: mongo-container
+              image: "${MONGODB_IMAGE}"
+              ports:
+                - containerPort: 27017
+              args:
+                - "run-replset"
+              volumeMounts:
+                - name: ${APP_NAME}-mongo-data
+                  mountPath: "/var/lib/mongodb/data"
+              env:
+                - name: MONGODB_USER
+                  value: "${MONGODB_USER}"
+                - name: MONGODB_PASSWORD
+                  value: "${MONGODB_PASSWORD}"
+                - name: MONGODB_DATABASE
+                  value: "${MONGODB_DATABASE}"
+                - name: MONGODB_ADMIN_PASSWORD
+                  value: "${MONGODB_ADMIN_PASSWORD}"
+                - name: MONGODB_REPLICA_NAME
+                  value: "${MONGODB_REPLSET_REPLICA_NAME}"
+                - name: MONGODB_KEYFILE_VALUE
+                  value: "${MONGODB_KEYFILE_VALUE}"
+                - name: MONGODB_SERVICE_NAME
+                  value: "mongodb-replset-internal-${REPLSET_SEED}"
+                - name: SHARD_ENABLED
+                  value: "true"
+                - name: ENABLE_TLS
+                  valueFrom:
+                    configMapKeyRef:
+                      name: ${APP_NAME}-replset-${REPLSET_SEED}-config
+                      key: ssl.enabled
+                - name: SSL_CA_PATH
+                  valueFrom:
+                    configMapKeyRef:
+                      name: ${APP_NAME}-replset-${REPLSET_SEED}-config
+                      key: ssl.ca.path
+                - name: ADDITIONAL_SSL_OPTS
+                  valueFrom:
+                    configMapKeyRef:
+                      name: ${APP_NAME}-replset-${REPLSET_SEED}-config
+                      key: additional.ssl.opts
+                - name: ADDITIONAL_STARTUP_OPTS
+                  valueFrom:
+                    configMapKeyRef:
+                      name: ${APP_NAME}-replset-${REPLSET_SEED}-config
+                      key: additional.startup.opts
+              resources:
+                limits:
+                  memory: "${MEMORY_LIMIT}"
+              livenessProbe:
+                initialDelaySeconds: 60
+                tcpSocket:
+                  port: 27017
+              readinessProbe:
+                initialDelaySeconds: 10
+                exec:
+                  command:
+                    - "mongo-is-ready"
+      volumeClaimTemplates:
+        - metadata:
+            name: ${APP_NAME}-mongo-data
+            labels:
+              app: "${APP_NAME}"
+              replset_seed: "${REPLSET_SEED}"
+            annotations:
+              #Uncomment me if you would like to use the dynamic storage provisioner defined at the root of the project
+              #volume.beta.kubernetes.io/storage-class: us-east-storage
+          spec:
+            accessModes: [ ReadWriteOnce ]
+            resources:
+              requests:
+                storage: "${VOLUME_CAPACITY}"
+  - kind: ConfigMap
+    apiVersion: v1
+    metadata:
+      name: ${APP_NAME}-replset-${REPLSET_SEED}-config
+      app: "${APP_NAME}"
+    data:
+      ssl.enabled: "false"
+      ssl.ca.path: ""
+      additional.ssl.opts: "--sslAllowConnectionsWithoutCertificates --sslDisabledProtocols TLS1_0,TLS1_1"
+      additional.startup.opts: "${ADDITIONAL_STARTUP_OPTS}"
