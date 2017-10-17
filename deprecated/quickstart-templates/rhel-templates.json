@@ -1,0 +1,669 @@
+{
+    "kind": "List",
+    "apiVersion": "v1",
+    "items": [
+		{
+			"kind": "Template",
+			"apiVersion": "v1",
+			"metadata": {
+				"annotations": {
+					"description": "Java builder and sample application",
+					"iconClass": "icon-openjdk",
+					"tags": "java"
+				},
+				"name": "java-quickstart-rhel"
+			},
+			"labels": {
+				"template": "java-quickstart-rhel"
+			},
+			"parameters": [
+				{
+					"description": "The name for the builder.",
+					"displayName": "Builder name",
+					"name": "BUILDER_NAME",
+					"value": "s2i-java",
+					"required": true
+				},
+				{
+					"description": "Git source URI for the builder",
+					"displayName": "Builder source url",
+					"name": "BUILDER_SOURCE_REPOSITORY_URL",
+					"value": "https://github.com/redhat-cop/containers-quickstarts.git",
+					"required": true
+				},
+				{
+					"description": "Builder source branch/tag reference.",
+					"displayName": "Builder source branch/tag reference.",
+					"name": "BUILDER_SOURCE_REPOSITORY_REF",
+					"value": "master",
+					"required": false
+				},
+				{
+					"description": "Path within Git project to build containing the Java builder; empty for root project directory.",
+					"displayName": "Builder context directory.",
+					"name": "BUILDER_CONTEXT_DIR",
+					"value": "s2i-java",
+					"required": false
+				},
+				{
+					"description": "The name for the application.",
+					"displayName": "Application name",
+					"name": "APPLICATION_NAME",
+					"value": "java-app",
+					"required": true
+				},
+				{
+					"description": "Git source URI for the application",
+					"displayName": "Application source url",
+					"name": "APPLICATION_SOURCE_REPOSITORY_URL",
+					"value": "https://github.com/fabric8-quickstarts/spring-boot-webmvc.git",
+					"required": true
+				},
+				{
+					"description": "Application source branch/tag reference.",
+					"displayName": "Application source branch/tag reference.",
+					"name": "APPLICATION_SOURCE_REPOSITORY_REF",
+					"value": "master",
+					"required": false
+				},
+				{
+					"description": "Path within Git project to build containing the application; empty for root project directory.",
+					"displayName": "Application context directory.",
+					"name": "APPLICATION_CONTEXT_DIR",
+					"value": "",
+					"required": false
+				},
+				{
+					"name": "APPLICATION_HOSTNAME",
+					"displayName": "Application route hostname.",
+					"description": "Custom hostname for the service route.  Leave blank for default hostname, e.g.: \u003capplication-name\u003e-\u003cproject\u003e.\u003cdefault-domain-suffix\u003e"
+				}
+			],
+			"objects": [
+				{
+					"kind": "ImageStream",
+					"apiVersion": "v1",
+					"metadata": {
+						"name": "rhel7",
+						"labels": {
+							"build": "${BUILDER_NAME}"
+						}
+					},
+					"spec": {
+						"dockerImageRepository": "registry.access.redhat.com/rhel7/rhel"
+					}
+				},
+				{
+					"kind": "ImageStream",
+					"apiVersion": "v1",
+					"metadata": {
+						"name": "${BUILDER_NAME}",
+						"labels": {
+							"build": "${BUILDER_NAME}"
+						}
+					}
+				},
+				{
+					"kind": "ImageStream",
+					"apiVersion": "v1",
+					"metadata": {
+						"name": "${APPLICATION_NAME}",
+						"labels": {
+							"application": "${APPLICATION_NAME}"
+						}
+					}
+				},
+				{
+					"kind": "BuildConfig",
+					"apiVersion": "v1",
+					"metadata": {
+						"name": "${BUILDER_NAME}",
+						"labels": {
+							"build": "${BUILDER_NAME}"
+						}
+					},
+					"spec": {
+						"triggers": [
+							{
+								"type": "ConfigChange"
+							},
+							{
+								"type": "ImageChange",
+								"imageChange": {}
+							}
+						],
+						"source": {
+							"type": "Git",
+							"git": {
+								"uri": "${BUILDER_SOURCE_REPOSITORY_URL}",
+								"ref": "${BUILDER_SOURCE_REPOSITORY_REF}"
+							},
+							"contextDir": "${BUILDER_CONTEXT_DIR}"
+						},
+						"strategy": {
+							"type": "Docker",
+							"dockerStrategy": {
+								"from": {
+									"kind": "ImageStreamTag",
+									"name": "rhel7:7.2"
+								}
+							}
+						},
+						"output": {
+							"to": {
+								"kind": "ImageStreamTag",
+								"name": "${BUILDER_NAME}:latest"
+							}
+						}
+					}
+				},
+				{
+					"kind": "Route",
+					"apiVersion": "v1",
+					"metadata": {
+						"name": "${APPLICATION_NAME}",
+						"labels": {
+							"application": "${APPLICATION_NAME}"
+						},
+						"annotations": {
+							"description": "Route for application's http service."
+						}
+					},
+					"spec": {
+						"host": "${APPLICATION_HOSTNAME}",
+						"to": {
+							"kind": "Service",
+							"name": "${APPLICATION_NAME}"
+						},
+						"port": {
+							"targetPort": "8080-tcp"
+						}
+					}
+				},
+				{
+					"kind": "BuildConfig",
+					"apiVersion": "v1",
+					"metadata": {
+						"name": "${APPLICATION_NAME}",
+						"labels": {
+							"application": "${APPLICATION_NAME}"
+						}
+					},
+					"spec": {
+						"triggers": [
+							{
+								"type": "ConfigChange"
+							},
+							{
+								"type": "ImageChange",
+								"imageChange": {}
+							}
+						],
+						"source": {
+							"type": "Git",
+							"git": {
+								"uri": "${APPLICATION_SOURCE_REPOSITORY_URL}",
+								"ref": "${APPLICATION_SOURCE_REPOSITORY_REF}"
+							},
+							"contextDir": "${APPLICATION_CONTEXT_DIR}"
+						},
+						"strategy": {
+							"type": "Source",
+							"sourceStrategy": {
+								"from": {
+									"kind": "ImageStreamTag",
+									"name": "${BUILDER_NAME}:latest"
+								}
+							}
+						},
+						"output": {
+							"to": {
+								"kind": "ImageStreamTag",
+								"name": "${APPLICATION_NAME}:latest"
+							}
+						}
+					}
+				},
+				{
+					"kind": "Service",
+					"apiVersion": "v1",
+					"metadata": {
+						"name": "${APPLICATION_NAME}",
+						"labels": {
+							"application": "${APPLICATION_NAME}"
+						},
+						"annotations": {
+							"description": "The application server's http port."
+						}
+					},
+					"spec": {
+						"ports": [
+							{
+								"name": "8080-tcp",
+								"protocol": "TCP",
+								"port": 8080,
+								"targetPort": 8080
+							}
+						],
+						"selector": {
+							"application": "${APPLICATION_NAME}",
+							"deploymentconfig": "${APPLICATION_NAME}"
+						},
+						"type": "ClusterIP",
+						"sessionAffinity": "None"
+					}
+				},
+				{
+					"kind": "DeploymentConfig",
+					"apiVersion": "v1",
+					"metadata": {
+						"name": "${APPLICATION_NAME}",
+						"labels": {
+							"app": "${APPLICATION_NAME}"
+						}
+					},
+					"spec": {
+						"strategy": {
+							"type": "Rolling",
+							"rollingParams": {
+								"updatePeriodSeconds": 1,
+								"intervalSeconds": 1,
+								"timeoutSeconds": 600,
+								"maxUnavailable": "25%",
+								"maxSurge": "25%"
+							},
+							"resources": {}
+						},
+						"triggers": [
+							{
+								"type": "ConfigChange"
+							},
+							{
+								"type": "ImageChange",
+								"imageChangeParams": {
+									"automatic": true,
+									"containerNames": [
+										"${APPLICATION_NAME}"
+									],
+									"from": {
+										"kind": "ImageStreamTag",
+										"name": "${APPLICATION_NAME}:latest"
+									}
+								}
+							}
+						],
+						"replicas": 1,
+						"test": false,
+						"selector": {
+							"application": "${APPLICATION_NAME}",
+							"deploymentconfig": "${APPLICATION_NAME}"
+						},
+						"template": {
+							"metadata": {
+								"labels": {
+									"application": "${APPLICATION_NAME}",
+									"deploymentconfig": "${APPLICATION_NAME}"
+								}
+							},
+							"spec": {
+								"containers": [
+									{
+										"name": "${APPLICATION_NAME}",
+										"image": "${APPLICATION_NAME}",
+										"ports": [
+											{
+												"containerPort": 8080,
+												"protocol": "TCP"
+											},
+                                            {
+                                                "name": "jolokia",
+                                                "containerPort": 8778,
+                                                "protocol": "TCP"
+                                            }
+										],
+										"resources": {},
+										"terminationMessagePath": "/dev/termination-log",
+										"imagePullPolicy": "Always"
+									}
+								],
+								"restartPolicy": "Always",
+								"terminationGracePeriodSeconds": 30,
+								"dnsPolicy": "ClusterFirst",
+								"securityContext": {}
+							}
+						}
+					}
+				}
+			]
+		},
+		{
+			"kind": "Template",
+			"apiVersion": "v1",
+			"metadata": {
+				"annotations": {
+					"description": "HTTPD builder and sample application",
+					"iconClass": "icon-apache",
+					"tags": "quickstart,httpd,web"
+				},
+				"name": "httpd-quickstart-rhel"
+			},
+			"labels": {
+				"template": "httpd-quickstart-rhel"
+			},
+			"parameters": [
+				{
+					"description": "The name for the Apache HTTPD builder.",
+					"displayName": "Apache HTTPD builder name",
+					"name": "HTTPD_BUILDER_NAME",
+					"value": "s2i-httpd",
+					"required": true
+				},
+				{
+					"description": "Git source URI for HTTPD builder",
+					"displayName": "HTTPD builder source url",
+					"name": "HTTPD_BUILDER_SOURCE_REPOSITORY_URL",
+					"value": "https://github.com/redhat-cop/containers-quickstarts.git",
+					"required": true
+				},
+				{
+					"description": "HTTPD builder source branch/tag reference.",
+					"displayName": "HTTPD source branch/tag reference.",
+					"name": "HTTPD_BUILDER_SOURCE_REPOSITORY_REF",
+					"value": "master",
+					"required": false
+				},
+				{
+					"description": "Path within Git project to build containing the HTTPD builder; empty for root project directory.",
+					"displayName": "HTTPD builder context directory.",
+					"name": "HTTPD_BUILDER_CONTEXT_DIR",
+					"value": "s2i-httpd",
+					"required": false
+				},
+				{
+					"description": "The name for the HTTPD application.",
+					"displayName": "Apache application name",
+					"name": "HTTPD_APPLICATION_NAME",
+					"value": "httpd-app",
+					"required": true
+				},
+				{
+					"description": "Git source URI for HTTPD application",
+					"displayName": "HTTPD application source url",
+					"name": "HTTPD_APPLICATION_SOURCE_REPOSITORY_URL",
+					"value": "https://github.com/sclorg/httpd-container.git",
+					"required": true
+				},
+				{
+					"description": "HTTPD application source branch/tag reference.",
+					"displayName": "HTTPD application source branch/tag reference.",
+					"name": "HTTPD_APPLICATION_SOURCE_REPOSITORY_REF",
+					"value": "master",
+					"required": false
+				},
+				{
+					"description": "Path within Git project to build containing the HTTPD application; empty for root project directory.",
+					"displayName": "HTTPD application context directory.",
+					"name": "HTTPD_APPLICATION_CONTEXT_DIR",
+					"value": "2.4/test/sample-test-app",
+					"required": false
+				},
+				{
+					"name": "HTTPD_APPLICATION_HOSTNAME",
+					"displayName": "HTTPD application route hostname.",
+					"description": "Custom hostname for HTTPD service route.  Leave blank for default hostname, e.g.: \u003capplication-name\u003e-\u003cproject\u003e.\u003cdefault-domain-suffix\u003e"
+				}
+			],
+			"objects": [
+				{
+					"kind": "ImageStream",
+					"apiVersion": "v1",
+					"metadata": {
+						"name": "sclorg-httpd-container",
+						"labels": {
+							"build": "${HTTPD_BUILDER_NAME}"
+						}
+					},
+					"spec": {
+						"dockerImageRepository": "registry.access.redhat.com/rhscl/httpd-24-rhel7"
+					}
+				},
+				{
+					"kind": "ImageStream",
+					"apiVersion": "v1",
+					"metadata": {
+						"name": "${HTTPD_BUILDER_NAME}",
+						"labels": {
+							"build": "${HTTPD_BUILDER_NAME}"
+						}
+					}
+				},
+				{
+					"kind": "ImageStream",
+					"apiVersion": "v1",
+					"metadata": {
+						"name": "${HTTPD_APPLICATION_NAME}",
+						"labels": {
+							"application": "${HTTPD_APPLICATION_NAME}"
+						}
+					}
+				},
+				{
+					"kind": "BuildConfig",
+					"apiVersion": "v1",
+					"metadata": {
+						"name": "${HTTPD_BUILDER_NAME}",
+						"labels": {
+							"build": "${HTTPD_BUILDER_NAME}"
+						}
+					},
+					"spec": {
+						"triggers": [
+							{
+								"type": "ConfigChange"
+							},
+							{
+								"type": "ImageChange",
+								"imageChange": {}
+							}
+						],
+						"source": {
+							"type": "Git",
+							"git": {
+								"uri": "${HTTPD_BUILDER_SOURCE_REPOSITORY_URL}",
+								"ref": "${HTTPD_BUILDER_SOURCE_REPOSITORY_REF}"
+							},
+							"contextDir": "${HTTPD_BUILDER_CONTEXT_DIR}"
+						},
+						"strategy": {
+							"type": "Docker",
+							"dockerStrategy": {
+								"from": {
+									"kind": "ImageStreamTag",
+									"name": "sclorg-httpd-container:2.4"
+								}
+							}
+						},
+						"output": {
+							"to": {
+								"kind": "ImageStreamTag",
+								"name": "${HTTPD_BUILDER_NAME}:latest"
+							}
+						}
+					}
+				},
+				{
+					"kind": "Route",
+					"apiVersion": "v1",
+					"metadata": {
+						"name": "${HTTPD_APPLICATION_NAME}",
+						"labels": {
+							"application": "${HTTPD_APPLICATION_NAME}"
+						},
+						"annotations": {
+							"description": "Route for application's http service."
+						}
+					},
+					"spec": {
+						"host": "${HTTPD_APPLICATION_HOSTNAME}",
+						"to": {
+							"kind": "Service",
+							"name": "${HTTPD_APPLICATION_NAME}"
+						},
+						"port": {
+							"targetPort": "8080-tcp"
+						}
+					}
+				},
+				{
+					"kind": "BuildConfig",
+					"apiVersion": "v1",
+					"metadata": {
+						"name": "${HTTPD_APPLICATION_NAME}",
+						"labels": {
+							"application": "${HTTPD_APPLICATION_NAME}"
+						}
+					},
+					"spec": {
+						"triggers": [
+							{
+								"type": "ConfigChange"
+							},
+							{
+								"type": "ImageChange",
+								"imageChange": {}
+							}
+						],
+						"source": {
+							"type": "Git",
+							"git": {
+								"uri": "${HTTPD_APPLICATION_SOURCE_REPOSITORY_URL}",
+								"ref": "${HTTPD_APPLICATION_SOURCE_REPOSITORY_REF}"
+							},
+							"contextDir": "${HTTPD_APPLICATION_CONTEXT_DIR}"
+						},
+						"strategy": {
+							"type": "Source",
+							"sourceStrategy": {
+								"from": {
+									"kind": "ImageStreamTag",
+									"name": "${HTTPD_BUILDER_NAME}:latest"
+								}
+							}
+						},
+						"output": {
+							"to": {
+								"kind": "ImageStreamTag",
+								"name": "${HTTPD_APPLICATION_NAME}:latest"
+							}
+						}
+					}
+				},
+				{
+					"kind": "Service",
+					"apiVersion": "v1",
+					"metadata": {
+						"name": "${HTTPD_APPLICATION_NAME}",
+						"labels": {
+							"application": "${HTTPD_APPLICATION_NAME}"
+						},
+						"annotations": {
+							"description": "The HTTPD server's http port."
+						}
+					},
+					"spec": {
+						"ports": [
+							{
+								"name": "8080-tcp",
+								"protocol": "TCP",
+								"port": 8080,
+								"targetPort": 8080
+							}
+						],
+						"selector": {
+							"application": "${HTTPD_APPLICATION_NAME}",
+							"deploymentconfig": "${HTTPD_APPLICATION_NAME}"
+						},
+						"type": "ClusterIP",
+						"sessionAffinity": "None"
+					}
+				},
+				{
+					"kind": "DeploymentConfig",
+					"apiVersion": "v1",
+					"metadata": {
+						"name": "${HTTPD_APPLICATION_NAME}",
+						"labels": {
+							"app": "${HTTPD_APPLICATION_NAME}"
+						}
+					},
+					"spec": {
+						"strategy": {
+							"type": "Rolling",
+							"rollingParams": {
+								"updatePeriodSeconds": 1,
+								"intervalSeconds": 1,
+								"timeoutSeconds": 600,
+								"maxUnavailable": "25%",
+								"maxSurge": "25%"
+							},
+							"resources": {}
+						},
+						"triggers": [
+							{
+								"type": "ConfigChange"
+							},
+							{
+								"type": "ImageChange",
+								"imageChangeParams": {
+									"automatic": true,
+									"containerNames": [
+										"${HTTPD_APPLICATION_NAME}"
+									],
+									"from": {
+										"kind": "ImageStreamTag",
+										"name": "${HTTPD_APPLICATION_NAME}:latest"
+									}
+								}
+							}
+						],
+						"replicas": 1,
+						"test": false,
+						"selector": {
+							"application": "${HTTPD_APPLICATION_NAME}",
+							"deploymentconfig": "${HTTPD_APPLICATION_NAME}"
+						},
+						"template": {
+							"metadata": {
+								"labels": {
+									"application": "${HTTPD_APPLICATION_NAME}",
+									"deploymentconfig": "${HTTPD_APPLICATION_NAME}"
+								}
+							},
+							"spec": {
+								"containers": [
+									{
+										"name": "${HTTPD_APPLICATION_NAME}",
+										"image": "${HTTPD_APPLICATION_NAME}",
+										"ports": [
+											{
+												"containerPort": 8080,
+												"protocol": "TCP"
+											}
+										],
+										"resources": {},
+										"terminationMessagePath": "/dev/termination-log",
+										"imagePullPolicy": "Always"
+									}
+								],
+								"restartPolicy": "Always",
+								"terminationGracePeriodSeconds": 30,
+								"dnsPolicy": "ClusterFirst",
+								"securityContext": {}
+							}
+						}
+					}
+				}
+			]
+		}
+	]
+}
