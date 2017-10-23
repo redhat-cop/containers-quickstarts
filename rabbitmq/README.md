@@ -4,10 +4,6 @@ This demonstration describes how to create a RabbitMQ cluster in Openshift.
 
 ![RabbitMQ](images/RabbitMQ-logo.svg "RabbitMQ")
 
-## Add project view permission to default serviceaccount
-This is necessary for the autocluster plugin to discover the RabbitMQ members
-`oc policy add-role-to-user view -z default`
-
 ## Parameters
 | NAME                         | DESCRIPTION                         | VALUE
 | ---------------------------- | ----------------------------------- | ---------------------------------------------------- |
