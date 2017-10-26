@@ -11,7 +11,9 @@ It is simple, straight-forward, and extensible." \
   BASH_ENV=/opt/app-root/etc/scl_enable \
   ENV=/opt/app-root/etc/scl_enable \
   PATH=$PATH:/home/jenkins/bin \
-  PROMPT_COMMAND=". /opt/app-root/etc/scl_enable"
+  PROMPT_COMMAND=". /opt/app-root/etc/scl_enable" \
+  HOME=/home/jenkins \
+  ORIGIN_CLIENT=https://github.com/openshift/origin/releases/download/v3.6.0/openshift-origin-client-tools-v3.6.0-c4dd4cf-linux-64bit.tar.gz
 
 
 LABEL summary="$SUMMARY" \
@@ -30,8 +32,13 @@ RUN yum install -y centos-release-scl && \
     yum-config-manager --enable centos-sclo-rh-testing && \
     INSTALL_PKGS="rh-ruby24 rh-ruby24-ruby-devel rh-ruby24-rubygem-rake rh-ruby24-rubygem-bundler rh-nodejs6" && \
     yum install -y --setopt=tsflags=nodocs $INSTALL_PKGS && rpm -V $INSTALL_PKGS && \
-    yum remove -y origin-clients && yum install -y origin-clients-3.6.0-1.fc26.x86_64 && \
+    yum remove -y origin-clients && \
     yum clean all -y
+
+RUN wget -O $HOME/origin-client.tar.gz $ORIGIN_CLIENT && \
+    tar -xzf $HOME/origin-client.tar.gz -C $HOME && \
+    cp $HOME/openshift-origin-client-tools-v3.6.0-c4dd4cf-linux-64bit/oc /usr/bin/oc && \
+    rm -rf origin-client*
 
 # Copy extra files to the image.
 COPY ./root/ /
