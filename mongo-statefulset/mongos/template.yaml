@@ -1,0 +1,200 @@
+apiVersion: v1
+kind: Template
+metadata:
+  name: mongodb-mongos-on-openshift
+  annotations:
+    openshift.io/display-name: "MongoDB Shard Router"
+    description: "MongoDB Shard Router on OpenShift"
+    iconClass: "icon-mongodb"
+    tags: "database,mongodb,nosql,mongos"
+parameters:
+
+  - name: APP_NAME
+    displayName: "Application name"
+    value: "mongodb"
+    required: true
+
+  - name: MONGODB_ADMIN_PASSWORD
+    displayName: "MongoDB Admin Password"
+    description: "Password for the admin user."
+    generate: expression
+    from: "[a-zA-Z0-9]{16}"
+    required: true
+
+  - name: MONGODB_KEYFILE_VALUE
+    displayName: "Keyfile Content"
+    description: "The value of the MongoDB keyfile for inter-cluster communication. Must be the same throughout the cluster. See (https://docs.mongodb.com/manual/core/security-internal-authentication/#internal-auth-keyfile)."
+    required: true
+
+  - name: CONFIG_REPLSET_NAME
+    displayName: "Config Server RS Name"
+    description: "Replica Set name for the configuration server"
+    value: 'cs0'
+    required: true
+
+  - name: CONFIG_REPLSET_SERVER
+    displayName: "Config Server URI"
+    description: "A URI for the configuration server"
+    value: 'mongodbconfigsvr-0.mongodb-configsvr-internal.myproject.svc.cluster.local:27017'
+    required: true
+
+  - name: REPLSET_NAMES
+    displayName: "Replica Set Names"
+    description: "The names of all the Replica Sets of each shard to cluster (Corresponds with order of REPLSET_SERVERS). Comma or newline delimited."
+    value: 'rs0'
+    required: true
+
+  - name: REPLSET_SERVERS
+    displayName: "Replica Set URIs"
+    description: "URIs of a Replica Set member from each shard to add to cluster (Corresponds with order of REPLSET_NAMES). Comma or newline delimited."
+    value: 'mongodbreplsetabc-0.mongodb-repset-internal-abc.myproject.svc.cluster.local:27017'
+    required: true
+
+  - name: MONGODB_IMAGE
+    displayName: "MongoDB Docker Image"
+    description: "A reference to a supported MongoDB Docker image."
+    value: "bornemannjs/mongodb-34:0.71"
+    required: true
+
+  - name: MEMORY_LIMIT
+    displayName: "Memory Limit"
+    description: "Maximum amount of memory the container can use."
+    value: "512Mi"
+
+  - name: ADDITIONAL_STARTUP_OPTS
+    displayName: "Additional Startup Opts"
+    description: "Additional configuraiton options when starting the shard router"
+    required: false
+    value: ""
+
+objects:
+- apiVersion: v1
+  kind: DeploymentConfig
+  metadata:
+    generation: 1
+    labels:
+      app: "${APP_NAME}"
+    name: "${APP_NAME}-mongos"
+  spec:
+    replicas: 1
+    selector:
+      app: "${APP_NAME}"
+      deploymentconfig: "${APP_NAME}-mongos"
+    strategy:
+      activeDeadlineSeconds: 21600
+      resources: {}
+      rollingParams:
+        intervalSeconds: 1
+        maxSurge: 25%
+        maxUnavailable: 25%
+        timeoutSeconds: 600
+        updatePeriodSeconds: 1
+      type: Rolling
+    template:
+      metadata:
+        labels:
+          app: "${APP_NAME}"
+          deploymentconfig: "${APP_NAME}-mongos"
+          component: "mongos"
+      spec:
+        containers:
+        - name: mongos
+          resources:
+            limits:
+              memory: "${MEMORY_LIMIT}"
+          env:
+            - name: MONGODB_ADMIN_PASSWORD
+              value: ${MONGODB_ADMIN_PASSWORD}
+            - name: MONGODB_KEYFILE_VALUE
+              value: ${MONGODB_KEYFILE_VALUE}
+            - name: ENABLE_TLS
+              valueFrom:
+                configMapKeyRef:
+                  name: ${APP_NAME}-mongos-config
+                  key: ssl.enabled
+            - name: SSL_CA_PATH
+              valueFrom:
+                configMapKeyRef:
+                  name: ${APP_NAME}-mongos-config
+                  key: ssl.ca.path
+            - name: ADDITIONAL_SSL_OPTS
+              valueFrom:
+                configMapKeyRef:
+                  name: ${APP_NAME}-mongos-config
+                  key: additional.ssl.opts
+            - name: CONFIG_REPLSET_NAME
+              valueFrom:
+                configMapKeyRef:
+                  name: ${APP_NAME}-mongos-config
+                  key: config.rep.name
+            - name: CONFIG_REPLSET_SERVER
+              valueFrom:
+                configMapKeyRef:
+                  name: ${APP_NAME}-mongos-config
+                  key: config.server
+            - name: REPLSET_NAMES
+              valueFrom:
+                configMapKeyRef:
+                  name: ${APP_NAME}-mongos-config
+                  key: rep.names
+            - name: REPLSET_SERVERS
+              valueFrom:
+                configMapKeyRef:
+                  name: ${APP_NAME}-mongos-config
+                  key: rep.servers
+            - name: ADDITIONAL_STARTUP_OPTS
+              valueFrom:
+                configMapKeyRef:
+                  name: ${APP_NAME}-mongos-config
+                  key: additional.startup.opts
+          args:
+          - run-mongos
+          image: "${MONGODB_IMAGE}"
+          imagePullPolicy: IfNotPresent
+          ports:
+          - containerPort: 27017
+            protocol: TCP
+            failureThreshold: 3
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 1
+          livenessProbe:
+            initialDelaySeconds: 60
+            tcpSocket:
+              port: 27017
+          readinessProbe:
+            initialDelaySeconds: 10
+            exec:
+              command:
+                - "mongo-is-ready"
+          resources: {}
+          terminationMessagePath: /dev/termination-log
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+        securityContext: {}
+        terminationGracePeriodSeconds: 30
+- apiVersion: v1
+  kind: Service
+  metadata:
+    name: "${APP_NAME}-mongos-ext"
+  spec:
+    ports:
+    - name: 27017-tcp
+      port: 27017
+    type: LoadBalancer
+    selector:
+      component: mongos
+- kind: ConfigMap
+  apiVersion: v1
+  metadata:
+    name: "${APP_NAME}-mongos-config"
+    app: "${APP_NAME}"
+  data:
+    config.rep.name: ${CONFIG_REPLSET_NAME}
+    config.server: ${CONFIG_REPLSET_SERVER}
+    rep.names: ${REPLSET_NAMES}
+    rep.servers: ${REPLSET_SERVERS}
+    ssl.enabled: "false"
+    ssl.ca.path: ""
+    additional.ssl.opts: "--sslAllowConnectionsWithoutCertificates --sslDisabledProtocols TLS1_0,TLS1_1"
+    additional.startup.opts: "${ADDITIONAL_STARTUP_OPTS}"

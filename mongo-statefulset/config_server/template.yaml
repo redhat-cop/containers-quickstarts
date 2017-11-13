@@ -1,0 +1,170 @@
+kind: Template
+apiVersion: v1
+metadata:
+  name: mongodb-configserver-on-openshift
+  annotations:
+    openshift.io/display-name: "MongoDB Config Server"
+    description: "MongoDB Config Server on OpenShift"
+    iconClass: "icon-mongodb"
+    tags: "database,mongodb,nosql,config"
+parameters:
+
+  - name: APP_NAME
+    displayName: "Application name"
+    value: "mongodb"
+    required: true
+
+  - name: MONGODB_CONFIGSVR_REPLICA_NAME
+    displayName: "ConfigServer Replica Set Name"
+    description: "The name of the configuration server replica set."
+    value: cs0
+    required: true
+
+  - name: MONGODB_ADMIN_PASSWORD
+    displayName: "MongoDB Admin Password"
+    description: "Password for the admin user."
+    generate: expression
+    from: "[a-zA-Z0-9]{16}"
+    required: true
+
+  - name: MONGODB_KEYFILE_VALUE
+    displayName: "Keyfile Content"
+    description: "The value of the MongoDB keyfile for inter-cluster communication. Must be the same throughout the cluster. See (https://docs.mongodb.com/manual/core/security-internal-authentication/#internal-auth-keyfile)."
+    generate: expression
+    from: "[a-zA-Z0-9]{255}"
+    required: true
+
+  - name: MONGODB_IMAGE
+    displayName: "MongoDB Docker Image"
+    description: "A reference to a supported MongoDB Docker image."
+    value: "bornemannjs/mongodb-34:0.71"
+    required: true
+
+  - name: VOLUME_CAPACITY
+    displayName: "Volume Capacity"
+    description: "Volume space available for data, e.g. 512Mi, 2Gi."
+    value: "1Gi"
+    required: true
+
+  - name: MEMORY_LIMIT
+    displayName: "Memory Limit"
+    description: "Maximum amount of memory the container can use."
+    value: "512Mi"
+
+  - name: ADDITIONAL_STARTUP_OPTS
+    displayName: "Additional Startup Opts"
+    description: "Additional configuraiton options when starting the configuration server"
+    required: false
+    value: ""
+
+objects:
+  # A headless service to create DNS records
+  - kind: Service
+    apiVersion: v1
+    metadata:
+      name: "${APP_NAME}-configsvr-internal"
+      labels:
+        app: "${APP_NAME}"
+      annotations:
+        service.alpha.kubernetes.io/tolerate-unready-endpoints: "true"
+    spec:
+      clusterIP: None
+      # the list of ports that are exposed by this service
+      ports:
+        - name: mongodb
+          port: 27017
+      # will route traffic to pods having labels matching this selector
+      selector:
+        name: "${APP_NAME}configsvr"
+
+  - kind: StatefulSet
+    apiVersion: apps/v1beta1
+    metadata:
+      name: "${APP_NAME}configsvr"
+      labels:
+        app: "${APP_NAME}"
+    spec:
+      # pets get DNS/hostnames that follow the pattern: ${metadata.name}-NUM.${spec.serviceName}.default.svc.cluster.local
+      serviceName: "${APP_NAME}-configsvr-internal"
+      replicas: 3
+      # describes the pod that will be created if insufficient replicas are detected
+      template:
+        metadata:
+          labels:
+            name: "${APP_NAME}configsvr"
+            app: "${APP_NAME}"
+        spec:
+          containers:
+            - name: mongo-container
+              image: "${MONGODB_IMAGE}"
+              ports:
+                - containerPort: 27017
+              args:
+                - "run-configsvr"
+              volumeMounts:
+                - name: ${APP_NAME}-configsvr-data
+                  mountPath: "/var/lib/mongodb/data"
+              env:
+                - name: MONGODB_REPLICA_NAME
+                  value: "${MONGODB_CONFIGSVR_REPLICA_NAME}"
+                - name: MONGODB_KEYFILE_VALUE
+                  value: "${MONGODB_KEYFILE_VALUE}"
+                - name: MONGODB_ADMIN_PASSWORD
+                  value: "${MONGODB_ADMIN_PASSWORD}"
+                - name: MONGODB_SERVICE_NAME
+                  value: "mongodb-configsvr-internal"
+                - name: ENABLE_TLS
+                  valueFrom:
+                    configMapKeyRef:
+                      name: ${APP_NAME}-configsvr-config
+                      key: ssl.enabled
+                - name: SSL_CA_PATH
+                  valueFrom:
+                    configMapKeyRef:
+                      name: ${APP_NAME}-configsvr-config
+                      key: ssl.ca.path
+                - name: ADDITIONAL_SSL_OPTS
+                  valueFrom:
+                    configMapKeyRef:
+                      name: ${APP_NAME}-configsvr-config
+                      key: additional.ssl.opts
+                - name: ADDITIONAL_STARTUP_OPTS
+                  valueFrom:
+                    configMapKeyRef:
+                      name: ${APP_NAME}-configsvr-config
+                      key: additional.startup.opts
+              resources:
+                limits:
+                  memory: "${MEMORY_LIMIT}"
+              livenessProbe:
+                initialDelaySeconds: 60
+                tcpSocket:
+                  port: 27017
+              readinessProbe:
+                initialDelaySeconds: 10
+                exec:
+                  command:
+                    - "mongo-is-ready"
+      volumeClaimTemplates:
+        - metadata:
+            name: ${APP_NAME}-configsvr-data
+            labels:
+              app: "${APP_NAME}"
+            annotations:
+              #Uncomment me if you would like to use the dynamic storage provisioner defined at the root of the project
+              #volume.beta.kubernetes.io/storage-class: us-east-storage
+          spec:
+            accessModes: [ ReadWriteOnce ]
+            resources:
+              requests:
+                storage: "${VOLUME_CAPACITY}"
+  - kind: ConfigMap
+    apiVersion: v1
+    metadata:
+      name: "${APP_NAME}-configsvr-config"
+      app: "${APP_NAME}"
+    data:
+      ssl.enabled: "false"
+      ssl.ca.path: ""
+      additional.ssl.opts: "--sslAllowConnectionsWithoutCertificates --sslDisabledProtocols TLS1_0,TLS1_1"
+      additional.startup.opts: "${ADDITIONAL_STARTUP_OPTS}"
