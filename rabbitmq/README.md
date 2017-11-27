@@ -4,6 +4,9 @@ This demonstration describes how to create a RabbitMQ cluster in Openshift.
 
 ![RabbitMQ](images/RabbitMQ-logo.svg "RabbitMQ")
 
+## Requirements
+This example is configured to use a `PersistentVolume` for storing cluster and message data. Thus it is a requirement that Openshift is configured to support [Persistent Volumes](https://docs.openshift.com/container-platform/latest/dev_guide/persistent_volumes.html) and that there are PVs with at least `ReadWriteOnce` (RWO) access available.
+
 ## Parameters
 | NAME                         | DESCRIPTION                         | VALUE
 | ---------------------------- | ----------------------------------- | ---------------------------------------------------- |
