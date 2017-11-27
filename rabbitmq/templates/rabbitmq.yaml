@@ -201,11 +201,22 @@ objects:
           resources: {}
           terminationMessagePath: /dev/termination-log
           terminationMessagePolicy: File
+          volumeMounts:
+          - name: mnesia
+            mountPath: /var/lib/rabbitmq/mnesia
         dnsPolicy: ClusterFirst
         restartPolicy: Always
         schedulerName: default-scheduler
         securityContext: {}
         terminationGracePeriodSeconds: 10
+    volumeClaimTemplates:
+    - metadata:
+        name: mnesia
+      spec:
+        accessModes: [ "ReadWriteOnce" ]
+        resources:
+          requests:
+            storage: 1Gi
 - apiVersion: v1
   kind: RoleBinding
   metadata:
