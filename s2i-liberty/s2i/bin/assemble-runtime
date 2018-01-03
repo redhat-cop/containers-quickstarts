@@ -1,18 +1,18 @@
 #!/bin/bash
 
 echo copy anything in $WORKDIR/artifacts to dropins
-cp $WORKDIR/artifacts/* /config/dropins/
+cp -R $WORKDIR/artifacts/* /config/dropins/
 echo copy anything in $WORKDIR/config to config
-cp $WORKDIR/config/*  /config
+cp -R $WORKDIR/config/*  /config
 
 if [ -d "$S2I_DESTINATION/src/artifacts" ]; then
   #echo copy anything in $S2I_DESTINATION/src/artifacts to dropins
-  cp $S2I_DESTINATION/src/artifacts/* /config/dropins/
+  cp -R $S2I_DESTINATION/src/artifacts/* /config/dropins/
 fi
 
 if [ -d "$S2I_DESTINATION/src/config" ]; then
   #echo copy anything in $S2I_DESTINATION/src/artifacts to dropins
-  cp $S2I_DESTINATION/src/config/* /config
+  cp -R $S2I_DESTINATION/src/config/* /config
 fi
 
 exit $rc
