@@ -15,7 +15,7 @@ objects:
     labels:
       application: zookeeper
       template: zookeeper-build
-    name: zookeeper
+    name: zookeeper-cop
   spec:
     lookupPolicy:
       local: true
@@ -30,7 +30,7 @@ objects:
     output:
       to:
         kind: ImageStreamTag
-        name: zookeeper:latest
+        name: zookeeper-cop:${ZOOKEEPER_VERSION}
     source:
       contextDir: ${CONTEXT_DIR}
       git:
@@ -63,3 +63,7 @@ parameters:
   name: SOURCE_REPOSITORY_URL
   required: true
   value: https://github.com/redhat-cop/containers-quickstarts
+- description: Version of Zookeeper
+  name: ZOOKEEPER_VERSION
+  required: true
+  value: 3.4.11

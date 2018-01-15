@@ -34,20 +34,3 @@ items:
       name: latest
       referencePolicy:
         type: Source
-- apiVersion: v1
-  kind: ImageStream
-  metadata:
-    name: centos
-  spec:
-    dockerImageRepository: docker.io/centos
-    lookupPolicy:
-      local: false
-    tags:
-    - annotations: null
-      from:
-        kind: DockerImage
-        name: docker.io/centos:7
-      importPolicy: {}
-      name: "7"
-      referencePolicy:
-        type: Source

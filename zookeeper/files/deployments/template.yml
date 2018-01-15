@@ -189,4 +189,4 @@ parameters:
 - description: Zookeeper ImageStream Tag
   name: ZOOKEEPER_IMAGESTREAMTAG
   required: true
-  value: zookeeper:latest
+  value: zookeeper-cop:3.4.11
