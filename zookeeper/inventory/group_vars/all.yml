@@ -8,7 +8,7 @@ openshift_cluster_content:
 - object: imagestream
   content:
   - name: rhel7
-    file: "{{ inventory_dir }}/../files/imagestreams/rhel7.yml"
+    file: "{{ inventory_dir }}/../files/imagestreams/images.yml"
     namespace: zookeeper
 - object: deployments
   content:

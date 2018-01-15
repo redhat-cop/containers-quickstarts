@@ -16,6 +16,9 @@ objects:
       application: zookeeper
       template: zookeeper-build
     name: zookeeper
+  spec:
+    lookupPolicy:
+      local: true
 - apiVersion: v1
   kind: BuildConfig
   metadata:
