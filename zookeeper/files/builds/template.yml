@@ -1,0 +1,62 @@
+apiVersion: v1
+kind: Template
+labels:
+  template: zookeeper
+metadata:
+  annotations:
+    description: Zookeeper Build Components
+    iconClass: icon-java
+    tags: java, zookeeper
+  name: zookeeper
+objects:
+- apiVersion: v1
+  kind: ImageStream
+  metadata:
+    labels:
+      application: zookeeper
+      template: zookeeper-build
+    name: zookeeper
+- apiVersion: v1
+  kind: BuildConfig
+  metadata:
+    labels:
+      application: zookeeper
+      template: zookeeper-build
+    name: zookeeper
+  spec:
+    output:
+      to:
+        kind: ImageStreamTag
+        name: zookeeper:latest
+    source:
+      contextDir: ${CONTEXT_DIR}
+      git:
+        ref: ${SOURCE_REPOSITORY_REF}
+        uri: ${SOURCE_REPOSITORY_URL}
+      type: Git
+    strategy:
+      dockerStrategy:
+        forcePull: true
+        from:
+          kind: ImageStreamTag
+          name: ${IMAGE_STREAM_TAG_NAME}
+      type: Docker
+    triggers:
+    - imageChange: {}
+      type: ImageChange
+    - type: ConfigChange
+parameters:
+- description: Path within Git repository to build; empty for root of repository
+  name: CONTEXT_DIR
+  value: zookeeper
+- description: Image stream tag for the image you'd like to use to build the application
+  name: IMAGE_STREAM_TAG_NAME
+  required: true
+  value: rhel:7.4
+- description: Git branch/tag reference
+  name: SOURCE_REPOSITORY_REF
+  value: master
+- description: Git source URL for application
+  name: SOURCE_REPOSITORY_URL
+  required: true
+  value: https://github.com/redhat-cop/containers-quickstarts
