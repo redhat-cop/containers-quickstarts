@@ -1,0 +1,86 @@
+apiVersion: v1
+kind: Template
+labels:
+  template: rabbitmq
+metadata:
+  annotations:
+    description: RabbitMQ Build Components
+    iconClass: icon-erlang
+    tags: erlang, rabbitmq
+  name: rabbitmq
+objects:
+- apiVersion: v1
+  kind: ImageStream
+  metadata:
+    labels:
+      application: rabbitmq
+    name: rabbitmq
+  spec:
+    lookupPolicy:
+      local: true
+- apiVersion: v1
+  kind: BuildConfig
+  metadata:
+    labels:
+      application: "${APPLICATION_NAME}"
+    name: "${APPLICATION_NAME}"
+  spec:
+    output:
+      to:
+        kind: ImageStreamTag
+        name: "rabbitmq:${RABBITMQ_VERSION}"
+    source:
+      contextDir: "${CONTEXT_DIR}"
+      git:
+        ref: "${SOURCE_REPOSITORY_REF}"
+        uri: "${SOURCE_REPOSITORY_URL}"
+      type: Git
+    strategy:
+      dockerStrategy:
+        env:
+        - name: ERLANG_VERSION
+          value: "${ERLANG_VERSION}"
+        - name: RABBITMQ_AUTOCLUSTER_VERSION
+          value: "${RABBITMQ_AUTOCLUSTER_VERSION}"
+        - name: RABBITMQ_VERSION
+          value: "${RABBITMQ_VERSION}"
+        forcePull: true
+        from:
+          kind: ImageStreamTag
+          name: "${FROM_IMAGE}"
+      type: Docker
+    triggers:
+    - imageChange: {}
+      type: ImageChange
+    - type: ConfigChange
+parameters:
+- description: The name for the application.
+  name: APPLICATION_NAME
+  required: true
+  value: rabbitmq
+- description: Path within Git repository to build; empty for root of repository
+  name: CONTEXT_DIR
+  value: rabbitmq
+- description: Erlang version to use
+  name: ERLANG_VERSION
+  required: true
+  value: 20.1.1
+- description: Image stream tag for the image you'd like to use to build the application
+  name: FROM_IMAGE
+  required: true
+  value: rhel:7.4
+- description: RabbitMQ Autocluster version to use
+  name: RABBITMQ_AUTOCLUSTER_VERSION
+  required: true
+  value: 0.10.0
+- description: RabbitMQ version to build
+  name: RABBITMQ_VERSION
+  required: true
+  value: 3.6.12
+- description: Git branch/tag reference
+  name: SOURCE_REPOSITORY_REF
+  value: master
+- description: Git source URL for application
+  name: SOURCE_REPOSITORY_URL
+  required: true
+  value: https://github.com/redhat-cop/containers-quickstarts

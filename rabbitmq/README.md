@@ -5,7 +5,9 @@ This demonstration describes how to create a RabbitMQ cluster in Openshift.
 ![RabbitMQ](images/RabbitMQ-logo.svg "RabbitMQ")
 
 ## Requirements
-This example is configured to use a `PersistentVolume` for storing cluster and message data. Thus it is a requirement that Openshift is configured to support [Persistent Volumes](https://docs.openshift.com/container-platform/latest/dev_guide/persistent_volumes.html) and that there are PVs with at least `ReadWriteOnce` (RWO) access available.
+1. This example is configured to use a `PersistentVolume` for storing cluster and message data. Thus it is a requirement that Openshift is configured to support [Persistent Volumes](https://docs.openshift.com/container-platform/latest/dev_guide/persistent_volumes.html) and that there are PVs with at least `ReadWriteOnce` (RWO) access available.
+
+2. This example is also using the [OpenShift Applier](https://github.com/redhat-cop/casl-ansible/tree/master/roles/openshift-applier) to build and deploy RabbitMQ. As a result you'll need to have [ansible installed](http://docs.ansible.com/ansible/latest/intro_installation.html).
 
 ## Parameters
 | NAME                         | DESCRIPTION                         | VALUE
@@ -22,13 +24,17 @@ This example is configured to use a `PersistentVolume` for storing cluster and m
 `ERLANG_VERSION`, `RABBITMQ_VERSION` & `RABBITMQ_AUTOCLUSTER_VERSION` are passed on to the buildconfig thus these versions can be controlled in the build.
 This is the equivivalent of `docker build --build-arg ERLANG_VERSION=19.3.6` to a docker build.
 
-## Create everything and start build
-`oc process -f templates/rabbitmq.yaml | oc apply -f -`
-
+## Start build and deploy
+1. Clone this repository:
+   `git clone https://github.com/redhat-cop/containers-quickstarts`
+2. Clone casl-ansible:
+   `git clone https://github.com/redhat-cop/casl-ansible`
+3. `cd containers-quickstarts/rabbitmq`
+4. Run openshift-applier: `ansible-playbook -i inventory/hosts ../casl-ansible/playbooks/openshift-cluster-seed.yml --connection=local`
 
 ## Verify your pods are running
 ```
-$ oc get pod
+$ oc get pod -n rabbitmq
 NAME               READY     STATUS      RESTARTS   AGE
 rabbitmq-0         1/1       Running     0          1m
 rabbitmq-1         1/1       Running     0          1m
@@ -38,7 +44,7 @@ rabbitmq-2         1/1       Running     0          1m
 
 ## Verify your RabbitMQ Cluster
 ```
-$ oc rsh rabbitmq-1 rabbitmqctl cluster_status
+$ oc rsh -n rabbitmq rabbitmq-1 rabbitmqctl cluster_status
 Cluster status of node 'rabbit@172.17.0.3'
 [{nodes,[{disc,['rabbit@172.17.0.2','rabbit@172.17.0.3',
                 'rabbit@172.17.0.4']}]},
@@ -51,4 +57,4 @@ Cluster status of node 'rabbit@172.17.0.3'
 ```
 
 ## Tear everything down
-`oc delete all -l application=rabbitmq`
+`oc delete project rabbitmq`
