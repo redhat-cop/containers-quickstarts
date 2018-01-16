@@ -14,7 +14,6 @@ objects:
   metadata:
     labels:
       application: zookeeper
-      template: zookeeper-build
     name: zookeeper-cop
   spec:
     lookupPolicy:
@@ -24,7 +23,6 @@ objects:
   metadata:
     labels:
       application: zookeeper
-      template: zookeeper-build
     name: zookeeper
   spec:
     output:

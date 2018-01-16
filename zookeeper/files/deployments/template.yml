@@ -128,7 +128,7 @@ objects:
             value: "2888"
           - name: ZK_ELECTION_PORT
             value: "3888"
-          image: ${ZOOKEEPER_IMAGESTREAMTAG}
+          image: "${APPLICATION_NAME}-cop:${ZOOKEEPER_VERSION}"
           imagePullPolicy: Always
           livenessProbe:
             exec:
@@ -187,6 +187,6 @@ parameters:
   required: true
   value: zookeeper
 - description: Zookeeper ImageStream Tag
-  name: ZOOKEEPER_IMAGESTREAMTAG
+  name: ZOOKEEPER_VERSION
   required: true
-  value: zookeeper-cop:3.4.11
+  value: 3.4.11
