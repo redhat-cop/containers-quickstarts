@@ -5,9 +5,19 @@ This demonstration describes how to create a RabbitMQ cluster in Openshift.
 ![RabbitMQ](images/RabbitMQ-logo.svg "RabbitMQ")
 
 ## Requirements
-1. This example is configured to use a `PersistentVolume` for storing cluster and message data. Thus it is a requirement that Openshift is configured to support [Persistent Volumes](https://docs.openshift.com/container-platform/latest/dev_guide/persistent_volumes.html) and that there are PVs with at least `ReadWriteOnce` (RWO) access available.
+1. OpenShift Container Platform v3.6 or newer (we're using [this feature](https://docs.openshift.com/container-platform/3.6/dev_guide/managing_images.html#using-is-with-k8s)).
+2. This example is configured to use a `PersistentVolume` for storing cluster and message data. Thus it is a requirement that Openshift is configured to support [Persistent Volumes](https://docs.openshift.com/container-platform/latest/dev_guide/persistent_volumes.html) and that there are PVs with at least `ReadWriteOnce` (RWO) access available.
 
-2. This example is also using the [OpenShift Applier](https://github.com/redhat-cop/casl-ansible/tree/master/roles/openshift-applier) to build and deploy RabbitMQ. As a result you'll need to have [ansible installed](http://docs.ansible.com/ansible/latest/intro_installation.html).
+3. This example is also using the [OpenShift Applier](https://github.com/redhat-cop/casl-ansible/tree/master/roles/openshift-applier) to build and deploy RabbitMQ. As a result you'll need to have [ansible installed](http://docs.ansible.com/ansible/latest/intro_installation.html).
+
+## OpenShift objects
+The openshift-applier will create the following OpenShift objects:
+* A Project named `rabbitmq` (see [files/projects/projects.yml](files/projects/projects.yml))
+* Two ImageStreams `rabbitmq` and `rhel` (see [files/builds/template.yml](files/builds/template.yml) and [files/imagestreams/images.yml](files/imagestreams/images.yml))
+* A BuildConfig named `rabbitmq` (see [files/builds/template.yml](files/builds/template.yml))
+* A RoleBinding named `rabbitmq` (see [files/deployments/template.yml](files/deployments/template.yml))
+* A Service named `rabbitmq` (see [files/deployments/template.yml](files/deployments/template.yml))
+* A StatefulSet named `rabbitmq` (see [files/deployments/template.yml](files/deployments/template.yml))
 
 ## Parameters
 | NAME                         | DESCRIPTION                         | VALUE
@@ -30,7 +40,8 @@ This is the equivivalent of `docker build --build-arg ERLANG_VERSION=19.3.6` to 
 2. Clone casl-ansible:
    `git clone https://github.com/redhat-cop/casl-ansible`
 3. `cd containers-quickstarts/rabbitmq`
-4. Run openshift-applier: `ansible-playbook -i inventory/hosts ../casl-ansible/playbooks/openshift-cluster-seed.yml --connection=local`
+4. Login to Openshift: `oc login -u <username> https://master.example.com:8443`
+5. Run openshift-applier: `ansible-playbook -i inventory/hosts ../../casl-ansible/playbooks/openshift-cluster-seed.yml --connection=local`
 
 ## Verify your pods are running
 ```
