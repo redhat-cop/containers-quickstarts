@@ -1,0 +1,37 @@
+---
+openshift_cluster_content:
+- object: projectrequest
+  content:
+  - name: s2i-jekyll-spaces
+    file: "{{ inventory_dir }}/../files/projects/projects.yml"
+    file_action: create
+- object: imagestream
+  content:
+  - name: ruby
+    template: "{{ inventory_dir }}/../files/imagestreams/template.yml"
+    params: "{{ inventory_dir }}/../files/imagestreams/ruby/params"
+    namespace: s2i-jekyll
+  - name: jekyll-builder
+    template: "{{ inventory_dir }}/../files/imagestreams/template.yml"
+    params: "{{ inventory_dir }}/../files/imagestreams/jekyll-builder/params"
+    namespace: s2i-jekyll
+  - name: openshift-playbooks
+    template: "{{ inventory_dir }}/../files/imagestreams/template.yml"
+    params: "{{ inventory_dir }}/../files/imagestreams/openshift-playbooks/params"
+    namespace: s2i-jekyll
+- object: deployments
+  content:
+  - name: s2i-jekyll
+    namespace: s2i-jekyll
+    template: "{{ inventory_dir }}/../files/deployments/template.yml"
+    params: "{{ inventory_dir }}/../files/deployments/params"
+- object: builds
+  content:
+  - name: jekyll-builder
+    namespace: s2i-jekyll
+    template: "{{ inventory_dir }}/../files/builds/docker-template.yml"
+    params: "{{ inventory_dir }}/../files/builds/jekyll-builder/params"
+  - name: openshift-playbooks
+    namespace: s2i-jekyll
+    template: "{{ inventory_dir }}/../files/builds/source-template.yml"
+    params: "{{ inventory_dir }}/../files/builds/openshift-playbooks/params"
