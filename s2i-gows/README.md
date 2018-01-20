@@ -4,12 +4,15 @@
 
 ## Quickstart
 
-Here's a simple on-liner to get you started.
+1. Clone this repository:
+   `git clone https://github.com/redhat-cop/containers-quickstarts`
+2. Clone casl-ansible:
+   `git clone https://github.com/redhat-cop/casl-ansible`
+3. `cd containers-quickstarts/s2i-gows`
+4. Login to Openshift: `oc login -u <username> https://master.example.com:8443`
+5. Run openshift-applier: `ansible-playbook -i inventory/hosts ../../casl-ansible/playbooks/openshift-cluster-seed.yml --connection=local`
 
-```
-oc new-app redhatcop/s2i-gows~https://github.com/redhat-cop/containers-quickstarts.git --context-dir=s2i-gows/demo --name=gows-test
-oc expose svc gows-test
-```
+Now we can `oc get routes` to get the hostname of the route that was just created, or click the link in the OpenShift Web Console, and test our newly published gows site.
 
 ## Overview
 
@@ -23,6 +26,14 @@ The requirements of this image are simple. All you need are:
 
 * An OpenShift or Minishift cluster
 * A git repo with static content in it
+* [OpenShift Applier](https://github.com/redhat-cop/casl-ansible/tree/master/roles/openshift-applier) to build and deploy Gows. As a result you'll need to have [ansible installed](http://docs.ansible.com/ansible/latest/intro_installation.html).
+
+## OpenShift objects
+The openshift-applier will create the following OpenShift objects:
+* A Project named `s2i-gows` (see [files/projects/projects.yml](files/projects/projects.yml))
+* Three ImageStreams named `golang`, `busybox` and `gows` (see [files/imagestreams/template.yml](files/imagestreams/template.yml) and [files/builds/gows.yml](files/builds/gows.yml)).
+* Four BuildConfigs
+  
 
 ## Environment Variables
 

@@ -1,0 +1,29 @@
+apiVersion: v1
+kind: Template
+labels:
+  template: imagestreams
+metadata:
+  name: "${IS_NAME}"
+objects:
+- apiVersion: v1
+  kind: ImageStream
+  metadata:
+    name: "${IS_NAME}"
+  spec:
+    lookupPolicy:
+      local: false
+    tags:
+    - from:
+        kind: DockerImage
+        name: "${IS_NAME}:${IS_TAG}"
+      generation: null
+      importPolicy: {}
+      name: "${IS_TAG}"
+parameters:
+- description: Name of imagestream
+  name: IS_NAME
+  required: true
+- description: Name if imagestream tag
+  name: IS_TAG
+  required: true
+  value: latest
