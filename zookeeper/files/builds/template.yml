@@ -14,7 +14,7 @@ objects:
   metadata:
     labels:
       application: zookeeper
-    name: zookeeper-cop
+    name: zookeeper
   spec:
     lookupPolicy:
       local: true
@@ -28,7 +28,7 @@ objects:
     output:
       to:
         kind: ImageStreamTag
-        name: zookeeper-cop:${ZOOKEEPER_VERSION}
+        name: zookeeper:${ZOOKEEPER_VERSION}
     source:
       contextDir: ${CONTEXT_DIR}
       git:

@@ -128,7 +128,7 @@ objects:
             value: "2888"
           - name: ZK_ELECTION_PORT
             value: "3888"
-          image: "${APPLICATION_NAME}-cop:${ZOOKEEPER_VERSION}"
+          image: "${APPLICATION_NAME}:${ZOOKEEPER_VERSION}"
           imagePullPolicy: Always
           livenessProbe:
             exec:
