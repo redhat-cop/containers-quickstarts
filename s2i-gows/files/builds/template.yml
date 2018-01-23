@@ -136,8 +136,8 @@ objects:
     source:
       contextDir: "${SITE_CONTEXT_DIR}"
       git:
-        ref: "{SITE_SOURCE_REPOSITORY_REF}"
-        uri: "{SITE_SOURCE_REPOSITORY_URL}"
+        ref: "${SITE_SOURCE_REPOSITORY_REF}"
+        uri: "${SITE_SOURCE_REPOSITORY_URL}"
       type: Git
     strategy:
       sourceStrategy:

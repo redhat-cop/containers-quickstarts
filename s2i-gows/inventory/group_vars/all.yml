@@ -25,4 +25,5 @@ openshift_cluster_content:
   content:
   - name: gows
     namespace: s2i-gows
-    file: "{{ inventory_dir }}/../files/builds/gows.yml"
+    template: "{{ inventory_dir }}/../files/builds/template.yml"
+    params: "{{ inventory_dir }}/../files/builds/params"
