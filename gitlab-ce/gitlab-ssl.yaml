@@ -58,7 +58,7 @@ objects:
             command:
             - bash
             - -c
-            - /opt/gitlab/embedded/bin/openssl req -newkey rsa:2048 -nodes -keyout /etc/gitlab/${APPLICATION_HOSTNAME}.key -x509 -days 365 -out /etc/gitlab/${APPLICATION_HOSTNAME}.crt -subj "/C=GB/ST=London/L=London/O=Open Innovation Labs/CN=${APPLICATION_HOSTNAME}"
+            - /opt/gitlab/embedded/bin/openssl req -newkey rsa:2048 -nodes -keyout /etc/gitlab/${APPLICATION_HOSTNAME}.key -x509 -days 365 -out /etc/gitlab/${APPLICATION_HOSTNAME}.crt -subj "/C=GB/ST=London/L=London/O=Container and PaaS CoP/CN=${APPLICATION_HOSTNAME}"
             volumes:
             - gitlab-ce-volume-1
     triggers:
@@ -436,7 +436,7 @@ parameters:
 - description: A label that will be seen by the user at login
   displayName: LDAP label.
   name: LDAP_LABEL
-  value: RH Labs
+  value: IdM LDAP Provider
 - description: The host URL
   displayName: LDAP HOST
   name: LDAP_HOST
