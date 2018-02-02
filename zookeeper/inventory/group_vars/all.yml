@@ -5,18 +5,28 @@ openshift_cluster_content:
   - name: zookeeper-spaces
     file: "{{ inventory_dir }}/../files/projects/projects.yml"
     file_action: create
+    tags:
+    - prepare
 - object: imagestream
   content:
   - name: rhel7
     file: "{{ inventory_dir }}/../files/imagestreams/images.yml"
     namespace: zookeeper
-- object: deployments
-  content:
-  - name: zookeeper
-    template: "{{ inventory_dir }}/../files/deployments/template.yml"
-    params: "{{ inventory_dir }}/../files/deployments/params"
+    tags:
+    - prepare
 - object: builds
   content:
   - name: zookeeper
+    namespace: zookeeper
     template: "{{ inventory_dir }}/../files/builds/template.yml"
     params: "{{ inventory_dir }}/../files/builds/params"
+    tags:
+    - prepare
+- object: deployments
+  content:
+  - name: zookeeper
+    namespace: zookeeper
+    template: "{{ inventory_dir }}/../files/deployments/template.yml"
+    params: "{{ inventory_dir }}/../files/deployments/params"
+    tags:
+    - deploy
