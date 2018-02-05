@@ -24,7 +24,7 @@ The following prerequisites must be met prior to beginning to build and deploy Z
 
 1. Clone this repository: `git clone https://github.com/redhat-cop/containers-quickstarts`
 2. `cd containers-quickstarts/zookeeper`
-3. Run `anible-galaxy install -r requirements.yml --roles-path=roles`
+3. Run `ansible-galaxy install -r requirements.yml --roles-path=roles`
 4. Login to OpenShift: `oc login -u <username> https://master.example.com:8443`
 5. Run openshift-applier: `ansible-playbook -i inventory/hosts roles/casl-ansible/playbooks/openshift-cluster-seed.yml`
 
