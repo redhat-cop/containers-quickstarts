@@ -1,0 +1,32 @@
+---
+openshift_cluster_content:
+- object: projectrequest
+  content:
+  - name: kafka-spaces
+    file: "{{ inventory_dir }}/../files/projects/projects.yml"
+    file_action: create
+- object: imagestream
+  content:
+  - name: rhel7
+    file: "{{ inventory_dir }}/../files/imagestreams/images.yml"
+    namespace: kafka
+- object: builds
+  content:
+  - name: zookeeper
+    namespace: kafka
+    template: "{{ inventory_dir }}/../../zookeeper/files/builds/template.yml"
+    params: "{{ inventory_dir }}/../../zookeeper/files/builds/params"
+  - name: kafka
+    namespace: kafka
+    template: "{{ inventory_dir }}/../files/builds/template.yml"
+    params: "{{ inventory_dir }}/../files/builds/params"
+- object: deployments
+  content:
+  - name: zookeeper
+    namespace: kafka
+    template: "{{ inventory_dir }}/../../zookeeper/files/deployments/template.yml"
+    params: "{{ inventory_dir }}/../../zookeeper/files/deployments/params"
+  - name: kafka
+    namespace: kafka
+    template: "{{ inventory_dir }}/../files/deployments/template.yml"
+    params: "{{ inventory_dir }}/../files/deployments/params"

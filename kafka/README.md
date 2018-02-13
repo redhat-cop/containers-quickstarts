@@ -9,53 +9,50 @@ Kafka is a distributed publish-subscribe messaging system that is designed to be
 
 It makes use of the following technologies:
 
-* [StatefulSets](http://kubernetes.io/docs/concepts/abstractions/controllers/statefulsets/) 
+* [StatefulSets](http://kubernetes.io/docs/concepts/abstractions/controllers/statefulsets/)
 * [Headless Services](http://kubernetes.io/docs/user-guide/services/#headless-services)
+* [Openshift Applier](https://github.com/redhat-cop/casl-ansible/tree/master/roles/openshift-applier)
+
+### OpenShift objects
+The openshift-applier will create the following OpenShift objects:
+* A Project named `kafka` (see [files/projects/projects.yml](files/projects/projects.yml))
+* Three ImageStreams `kafka`, `zookeeper` and `rhel` (see [files/builds/template.yml](files/builds/template.yml), [../zookeeper/files/builds/template.yml](../zookeeper/files/builds/template.yml) and [files/imagestreams/images.yml](files/imagestreams/images.yml))
+* Two BuildConfigs named `kafka` and `zookeeper` (see [files/builds/template.yml](files/builds/template.yml) and [../zookeeper/files/builds/template.yml](../zookeeper/files/builds/template.yml))
+* Four Services named `kafka`, `kafka-headless`, `zookeeper` and `zookeeper-headless` (see [files/deployments/template.yml](files/deployments/template.yml) and [../zookeeper/files/deployments/template.yml](../zookeeper/files/deployments/template.yml))
+* Two StatefulSets named `kafka` and `zookeeper` (see [files/deployments/template.yml](files/deployments/template.yml) and [../zookeeper/files/deployments/template.yml](../zookeeper/files/deployments/template.yml))
+
+>**NOTE:** This requires permission to create new projects and that the `kafka` project doesn't already exist
 
 ## Prerequisites
 
 The following prerequisites must be met prior to beginning to build and deploy Kafka
 
-* 6 [Persistent Volumes](https://docs.openshift.com/container-platform/3.3/architecture/additional_concepts/storage.html#architecture-additional-concepts-storage). 3 for Kafka and 3 for Zookeeper (see below)
+* 6 [Persistent Volumes](https://docs.openshift.com/container-platform/latest/architecture/additional_concepts/storage.html). 3 for Kafka and 3 for Zookeeper ([see below](#verify-storage)) or a cluster that supports [dynamic provisioning with a default StorageClass](https://docs.openshift.com/container-platform/latest/install_config/storage_examples/storage_classes_dynamic_provisioning.html)
 * OpenShift Command Line Tool
-* Zookeeper
+* Zookeeper ([see below](#zookeeper))
+* [Openshift Applier](https://github.com/redhat-cop/casl-ansible/tree/master/roles/openshift-applier) to build and deploy Kafka. As a result you'll need to have [ansible installed](http://docs.ansible.com/ansible/latest/intro_installation.html)
 
 ## Zookeeper
 
-Apache Zookeeper is a centralized service for maintaining configuration information, naming, providing distributed synchronization, and providing group services. Kafka uses it for configuration management, coordination between distributed instances and a registry. It must be deployed and operational prior to the deployment of Kafka. 
+Apache Zookeeper is a centralized service for maintaining configuration information, naming, providing distributed synchronization, and providing group services. Kafka uses it for configuration management, coordination between distributed instances and a registry. It must be deployed and operational prior to the deployment of Kafka.
 
-A full example of how to build, deploy and validate a Zookeeper deployment can be found [here](../zookeeper/README.md). Follow these steps to create a new project and deploy Zookeeper.
+The Openshift Applier will take care of building and deploying Zookeeper as part of building and deploying Kafka.
+
+A full example of how to build, deploy and validate a Zookeeper deployment is also [available](../zookeeper/). Follow these steps to create a new project and deploy Zookeeper.
 
 ## Build and Deployment
 
-A set of templates are available to streamline the build and deployment of Kafka and are found in the [templates](templates) directory.
-
-Instantiate the template to create a Build Configuration to produce a docker image
-
-```
-oc process -f templates/kafka-build.json | oc create -f-
-```
+1. Clone this repository: `git clone https://github.com/redhat-cop/containers-quickstarts`
+2. `cd containers-quickstarts/kafka`
+3. Run `ansible-galaxy install -r requirements.yml --roles-path=roles`
+4. Login to OpenShift: `oc login -u <username> https://master.example.com:8443`
+5. Run openshift-applier: `ansible-playbook -i inventory/hosts roles/casl-ansible/playbooks/openshift-cluster-seed.yml`
 
 A new image build will be kicked off automatically. It can be tracked by running `oc logs -f builds/kafka-1`
 
-Once the build completes successfully, the newly created image can be deployed to OpenShift.
+>**NOTE:** Due to Kafka's dependency on Zookeeper, kafka deployment errors might be observed until the zookeeper pods are up and running. This is normal and the deployment will retry any failed pods.
 
-StatefulSets provide a way to effectively deploy stateful applications. However, it does not currently have the ability to resolve images backed by ImageStreams. To work around this limitation, the template for deploying kafka has a parameter that accepts the image reference. 
-
-To locate the image reference of the previously built image, use the following command repository:
-
-```
-oc get istag kafka:latest --template='{{ .image.dockerImageReference }}'
-```
-The response can be used as an input parameter *KAFKA_IMAGESTREAMTAG* for the [template](templates/kafka.json)
-
-The full command to both resolve the image reference and instantiate the kafka template is shown below:
-
-```
-oc process -p=KAFKA_IMAGESTREAMTAG=$(oc get istag kafka:latest --template='{{.image.dockerImageReference}}') -f templates/kafka.json | oc create -f-
-```
-
-## Verify the Deployment
+## Verify Storage
 
 One of the benefits of a StatefulSet is the ability for each deployed instance to have its own backing storage. To verify storage was bound successfully, run `oc get pvc -l=application=kafka`. A result similar to the following should be displayed:
 
@@ -64,7 +61,8 @@ NAME                  STATUS    VOLUME    CAPACITY   ACCESSMODES   AGE
 datadir-kafka-0   Bound     pv01      1Gi        RWO,RWX       49m
 datadir-kafka-1   Bound     pv02      2Gi        RWO,RWX       49m
 datadir-kafka-2   Bound     pv03      3Gi        RWO,RWX       49m
-```*Note: Volume names, access modes and capacities are dependent on the persistent storage deployed in the environment*
+```
+>**NOTE:** Volume names, access modes and capacities are dependent on the persistent storage deployed in the environment.
 
 Next, validate StatefulSet members are running and ready by executing `oc get pods -l=application=kafka`.  If three pods have a status of *RUNNING*, the containers have a status of *1/1*, and have a restart count of *0*, then kafka is deployed successfully. A successful deployment is shown below:
 
@@ -87,10 +85,10 @@ Remote shell into one of the kafka instances
 oc rsh kafka-0
 ```
 
-Create a topic called foo
+Create a topic called foo (see Kafka [Topics and Logs](http://kafka.apache.org/documentation/#intro_topics) for different partition and replication options)
 
 ```
-/opt/kafka/bin/kafka-topics.sh --zookeeper zookeeper:2181 --topic foo --create --partitions 1 --replication-factor 1
+/opt/kafka/bin/kafka-topics.sh --zookeeper zookeeper:2181 --topic foo --create --partitions 3 --replication-factor 2
 ```
 
 Verify the topic was created by listing all topics
@@ -114,7 +112,7 @@ oc rsh kafka-1
 Start consuming messages
 
 ```
-/opt/kafka/bin/kafka-console-consumer.sh --zookeeper zookeeper:2181 --topic foo --from-beginning
+/opt/kafka/bin/kafka-console-consumer.sh --bootstrap-server kafka:9092 --topic foo
 ```
 
 Open up another terminal and remote shell into the*kafka-0* instance
@@ -145,11 +143,15 @@ kafka
 *Consumer*
 
 ```
-sh-4.2# /opt/kafka/bin/kafka-console-consumer.sh --zookeeper zookeeper:2181 --topic foo --from-beginning
-Using the ConsoleConsumer with old consumer is deprecated and will be removed in a future major release. Consider using the new consumer by passing [bootstrap-server] instead of [zookeeper].
+sh-4.2# /opt/kafka/bin/kafka-console-consumer.sh --bootstrap-server kafka:9092 --topic foo --from-beginning
 testing
 openshift
 kafka
 ```
 
-Type CTRL+C to close out of either publisher or consumer commands. If the same command for the consumer is used once again, the same list of responses that were sent by the publisher are returned. 
+Type CTRL+C to close out of either publisher or consumer commands. If the same command for the consumer is used once again, the same list of responses that were sent by the publisher are returned.
+
+## Cleaning up
+```
+oc delete project kafka
+```
