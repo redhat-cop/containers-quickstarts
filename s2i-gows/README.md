@@ -4,12 +4,15 @@
 
 ## Quickstart
 
-Here's a simple on-liner to get you started.
+1. Clone this repository:
+   `git clone https://github.com/redhat-cop/containers-quickstarts`
+2. `cd containers-quickstarts/s2i-gows`
+3. Run `ansible-galaxy install -r requirements.yml --roles-path=roles`
+4. Login to Openshift: `oc login -u <username> https://master.example.com:8443`
+5. Run openshift-applier: `ansible-playbook -i inventory/hosts roles/casl-ansible/playbooks/openshift-cluster-seed.yml`
 
-```
-oc new-app redhatcop/s2i-gows~https://github.com/redhat-cop/containers-quickstarts.git --context-dir=s2i-gows/demo --name=gows-test
-oc expose svc gows-test
-```
+Now we can `oc get routes` to get the hostname of the route that was just created, or click the link in the OpenShift Web Console, and test our newly published gows site.
+By default our simple [demo site](demo/index.html) will be deployed.
 
 ## Overview
 
@@ -23,18 +26,39 @@ The requirements of this image are simple. All you need are:
 
 * An OpenShift or Minishift cluster
 * A git repo with static content in it
+* [OpenShift Applier](https://github.com/redhat-cop/casl-ansible/tree/master/roles/openshift-applier) to build and deploy Gows. As a result you'll need to have [ansible installed](http://docs.ansible.com/ansible/latest/intro_installation.html).
+
+## OpenShift objects
+
+The openshift-applier will create the following OpenShift objects:
+* A Project named `s2i-gows` (see [files/projects/projects.yml](files/projects/projects.yml))
+* Three ImageStreams named `golang`, `busybox` and `gows` (see [files/imagestreams/template.yml](files/imagestreams/template.yml) and [files/builds/gows.yml](files/builds/gows.yml)).
+* Four BuildConfigs named `gows-build`, `gows-busybox`, `gows-s2i` and `gows` (see [files/builds/template.yml](files/builds/template.yml))
+* A Service named `gows` (see [files/deployments/template.yml](files/deployments/template.yml))
+* A Route named `gows` (see [files/deployments/template.yml](files/deployments/template.yml))
 
 ## Environment Variables
 
+### Openshift Build Vars
+The build supports a few environment variables to specify the source of the site. The default values can be changed by setting the variables below in the [params file](files/builds/params).
+
+| Variable Name | Default Value | Description |
+| ------------- | ------------- | ----------- |
+| `SITE_CONTEXT_DIR` | `s2i-gows/demo` | Location of the site files within the git repository |
+| `SITE_SOURCE_REPOSITORY_REF` | `master` | Git branch/tag of the site files |
+| `SITE_SOURCE_REPOSITORY_URL` | `https://github.com/redhat-cop/containers-quickstarts` | Git repository of the site files |
+
+### Docker Build Vars
+
 This image supports a couple of simple environment variables for customizing directory locations.
 
-### Build Vars
 | Variable Name | Default Value | Description |
 | --------------| ------------- | ----------- |
 | `SRC_DIR` | `/opt/site/src`| Location to copy source from. This will not change where S2I clones the source to. Only change this value if what you are copying is a sub file or directory. |
 | `GOWS_DIR` | `/opt/site/static` | Location to copy source to. This will be where content is served from. This must match the value of `GOWS_DIR` at runtime |
 
-### Runtime Vars
+### Docker Runtime Vars
+
 | Variable Name | Default Value | Description |
 | --------------| ------------- | ----------- |
 | `GOWS_DIR` | `/opt/site/static` | Location to serve static content from |
@@ -53,3 +77,6 @@ docker pull redhatcop/s2i-gows
 cd ./image
 docker build -t redhatcop/s2i-gows .
 ```
+
+## Cleaning up
+`oc delete project s2i-gows`

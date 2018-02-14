@@ -1,0 +1,29 @@
+---
+openshift_cluster_content:
+- object: projectrequest
+  content:
+  - name: s2i-gows-spaces
+    file: "{{ inventory_dir }}/../files/projects/projects.yml"
+    file_action: create
+- object: imagestream
+  content:
+  - name: busybox
+    template: "{{ inventory_dir }}/../files/imagestreams/template.yml"
+    params: "{{ inventory_dir }}/../files/imagestreams/busybox/params"
+    namespace: s2i-gows
+  - name: golang
+    template: "{{ inventory_dir }}/../files/imagestreams/template.yml"
+    params: "{{ inventory_dir }}/../files/imagestreams/golang/params"
+    namespace: s2i-gows
+- object: deployments
+  content:
+  - name: s2i-gows
+    namespace: s2i-gows
+    template: "{{ inventory_dir }}/../files/deployments/template.yml"
+    params: "{{ inventory_dir }}/../files/deployments/params"
+- object: builds
+  content:
+  - name: gows
+    namespace: s2i-gows
+    template: "{{ inventory_dir }}/../files/builds/template.yml"
+    params: "{{ inventory_dir }}/../files/builds/params"
