@@ -1,9 +1,8 @@
-FROM rhel:7.2
+FROM rhel:7.4
 
-ENV KAFKA_USER=zookeeper \
-    JAVA_HOME=/usr/lib/jvm/jre-1.8.0-openjdk \
-    KAFKA_VERSION=0.10.1.1 \
-    SCALA_VERSION=2.10 \
+ENV JAVA_HOME=/usr/lib/jvm/jre-1.8.0-openjdk \
+    KAFKA_VERSION=1.0.0 \
+    SCALA_VERSION=2.11 \
     KAFKA_HOME=/opt/kafka
 
 COPY fix-permissions /usr/local/bin
@@ -17,10 +16,6 @@ RUN INSTALL_PKGS="gettext tar zip unzip hostname java-1.8.0-openjdk" && \
     mkdir -p $KAFKA_HOME/logs && \
     /usr/local/bin/fix-permissions $KAFKA_HOME
 
-RUN useradd -u 1001 -r -c "Kafka User" $KAFKA_USER
-
 WORKDIR "/opt/kafka"
 
 EXPOSE 9092
-
-#USER 1001

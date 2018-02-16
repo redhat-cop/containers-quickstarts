@@ -1,0 +1,69 @@
+apiVersion: v1
+kind: Template
+labels:
+  template: kafka-build
+metadata:
+  annotations:
+    description: Build a Kafka Image
+    iconClass: icon-java
+    tags: java
+  name: kafka-build
+objects:
+- apiVersion: v1
+  kind: ImageStream
+  metadata:
+    labels:
+      application: ${APPLICATION_NAME}
+    name: ${APPLICATION_NAME}
+  spec:
+    lookupPolicy:
+      local: true
+- apiVersion: v1
+  kind: BuildConfig
+  metadata:
+    labels:
+      application: ${APPLICATION_NAME}
+    name: ${APPLICATION_NAME}
+  spec:
+    output:
+      to:
+        kind: ImageStreamTag
+        name: ${APPLICATION_NAME}:latest
+    source:
+      contextDir: ${CONTEXT_DIR}
+      git:
+        ref: ${SOURCE_REPOSITORY_REF}
+        uri: ${SOURCE_REPOSITORY_URL}
+      type: Git
+    strategy:
+      dockerStrategy:
+        forcePull: true
+        from:
+          kind: ImageStreamTag
+          name: ${BASE_IMAGESTREAMTAG}
+      type: Docker
+    triggers:
+    - imageChange: {}
+      type: ImageChange
+    - type: ConfigChange
+parameters:
+- description: The name for the application.
+  name: APPLICATION_NAME
+  required: true
+  value: kafka
+- description: Git source URI for application
+  name: SOURCE_REPOSITORY_URL
+  required: true
+  value: https://github.com/redhat-cop/containers-quickstarts
+- description: Git branch/tag reference
+  name: SOURCE_REPOSITORY_REF
+  required: false
+  value: master
+- description: Path within Git project to build; empty for root project directory.
+  name: CONTEXT_DIR
+  required: false
+  value: kafka
+- description: Base ImageStream Tag
+  name: BASE_IMAGESTREAMTAG
+  required: true
+  value: rhel:7.4

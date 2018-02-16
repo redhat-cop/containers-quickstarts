@@ -1,0 +1,113 @@
+apiVersion: v1
+kind: Template
+labels:
+  template: kafka
+metadata:
+  annotations:
+    description: Kafka Deployment and Runtime Components
+    iconClass: icon-java
+    tags: java,kafka
+  name: kafka
+objects:
+- apiVersion: v1
+  kind: Service
+  metadata:
+    labels:
+      application: ${APPLICATION_NAME}
+    name: ${APPLICATION_NAME}-headless
+  spec:
+    clusterIP: None
+    portalIP: None
+    ports:
+    - port: 9092
+      protocol: TCP
+      targetPort: 9092
+    selector:
+      application: ${APPLICATION_NAME}
+    sessionAffinity: None
+    type: ClusterIP
+- apiVersion: v1
+  kind: Service
+  metadata:
+    labels:
+      application: ${APPLICATION_NAME}
+    name: ${APPLICATION_NAME}
+  spec:
+    ports:
+    - port: 9092
+      protocol: TCP
+      targetPort: 9092
+    selector:
+      application: ${APPLICATION_NAME}
+    sessionAffinity: None
+    type: ClusterIP
+- apiVersion: apps/v1beta1
+  kind: StatefulSet
+  metadata:
+    labels:
+      application: ${APPLICATION_NAME}
+    name: ${APPLICATION_NAME}
+  spec:
+    replicas: 3
+    selector:
+      matchLabels:
+        application: ${APPLICATION_NAME}
+    serviceName: ${APPLICATION_NAME}-headless
+    template:
+      metadata:
+        labels:
+          application: ${APPLICATION_NAME}
+      spec:
+        containers:
+        - command:
+          - sh
+          - -c
+          - bin/kafka-server-start.sh config/server.properties --override zookeeper.connect=$ZOOKEEPER_HOST
+            --override advertised.host.name=$KAFKA_ADVERTISED_HOST_NAME --override
+            broker.id=$(hostname | awk -F'-' '{print $2}') --override log.dirs=/opt/kafka/data
+          env:
+          - name: KAFKA_ADVERTISED_HOST_NAME
+            valueFrom:
+              fieldRef:
+                apiVersion: v1
+                fieldPath: status.podIP
+          - name: ZOOKEEPER_HOST
+            value: ${ZOOKEEPER_HOST}
+          image: "${APPLICATION_NAME}:latest"
+          imagePullPolicy: Always
+          name: ${APPLICATION_NAME}
+          ports:
+          - containerPort: 9092
+            protocol: TCP
+          resources:
+            requests:
+              cpu: 256m
+              memory: 256Mi
+          terminationMessagePath: /dev/termination-log
+          volumeMounts:
+          - mountPath: /opt/kafka/data
+            name: datadir
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+        securityContext: {}
+        terminationGracePeriodSeconds: 30
+    volumeClaimTemplates:
+    - metadata:
+        labels:
+          application: ${APPLICATION_NAME}
+        name: datadir
+      spec:
+        accessModes:
+        - ReadWriteOnce
+        resources:
+          requests:
+            storage: 100Mi
+parameters:
+- description: The name for the application.
+  name: APPLICATION_NAME
+  required: true
+  value: kafka
+- description: Host Name for Zookeeper
+  name: ZOOKEEPER_HOST
+  required: true
+  value: zookeeper
