@@ -331,7 +331,6 @@ parameters:
   value: gogs
 - description: 'Custom hostname for http service route.  Leave blank for default hostname, e.g.: <application-name>-<project>.<default-domain-suffix>'
   name: HOSTNAME
-  required: true
 - description: Volume space available for data, e.g. 512Mi, 2Gi
   name: GOGS_VOLUME_CAPACITY
   required: true

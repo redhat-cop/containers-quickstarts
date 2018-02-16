@@ -37,10 +37,8 @@ Registration is enabled until the following [issue](https://github.com/gogits/go
     $ oc adm policy add-scc-to-user anyuid system:serviceaccount:gogs:gogs
   ```
 
-2- Process the template with **at least** the following parameters
+2- Process and apply the template. No mandatory parameters need to be specified. Check template for all supported parameters.
 
   ```
-    $ oc process -f gogs-persistent-template.yaml \
-      -p HOSTNAME=<gogs exposed url> \
-      | oc create -f-
+    $ oc process -f gogs-persistent-template.yaml | oc apply -f-
   ```
