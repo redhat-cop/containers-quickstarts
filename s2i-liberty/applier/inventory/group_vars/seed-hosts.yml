@@ -1,0 +1,16 @@
+openshift_cluster_content:
+- object: projects
+  content:
+  - name: "create environments"
+    file: "{{ inventory_dir }}/../projects/projects.yml"
+    file_action: create
+- object: builds
+  content:
+  - name: "Build application"
+    template: "{{ inventory_dir }}/../templates/build.yml"
+    params: "{{ inventory_dir }}/../params/build-dev"
+- object: deployments
+  content:
+  - name: "deploy dev environment"
+    template: "{{ inventory_dir }}/../templates/deployment.yml"
+    params: "{{ inventory_dir }}/../params/deployment-dev"
