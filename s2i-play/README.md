@@ -9,11 +9,13 @@ This demonstration describes how to produce a new Source to Image (S2I) builder 
 * [Overview](#overview)
 * [Bill of Materials](#bill-of-materials)
 	* [Environment Specifications](#environment-specifications)
-	* [Template Files](#template-files)
-	* [Config Files](#config-files)
 	* [External Source Code Repositories](#external-source-code-repositories)
+  * [OpenShift objects](#openshift-objects)
 * [Setup Instructions](#setup-instructions)
-* [Presenter Notes](#presenter-notes)
+  * [Prerequisites](#prerequisites)
+* [Build and deployment](#build-and-deployment)
+  * [Verify the application](#verify-the-application)
+* [Manual build and deployment](#manual-build-and-deployment)
 	* [Environment Setup](#environment-setup)
 	* [Produce Builder Image](#produce-builder-image)
 		* [Git Source](#git-source)
@@ -21,6 +23,7 @@ This demonstration describes how to produce a new Source to Image (S2I) builder 
 	* [Create A New Application](#create-a-new-application)
 	* [Validating the Application](#validating-the-application)
 	* [Create a Route](#create-a-route)
+* [Cleaning up](#cleaning-up)
 * [Resources](#resources)
 
 
@@ -28,29 +31,62 @@ This demonstration describes how to produce a new Source to Image (S2I) builder 
 
 OpenShift provides several out of the box Source to Image builder images. To support the vast ecosystem of applications developed using the Play Framework, a new builder image will be created to support a simplified deployment to OpenShift. Once the new image is produced, an example application will be deployed. 
 
+It makes use of the following technologies:
+
+* [Openshift Applier](https://github.com/redhat-cop/casl-ansible/tree/master/roles/openshift-applier)
+
 ## Bill of Materials
 
 ### Environment Specifications
 
 This demo should be run on an installation of OpenShift Enterprise V3
 
-### Template Files
-
-None
-
-### Config Files
-
-None
-
 ### External Source Code Repositories
 
 * [Example Play Framework Application](https://github.com/playframework/play-ebean-example) -  Public repository for an example Play Framework application demonstrating how to communicate with an in memory database using [EBean](https://www.playframework.com/documentation/2.5.x/JavaEbean).
+
+### OpenShift objects
+
+The openshift-applier will create the following OpenShift objects:
+* A project named `play-demo` (see [applier/projects/projects.yml](applier/projects/projects.yml))
+* Three ImageStreams named `rhel7`, `s2i-play` and `play-app` (see [applier/templates/build.yml](applier/templates/build.yml))
+* Two BuildConfigs named `s2i-play` and `play-app` (see [applier/templates/build.yml](applier/templates/build.yml))
+* A DeploymentConfig named `play-app` (see [applier/templates/deployment.yml](applier/templates/deployment.yml))
+* A Service named `play-app` (see [applier/templates/deployment.yml](applier/templates/deployment.yml))
+* A Route named `play-app` (see [applier/templates/deployment.yml](applier/templates/deployment.yml))
+
+>**NOTE:** This requires permission to create new projects and that the `play-demo` project doesn't already exist
 
 ## Setup Instructions
 
 There is no specific requirements necessary for this demonstration. The presenter should have an OpenShift Enterprise 3 environment available with access to the public internet and the OpenShift Command Line Tools installed on their machine.
 
-## Presenter Notes
+### Prerequisites
+
+The following prerequisites must be met prior to beginning to build and deploy the Play application
+
+* OpenShift command line tool
+* [Openshift Applier](https://github.com/redhat-cop/casl-ansible/tree/master/roles/openshift-applier) to build and deploy artifacts and applications. As a result you'll need to have [ansible installed](http://docs.ansible.com/ansible/latest/intro_installation.html)
+
+## Build and Deployment
+
+1. Clone this repository: `git clone https://github.com/redhat-cop/containers-quickstarts`
+2. `cd containers-quickstarts/s2i-play`
+3. Run `ansible-galaxy install -r requirements.yml --roles-path=roles`
+4. Login in to OpenShift: `oc login -u <username> https://master.example.com:8443`
+5. Run openshift-applier: `ansible-playbook -i applier/inventory roles/casl-ansible/playbooks/openshift-cluster-seed.yml`
+
+Two new image builds will be kicked off automatically. They can be tracked by running `oc logs -f bc/s2i-play` and `oc logs -f bc/play-app` respectively.
+Last the deployment will kick off which can be tracked by running `oc logs -f dc/play-app`.
+
+### Verify the application
+
+The application will be available through the route.
+```
+curl -L http://$(oc get route play-app --template '{{ .spec.host }}')
+```
+
+## Manual build and deployment
 
 The following steps are to be used to demonstrate two methods for producing the Source to Image builder image and deploying an application using the resulting image.
 
@@ -59,7 +95,7 @@ The following steps are to be used to demonstrate two methods for producing the 
 Using the OpenShift CLI, login to the OpenShift environment.
 
 ```
-oc login <OpenShift_Master_API_Address>
+oc login https://master.example.com:8443
 ```
 
 Create a new project called *play-demo*
@@ -201,6 +237,11 @@ Open a browser and confirm the application is accessible.
 
 
 Feel free to navigate around the application.
+
+## Cleaning up
+```
+oc delete project play-demo
+```
 
 ## Resources
 * [Play Framework](https://www.playframework.com/)

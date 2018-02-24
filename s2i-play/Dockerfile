@@ -1,4 +1,4 @@
-FROM centos:7
+FROM rhel7.4
 
 MAINTAINER Andrew Block <ablock@redhat.com>
 
@@ -26,9 +26,8 @@ RUN INSTALL_PKGS="tar unzip bc which lsof java-1.8.0-openjdk java-1.8.0-openjdk-
     unzip /tmp/typesafe-activator-${ACTIVATOR_VERSION}.zip -d /tmp && \
     mv /tmp/activator-dist-${ACTIVATOR_VERSION}/* /opt/activator && \
     chown -R 1001:0 /opt/activator && \
-    rm -rf /tmp/typesafe-activator-${ACTIVATOR_VERSION}.zip /tmp/activator-dist-${ACTIVATOR_VERSION} && \
-    chmod +x /usr/libexec/s2i/assemble /usr/libexec/s2i/run
-
+    rm -rf /tmp/typesafe-activator-${ACTIVATOR_VERSION}.zip /tmp/activator-dist-${ACTIVATOR_VERSION}
+            
 ENV PATH $PATH:/opt/activator/bin
 
 EXPOSE 8080
