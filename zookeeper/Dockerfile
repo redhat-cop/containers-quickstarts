@@ -1,7 +1,6 @@
 FROM rhel:7.4
 
-ENV ZK_USER=zookeeper \
-    ZK_DATA_DIR=/var/lib/zookeeper/data \
+ENV ZK_DATA_DIR=/var/lib/zookeeper/data \
     ZK_DATA_LOG_DIR=/var/lib/zookeeper/log \
     ZK_LOG_DIR=/var/log/zookeeper \
     JAVA_HOME=/usr/lib/jvm/jre-1.8.0-openjdk \
@@ -36,14 +35,10 @@ RUN INSTALL_PKGS="gettext tar zip unzip hostname nmap-ncat java-1.8.0-openjdk" &
 
 COPY zkGenConfig.sh zkOk.sh zkMetrics.sh /opt/zookeeper/bin/
 
-RUN useradd -u 1001 -r -c "Zookeeper User" $ZK_USER && \
-    mkdir -p $ZK_DATA_DIR $ZK_DATA_LOG_DIR $ZK_LOG_DIR /usr/share/zookeeper /tmp/zookeeper && \
-    chown -R 1001:0 $ZK_DATA_DIR $ZK_DATA_LOG_DIR $ZK_LOG_DIR /tmp/zookeeper && \
+RUN mkdir -p $ZK_DATA_DIR $ZK_DATA_LOG_DIR $ZK_LOG_DIR /usr/share/zookeeper /tmp/zookeeper && \
     /usr/local/bin/fix-permissions $ZK_DATA_DIR && \
     /usr/local/bin/fix-permissions $ZK_DATA_LOG_DIR && \
     /usr/local/bin/fix-permissions $ZK_LOG_DIR && \
     /usr/local/bin/fix-permissions /tmp/zookeeper
 
 WORKDIR "/opt/zookeeper"
-
-USER 1001
