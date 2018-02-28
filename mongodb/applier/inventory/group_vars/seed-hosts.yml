@@ -1,0 +1,24 @@
+openshift_cluster_content:
+- object: projects
+  content:
+  - name: "create environments"
+    file: "{{ inventory_dir }}/../projects/projects.yml"
+    file_action: create
+- object: deployments
+  content:
+  - name: deploy MongoDB config servers
+    template: "{{ inventory_dir }}/../templates/configsvr.yml"
+    params: "{{ inventory_dir }}/../params/configsvr"
+    namespace: mongodb
+  - name: deploy MongoDB replicaset abc
+    template: "{{ inventory_dir }}/../templates/replset.yml"
+    params: "{{ inventory_dir }}/../params/replset-abc"
+    namespace: mongodb
+  - name: deploy MongoDB replicaset def
+    template: "{{ inventory_dir }}/../templates/replset.yml"
+    params: "{{ inventory_dir }}/../params/replset-def"
+    namespace: mongodb
+  - name: deploy MongoDB shard router
+    template: "{{ inventory_dir }}/../templates/mongos.yml"
+    params: "{{ inventory_dir }}/../params/mongos"
+    namespace: mongodb

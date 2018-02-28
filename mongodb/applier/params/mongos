@@ -1,0 +1,6 @@
+CONFIG_REPLSET_NAME=cs0
+CONFIG_REPLSET_SERVER=mongodbconfigsvr-0.mongodb-configsvr-internal:27017
+MONGODB_ADMIN_PASSWORD=admin
+MONGODB_KEYFILE_VALUE=123456789
+REPLSET_NAMES=rs0,rs1
+REPLSET_SERVERS=mongodbreplsetabc-0.mongodb-replset-internal-abc.mongodb.svc.cluster.local:27017,mongodbreplsetdef-0.mongodb-replset-internal-def.mongodb.svc.cluster.local:27017
