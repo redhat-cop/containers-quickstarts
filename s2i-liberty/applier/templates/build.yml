@@ -36,23 +36,6 @@ objects:
   metadata:
     labels:
       build: hello-world-artifacts
-    name: eap70-openshift
-  spec:
-    lookupPolicy:
-      local: false
-    tags:
-    - annotations:
-        openshift.io/imported-from: registry.access.redhat.com/jboss-eap-7/eap70-openshift
-      from:
-        kind: DockerImage
-        name: registry.access.redhat.com/jboss-eap-7/eap70-openshift
-      importPolicy: {}
-      name: latest
-- apiVersion: v1
-  kind: ImageStream
-  metadata:
-    labels:
-      build: hello-world-artifacts
     name: hello-world-artifacts
   spec:
     lookupPolicy:
@@ -117,7 +100,8 @@ objects:
       sourceStrategy:
         from:
           kind: ImageStreamTag
-          name: eap70-openshift:latest
+          name: jboss-eap70-openshift:1.6
+          namespace: openshift
       type: Source
     triggers:
     - type: ConfigChange
@@ -125,7 +109,8 @@ objects:
         automatic: true
         from:
           kind: ImageStreamTag
-          name: eap70-openshift:latest
+          name: jboss-eap70-openshift:1.6
+          namespace: openshift
       type: ImageChange
 - apiVersion: v1
   kind: BuildConfig

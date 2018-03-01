@@ -5,4 +5,4 @@
 - name: casl-ansible
   scm: git
   src: https://github.com/redhat-cop/casl-ansible
-  version: v3.7.0
+  version: v3.7.1

@@ -7,10 +7,12 @@ openshift_cluster_content:
 - object: builds
   content:
   - name: "Build application"
+    namespace: liberty-demo
     template: "{{ inventory_dir }}/../templates/build.yml"
     params: "{{ inventory_dir }}/../params/build-dev"
 - object: deployments
   content:
   - name: "deploy dev environment"
+    namespace: liberty-demo
     template: "{{ inventory_dir }}/../templates/deployment.yml"
     params: "{{ inventory_dir }}/../params/deployment-dev"
