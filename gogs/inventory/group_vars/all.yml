@@ -1,0 +1,12 @@
+---
+openshift_cluster_content:
+- object: projectrequest
+  content:
+  - name: gogs-project
+    file: "{{ inventory_dir }}/../files/projects/projects.yml"
+- object: deployments
+  content:
+  - name: gogs
+    namespace: gogs
+    template: "{{ inventory_dir }}/../files/templates/gogs-persistent-template.yaml"
+    params: "{{ inventory_dir }}/../files/params/gogs-params"

@@ -6,6 +6,14 @@ metadata:
     tags: instant-app,gogs,go,golang
   name: gogs
 objects:
+- kind: SecurityContextConstraints
+  metadata:
+    annotations:
+      kubernetes.io/description: anyuid provides all features of the restricted SCC
+        but allows users to run with any UID and any GID.
+    name: anyuid
+  users:
+  - system:serviceaccount:gogs:${APPLICATION_NAME}
 - kind: ImageStream
   apiVersion: v1
   metadata:
@@ -362,7 +370,7 @@ parameters:
   value: 12MB
 - name: GOGS_VERSION
   displayName: Gogs Version
-  description: 'Version of the Gogs container image to be used (check the available version https://hub.docker.com/r/makentenza/gogs/tags/)'
+  description: 'Version of the Gogs container image to be used'
   value: "0.11.34"
   required: true
 - name: INSTALL_LOCK
