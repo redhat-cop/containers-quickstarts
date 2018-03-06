@@ -1,0 +1,12 @@
+LDAP_BIND_DN=uid=john.doe,ou=People,dc=example,dc=com
+LDAP_USER_FILTER=(memberof=CN=YourGroup,OU=Users,DC=YourDomain,DC=com)
+LDAP_PASSWORD=secretpassword
+APPLICATION_HOSTNAME=gitlab.apps.myocpcluster.com
+LDAP_LABEL="My Company LDAP"
+LDAP_HOST=myldaphost
+LDAP_PORT=636
+LDAP_BASE=ou=People,dc=example,dc=com
+ETC_VOL_SIZE=100Mi
+GITLAB_DATA_VOL_SIZE=5Gi
+POSTGRESQL_VOL_SIZE=5Gi
+GITLAB_ROOT_PASSWORD=secretpassword

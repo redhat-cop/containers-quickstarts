@@ -1,0 +1,12 @@
+---
+openshift_cluster_content:
+- object: projectrequest
+  content:
+  - name: gitlab-project
+    file: "{{ inventory_dir }}/../files/projects/projects.yml"
+- object: deployments
+  content:
+  - name: gitlab
+    namespace: gitlab
+    template: "{{ inventory_dir }}/../files/templates/gitlab-ssl.yml"
+    params: "{{ inventory_dir }}/../files/params/gitlab-params"

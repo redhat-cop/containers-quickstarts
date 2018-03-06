@@ -1,25 +1,21 @@
-### Deploy instructions
+## Prerequisites
 
-1- Create a new Project where to deploy GitLab CE
+The following prerequisites must be met prior to beginning to deploy Gogs
 
-  ```
-    $ oc new-project gitlab-ce
-  ```
+* 4 [Persistent Volumes](https://docs.openshift.com/container-platform/latest/architecture/additional_concepts/storage.html) or a cluster that supports [dynamic provisioning with a default StorageClass](https://docs.openshift.com/container-platform/latest/install_config/storage_examples/storage_classes_dynamic_provisioning.html)
+* OpenShift Command Line Tool
+* [Openshift Applier](https://github.com/redhat-cop/casl-ansible/tree/master/roles/openshift-applier) to deploy Gogs. As a result you'll need to have [ansible installed](http://docs.ansible.com/ansible/latest/intro_installation.html)
 
-2- Add **gitlab-ce-user** Service Account to **anyuid** SCC
 
-  ```
-    $ oc adm policy add-scc-to-user anyuid system:serviceaccount:gitlab-ce:gitlab-ce-user
-  ```
+### Environment Setup
 
-2- Process the template with **at least** the following parameters
+1. Clone this repository: `git clone https://github.com/redhat-cop/containers-quickstarts`
+2. `cd containers-quickstarts/gitlab-ce`
+3. Run `ansible-galaxy install -r requirements.yml --roles-path=roles`
+4. Login to OpenShift: `oc login -u <username> https://master.example.com:8443`
 
-  ```
-    $ oc process -f gitlab-ssl.yml \
-      -p LDAP_HOST=<ldap host url> \
-      -p LDAP_BIND_DN=<user DN for LDAP bind> \
-      -p LDAP_PASSWORD=<previuos user's password> \
-      -p LDAP_BASE=<ldap base where to start querying> \
-      -p APPLICATION_HOSTNAME=<gitlab exposed url> \
-      | oc create -f-
-  ```
+### Deploy Gitlab CE
+
+Run the openshift-applier to create the `gitlab` project and deploy required objects
+```
+ansible-playbook -i ./inventory roles/casl-ansible/playbooks/openshift-cluster-seed.yml
