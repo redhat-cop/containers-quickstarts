@@ -1,0 +1,3 @@
+# Jenkins Maven Slave
+
+This slave extends [the Jenkins Maven Slave shipped with OpenShift](https://access.redhat.com/containers/?tab=overview#/registry.access.redhat.com/openshift3/jenkins-slave-maven-rhel7) to provide a settings.xml that proxies all dependencies through a nexus server deployed to the same namespace. This type of setup makes sense in a Lab setting, such as [Open Innovation Labs CI/CD](https://github.com/rht-labs/labs-ci-cd) environment. For most customer engagements, you'll to update this proxy/password to use an central, enterprise artifact repo which is unlikely to be deployed in the same namespace. Or simply use the OpenShift supplied base image directly and provide artifact repository info in the application build.
