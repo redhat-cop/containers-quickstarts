@@ -1,3 +1,0 @@
-# Jenkins NPM Slave
-
-This slave image exists because the OpenShift supplied [Jenkins NPM Slave](https://access.redhat.com/containers/?tab=overview#/registry.access.redhat.com/openshift3/jenkins-slave-nodejs-rhel7) is often a major release or two behind the OpenShift supplied [Node.js/NPM s2i image](https://access.redhat.com/containers/?tab=overview#/registry.access.redhat.com/rhscl/nodejs-8-rhel7). We're working with the SCL team to close this gap, but in the meantime, this image exists.
