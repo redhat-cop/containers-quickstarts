@@ -85,7 +85,7 @@ parameters:
   displayName: Image name from which to build this pod
   description: The build image which this build pod will extend to create it's new
     build pod type.
-  value: jenkins-slave-base-rhel7
+  value: docker.io/openshift/jenkins-slave-maven-centos7
 - name: SLAVE_IMAGE_TAG
   displayName: Image tag for Jenkins slave.
   description: This is the image tag used for the Jenkins slave.
