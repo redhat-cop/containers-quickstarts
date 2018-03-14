@@ -6,6 +6,11 @@ tar -vxzf ${PLAY_ARCHIVE} --strip 1 -C /deployments
 
 PLAY_EXEC=$(find /deployments/bin/ -type f ! -name "*.*")
 
+if [ -f /deployments/conf/application.conf ]; then
+  echo '# https://playframework.com/documentation/2.6.x/AllowedHostsFilter#enabling-the-allowed-hosts-filter' >> /deployments/conf/application.conf
+  echo 'play.filters.hosts.allowed = ["."]' >> /deployments/conf/application.conf
+fi
+
 if [ ! -z "${APPLICATION_SECRET}" ]; then
     APPLICATION_SECRET_PARAM="-Dplay.crypto.secret=${APPLICATION_SECRET}"
 fi

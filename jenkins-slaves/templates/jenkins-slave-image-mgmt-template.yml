@@ -1,0 +1,72 @@
+apiVersion: v1
+kind: Template
+labels:
+  template: jenkins-slave-image-mgmt
+metadata:
+  annotations:
+    description: Jenkins Image Management Slave Template.
+    iconClass: icon-jenkins
+    tags: jenkins,slave
+  name: jenkins-slave-image-mgmt
+  namespace: myproject
+objects:
+- apiVersion: v1
+  kind: ImageStream
+  metadata:
+    name: jenkins-slave-base-rhel7
+  spec:
+    dockerImageRepository: registry.access.redhat.com/openshift3/jenkins-slave-base-rhel7
+- apiVersion: v1
+  kind: ImageStream
+  metadata:
+    annotations:
+      slave-label: ${JENKINS_SLAVE_NAME}
+    labels:
+      role: jenkins-slave
+    name: ${JENKINS_SLAVE_NAME}
+- apiVersion: v1
+  kind: BuildConfig
+  metadata:
+    labels:
+      build: ${JENKINS_SLAVE_NAME}
+    name: ${JENKINS_SLAVE_NAME}
+  spec:
+    output:
+      to:
+        kind: ImageStreamTag
+        name: ${JENKINS_SLAVE_NAME}:latest
+    postCommit: {}
+    resources: {}
+    runPolicy: Serial
+    source:
+      contextDir: ${CONTEXT_DIR}
+      git:
+        ref: ${SOURCE_REPOSITORY_REF}
+        uri: ${SOURCE_REPOSITORY_URL}
+      type: Git
+    strategy:
+      dockerStrategy:
+        from:
+          kind: ImageStreamTag
+          name: jenkins-slave-base-rhel7:latest
+      type: Docker
+    triggers:
+    - imageChange: {}
+      type: ImageChange
+parameters:
+- description: The name for the Jenkins slave.
+  name: JENKINS_SLAVE_NAME
+  required: true
+  value: jenkins-slave-image-mgmt
+- description: Git source URI for application
+  name: SOURCE_REPOSITORY_URL
+  required: true
+  value: https://github.com/redhat-cop/containers-quickstarts.git
+- description: Git branch/tag reference
+  name: SOURCE_REPOSITORY_REF
+  required: false
+  value: master
+- description: Path within Git project to build; empty for root project directory.
+  name: CONTEXT_DIR
+  required: false
+  value: jenkins-slaves/jenkins-slave-image-mgmt
