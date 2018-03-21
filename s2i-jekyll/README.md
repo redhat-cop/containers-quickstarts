@@ -3,7 +3,7 @@
 This image builds sites using [Jekyll](https://jekyllrb.com/).
 
 ## Requirements
-This example is using the [OpenShift Applier](https://github.com/redhat-cop/casl-ansible/tree/master/roles/openshift-applier) to build and deploy Jekyll. As a result you'll need to have [ansible installed](http://docs.ansible.com/ansible/latest/intro_installation.html).
+This example is using the [OpenShift Applier](https://github.com/redhat-cop/openshift-applier) to build and deploy Jekyll. As a result you'll need to have [ansible installed](http://docs.ansible.com/ansible/latest/intro_installation.html).
 
 ## OpenShift objects
 The openshift-applier will create the following OpenShift objects:
@@ -18,11 +18,10 @@ The openshift-applier will create the following OpenShift objects:
 
 1. Clone this repository:
    `git clone https://github.com/redhat-cop/containers-quickstarts`
-2. Clone casl-ansible:
-   `git clone https://github.com/redhat-cop/casl-ansible`
-3. `cd containers-quickstarts/s2i-jekyll`
+2. `cd containers-quickstarts/s2i-jekyll`
+3. Run `ansible-galaxy install -r requirements.yml --roles-path=roles`
 4. Login to Openshift: `oc login -u <username> https://master.example.com:8443`
-5. Run openshift-applier: `ansible-playbook -i inventory/hosts ../../casl-ansible/playbooks/openshift-cluster-seed.yml --connection=local`
+5. Run openshift-applier: `ansible-playbook -i inventory/hosts roles/openshift-applier/playbooks/openshift-cluster-seed.yml`
 
 Now we can `oc get routes` to get the hostname of the route that was just created, or click the link in the OpenShift Web Console, and test our newly published jekyll site.
 
