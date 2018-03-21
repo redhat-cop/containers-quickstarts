@@ -13,22 +13,6 @@ objects:
   metadata:
     labels:
       build: "${NAME}"
-    name: jenkins-slave-base-rhel7
-  spec:
-    tags:
-    - from:
-        kind: DockerImage
-        name: openshift3/jenkins-slave-base-rhel7:${SLAVE_IMAGE_TAG}
-      generation: 2
-      importPolicy: {}
-      name: latest
-      referencePolicy:
-        type: Source
-- apiVersion: v1
-  kind: ImageStream
-  metadata:
-    labels:
-      build: "${NAME}"
       role: jenkins-slave
     name: "${NAME}"
 - apiVersion: v1
