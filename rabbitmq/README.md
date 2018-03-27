@@ -8,7 +8,7 @@ This demonstration describes how to create a RabbitMQ cluster in Openshift.
 1. OpenShift Container Platform v3.6 or newer (we're using [this feature](https://docs.openshift.com/container-platform/3.6/dev_guide/managing_images.html#using-is-with-k8s)).
 2. This example is configured to use a `PersistentVolume` for storing cluster and message data. Thus it is a requirement that Openshift is configured to support [Persistent Volumes](https://docs.openshift.com/container-platform/latest/dev_guide/persistent_volumes.html) and that there are PVs with at least `ReadWriteOnce` (RWO) access available.
 
-3. This example is also using the [OpenShift Applier](https://github.com/redhat-cop/casl-ansible/tree/master/roles/openshift-applier) to build and deploy RabbitMQ. As a result you'll need to have [ansible installed](http://docs.ansible.com/ansible/latest/intro_installation.html).
+3. This example is also using the [OpenShift Applier](https://github.com/redhat-cop/openshift-applier) to build and deploy RabbitMQ. As a result you'll need to have [ansible installed](http://docs.ansible.com/ansible/latest/intro_installation.html).
 
 ## OpenShift objects
 The openshift-applier will create the following OpenShift objects:
@@ -37,11 +37,10 @@ This is the equivivalent of `docker build --build-arg ERLANG_VERSION=19.3.6` to 
 ## Start build and deploy
 1. Clone this repository:
    `git clone https://github.com/redhat-cop/containers-quickstarts`
-2. Clone casl-ansible:
-   `git clone https://github.com/redhat-cop/casl-ansible`
-3. `cd containers-quickstarts/rabbitmq`
+2. `cd containers-quickstarts/rabbitmq`
+3. Run `ansible-galaxy install -r requirements.yml --roles-path=roles`
 4. Login to Openshift: `oc login -u <username> https://master.example.com:8443`
-5. Run openshift-applier: `ansible-playbook -i inventory/hosts ../../casl-ansible/playbooks/openshift-cluster-seed.yml --connection=local`
+5. Run openshift-applier: `ansible-playbook -i inventory/hosts roles/openshift-applier/playbooks/openshift-cluster-seed.yml`
 
 ## Verify your pods are running
 ```

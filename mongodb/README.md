@@ -31,7 +31,7 @@ It makes use of the following technologies:
 
 * [StatefulSets](http://kubernetes.io/docs/concepts/abstractions/controllers/statefulsets/)
 * [Headless Services](http://kubernetes.io/docs/user-guide/services/#headless-services)
-* [Openshift Applier](https://github.com/redhat-cop/casl-ansible/tree/master/roles/openshift-applier)
+* [Openshift Applier](https://github.com/redhat-cop/openshift-applier)
 
 >**NOTE:** If the project name is changed from the default (mongodb), updates will be required to match the new internal domain name (see headless service above)
 
@@ -50,7 +50,7 @@ The following prerequisites must be met prior to beginning to deploy MongoDB
 
 * 11 [Persistent Volumes](https://docs.openshift.com/container-platform/latest/architecture/additional_concepts/storage.html). 3 for the config servers and 4 for each of the sharding replica sets [see below](#verify-storage)) or a cluster that supports [dynamic provisioning with a default StorageClass](https://docs.openshift.com/container-platform/latest/install_config/storage_examples/storage_classes_dynamic_provisioning.html)
 * OpenShift Command Line Tool
-* [Openshift Applier](https://github.com/redhat-cop/casl-ansible/tree/master/roles/openshift-applier) to deploy MongoDB. As a result you'll need to have [ansible installed](http://docs.ansible.com/ansible/latest/intro_installation.html)
+* [Openshift Applier](https://github.com/redhat-cop/openshift-applier) to deploy MongoDB. As a result you'll need to have [ansible installed](http://docs.ansible.com/ansible/latest/intro_installation.html)
 
 ## Bill of Materials
 
@@ -95,7 +95,7 @@ The following steps are to be used to demonstrate how to add the template to Ope
 
 Run the openshift-applier to create the `mongodb` project and deploy config servers, shard replica sets and a shard router.
 ```
-ansible-playbook -i applier/inventory roles/casl-ansible/playbooks/openshift-cluster-seed.yml
+ansible-playbook -i applier/inventory roles/openshift-applier/playbooks/openshift-cluster-seed.yml
 ```
 
 ### Confirm the state of the Replica Set

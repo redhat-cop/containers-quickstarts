@@ -25,7 +25,7 @@ OpenShift provides several out of the box Source to Image builder images. To sup
 
 It makes use of the following technologies:
 
-* [Openshift Applier](https://github.com/redhat-cop/casl-ansible/tree/master/roles/openshift-applier)
+* [Openshift Applier](https://github.com/redhat-cop/openshift-applier)
 
 ## Bill of Materials
 
@@ -58,7 +58,7 @@ There is no specific requirements necessary for this demonstration. The presente
 The following prerequisites must be met prior to beginning to build and deploy Liberty
 
 * OpenShift Command Line Tool
-* [Openshift Applier](https://github.com/redhat-cop/casl-ansible/tree/master/roles/openshift-applier) to build and deploy artifacts and applications. As a result you'll need to have [ansible installed](http://docs.ansible.com/ansible/latest/intro_installation.html)
+* [Openshift Applier](https://github.com/redhat-cop/openshift-applier) to build and deploy artifacts and applications. As a result you'll need to have [ansible installed](http://docs.ansible.com/ansible/latest/intro_installation.html)
 The following steps are to be used to demonstrate two methods for producing the Source to Image builder image and deploying an application using the resulting image.
 
 ## Build and Deployment
@@ -67,7 +67,7 @@ The following steps are to be used to demonstrate two methods for producing the 
 2. `cd containers-quickstarts/s2i-liberty`
 3. Run `ansible-galaxy install -r requirements.yml --roles-path=roles`
 4. Login to OpenShift: `oc login -u <username> https://master.example.com:8443`
-5. Run openshift-applier: `ansible-playbook -i applier/inventory/ roles/casl-ansible/playbooks/openshift-cluster-seed.yml`
+5. Run openshift-applier: `ansible-playbook -i applier/inventory/ roles/openshift-applier/playbooks/openshift-cluster-seed.yml`
 
 Three new image builds will be kicked off automatically. They can be tracked by running `oc logs -f bc/websphere-liberty`, `oc logs -f bc/hello-world-artifacts` and `oc logs -f bc/hello-world` respectively.
 Last the deployment will kick of which can be tracked by running `oc logs -f dc/hello-world`.
