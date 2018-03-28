@@ -27,7 +27,7 @@ objects:
     output:
       to:
         kind: ImageStreamTag
-        name: "${NAME}:latest"
+        name: "${NAME}:${SLAVE_IMAGE_TAG}"
     postCommit: {}
     resources: {}
     runPolicy: Serial
