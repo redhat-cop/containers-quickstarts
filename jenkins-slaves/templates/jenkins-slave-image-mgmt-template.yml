@@ -8,7 +8,6 @@ metadata:
     iconClass: icon-jenkins
     tags: jenkins,slave
   name: jenkins-slave-image-mgmt
-  namespace: myproject
 objects:
 - apiVersion: v1
   kind: ImageStream
