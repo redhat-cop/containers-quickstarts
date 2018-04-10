@@ -1,5 +1,8 @@
-Apache Kafka
+Apache Kafka - Deprecated
 ============
+
+## This quickstart is now deprecated. Please refer to the [Strimzi](http://strimzi.io) project for deployment of Kafka on OpenShift
+
 
 Deployment of [Apache Kafka](https://kafka.apache.org/) on the OpenShift Container Platform
 
