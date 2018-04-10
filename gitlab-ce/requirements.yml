@@ -2,7 +2,7 @@
 # to support the operation of CASL provisioning/runs.
 
 # From 'casl-ansible'
-- name: casl-ansible
+- name: openshift-applier
   scm: git
-  src: https://github.com/redhat-cop/casl-ansible
-  version: v3.7.1
+  src: https://github.com/redhat-cop/openshift-applier.git
+  version: v3.7.2

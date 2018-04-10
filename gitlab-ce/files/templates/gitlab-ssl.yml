@@ -20,7 +20,7 @@ objects:
         but allows users to run with any UID and any GID.
     name: anyuid
   users:
-  - system:serviceaccount:ci-cd:${APPLICATION_NAME}-user
+  - system:serviceaccount:gitlab:${APPLICATION_NAME}-user
 - kind: ImageStream
   apiVersion: v1
   metadata:

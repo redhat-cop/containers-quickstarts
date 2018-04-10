@@ -5,5 +5,4 @@ items:
   apiVersion: v1
   metadata:
     name: gitlab
-    creationTimestamp: null
   displayName: Gitlab CE project
