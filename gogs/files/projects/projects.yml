@@ -5,5 +5,4 @@ items:
   apiVersion: v1
   metadata:
     name: gogs
-    creationTimestamp: null
   displayName: Gogs project
