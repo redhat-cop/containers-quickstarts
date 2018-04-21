@@ -2,26 +2,46 @@
 
 This repository is meant to help bootstrap users of the OpenShift Container Platform to get started in building and using Source-to-Image to build applications to run in OpenShift.
 
-## Structure of a QuickStart
+## What's In This Repo?
 
-* Overview
-  * README discussing what this demo does
-* Bill Of Materials
-  * Environment Specs -- describe the environment required to run this demo
-  * Template files
-  * Config files
-  * External Source Code repos
-  * etc. (any other technical collateral needed to run your demo)
-* Setup Instructions
-  * Describe the steps required to setup your Demo
-  * Scripts to run
-  * Terminal commands
-  * etc.
-* Presenter Notes
-  * Guidelines for "what to {type|click|do}" to walk through the demo
-  * Guidelines for "what to say" while giving the demo (level of detail will vary depending on the audience and intended presenter)
-  * Interesting concepts, anecdotes to point out along the way
+This repo contains OpenShift related quickstarts of several different flavors.
 
-## Quickstart Model Example
+### Reference Implementations
 
-For a good example of what a quickstart should look like, see the [S2I Play](/s2i-play) directory.
+A set of examples of deploying various technologies on OpenShift
+
+* [MongoDB Cluster StatefulSet](./mongodb)
+* [RabbitMQ Cluster StatefulSet](./rabbitmq)
+* [GitLab CE Deployment](./gitlab-ce)
+* [Zookeeper StatefulSet](./zookeeper)
+
+### Custom S2I Base Images
+
+A collection of custom built S2I base images
+
+* [GoWS](./s2i-gows)
+* [Jekyll](./s2i-jekyll)
+* [WebSphere Liberty](./s2i-liberty)
+* [Play Framework](./s2i-play)
+
+### Jenkins Slave Images
+
+A set of images we've developed for running as slave pods in a Jenkins Pipeline on OpenShift
+
+* [Ansible Slave](./jenkins-slaves/jenkins-slave-ansible)
+* [GoLang](./jenkins-slaves/jenkins-slave-golang)
+* [Image Promotion](./jenkins-slaves/jenkins-slave-image-mgmt)
+* [Extended Maven Slave](./jenkins-slaves/jenkins-slave-mvn)
+* [Ruby](./jenkins-slaves/jenkins-slave-ruby)
+
+### Developer Tools
+
+* [Tool Box](./tool-box) - An openshift deployable contianer image that provides some necessary developer tools
+
+## Related Content
+
+* [Container Pipelines](https://github.com/redhat-cop/container-pipelines) - A set of Jenkins piplines for OpenShift
+
+## Contributing
+
+Checkout out our [contribution guide](./CONTRIBUTING.md) for more details on how to contribute content to this repo.
