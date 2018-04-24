@@ -1,0 +1,2 @@
+NAMESPACE=gitlab-mak
+NAMESPACE_DISPLAY_NAME="GitLab CE SCM Project"

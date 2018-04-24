@@ -3,10 +3,12 @@ openshift_cluster_content:
 - object: projectrequest
   content:
   - name: gitlab-project
-    file: "{{ inventory_dir }}/../files/projects/projects.yml"
+    template: "https://raw.githubusercontent.com/redhat-cop/cluster-lifecycle/master/files/projectrequest/template.yml"
+    template_action: create
+    params: "{{ inventory_dir }}/../files/projectrequests/gitlab"
 - object: deployments
   content:
   - name: gitlab
-    namespace: gitlab
+    namespace: gitlab-mak
     template: "{{ inventory_dir }}/../files/templates/gitlab-ssl.yml"
     params: "{{ inventory_dir }}/../files/params/gitlab-params"

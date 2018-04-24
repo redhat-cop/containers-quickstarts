@@ -21,7 +21,7 @@ objects:
         but allows users to run with any UID and any GID.
     name: anyuid
   users:
-  - system:serviceaccount:gitlab:${APPLICATION_NAME}-user
+  - system:serviceaccount:${NAMESPACE}:${APPLICATION_NAME}-user
 - kind: ImageStream
   apiVersion: v1
   metadata:
@@ -536,3 +536,8 @@ parameters:
   displayName: redis volume size
   name: REDIS_VOL_SIZE
   value: 512Mi
+- name: NAMESPACE
+  displayName: Namespace name where Gitlab CE will be deployed
+  description: Namespace name where Gitlab CE will be deployed
+  value: 'ci-cd'
+  required: true
