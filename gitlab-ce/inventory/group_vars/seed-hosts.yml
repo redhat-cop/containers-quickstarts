@@ -9,6 +9,6 @@ openshift_cluster_content:
 - object: deployments
   content:
   - name: gitlab
-    namespace: gitlab-mak
+    namespace: gitlab
     template: "{{ inventory_dir }}/../files/templates/gitlab-ssl.yml"
     params: "{{ inventory_dir }}/../files/params/gitlab-params"
