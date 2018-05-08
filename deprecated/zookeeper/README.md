@@ -1,6 +1,8 @@
 Apache Zookeeper
 ============
 
+## This quickstart is now deprecated. Please refer to the [Strimzi](http://strimzi.io) project for deployment of Zookeeper on OpenShift
+
 Deployment of [Apache Zookeeper](https://zookeeper.apache.org/) on the OpenShift Container Platform
 
 ## Overview
