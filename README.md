@@ -13,7 +13,6 @@ A set of examples of deploying various technologies on OpenShift
 * [MongoDB Cluster StatefulSet](./mongodb)
 * [RabbitMQ Cluster StatefulSet](./rabbitmq)
 * [GitLab CE Deployment](./gitlab-ce)
-* [Zookeeper StatefulSet](./zookeeper)
 
 ### Custom S2I Base Images
 
