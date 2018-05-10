@@ -19,6 +19,6 @@ For local running and experimentation run `docker run -i -t --rm jenkins-slave-n
 ## Jenkins Running
 Add a new Kubernetes Container template called `jenkins-slave-npm` and specify this as the node when running builds. 
 ```
-scl enable rh-nodejs6 'npm install'
-scl enable rh-nodejs6 'npm run build'
+npm install
+npm run build
 ```
