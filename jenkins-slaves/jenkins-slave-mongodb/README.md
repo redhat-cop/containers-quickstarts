@@ -17,7 +17,7 @@ oc process -f ../templates/jenkins-slave-generic-template.yml \
 For all params see the list in the `../templates/jenkins-slave-generic-template.yml` or run `oc process --parameters -f ../templates/jenkins-slave-generic-template.yml`.
 
 ## Jenkins Running
-Add a new Kubernetes Container template called `jenkins-slave-mongodb` and specify this as the node when running builds. Eg below for adding a new collection to a mongodb in OCP. NOTE: you may have to [connect the networks](https://docs.openshift.com/container-platform/3.5/admin_guide/managing_networking.html#joining-project-networks) if deploying to a namespace outside where the Slave container is running.
+Add a new Kubernetes Container template called `jenkins-slave-mongodb` and specify this as the node when running builds. Eg below for adding a new collection to a mongodb in OCP. NOTE: you may have to [connect the networks](https://docs.openshift.com/container-platform/latest/admin_guide/managing_networking.html#joining-project-networks) if deploying to a namespace outside where the Slave container is running.
 ```
 mongoimport --db ${PROJECT_NAMESPACE} --collection ${COLLECTION_NAME}  --drop --file ${COLLECTION_NAME}.json --jsonArray --username=${MONGODB_USERNAME} --password=${MONGODB_PASSWORD} --host=mongodb.${PROJECT_NAMESPACE}.svc.cluster.local:27017
 ```
