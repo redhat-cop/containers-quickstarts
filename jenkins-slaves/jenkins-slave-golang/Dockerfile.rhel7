@@ -1,4 +1,13 @@
-FROM openshift/jenkins-slave-base-centos7:latest
+FROM openshift3/jenkins-slave-base-rhel7
+
+LABEL com.redhat.component="jenkins-slave-golang-rhel7-docker" \
+      name="openshift3/jenkins-slave-golang-rhel7" \
+      version="3.9" \
+      architecture="x86_64" \
+      release="1" \
+      io.k8s.display-name="Jenkins Slave Golang" \
+      io.k8s.description="The jenkins slave golang image has the go runtime on top of the jenkins slave base image." \
+      io.openshift.tags="openshift,jenkins,slave,golang"
 
 ENV GO_VERSION=1.10.2 \
     GOROOT=/usr/local/go \
