@@ -26,11 +26,11 @@ ADD zap /zap/
 COPY configuration/* /var/lib/jenkins/
 COPY configuration/run-jnlp-client /usr/local/bin/run-jnlp-client
 
-ENV JAVA_HOME /usr/lib/jvm/java-8-openjdk-amd64/ \
-    PATH $JAVA_HOME/bin:/zap:$PATH \
-    ZAP_PATH /zap/zap.sh \
-    HOME /var/lib/jenkins \
-    ZAP_PORT 8080
+ENV JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64/ \
+    PATH=$JAVA_HOME/bin:/zap:$PATH \
+    ZAP_PATH=/zap/zap.sh \
+    HOME=/var/lib/jenkins \
+    ZAP_PORT=8080
 
 COPY policies /var/lib/jenkins/.ZAP/policies/
 COPY .xinitrc /var/lib/jenkins/
