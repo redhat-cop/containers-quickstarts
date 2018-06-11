@@ -537,6 +537,6 @@ parameters:
   name: REDIS_VOL_SIZE
   value: 512Mi
 - name: NAMESPACE
-  description: Namespace where Jenkins will be deployed.
+  description: Namespace where Gitlab will be deployed.
   displayName: Namespace
   value: gitlab
