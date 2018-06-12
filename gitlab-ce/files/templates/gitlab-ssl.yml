@@ -440,6 +440,7 @@ objects:
       targetPort: 443-https
     tls:
       termination: passthrough
+      insecureEdgeTerminationPolicy: Redirect
     wildcardPolicy: None
 parameters:
 - description: A label that will be seen by the user at login
