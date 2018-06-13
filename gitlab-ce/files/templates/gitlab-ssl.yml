@@ -67,7 +67,7 @@ objects:
             command:
             - bash
             - -c
-            - /opt/gitlab/embedded/bin/openssl req -newkey rsa:2048 -nodes -keyout /etc/gitlab/${APPLICATION_HOSTNAME}.key -x509 -days 365 -out /etc/gitlab/${APPLICATION_HOSTNAME}.crt -subj "/C=GB/ST=London/L=London/O=Container and PaaS CoP/CN=${APPLICATION_HOSTNAME}"
+            - test -e "/etc/gitlab/${APPLICATION_HOSTNAME}.crt" && { echo "Custom SSL certificates already present"; exit 0; }; /opt/gitlab/embedded/bin/openssl req -newkey rsa:2048 -nodes -keyout /etc/gitlab/${APPLICATION_HOSTNAME}.key -x509 -days 365 -out /etc/gitlab/${APPLICATION_HOSTNAME}.crt -subj "/C=GB/ST=London/L=London/O=Container and PaaS CoP/CN=${APPLICATION_HOSTNAME}"
             volumes:
             - gitlab-ce-volume-1
     triggers:
@@ -440,6 +440,7 @@ objects:
       targetPort: 443-https
     tls:
       termination: passthrough
+      insecureEdgeTerminationPolicy: Redirect
     wildcardPolicy: None
 parameters:
 - description: A label that will be seen by the user at login
@@ -537,6 +538,7 @@ parameters:
   name: REDIS_VOL_SIZE
   value: 512Mi
 - name: NAMESPACE
-  description: Namespace where Gitlab will be deployed.
-  displayName: Namespace
+  displayName: Namespace name where Gitlab CE will be deployed
+  description: Namespace name where Gitlab CE will be deployed
   value: gitlab
+  required: true
