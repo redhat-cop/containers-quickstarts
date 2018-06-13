@@ -1,0 +1,229 @@
+apiVersion: v1
+kind: Template
+labels:
+  template: redis-cluster-ephemeral
+message: Redis 3 Cluster Node Ephemeral
+metadata:
+  annotations:
+    description: Redis 3 Cluster Node Ephemeral
+    iconClass: icon-mysql-database
+    tags: redis-cluster
+  name: redis-cluster-ephemeral
+  namespace: openshift
+objects:
+- apiVersion: v1
+  kind: ServiceAccount
+  metadata:
+    name: redis
+- apiVersion: "v1"
+  kind: "ImageStream"
+  metadata:
+    name: "redis-cluster-node"
+- apiVersion: v1
+  kind: Service
+  metadata:
+    name: redis-cluster-service
+  spec:
+    ports:
+    - name: redis-cluster-service
+      port: 6379
+      protocol: TCP
+      targetPort: 6379
+    selector:
+      sname: redis-cluster
+    sessionAffinity: None
+    type: ClusterIP
+- apiVersion: v1
+  kind: Service
+  metadata:
+    name: redis-cluster-node01
+  spec:
+    ports:
+    - name: redis-01
+      port: 6379
+      protocol: TCP
+      targetPort: 6379
+    - name: redis-01-cluster
+      port: 16379
+      protocol: TCP
+      targetPort: 16379
+    selector:
+      name: redis-cluster-node01
+    clusterIP: None
+- apiVersion: v1
+  kind: Service
+  metadata:
+    name: redis-cluster-node02
+  spec:
+    ports:
+    - name: redis-02
+      port: 6379
+      protocol: TCP
+      targetPort: 6379
+    - name: redis-02-cluster
+      port: 16379
+      protocol: TCP
+      targetPort: 16379
+    selector:
+      name: redis-cluster-node02
+    clusterIP: None
+- apiVersion: v1
+  kind: Service
+  metadata:
+    name: redis-cluster-node03
+  spec:
+    ports:
+    - name: redis-03
+      port: 6379
+      protocol: TCP
+      targetPort: 6379
+    - name: redis-03-cluster
+      port: 16379
+      protocol: TCP
+      targetPort: 16379
+    selector:
+      name: redis-cluster-node03
+    clusterIP: None
+- apiVersion: "v1"
+  kind: "BuildConfig"
+  metadata:
+    name: "redis-cluster"
+  spec:
+    triggers:
+      - type: ConfigChange
+      - type: ImageChange
+    source:
+      type: Git
+      git:
+        uri: https://github.com/redhat-cop/containers-quickstarts.git
+      contextDir: redis-cluster/
+    strategy:
+      type: "Docker"
+      dockerStrategy:
+        from:
+          kind: "DockerImage"
+          name: "centos:7"
+    output:
+      to:
+        kind: "ImageStreamTag"
+        name: "redis-cluster-node:latest"
+- apiVersion: "v1"
+  kind: DeploymentConfig
+  metadata:
+    name: "redis-cluster-node01"
+  spec:
+    replicas: 1
+    template:
+      metadata:
+        labels:
+          name: "redis-cluster-node01"
+          sname: "redis-cluster"
+      spec:
+        containers:
+        - name: "redis-cluster-node01"
+          image: "redis-cluster-node"
+          ports:
+          - containerPort: 6379
+            protocol: TCP
+          - containerPort: 16379
+            protocol: TCP
+        serviceAccount: redis
+        serviceAccountName: redis
+    replicas: 1
+    triggers:
+      - type: "ConfigChange"
+      - type: "ImageChange"
+        imageChangeParams:
+          automatic: true
+          containerNames:
+            - "redis-cluster-node01"
+          from:
+            kind: "ImageStreamTag"
+            name: "redis-cluster-node:latest"
+    strategy:
+      type: "Rolling"
+    paused: false
+    revisionHistoryLimit: 2
+    minReadySeconds: 0
+- apiVersion: "v1"
+  kind: DeploymentConfig
+  metadata:
+    name: "redis-cluster-node02"
+  spec:
+    replicas: 1
+    template:
+      metadata:
+        labels:
+          name: "redis-cluster-node02"
+          sname: "redis-cluster"
+      spec:
+        containers:
+        - name: "redis-cluster-node02"
+          image: "redis-cluster-node"
+          ports:
+          - containerPort: 6379
+            protocol: TCP
+          - containerPort: 16379
+            protocol: TCP
+        serviceAccount: redis
+        serviceAccountName: redis
+    replicas: 1
+    triggers:
+      - type: "ConfigChange"
+      - type: "ImageChange"
+        imageChangeParams:
+          automatic: true
+          containerNames:
+            - "redis-cluster-node02"
+          from:
+            kind: "ImageStreamTag"
+            name: "redis-cluster-node:latest"
+    strategy:
+      type: "Rolling"
+    paused: false
+    revisionHistoryLimit: 2
+    minReadySeconds: 0
+- apiVersion: "v1"
+  kind: DeploymentConfig
+  metadata:
+    name: "redis-cluster-node03"
+  spec:
+    replicas: 1
+    template:
+      metadata:
+        labels:
+          name: "redis-cluster-node03"
+          sname: "redis-cluster"
+      spec:
+        containers:
+        - name: "redis-cluster-node03"
+          image: "redis-cluster-node"
+          ports:
+          - containerPort: 6379
+            protocol: TCP
+          - containerPort: 16379
+            protocol: TCP
+        serviceAccount: redis
+        serviceAccountName: redis
+    replicas: 1
+    triggers:
+      - type: "ConfigChange"
+      - type: "ImageChange"
+        imageChangeParams:
+          automatic: true
+          containerNames:
+            - "redis-cluster-node03"
+          from:
+            kind: "ImageStreamTag"
+            name: "redis-cluster-node:latest"
+    strategy:
+      type: "Rolling"
+      rollingParams:
+        post:
+          failurePolicy: Abort
+          execNewPod:
+            containerName: redis-cluster-node03
+            command: [ "/usr/bin/bash", "/usr/local/bin/cluster-init.sh" ]
+    paused: false
+    revisionHistoryLimit: 2
+    minReadySeconds: 0
