@@ -159,6 +159,7 @@ objects:
       targetPort: 3000-tcp
     tls:
       termination: edge
+      insecureEdgeTerminationPolicy: Redirect
     to:
       kind: Service
       name: ${APPLICATION_NAME}
