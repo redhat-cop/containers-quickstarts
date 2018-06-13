@@ -39,6 +39,7 @@ objects:
       type: Git
     strategy:
       dockerStrategy:
+        dockerfilePath: "${DOCKERFILE_PATH}"
         from:
           kind: DockerImage
           name: "${BUILDER_IMAGE_NAME}"
@@ -74,5 +75,9 @@ parameters:
   displayName: Image tag for Jenkins slave.
   description: This is the image tag used for the Jenkins slave.
   value: latest
+- name: DOCKERFILE_PATH
+  displayName: Path to Dockerfile
+  description: Path for alternate Dockerfile to use for build
+  value: Dockerfile.rhel7
 labels:
   template: build-pod-template

@@ -540,5 +540,5 @@ parameters:
 - name: NAMESPACE
   displayName: Namespace name where Gitlab CE will be deployed
   description: Namespace name where Gitlab CE will be deployed
-  value: 'ci-cd'
+  value: gitlab
   required: true
