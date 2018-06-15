@@ -1,8 +1,0 @@
-apiVersion: v1
-kind: List
-items:
-- kind: ProjectRequest
-  apiVersion: v1
-  metadata:
-    name: gogs
-  displayName: Gogs project

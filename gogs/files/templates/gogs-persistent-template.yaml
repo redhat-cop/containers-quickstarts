@@ -8,13 +8,44 @@ metadata:
 objects:
 - kind: SecurityContextConstraints
   apiVersion: v1
+  allowHostDirVolumePlugin: false
+  allowHostIPC: false
+  allowHostNetwork: false
+  allowHostPID: false
+  allowHostPorts: false
+  allowPrivilegedContainer: false
+  allowedCapabilities: null
+  allowedFlexVolumes: null
+  apiVersion: v1
+  defaultAddCapabilities: null
+  fsGroup:
+    type: RunAsAny
+  groups:
+  - system:cluster-admins
   metadata:
     annotations:
       kubernetes.io/description: anyuid provides all features of the restricted SCC
         but allows users to run with any UID and any GID.
-    name: anyuid
+    name: gogs-anyuid
+  priority: 10
+  readOnlyRootFilesystem: false
+  requiredDropCapabilities:
+  - MKNOD
+  runAsUser:
+    type: RunAsAny
+  seLinuxContext:
+    type: MustRunAs
+  supplementalGroups:
+    type: RunAsAny
   users:
-  - system:serviceaccount:gogs:${APPLICATION_NAME}
+  - system:serviceaccount:${NAMESPACE}:${APPLICATION_NAME}
+  volumes:
+  - configMap
+  - downwardAPI
+  - emptyDir
+  - persistentVolumeClaim
+  - projected
+  - secret
 - kind: ImageStream
   apiVersion: v1
   metadata:
@@ -373,7 +404,7 @@ parameters:
 - name: GOGS_VERSION
   displayName: Gogs Version
   description: 'Version of the Gogs container image to be used'
-  value: "0.11.34"
+  value: "0.11.53"
   required: true
 - name: INSTALL_LOCK
   displayName: Installation lock
@@ -383,3 +414,8 @@ parameters:
   displayName: Skip TLS verification on webhooks
   description: Skip TLS verification on webhooks. Enable with caution!
   value: "true"
+- name: NAMESPACE
+  displayName: Namespace name where Gogs will be deployed
+  description: Namespace name where Gogs will be deployed
+  value: gogs
+  required: true

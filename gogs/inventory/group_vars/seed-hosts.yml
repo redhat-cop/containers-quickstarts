@@ -3,7 +3,9 @@ openshift_cluster_content:
 - object: projectrequest
   content:
   - name: gogs-project
-    file: "{{ inventory_dir }}/../files/projects/projects.yml"
+    template: "https://raw.githubusercontent.com/redhat-cop/cluster-lifecycle/v3.9.0/files/projectrequest/template.yml"
+    template_action: create
+    params: "{{ inventory_dir }}/../files/projectrequests/gogs"
 - object: deployments
   content:
   - name: gogs
