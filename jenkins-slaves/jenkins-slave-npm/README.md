@@ -1,5 +1,5 @@
 # jenkins-slave-npm
-Provides a docker image of the nodejs v6 runtime with npm for use as a Jenkins slave.
+Provides a docker image of the nodejs v8 runtime with npm for use as a Jenkins slave.
 
 ## Build
 `docker build -t jenkins-slave-npm .`
@@ -9,7 +9,7 @@ Provides a docker image of the nodejs v6 runtime with npm for use as a Jenkins s
 oc process -f ../templates/jenkins-slave-generic-template.yml \
     -p NAME=jenkins-slave-npm \
     -p SOURCE_CONTEXT_DIR=jenkins-slaves/jenkins-slave-npm \
-    | oc create -f -
+    | oc apply -f -
 ```
 For all params see the list in the `../templates/jenkins-slave-generic-template.yml` or run `oc process --parameters -f ../templates/jenkins-slave-generic-template.yml`.
 
