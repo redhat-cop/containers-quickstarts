@@ -14,10 +14,15 @@ ADD https://dl.google.com/linux/direct/google-chrome-stable_current_x86_64.rpm g
 
 RUN INSTALL_PKGS="rh-nodejs8 rh-nodejs8-npm rh-nodejs8-nodejs-nodemon nss_wrapper redhat-lsb libXScrnSaver xdg-utils" && \
     yum install -y --setopt=tsflags=nodocs \
+      --disablerepo=* \
+      --enablerepo=rhel-7-server-rpms \
       --enablerepo=rhel-server-rhscl-7-rpms \
       --enablerepo=rhel-7-server-optional-rpms \
       $INSTALL_PKGS && \
-    yum -y localinstall google-chrome-stable_current_x86_64.rpm && \
+    yum -y localinstall \
+      --disablerepo=* \
+      --enablerepo=rhel-7-server-rpms \
+      google-chrome-stable_current_x86_64.rpm && \
     rm google-chrome-stable_current_x86_64.rpm && \
     rpm -V $INSTALL_PKGS google-chrome-stable && \
     yum clean all -y && \
