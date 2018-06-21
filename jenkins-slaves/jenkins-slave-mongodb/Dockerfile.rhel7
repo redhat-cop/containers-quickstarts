@@ -6,7 +6,7 @@ LABEL com.redhat.component="jenkins-slave-mongodb-rhel7-docker" \
       architecture="x86_64" \
       release="1" \
       io.k8s.display-name="Jenkins Slave MongoDB" \
-      io.k8s.description="The jenkins slave gradle image has MongoDB on top of the jenkins slave base image." \
+      io.k8s.description="The jenkins slave gradle image has MongoDB CLI tools on top of the jenkins slave base image." \
       io.openshift.tags="openshift,jenkins,slave,mongodb"
 
 ENV MONGODB_VERSION=3.6
