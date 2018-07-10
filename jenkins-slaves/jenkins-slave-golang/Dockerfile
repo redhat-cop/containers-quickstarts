@@ -1,4 +1,4 @@
-FROM openshift/jenkins-slave-base-centos7:latest
+FROM openshift/jenkins-slave-base-centos7
 
 ENV GO_VERSION=1.10.2 \
     GOROOT=/usr/local/go \

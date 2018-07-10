@@ -1,0 +1,24 @@
+FROM openshift3/jenkins-slave-base-rhel7
+
+LABEL com.redhat.component="jenkins-slave-arachni-rhel7-docker" \
+      name="openshift3/jenkins-slave-arachni-rhel7" \
+      version="3.9" \
+      architecture="x86_64" \
+      release="1" \
+      io.k8s.display-name="Jenkins Slave Arachni" \
+      io.k8s.description="The jenkins slave arachni image has the Arachni web application security scanner on top of the jenkins slave base image." \
+      io.openshift.tags="openshift,jenkins,slave,arachni"
+
+
+ARG VERSION=1.5.1
+ARG WEB_VERSION=0.5.12
+
+WORKDIR /arachni
+
+RUN curl -sLo- https://github.com/Arachni/arachni/releases/download/v${VERSION}/arachni-${VERSION}-${WEB_VERSION}-linux-x86_64.tar.gz | tar xvz -C /arachni --strip-components=1 && \
+    chgrp -R 0 /arachni && \
+    chmod -R g+rw /arachni
+
+COPY reporters ./system/gems/gems/arachni-${VERSION}/components/reporters
+
+USER 1001
