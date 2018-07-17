@@ -16,6 +16,8 @@ WORKDIR $HOME
 
 ADD ./s2i /usr/libexec/s2i
 
+RUN chmod u+x /usr/libexec/s2i/run
+
 USER 1001
 
 CMD ["/usr/libexec/s2i/run"]
