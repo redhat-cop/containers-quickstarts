@@ -17,6 +17,7 @@ oc process -f ../templates/jenkins-slave-generic-template.yml \
     -p NAME=jenkins-slave-zap \
     -p SOURCE_CONTEXT_DIR=jenkins-slaves/jenkins-slave-zap \
     -p BUILDER_IMAGE_NAME=centos:centos7 \
+    -p DOCKERFILE_PATH=Dockerfile
     | oc create -f -
 ```
 
@@ -29,15 +30,30 @@ Add a new Kubernetes Container template called `jenkins-slave-zap` (if you've bu
 ## Using it in your Jenkinsfile
 
 ```groovy
-stage('Get a ZAP Pod') {
-    node('zap') {
-        stage('Scan Web Application') {
-            dir('/zap') {
-                def retVal = sh returnStatus: true, script: '/zap/zap-baseline.py -r baseline.html -t http://<some-web-site>'
-                publishHTML([allowMissing: false, alwaysLinkToLastBuild: false, keepAll: true, reportDir: '/zap/wrk', reportFiles: 'baseline.html', reportName: 'ZAP Baseline Scan', reportTitles: 'ZAP Baseline Scan'])
-                echo "Return value is: ${retVal}"
-            }
-        }
+stage('OWASP Scan') {
+  agent {
+      node {
+          label "jenkins-slave-zap"
+      }
+  }
+  steps {
+      sh '''
+          /zap/zap-baseline.py -r index.html -t http://<some website url> || return_code=$?
+          echo "exit value was  - " $return_code
+      '''
+  }
+  post {
+    always {
+      // publish html
+      publishHTML target: [
+          allowMissing: false,
+          alwaysLinkToLastBuild: false,
+          keepAll: true,
+          reportDir: '/zap/wrk',
+          reportFiles: 'index.html',
+          reportName: 'OWASP Zed Attack Proxy'
+        ]
     }
+  }
 }
 ```
