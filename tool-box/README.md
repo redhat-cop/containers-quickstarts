@@ -1,3 +1,5 @@
+[![Docker Repository on Quay](https://quay.io/repository/redhat-cop/tool-box/status "Docker Repository on Quay")](https://quay.io/repository/redhat-cop/tool-box)
+
 # Tool Box
 
 This container exists to help folks that can't install ansible, git or other necessary tools. It is not to be used in any time of production setting and is not suppportable under an OpenShift subscription.
