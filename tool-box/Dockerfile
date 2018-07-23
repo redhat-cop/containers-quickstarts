@@ -11,11 +11,12 @@ RUN dnf -y update && \
     mkdir -m 775 $HOME && \
     chmod 775 /etc/passwd && \
     pip install git+https://github.com/ansible/ansible.git@stable-2.5
-    
+
 WORKDIR $HOME
 
-ADD ./s2i /usr/libexec/s2i
+ADD ./root /
 
 USER 1001
 
-CMD ["/usr/libexec/s2i/run"]
+ENTRYPOINT ["/usr/local/bin/run"]
+CMD ["sleep", "infinity"]
