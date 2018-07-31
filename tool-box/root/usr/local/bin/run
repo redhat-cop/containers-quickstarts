@@ -16,4 +16,4 @@ else
   echo "User $USER_ID already exists"
 fi
 
-sleep infinity
+exec "$@"
