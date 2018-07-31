@@ -1,0 +1,29 @@
+---
+openshift_cluster_content:
+- object: projectrequest
+  content:
+  - name: s2i-erlang
+    file: "{{ inventory_dir }}/../../.openshift/projects/projects.yml"
+    file_action: create
+- object: imagestream
+  content:
+  - name: erlang-builder
+    template: "{{ inventory_dir }}/../../.openshift/templates/is.yml"
+    params: "{{ inventory_dir }}/../../.openshift/params/builder-is"
+    namespace: s2i-erlang
+  - name: erlang-app
+    template: "{{ inventory_dir }}/../../.openshift/templates/is.yml"
+    params: "{{ inventory_dir }}/../../.openshift/params/application-is"
+    namespace: s2i-erlang
+- object: builds
+  content:
+  - name: erlang-builder
+    namespace: s2i-erlang
+    template: "{{ inventory_dir }}/../../.openshift/templates/bc.yml"
+    params: "{{ inventory_dir }}/../../.openshift/params/application-bc"
+- object: deployments
+  content:
+  - name: s2i-erlang
+    namespace: s2i-erlang
+    template: "{{ inventory_dir }}/../../.openshift/templates/dc.yml"
+    params: "{{ inventory_dir }}/../../.openshift/params/application-dc"

@@ -1,0 +1,35 @@
+FROM rhscl/s2i-base-rhel7:1
+
+EXPOSE 8080
+
+ENV REBAR3_VERSION=3.6.1 \
+    ERLANG_VERSION=21.0 \
+    PATH=$HOME/.local/bin:$PATH \
+    SUMMARY="Platform for building and running Erlang applications using Rebar3" \
+    DESCRIPTION="Erlang and Rebar3 available as a container is a base platform for \
+building and running various Erlang applications and frameworks."
+
+LABEL summary="$SUMMARY" \
+      description="$DESCRIPTION" \
+      io.k8s.description="The jenkins slave erlang image has the Erlang runtime on top of the jenkins slave base image." \
+      io.k8s.display-name="Erlang $ERLANG_VERSION" \
+      io.openshift.expose-services="8080:http" \
+      io.openshift.tags="builder,erlang,rebar3" \
+      com.redhat.component="erlang-rhel7-docker" \
+      name="openshift3/erlang-21-rhel7" \
+      version="$ERLANG_VERSION"
+
+COPY erlang.repo /etc/yum.repos.d/erlang.repo
+RUN yum install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm && \
+    yum install -y --setopt=tsflags=nodocs esl-erlang && \
+    curl -Lo /usr/local/bin/rebar3 https://github.com/erlang/rebar3/releases/download/${REBAR3_VERSION}/rebar3 && \
+    chmod +x /usr/local/bin/rebar3 && \
+    yum clean all -y && \
+    rm -rf /var/cache/yum && \
+    fix-permissions ${APP_ROOT} -P && \
+    rpm-file-permissions
+
+COPY s2i/bin/ $STI_SCRIPTS_PATH
+
+USER 1001
+CMD $STI_SCRIPTS_PATH/run

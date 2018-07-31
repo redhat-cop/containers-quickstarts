@@ -1,0 +1,1 @@
+FROM_IMAGE_TAG=centos/s2i-base-centos7

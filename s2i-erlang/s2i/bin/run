@@ -1,0 +1,12 @@
+#!/bin/sh
+
+set -e
+
+echo "---> Install application ..."
+TARBALL=$(find _build/prod/rel -name '*.tar.gz')
+BASENAME=${TARBALL%-*.tar.gz}
+BASENAME=${BASENAME##*/}
+tar zxvf $TARBALL -C /opt/app-root
+
+echo "---> Run application ${BASENAME} ..."
+exec /opt/app-root/bin/$BASENAME foreground
