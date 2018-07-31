@@ -16,7 +16,7 @@ WORKDIR $HOME
 
 ADD ./root /
 
-RUN chmod u+x /usr/libexec/s2i/run
+RUN chmod u+x /usr/local/bin/run
 
 USER 1001
 
