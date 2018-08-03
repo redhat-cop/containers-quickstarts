@@ -18,7 +18,7 @@ RUN INSTALL_PKGS="tar unzip bc which lsof java-1.8.0-openjdk java-1.8.0-openjdk-
     microdnf --enablerepo=rhel-7-server-rpms install -y $INSTALL_PKGS && \
     microdnf update && \
     microdnf clean all && \
-    useradd -u 1001 -r -g 0 -d ${HOME} -s /sbin/nologin \
+    adduser -u 1001 -r -g 0 -d ${HOME} -s /sbin/nologin \
         -c "Default Application User" default && \
     mkdir -p ${HOME} /opt/activator /opt/s2i/destination/src/ /deployments && \
     chown -R 1001:0 /opt/app-root /opt/activator /opt/s2i/destination/src/ /deployments && \
