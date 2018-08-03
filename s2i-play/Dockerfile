@@ -14,7 +14,7 @@ ENV ACTIVATOR_VERSION=1.3.10 \
 
 COPY s2i /usr/libexec/s2i
 
-RUN INSTALL_PKGS="tar unzip bc which lsof shadow-utils java-1.8.0-openjdk java-1.8.0-openjdk-devel" && \
+RUN INSTALL_PKGS="tar unzip bc gzip which lsof shadow-utils java-1.8.0-openjdk java-1.8.0-openjdk-devel" && \
     microdnf --enablerepo=rhel-7-server-rpms install -y $INSTALL_PKGS && \
     microdnf update && \
     microdnf clean all && \
