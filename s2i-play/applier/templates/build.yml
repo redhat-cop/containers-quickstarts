@@ -95,7 +95,7 @@ parameters:
   name: PLAY_BUILDER_SOURCE_REPOSITORY_URL
   required: true
   value: https://github.com/dmhumph/containers-quickstarts.git
-  ref: "atomic"
+  ref: atomic
 - description: Play Framework builder source branch/tag reference.
   displayName: Play builder source branch/tag reference.
   name: PLAY_BUILDER_SOURCE_REPOSITORY_REF
