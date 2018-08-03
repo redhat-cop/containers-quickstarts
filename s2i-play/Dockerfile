@@ -15,7 +15,7 @@ ENV ACTIVATOR_VERSION=1.3.10 \
 COPY s2i /usr/libexec/s2i
 
 RUN INSTALL_PKGS="tar unzip bc which lsof java-1.8.0-openjdk java-1.8.0-openjdk-devel" && \
-    microdnf --disablerepo rhel-7-server-htb-rpms && \
+    microdnf --disablerepo=rhel-7-server-htb-rpms && \
     microdnf install -y $INSTALL_PKGS && \
     microdnf update && \
     microdnf clean all && \
