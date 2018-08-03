@@ -1,4 +1,4 @@
-FROM rhel7.4
+FROM rhel7-atomic
 
 MAINTAINER Andrew Block <ablock@redhat.com>
 
@@ -15,8 +15,9 @@ ENV ACTIVATOR_VERSION=1.3.10 \
 COPY s2i /usr/libexec/s2i
 
 RUN INSTALL_PKGS="tar unzip bc which lsof java-1.8.0-openjdk java-1.8.0-openjdk-devel" && \
-    yum install -y $INSTALL_PKGS && \
-    yum clean all && \
+    microdnf install -y $INSTALL_PKGS && \
+    microdnf update && \
+    microdnf clean all && \
     useradd -u 1001 -r -g 0 -d ${HOME} -s /sbin/nologin \
         -c "Default Application User" default && \
     mkdir -p ${HOME} /opt/activator /opt/s2i/destination/src/ /deployments && \
