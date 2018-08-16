@@ -99,7 +99,7 @@ parameters:
   displayName: Play builder source branch/tag reference.
   name: PLAY_BUILDER_SOURCE_REPOSITORY_REF
   required: false
-  value: atomic
+  value: master
 - description: Path within Git project to build containing the Play Framework builder;
     empty for root project directory.
   displayName: Play builder context directory.
