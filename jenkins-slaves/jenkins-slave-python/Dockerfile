@@ -1,21 +1,30 @@
 FROM openshift/jenkins-slave-base-centos7
 
-ENV LANG C.UTF-8
+EXPOSE 8080
 
-RUN yum install -y --setopt=tsflags=nodocs gcc make openssl-devel wget zlib-devel libffi-devel && \
-    mkdir tmp && \
-    cd tmp && \
-    wget https://www.python.org/ftp/python/3.7.0/Python-3.7.0.tgz && \
-    tar zxvf Python-3.7.0.tgz  && \
-    cd Python-3.7.0  && \
-    ./configure --prefix=$HOME/opt/python-3.7.0 && \
-    make && \
-    make install && \
-    yum remove -y gcc make openssl-devel wget zlib-devel && \
-    yum clean all
+ENV PYTHON_VERSION=3.6 \
+    PATH=$HOME/.local/bin/:$PATH \
+    PYTHONUNBUFFERED=1 \
+    PYTHONIOENCODING=UTF-8 \
+    LC_ALL=en_US.UTF-8 \
+    LANG=en_US.UTF-8 \
+    PIP_NO_CACHE_DIR=off
 
-# Not removing `libffi-devel` after compilation due to bug: https://bugs.centos.org/view.php?id=10828
+RUN INSTALL_PKGS="rh-python36 rh-python36-python-devel rh-python36-python-setuptools rh-python36-python-pip nss_wrapper \
+        httpd24 httpd24-httpd-devel httpd24-mod_ssl httpd24-mod_auth_kerb httpd24-mod_ldap \
+        httpd24-mod_session atlas-devel gcc-gfortran libffi-devel libtool-ltdl enchant" && \
+    yum install -y centos-release-scl && \
+    yum -y --setopt=tsflags=nodocs install --enablerepo=centosplus $INSTALL_PKGS && \
+    rpm -V $INSTALL_PKGS && \
+    # Remove centos-logos (httpd dependency) to keep image size smaller.
+    rpm -e --nodeps centos-logos && \
+    yum -y clean all --enablerepo='*' && \
+    source scl_source enable rh-python36 && \
+    scl enable rh-python36 bash
 
-ENV PATH $HOME/opt/python-3.7.0/bin:$PATH
+ADD scl_enable /usr/share/container-scripts/
+ENV BASH_ENV=/usr/share/container-scripts/scl_enable \
+    ENV=/usr/share/container-scripts/scl_enable \
+    PROMPT_COMMAND=". /usr/share/container-scripts/scl_enable"
 
 USER 1001
