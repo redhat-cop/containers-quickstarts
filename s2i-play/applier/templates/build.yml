@@ -14,9 +14,9 @@ objects:
   metadata:
     labels:
       build: ${PLAY_BUILDER_NAME}
-    name: rhel7
+    name: rhel7-atomic
   spec:
-    dockerImageRepository: registry.access.redhat.com/rhel7/rhel
+    dockerImageRepository: registry.access.redhat.com/rhel7-atomic
 - apiVersion: v1
   kind: ImageStream
   metadata:
@@ -51,7 +51,7 @@ objects:
         dockerFilePath: Dockerfile
         from:
           kind: ImageStreamTag
-          name: rhel7:7.4
+          name: rhel7-atomic:7.5
       type: Docker
     triggers:
     - type: ConfigChange
