@@ -19,8 +19,6 @@ RUN INSTALL_PKGS="rh-python36 rh-python36-python-devel rh-python36-python-setupt
     ./prepare-yum-repositories rhel-server-rhscl-7-rpms && \
     yum -y --setopt=tsflags=nodocs install $INSTALL_PKGS && \
     rpm -V $INSTALL_PKGS && \
-    # Remove redhat-logos (httpd dependency) to keep image size smaller.
-    rpm -e --nodeps redhat-logos && \
     yum -y clean all --enablerepo='*' && \
     source scl_source enable rh-python36 && \
     scl enable rh-python36 bash
