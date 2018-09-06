@@ -12,7 +12,7 @@ For local running and experimentation run `docker run -i -t jenkins-slave-python
 oc process -f ../templates/jenkins-slave-generic-template.yml \
     -p NAME=jenkins-slave-python \
     -p SOURCE_CONTEXT_DIR=jenkins-slaves/jenkins-slave-python \
-    -p DOCKERFILE_PATH=Dockerfile
+    -p DOCKERFILE_PATH=Dockerfile \
     | oc create -f -
 ```
 For all params see the list in the `../templates/jenkins-slave-generic-template.yml` or run `oc process --parameters -f ../templates/jenkins-slave-generic-template.yml`.
