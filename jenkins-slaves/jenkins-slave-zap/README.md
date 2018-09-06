@@ -17,7 +17,7 @@ oc process -f ../templates/jenkins-slave-generic-template.yml \
     -p NAME=jenkins-slave-zap \
     -p SOURCE_CONTEXT_DIR=jenkins-slaves/jenkins-slave-zap \
     -p BUILDER_IMAGE_NAME=centos:centos7 \
-    -p DOCKERFILE_PATH=Dockerfile
+    -p DOCKERFILE_PATH=Dockerfile \
     | oc create -f -
 ```
 
