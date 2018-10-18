@@ -12,8 +12,11 @@ LABEL com.redhat.component="jenkins-slave-ansible-rhel7-docker" \
 ENV ANSIBLE_VERSION=2.5.8 \
     ANSIBLE_REVISION=1
 
-RUN yum install -y --setopt=tsflags=nodocs \
+RUN INSTALL_PKGS="python2-pip" && \
+    yum install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm && \
+    yum install -y --setopt=tsflags=nodocs \
       --disablerepo=* --enablerepo=rhel-7-server-rpms --enablerepo=rhel-7-server-extras-rpms \
+      --enablerepo=epel $INSTALL_PKGS \
       https://releases.ansible.com/ansible/rpm/release/epel-7-x86_64/ansible-${ANSIBLE_VERSION}-${ANSIBLE_REVISION}.el7.ans.noarch.rpm && \
     rpm -V ansible && \
     yum clean all -y && \
