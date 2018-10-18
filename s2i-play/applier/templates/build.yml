@@ -16,7 +16,7 @@ objects:
       build: ${PLAY_BUILDER_NAME}
     name: rhel7-atomic
   spec:
-    dockerImageRepository: registry.access.redhat.com/rhel7-atomic
+    dockerImageRepository: registry.access.redhat.com/rhel7/rhel-atomic
 - apiVersion: v1
   kind: ImageStream
   metadata:
