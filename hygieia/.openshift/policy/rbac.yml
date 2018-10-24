@@ -1,0 +1,26 @@
+---
+apiVersion: v1
+kind: Template
+objects:
+- apiVersion: v1
+  groupNames: null
+  kind: RoleBinding
+  metadata:
+    creationTimestamp: null
+    name: admin
+  roleRef:
+    name: admin
+  subjects:
+  - kind: User
+    name: esauer
+  - kind: User
+    name: cpitman
+  - kind: User
+    name: rspazzol
+  - kind: User
+    name: tquinn
+  userNames:
+  - esauer
+  - cpitman
+  - rspazzol
+  - tquinn

@@ -1,0 +1,21 @@
+k8s_namespace: "{{ mynamespace | default('hygieia')}}"
+filter_tags: unpriv
+
+openshift_cluster_content:
+  - object: Admin-level setup
+    content:
+    - name: Configure Projects
+      template: "{{ inventory_dir }}/../.openshift/templates/projects.yml"
+      params_from_vars:
+        NAMESPACE: "{{ k8s_namespace }}"
+        DISPLAY_NAME: Hygieia Deployment
+      action: create
+      tags:
+        - priv
+        - all
+    - name: Apply policy objects
+      template: "{{ inventory_dir }}/../.openshift/policy/"
+      namespace: "{{ k8s_namespace }}"
+      tags:
+        - priv
+        - all
