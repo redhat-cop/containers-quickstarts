@@ -1,4 +1,4 @@
-#invoke npm in jenkinsfile: sh "scl enable rh-nodejs6 'npm run build'"
+#invoke npm in jenkinsfile: sh "scl enable rh-nodejs8 'npm run build'"
 FROM openshift3/jenkins-slave-base-rhel7
 
 LABEL com.redhat.component="jenkins-slave-nodejs-rhel7-docker" \
@@ -10,32 +10,30 @@ LABEL com.redhat.component="jenkins-slave-nodejs-rhel7-docker" \
       io.k8s.description="The jenkins slave arachni image has the nodejs tools on top of the jenkins slave base image." \
       io.openshift.tags="openshift,jenkins,slave,nodejs"
 
-ENV NODEJS_VERSION=8 \
+ENV NODEJS_VERSION=10 \
     NPM_CONFIG_PREFIX=$HOME/.npm-global \
     PATH=$HOME/node_modules/.bin/:$HOME/.npm-global/bin/:$PATH \
-    BASH_ENV=/usr/local/bin/scl_enable \
-    ENV=/usr/local/bin/scl_enable \
-    PROMPT_COMMAND=". /usr/local/bin/scl_enable" \
     CHROME_BIN=/bin/google-chrome
 
 COPY contrib/bin/scl_enable /usr/local/bin/scl_enable
 ADD https://dl.google.com/linux/direct/google-chrome-stable_current_x86_64.rpm google-chrome-stable_current_x86_64.rpm
 
-RUN INSTALL_PKGS="rh-nodejs${NODEJS_VERSION} rh-nodejs${NODEJS_VERSION}-npm rh-nodejs${NODEJS_VERSION}-nodejs-nodemon nss_wrapper redhat-lsb libXScrnSaver xdg-utils" && \
+RUN INSTALL_PKGS="rhoar-nodejs${NODEJS_VERSION} npm redhat-lsb libXScrnSaver xdg-utils liberation-fonts" && \
     yum install -y --setopt=tsflags=nodocs \
       --disablerepo=* \
       --enablerepo=rhel-7-server-rpms \
-      --enablerepo=rhel-server-rhscl-7-rpms \
+      --enablerepo=rhel-7-server-rhoar-nodejs-10-rpms \
       --enablerepo=rhel-7-server-optional-rpms \
       $INSTALL_PKGS && \
     yum -y localinstall \
       --disablerepo=* \
       --enablerepo=rhel-7-server-rpms \
-      --enablerepo=rhel-7-server-optional-rpms \
       google-chrome-stable_current_x86_64.rpm && \
     rm google-chrome-stable_current_x86_64.rpm && \
     rpm -V $INSTALL_PKGS google-chrome-stable && \
     yum clean all -y && \
     rm -rf /var/cache/yum
+
+RUN npm install -g npm-audit-html npm-audit-ci-wrapper sonarqube-scanner
 
 USER 1001
