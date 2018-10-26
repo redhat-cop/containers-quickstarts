@@ -19,3 +19,32 @@ openshift_cluster_content:
       tags:
         - priv
         - all
+  - object: Builds
+    content:
+    - name: Java base image
+      template: "{{ inventory_dir }}/../.openshift/templates/build-base-image.yml"
+      tags:
+        - unpriv
+        - all
+    - name: API
+      template: "{{ inventory_dir }}/../.openshift/templates/build-api.yml"
+      tags:
+        - unpriv
+        - all
+    - name: Audit API
+      template: "{{ inventory_dir }}/../.openshift/templates/build-apiaudit.yml"
+      tags:
+        - unpriv
+        - all
+  - object: Deployments
+    content:
+    - name: API
+      template: "{{ inventory_dir }}/../.openshift/templates/deployment-api.yml"
+      tags:
+        - unpriv
+        - all
+    - name: Audit API
+      template: "{{ inventory_dir }}/../.openshift/templates/deployment-apiaudit.yml"
+      tags:
+        - unpriv
+        - all

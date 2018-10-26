@@ -1,3 +1,17 @@
 = Deploying Hygieia to OpenShift
 
 link:https://github.com/Hygieia/Hygieia[Hygieia] is a DevOps dashboarding project created by Capital One. This quickstart deploys Hygieia to OpenShift.
+
+Setup commands:
+
+[source,bash]
+----
+ansible-galaxy install -r requirements.yml -p galaxy
+ansible-playbook -i .applier/ galaxy/openshift-applier/playbooks/openshift-cluster-seed.yml
+----
+
+TODOs:
+
+- [ ] Add mongodb to applier inventory
+- [ ] Get the UI to build using s2i. I'm thinking nodejs image -> deploy to nginx
+- [ ] Look at how we build/deploy/configure collectors
