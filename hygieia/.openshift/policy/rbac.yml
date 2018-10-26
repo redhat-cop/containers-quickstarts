@@ -19,8 +19,11 @@ objects:
     name: rspazzol
   - kind: User
     name: tquinn
+  - kind: User
+    name: tgeorge
   userNames:
   - esauer
   - cpitman
   - rspazzol
   - tquinn
+  - tgeorge
