@@ -8,7 +8,7 @@ ENV NODEJS_VERSION=10 \
 
 ADD https://dl.google.com/linux/direct/google-chrome-stable_current_x86_64.rpm google-chrome-stable_current_x86_64.rpm
 
-RUN curl --silent --location https://rpm.nodesource.com/setup_10.x | bash -
+RUN curl --silent --location https://rpm.nodesource.com/setup_${NODEJS_VERSION}.x | bash -
 
 RUN INSTALL_PKGS="nodejs redhat-lsb libXScrnSaver xdg-utils liberation-fonts" && \
     yum install -y --setopt=tsflags=nodocs \
@@ -20,6 +20,8 @@ RUN INSTALL_PKGS="nodejs redhat-lsb libXScrnSaver xdg-utils liberation-fonts" &&
     yum clean all -y && \
     rm -rf /var/cache/yum
 
-RUN npm install -g npm-audit-html npm-audit-ci-wrapper sonarqube-scanner
+USER root
+RUN npm install --unsafe-perm -g npm-audit-html npm-audit-ci-wrapper sonar-scanner || cat /home/jenkins/.npm/_logs/*-debug.log
+RUN sonar-scanner || echo
 
 USER 1001
