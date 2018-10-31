@@ -1,4 +1,4 @@
-k8s_namespace: "{{ mynamespace | default('hygieia')}}"
+k8s_namespace: hygieia
 filter_tags: unpriv
 
 openshift_cluster_content:
@@ -21,12 +21,6 @@ openshift_cluster_content:
         - all
   - object: Builds
     content:
-    - name: Java base image
-      template: "{{ inventory_dir }}/../.openshift/templates/build-base-image.yml"
-      namespace: "{{ k8s_namespace }}"
-      tags:
-        - unpriv
-        - all
     - name: API
       template: "{{ inventory_dir }}/../.openshift/templates/build-api.yml"
       namespace: "{{ k8s_namespace }}"
@@ -41,6 +35,12 @@ openshift_cluster_content:
         - all
   - object: Deployments
     content:
+    - name: MongoDB
+      template: "openshift//mongodb-persistent"
+      namespace: "{{ k8s_namespace }}"
+      tags:
+        - unpriv
+        - all
     - name: API
       template: "{{ inventory_dir }}/../.openshift/templates/deployment-api.yml"
       namespace: "{{ k8s_namespace }}"
