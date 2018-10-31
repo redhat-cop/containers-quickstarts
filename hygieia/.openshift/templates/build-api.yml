@@ -5,6 +5,12 @@ metadata:
   name: build-api
 objects:
 - apiVersion: v1
+  kind: ImageStream
+  metadata:
+    labels:
+      application: api
+    name: api
+- apiVersion: v1
   kind: BuildConfig
   metadata:
     creationTimestamp: null
@@ -38,7 +44,8 @@ objects:
           value: -pl api -am
         from:
           kind: ImageStreamTag
-          name: openjdk8-custom:latest
+          name: java:latest
+          namespace: openshift
       type: Source
     triggers:
     - imageChange: {}

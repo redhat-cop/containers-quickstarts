@@ -23,16 +23,19 @@ openshift_cluster_content:
     content:
     - name: Java base image
       template: "{{ inventory_dir }}/../.openshift/templates/build-base-image.yml"
+      namespace: "{{ k8s_namespace }}"
       tags:
         - unpriv
         - all
     - name: API
       template: "{{ inventory_dir }}/../.openshift/templates/build-api.yml"
+      namespace: "{{ k8s_namespace }}"
       tags:
         - unpriv
         - all
     - name: Audit API
       template: "{{ inventory_dir }}/../.openshift/templates/build-apiaudit.yml"
+      namespace: "{{ k8s_namespace }}"
       tags:
         - unpriv
         - all
@@ -40,11 +43,13 @@ openshift_cluster_content:
     content:
     - name: API
       template: "{{ inventory_dir }}/../.openshift/templates/deployment-api.yml"
+      namespace: "{{ k8s_namespace }}"
       tags:
         - unpriv
         - all
     - name: Audit API
       template: "{{ inventory_dir }}/../.openshift/templates/deployment-apiaudit.yml"
+      namespace: "{{ k8s_namespace }}"
       tags:
         - unpriv
         - all
