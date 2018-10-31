@@ -37,6 +37,7 @@ openshift_cluster_content:
     content:
     - name: MongoDB
       template: "openshift//mongodb-persistent"
+      action: create
       namespace: "{{ k8s_namespace }}"
       tags:
         - unpriv
