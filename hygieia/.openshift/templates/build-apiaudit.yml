@@ -5,6 +5,12 @@ metadata:
   name: build-apiaudit
 objects:
 - apiVersion: v1
+  kind: ImageStream
+  metadata:
+    labels:
+      application: apiaudit
+    name: apiaudit
+- apiVersion: v1
   kind: BuildConfig
   metadata:
     creationTimestamp: null
@@ -35,10 +41,11 @@ objects:
         - name: MAVEN_ARGS
           value: -e -Prelease -DskipTests -Dfabric8.skip=true package
         - name: MAVEN_ARGS_APPEND
-          value: -pl apiaudit -am
+          value: -pl api-audit -am
         from:
           kind: ImageStreamTag
-          name: openjdk8-custom:latest
+          name: java:latest
+          namespace: openshift
       type: Source
     triggers:
     - imageChange: {}

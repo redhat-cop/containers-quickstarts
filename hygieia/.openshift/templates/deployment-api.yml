@@ -42,18 +42,18 @@ objects:
           - name: DBNAME
             valueFrom:
               secretKeyRef:
-                name: mongodb-persistent-k68xt-credentials-j2qp5
-                key: database_name
+                name: mongodb
+                key: database-name
           - name: DBUSERNAME
             valueFrom:
               secretKeyRef:
-                name: mongodb-persistent-k68xt-credentials-j2qp5
-                key: username
+                name: mongodb
+                key: database-user
           - name: DBPASSWORD
             valueFrom:
               secretKeyRef:
-                name: mongodb-persistent-k68xt-credentials-j2qp5
-                key: password
+                name: mongodb
+                key: database-password
           image: api:latest
           imagePullPolicy: Always
           name: api
@@ -81,13 +81,5 @@ objects:
         from:
           kind: ImageStreamTag
           name: api:latest
-          namespace: hygieia
       type: ImageChange
     - type: ConfigChange
-  status:
-    availableReplicas: 0
-    latestVersion: 0
-    observedGeneration: 0
-    replicas: 0
-    unavailableReplicas: 0
-    updatedReplicas: 0

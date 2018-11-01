@@ -2,18 +2,36 @@
 
 link:https://github.com/Hygieia/Hygieia[Hygieia] is a DevOps dashboarding project created by Capital One. This quickstart deploys Hygieia to OpenShift.
 
-Setup commands:
+== Setup Instructions
+
+Install dependencies:
 
 [source,bash]
 ----
 ansible-galaxy install -r requirements.yml -p galaxy
-ansible-playbook -i .applier/ galaxy/openshift-applier/playbooks/openshift-cluster-seed.yml
 ----
+
+Deploy Hygieia, including creating a new namespace called `hygieia`:
+
+[source,bash]
+----
+ansible-playbook -i .applier/ galaxy/openshift-applier/playbooks/openshift-cluster-seed.yml -e filter_tags=all
+----
+
+If you would like to deploy to a different project:
+
+[source,bash]
+----
+ansible-playbook -i .applier/ galaxy/openshift-applier/playbooks/openshift-cluster-seed.yml -e filter_tags=all -e k8s_namespace=my-namespace
+----
+
+
+== Roadmap
 
 TODOs:
 
 - [x] Build and Deploy API component
 - [x] Build, deploy and automate Audit API component
-- [ ] Deploy and automate mongodb (in progress)
+- [x] Deploy and automate mongodb (in progress)
 - [ ] Get the UI to build using s2i. I'm thinking nodejs image -> deploy to nginx (in progress)
 - [ ] Look at how we build/deploy/configure collectors
