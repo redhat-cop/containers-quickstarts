@@ -25,12 +25,12 @@ objects:
       local: false
     tags:
     - annotations:
-        openshift.io/imported-from: websphere-liberty:webProfile7
+        openshift.io/imported-from: websphere-liberty:webProfile8
       from:
         kind: DockerImage
-        name: websphere-liberty:webProfile7
+        name: websphere-liberty:webProfile8
       importPolicy: {}
-      name: webProfile7
+      name: webProfile8
 - apiVersion: v1
   kind: ImageStream
   metadata:
@@ -70,7 +70,7 @@ objects:
       dockerStrategy:
         from:
           kind: ImageStreamTag
-          name: websphere-liberty:webProfile7
+          name: websphere-liberty:webProfile8
       type: Docker
     triggers:
     - type: ConfigChange
@@ -78,7 +78,7 @@ objects:
         automatic: true
         from:
           kind: ImageStreamTag
-          name: websphere-liberty:webProfile7
+          name: websphere-liberty:webProfile8
       type: ImageChange
 - apiVersion: v1
   kind: BuildConfig
