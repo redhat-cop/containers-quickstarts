@@ -18,7 +18,7 @@ ENV STI_SCRIPTS_PATH="/usr/local/s2i" \
     WLP_DEBUG_ADDRESS="7777" \
     ENABLE_DEBUG="false" \ 
     ENABLE_JOLOKIA="true" \
-    S2I_DESTINATION="/tmp" 
+    S2I_DESTINATION="/tmp/s2i" 
 
 # Copy the S2I scripts from the specific language image to $STI_SCRIPTS_PATH
 COPY ./s2i/bin/ $STI_SCRIPTS_PATH 
