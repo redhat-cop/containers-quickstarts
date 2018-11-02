@@ -6,14 +6,14 @@
 #echo copy anything in $WORKDIR/config to config
 #cp -R $WORKDIR/config/*  /config
 
-if [ -d "$S2I_DESTINATION" ]; then
+if [ -d "$S2I_DESTINATION/src" ]; then
   echo copying .jar, .war, .ear in $S2I_DESTINATION to /config/dropins/
   cp -R $S2I_DESTINATION/src/*.jar /config/dropins/
   cp -R $S2I_DESTINATION/src/*.war /config/dropins/
   cp -R $S2I_DESTINATION/src/*.ear /config/dropins/
 fi
 
-if [ -d "$S2I_DESTINATION/config" ]; then
+if [ -d "$S2I_DESTINATION/src" ]; then
   echo copying .xml in $S2I_DESTINATION/src to /config
   cp -R $S2I_DESTINATION/src/*.xml /config
 fi
