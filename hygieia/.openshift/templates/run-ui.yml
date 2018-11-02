@@ -39,6 +39,10 @@ objects:
         paths:
         - destinationDir: .
           sourcePath: /opt/app-root/src/dist/.
+        - destinationDir: ./nginx-default-cfg
+          sourcePath: /opt/app-root/src/docker/api.conf
+        - destinationDir: ./nginx-start
+          sourcePath: /opt/app-root/src/docker/substitute-nginx-proxy-pass.sh
       type: Image
     strategy:
       sourceStrategy:

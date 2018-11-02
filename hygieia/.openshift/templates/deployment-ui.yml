@@ -34,7 +34,12 @@ objects:
           deploymentconfig: ui
       spec:
         containers:
-        - image: run-ui:latest
+        - env:
+          - name: API_PORT
+            value: "8080"
+          - name: API_HOST
+            value: api-service.${NAMESPACE}.svc
+          image: run-ui:latest
           imagePullPolicy: Always
           name: ui
           ports:
@@ -59,3 +64,6 @@ objects:
           name: run-ui:latest
       type: ImageChange
     - type: ConfigChange
+parameters:
+- name: NAMESPACE
+

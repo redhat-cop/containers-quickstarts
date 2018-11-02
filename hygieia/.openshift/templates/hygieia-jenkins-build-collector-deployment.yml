@@ -48,7 +48,7 @@ objects:
                 key: database-password
                 name: mongodb
           - name: DBHOST
-            value: mongodb.tgeorge-hygieia.svc
+            value: mongodb.${NAMESPACE}.svc
           - name: JENKINS_CRON
             value: '5 * * * * *'
           - name: JENKINS_SERVERS_0

@@ -77,6 +77,8 @@ openshift_cluster_content:
     - name: UI
       template: "{{ inventory_dir }}/../.openshift/templates/deployment-ui.yml"
       namespace: "{{ k8s_namespace }}"
+      params_from_vars:
+        NAMESPACE: "{{ k8s_namespace}}"
       tags:
         - unpriv
         - all
@@ -98,7 +100,7 @@ openshift_cluster_content:
         - unpriv
         - all
     - name: API Service
-      template: "{{ inventory_dir }}/../.openshift/templates/ui-service.yml"
+      template: "{{ inventory_dir }}/../.openshift/templates/api-service.yml"
       namespace: "{{ k8s_namespace }}"
       tags:
         - unpriv

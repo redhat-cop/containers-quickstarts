@@ -45,7 +45,7 @@ objects:
     source:
       contextDir: /UI
       git:
-        ref: s2i-support
+        ref: override-default-nginx-conf
         uri: https://github.com/tomgeorge/Hygieia
       type: Git
     strategy:
