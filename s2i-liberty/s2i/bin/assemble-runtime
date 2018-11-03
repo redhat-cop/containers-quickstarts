@@ -18,4 +18,4 @@ if [ -d "$S2I_DESTINATION/src" ]; then
   cp -R $S2I_DESTINATION/src/*.xml /config
 fi
 
-exit $rc
+exit 0
