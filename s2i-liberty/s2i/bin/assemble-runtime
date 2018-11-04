@@ -1,18 +1,10 @@
 #!/bin/bash
 
-echo copy anything in $WORKDIR/artifacts to dropins
-cp -R $WORKDIR/artifacts/* /config/dropins/
-echo copy anything in $WORKDIR/config to config
-cp -R $WORKDIR/config/*  /config
+echo copying .jar, .war, .ear .rar in $S2I_DESTINATION to /config/dropins/
+find $S2I_DESTINATION/src -name \*.war -exec cp {} /config/dropins \;
+find $S2I_DESTINATION/src -name \*.ear -exec cp {} /config/dropins \;
+find $S2I_DESTINATION/src -name \*.jar -exec cp {} /config/dropins \;
+find $S2I_DESTINATION/src -name \*.rar -exec cp {} /config/dropins \;
 
-if [ -d "$S2I_DESTINATION/src/artifacts" ]; then
-  #echo copy anything in $S2I_DESTINATION/src/artifacts to dropins
-  cp -R $S2I_DESTINATION/src/artifacts/* /config/dropins/
-fi
-
-if [ -d "$S2I_DESTINATION/src/config" ]; then
-  #echo copy anything in $S2I_DESTINATION/src/artifacts to dropins
-  cp -R $S2I_DESTINATION/src/config/* /config
-fi
-
-exit $rc
+echo copying .xml in $S2I_DESTINATION/src to /config
+find $S2I_DESTINATION/src -name \*.xml -exec cp {} /config \;
