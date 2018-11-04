@@ -31,9 +31,8 @@ RUN INSTALL_PKGS="rhoar-nodejs${NODEJS_VERSION} npm redhat-lsb libXScrnSaver xdg
     rm google-chrome-stable_current_x86_64.rpm && \
     rpm -V $INSTALL_PKGS google-chrome-stable && \
     yum clean all -y && \
-    rm -rf /var/cache/yum
-
-RUN npm install -g npm-audit-html npm-audit-ci-wrapper sonar-scanner
-RUN sonar-scanner ## Pre-execute to install dependencies
+    rm -rf /var/cache/yum && \
+    npm install -g npm-audit-html npm-audit-ci-wrapper sonar-scanner && \
+    sonar-scanner || echo
 
 USER 1001
