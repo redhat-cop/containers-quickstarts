@@ -34,14 +34,8 @@ openshift_cluster_content:
       tags:
         - unpriv
         - all
-    - name: UI Builder Image
+    - name: UI Builder and Runtime Images
       template: "{{ inventory_dir }}/../.openshift/templates/build-ui.yml"
-      namespace: "{{ k8s_namespace }}"
-      tags:
-        - unpriv
-        - all
-    - name: UI Runner Image
-      template: "{{ inventory_dir }}/../.openshift/templates/run-ui.yml"
       namespace: "{{ k8s_namespace }}"
       tags:
         - unpriv
