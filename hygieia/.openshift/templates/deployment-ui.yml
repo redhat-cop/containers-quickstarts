@@ -39,7 +39,7 @@ objects:
             value: "8080"
           - name: API_HOST
             value: api-service.${NAMESPACE}.svc
-          image: run-ui:latest
+          image: ui:latest
           imagePullPolicy: Always
           name: ui
           ports:
@@ -61,7 +61,7 @@ objects:
         - ui
         from:
           kind: ImageStreamTag
-          name: run-ui:latest
+          name: ui:latest
       type: ImageChange
     - type: ConfigChange
 parameters:
