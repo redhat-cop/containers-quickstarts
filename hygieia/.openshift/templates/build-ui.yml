@@ -45,7 +45,7 @@ objects:
     source:
       contextDir: /UI
       git:
-        ref: s2i-support
+        ref: override-default-nginx-conf
         uri: https://github.com/tomgeorge/Hygieia
       type: Git
     strategy:
@@ -100,8 +100,13 @@ objects:
           kind: ImageStreamTag
           name: build-ui:latest
         paths:
+        paths:
         - destinationDir: .
           sourcePath: /opt/app-root/src/dist/.
+        - destinationDir: ./nginx-default-cfg
+          sourcePath: /opt/app-root/src/docker/api.conf
+        - destinationDir: ./nginx-start
+          sourcePath: /opt/app-root/src/docker/substitute-nginx-proxy-pass.sh
       type: Image
     strategy:
       sourceStrategy:
