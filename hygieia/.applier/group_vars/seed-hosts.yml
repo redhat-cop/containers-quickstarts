@@ -56,11 +56,6 @@ openshift_cluster_content:
       tags:
         - unpriv
         - all
-      params_from_vars:
-        ENABLE_OAUTH: "{{ jenkins_enable_oauth }}"
-      env:
-        name: ENV_VAR
-        value: test
     - name: API
       template: "{{ inventory_dir }}/../.openshift/templates/deployment-api.yml"
       namespace: "{{ k8s_namespace }}"
@@ -83,7 +78,9 @@ openshift_cluster_content:
         - all
     - name: Jenkins Collector
       template: "{{ inventory_dir }}/../.openshift/templates/hygieia-jenkins-build-collector-deployment.yml"
-      namespace: "{{ k8s_namespace }}"
+      namespace: "{{ k8s_namespace }}"  
+      params_from_vars:
+        NAMESPACE: "{{ k8s_namespace }}"
       tags:
         - unpriv
         - all
