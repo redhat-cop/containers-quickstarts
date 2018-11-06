@@ -2,7 +2,7 @@ apiVersion: v1
 kind: Template
 metadata:
   creationTimestamp: null
-  name: hygieia-jenkins-build-collector
+  name: hygieia-github-collector
 objects:
 - apiVersion: v1
   kind: DeploymentConfig
@@ -10,13 +10,12 @@ objects:
     creationTimestamp: null
     generation: 1
     labels:
-      app: hygieia-jenkins-build-collector
-    name: hygieia-jenkins-build-collector
+      app: hygieia-github-collector
+    name: hygieia-github-collector
   spec:
-    serviceName: jenkins
     replicas: 1
     selector:
-      deploymentconfig: hygieia-jenkins-build-collector
+      deploymentconfig: hygieia-github-collector
     strategy:
       activeDeadlineSeconds: 21600
       resources: {}
@@ -31,10 +30,9 @@ objects:
       metadata:
         creationTimestamp: null
         labels:
-          app: hygieia-jenkins-build-collector
-          deploymentconfig: hygieia-jenkins-build-collector
+          app: hygieia-github-collector
+          deploymentconfig: hygieia-github-collector
       spec:
-        serviceAccountName: jenkins
         containers:
         - env:
           - name: DBNAME
@@ -49,22 +47,24 @@ objects:
                 name: mongodb
           - name: DBHOST
             value: mongodb.${NAMESPACE}.svc
-          - name: JENKINS_CRON
-            value: '5 * * * * *'
-          - name: JENKINS_SERVERS
-            value: https://admin:password@jenkins-${NAMESPACE}.${OPENSHIFT_DEFAULT_SUBDOMAIN}
+          - name: GITHUB_CRON
+            value: 5 * * * * *
+          - name: GITHUB_HOST
+            value: github.com
+          - name: GITHUB_PERSONALACCESSTOKEN
+            value: f1f9af604892a6205d22014543f9f588a2254a6f
           - name: DBPORT
-            value: "27017"
-          - name: MONGO_PORT
             value: "27017"
           - name: DBUSERNAME
             valueFrom:
               secretKeyRef:
                 key: database-user
                 name: mongodb
-          image: capitalone/hygieia-jenkins-build-collector:latest
+          - name: LOGGING_LEVEL_ROOT
+            value: DEBUG
+          image: capitalone/hygieia-github-scm-collector:latest
           imagePullPolicy: Always
-          name: hygieia-jenkins-build-collector
+          name: hygieia-github-collector
           ports:
           - containerPort: 8080
             protocol: TCP
@@ -81,4 +81,3 @@ objects:
     - type: ConfigChange
 parameters:
 - name: NAMESPACE
-- name: OPENSHIFT_DEFAULT_SUBDOMAIN
