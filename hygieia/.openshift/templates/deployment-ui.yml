@@ -64,6 +64,26 @@ objects:
           name: ui:latest
       type: ImageChange
     - type: ConfigChange
+- apiVersion: v1
+  kind: Route
+  metadata:
+    name: ui-route
+  spec:
+    host: hygieia.${NAMESPACE}.${OPENSHIFT_DEFAULT_SUBDOMAIN}
+    to:
+      kind: Service
+      name: ui-service
+- apiVersion: v1
+  kind: Service
+  metadata:
+    name: ui-service
+  spec:
+    selector:
+      app: ui
+    ports:
+    - protocol: TCP
+      port: 8080
+      targetPort: 8080
 parameters:
 - name: NAMESPACE
-
+- name: OPENSHIFT_DEFAULT_SUBDOMAIN
