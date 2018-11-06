@@ -56,6 +56,11 @@ openshift_cluster_content:
       tags:
         - unpriv
         - all
+      params_from_vars:
+        ENABLE_OAUTH: "{{ jenkins_enable_oauth }}"
+      env:
+        name: ENV_VAR
+        value: test
     - name: API
       template: "{{ inventory_dir }}/../.openshift/templates/deployment-api.yml"
       namespace: "{{ k8s_namespace }}"
@@ -80,9 +85,15 @@ openshift_cluster_content:
     - name: Jenkins Collector
       template: "{{ inventory_dir }}/../.openshift/templates/hygieia-jenkins-build-collector-deployment.yml"
       namespace: "{{ k8s_namespace }}"
+      tags:
+        - unpriv
+        - all
+    - name: GitHub Collector
+      template: "{{ inventory_dir }}/../.openshift/templates/hygieia-github-collector-deployment.yml"
+      namespace: "{{ k8s_namespace }}"
       params_from_vars:
         NAMESPACE: "{{ k8s_namespace }}"
-        OPENSHIFT_DEFAULT_SUBDOMAIN: "{{ openshift_default_subdomain }}"
+        GITHUB_PERSONAL_ACCESS_TOKEN: "{{ github_personal_access_token }}"
       tags:
         - unpriv
         - all
