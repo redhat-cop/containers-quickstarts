@@ -1,6 +1,8 @@
-FROM openshift/jenkins-slave-base-centos7
+FROM openshift/jenkins-slave-maven-centos7
 
 ENV GRADLE_VERSION=4.8
+
+USER 0
 
 RUN curl -skL -o /tmp/gradle-bin.zip https://services.gradle.org/distributions/gradle-$GRADLE_VERSION-bin.zip && \
     mkdir -p /opt/gradle && \
