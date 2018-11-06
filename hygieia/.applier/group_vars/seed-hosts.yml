@@ -9,6 +9,7 @@ openshift_cluster_content:
       params_from_vars:
         NAMESPACE: "{{ k8s_namespace }}"
         DISPLAY_NAME: Hygieia Deployment
+        OPENSHIFT_DEFAULT_SUBDOMAIN: "{{ openshift_default_subdomain }}"
       action: create
       tags:
         - priv
@@ -33,6 +34,12 @@ openshift_cluster_content:
       tags:
         - unpriv
         - all
+    - name: UI Builder and Runtime Images
+      template: "{{ inventory_dir }}/../.openshift/templates/build-ui.yml"
+      namespace: "{{ k8s_namespace }}"
+      tags:
+        - unpriv
+        - all
   - object: Deployments
     content:
     - name: MongoDB
@@ -50,6 +57,31 @@ openshift_cluster_content:
         - all
     - name: Audit API
       template: "{{ inventory_dir }}/../.openshift/templates/deployment-apiaudit.yml"
+      namespace: "{{ k8s_namespace }}"
+      tags:
+        - unpriv
+        - all
+    - name: UI
+      template: "{{ inventory_dir }}/../.openshift/templates/deployment-ui.yml"
+      namespace: "{{ k8s_namespace }}"
+      tags:
+        - unpriv
+        - all
+  - object: Services
+    content:
+    - name: UI Service
+      template: "{{ inventory_dir }}/../.openshift/templates/ui-service.yml"
+      namespace: "{{ k8s_namespace }}"
+      tags:
+        - unpriv
+        - all
+  - object: Routes
+    content:
+    - name: UI Route
+      template: "{{ inventory_dir }}/../.openshift/templates/ui-route.yml"
+      params_from_vars:
+        NAMESPACE: "{{ k8s_namespace }}"
+        OPENSHIFT_DEFAULT_SUBDOMAIN: "{{ openshift_default_subdomain }}"
       namespace: "{{ k8s_namespace }}"
       tags:
         - unpriv
