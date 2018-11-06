@@ -92,7 +92,7 @@ openshift_cluster_content:
       namespace: "{{ k8s_namespace }}"
       params_from_vars:
         NAMESPACE: "{{ k8s_namespace }}"
-        OPENSHIFT_DEFAULT_SUBDOMAIN: "{{ openshift_default_subdomain }}"
+        GITHUB_PERSONAL_ACCESS_TOKEN: "{{ github_personal_access_token }}"
       tags:
         - unpriv
         - all

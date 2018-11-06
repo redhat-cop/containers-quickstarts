@@ -52,7 +52,7 @@ objects:
           - name: GITHUB_HOST
             value: github.com
           - name: GITHUB_PERSONALACCESSTOKEN
-            value: f1f9af604892a6205d22014543f9f588a2254a6f
+            value: ${GITHUB_PERSONAL_ACCESS_TOKEN}
           - name: DBPORT
             value: "27017"
           - name: DBUSERNAME
@@ -81,3 +81,4 @@ objects:
     - type: ConfigChange
 parameters:
 - name: NAMESPACE
+- name: GITHUB_PERSONAL_ACCESS_TOKEN
