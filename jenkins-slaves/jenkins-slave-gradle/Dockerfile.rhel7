@@ -1,8 +1,8 @@
-FROM openshift3/jenkins-slave-base-rhel7
+FROM openshift3/jenkins-agent-maven-35-rhel7
 
 LABEL com.redhat.component="jenkins-slave-gradle-rhel7-docker" \
       name="openshift3/jenkins-slave-gradle-rhel7" \
-      version="3.9" \
+      version="3.10" \
       architecture="x86_64" \
       release="1" \
       io.k8s.display-name="Jenkins Slave Gradle" \
@@ -10,6 +10,8 @@ LABEL com.redhat.component="jenkins-slave-gradle-rhel7-docker" \
       io.openshift.tags="openshift,jenkins,slave,gradle"
 
 ENV GRADLE_VERSION=4.8
+
+USER 0
 
 RUN curl -skL -o /tmp/gradle-bin.zip https://services.gradle.org/distributions/gradle-$GRADLE_VERSION-bin.zip && \
     mkdir -p /opt/gradle && \
