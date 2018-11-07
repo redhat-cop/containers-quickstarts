@@ -100,7 +100,6 @@ objects:
           kind: ImageStreamTag
           name: build-ui:latest
         paths:
-        paths:
         - destinationDir: .
           sourcePath: /opt/app-root/src/dist/.
         - destinationDir: ./nginx-default-cfg

@@ -5,6 +5,65 @@ metadata:
   name: hygieia-jenkins-build-collector
 objects:
 - apiVersion: v1
+  kind: ImageStream
+  metadata:
+    annotations:
+    creationTimestamp: null
+    generation: 1
+    labels:
+      build: hygieia-jenkins-build-collector
+    name: hygieia-jenkins-build-collector
+  spec:
+    lookupPolicy:
+      local: false
+    tags:
+    - annotations: null
+      from:
+        kind: DockerImage
+        name: docker-registry.default.svc:5000/hygieia/hygieia-jenkins-build-collector:latest
+      generation: null
+      importPolicy: {}
+      name: latest
+      referencePolicy:
+        type: ""
+- apiVersion: v1
+  kind: BuildConfig
+  metadata:
+    creationTimestamp: null
+    labels:
+      app: hygieia-jenkins-build-collector
+    name: hygieia-jenkins-build-collector
+  spec:
+    nodeSelector: null
+    output:
+      to:
+        kind: ImageStreamTag
+        name: hygieia-jenkins-build-collector:latest
+    postCommit: {}
+    resources: {}
+    runPolicy: Serial
+    source:
+      contextDir: /collectors/build/jenkins
+      git:
+        ref: jenkins-oauth-support
+        uri: https://github.com/tomgeorge/Hygieia
+      type: Git
+    strategy:
+      dockerStrategy:
+        dockerfilePath: docker/Dockerfile
+    triggers:
+    - imageChange: {}
+      type: ImageChange
+    - type: ConfigChange
+    - generic:
+        secret: 019d3db99764e75e
+      type: Generic
+    - github:
+        secret: dca9639337f3d252
+      type: GitHub
+  status:
+    lastVersion: 0
+- apiVersion: v1
   kind: DeploymentConfig
   metadata:
     creationTimestamp: null
@@ -62,7 +121,7 @@ objects:
               secretKeyRef:
                 key: database-user
                 name: mongodb
-          image: capitalone/hygieia-jenkins-build-collector:latest
+          image: hygieia-jenkins-build-collector:latest
           imagePullPolicy: Always
           name: hygieia-jenkins-build-collector
           ports:
