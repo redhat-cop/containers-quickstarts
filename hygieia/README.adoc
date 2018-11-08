@@ -33,5 +33,5 @@ TODOs:
 - [x] Build and Deploy API component
 - [x] Build, deploy and automate Audit API component
 - [x] Deploy and automate mongodb (in progress)
-- [ ] Get the UI to build using s2i. I'm thinking nodejs image -> deploy to nginx (in progress)
+- [x] Get the UI to build using s2i. I'm thinking nodejs image -> deploy to nginx (in progress)
 - [ ] Look at how we build/deploy/configure collectors
