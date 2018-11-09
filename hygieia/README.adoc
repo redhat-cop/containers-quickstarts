@@ -11,6 +11,15 @@ Install dependencies:
 ansible-galaxy install -r requirements.yml -p galaxy
 ----
 
+
+Edit `.applier/group_vars/all` to include the following values:
+
+- `openshift_default_subdomain` - Required.  The subdomain of your OpenShift cluster to configure routes. (e.g. `apps.my.openshift.cluster.com)`
+- `github_personal_access_token` - Required. A personal access token that will allow access to private repos.  While public repos do not require an access token,  the github collector still expects it, so this is required.
+- `jenkins_client_secret` - The base64 encoded authentication token for the `jenkins` service account, so the dashboard can connect via an OAuth2 secured Jenkins instance.
+- `jenkins_namespace` - The namespace/project area of the remote Jenkins instance you wish to collect dashboard metrics for.
+
+
 Deploy Hygieia, including creating a new namespace called `hygieia`:
 
 [source,bash]
@@ -33,5 +42,5 @@ TODOs:
 - [x] Build and Deploy API component
 - [x] Build, deploy and automate Audit API component
 - [x] Deploy and automate mongodb (in progress)
-- [ ] Get the UI to build using s2i. I'm thinking nodejs image -> deploy to nginx (in progress)
+- [x] Get the UI to build using s2i. I'm thinking nodejs image -> deploy to nginx (in progress)
 - [ ] Look at how we build/deploy/configure collectors

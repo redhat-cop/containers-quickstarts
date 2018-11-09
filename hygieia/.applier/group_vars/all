@@ -1,2 +1,4 @@
-openshift_default_subdomain: apps.d3.casl.rht-labs.com
-github_personal_access_token: f1f9af604892a6205d22014543f9f588a2254a6f
+openshift_default_subdomain: 
+github_personal_access_token: 
+jenkins_client_secret: 
+jenkins_namespace: 
