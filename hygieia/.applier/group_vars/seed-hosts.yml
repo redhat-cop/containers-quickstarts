@@ -20,6 +20,16 @@ openshift_cluster_content:
       tags:
         - priv
         - all
+  - object: Secrets
+    content:
+    - name: Remote Jenkins authentication configuration
+      template: "{{ inventory_dir }}/../.openshift/templates/remote-jenkins-auth-secret.yml"
+      namespace: "{{ k8s_namespace }}"
+      tags:
+        - unpriv
+        - all
+      params_from_vars:
+        JENKINS_CLIENT_SECRET: "{{ jenkins_client_secret }}"
   - object: Builds
     content:
     - name: API
@@ -87,6 +97,7 @@ openshift_cluster_content:
       namespace: "{{ k8s_namespace }}"  
       params_from_vars:
         NAMESPACE: "{{ k8s_namespace }}"
+        JENKINS_NAMESPACE: "{{ jenkins_namespace }}"
         OPENSHIFT_DEFAULT_SUBDOMAIN: "{{ openshift_default_subdomain }}"
       tags:
         - unpriv

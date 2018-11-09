@@ -52,7 +52,7 @@ objects:
           - name: JENKINS_CRON
             value: '5 * * * * *'
           - name: JENKINS_SERVERS
-            value: https://admin:password@jenkins-${NAMESPACE}.${OPENSHIFT_DEFAULT_SUBDOMAIN}
+            value: https://jenkins-${JENKINS_NAMESPACE}.${OPENSHIFT_DEFAULT_SUBDOMAIN}
           - name: DBPORT
             value: "27017"
           - name: MONGO_PORT
@@ -67,10 +67,8 @@ objects:
           - name: JENKINS_CLIENT_SECRET
             valueFrom:
               secretKeyRef:
-                name: jenkins-token-qc67q
                 key: token
-          - name: JENKINS_CLIENT_ID
-            value: system:serviceaccount:${NAMESPACE}:jenkins
+                name: remote-jenkins-client-secret
           image: hygieia-jenkins-build-collector:latest
           imagePullPolicy: Always
           name: hygieia-jenkins-build-collector
@@ -99,4 +97,5 @@ objects:
     - type: ConfigChange
 parameters:
 - name: NAMESPACE
+- name: JENKINS_NAMESPACE
 - name: OPENSHIFT_DEFAULT_SUBDOMAIN
