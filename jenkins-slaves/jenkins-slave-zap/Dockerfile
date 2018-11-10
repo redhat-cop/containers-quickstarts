@@ -1,18 +1,18 @@
 # This dockerfile builds the zap stable release
-FROM centos:centos7
+FROM openshift/jenkins-slave-base-rhel7:latest
 LABEL maintainer="Deven Phillips <deven.phillips@redhat.com>"
+
+USER root
 
 RUN yum install -y epel-release && \
     yum clean all && \
     yum install -y redhat-rpm-config \
     make automake autoconf gcc gcc-c++ \
-    libstdc++ libstdc++-devel \
-    java-1.8.0-openjdk wget curl \
+    libstdc++ libstdc++-devel wget curl \
     xmlstarlet git x11vnc gettext tar \
     xorg-x11-server-Xvfb openbox xterm \
     net-tools python-pip \
-    firefox nss_wrapper java-1.8.0-openjdk-headless \
-    java-1.8.0-openjdk-devel nss_wrapper git && \
+    firefox nss_wrapper git && \
     yum clean all && \
     pip install --upgrade pip && \
     pip install zapcli && \
@@ -21,10 +21,6 @@ RUN yum install -y epel-release && \
     mkdir -p /var/lib/jenkins/.vnc
 
 ADD zap /zap/
-
-# Copy the entrypoint
-COPY configuration/* /var/lib/jenkins/
-COPY configuration/run-jnlp-client /usr/local/bin/run-jnlp-client
 
 ENV JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64/ \
     PATH=$JAVA_HOME/bin:/zap:$PATH \
@@ -48,6 +44,8 @@ RUN curl -s https://raw.githubusercontent.com/zaproxy/zap-admin/master/ZapVersio
 ADD webswing.config /zap/webswing-2.3/webswing.config
 
 WORKDIR /var/lib/jenkins
+
+USER 1001
 
 # Run the Jenkins JNLP client
 ENTRYPOINT ["/usr/local/bin/run-jnlp-client"]
