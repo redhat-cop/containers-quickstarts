@@ -52,7 +52,7 @@ objects:
           - name: JENKINS_CRON
             value: '5 * * * * *'
           - name: JENKINS_SERVERS
-            value: https://admin:password@jenkins-${NAMESPACE}.${OPENSHIFT_DEFAULT_SUBDOMAIN}
+            value: https://jenkins-${JENKINS_NAMESPACE}.${OPENSHIFT_DEFAULT_SUBDOMAIN}
           - name: DBPORT
             value: "27017"
           - name: MONGO_PORT
@@ -62,7 +62,14 @@ objects:
               secretKeyRef:
                 key: database-user
                 name: mongodb
-          image: capitalone/hygieia-jenkins-build-collector:latest
+          - name: LOGGING_LEVEL_ROOT
+            value: INFO
+          - name: JENKINS_CLIENT_SECRET
+            valueFrom:
+              secretKeyRef:
+                key: token
+                name: remote-jenkins-client-secret
+          image: hygieia-jenkins-build-collector:latest
           imagePullPolicy: Always
           name: hygieia-jenkins-build-collector
           ports:
@@ -78,7 +85,17 @@ objects:
         terminationGracePeriodSeconds: 30
     test: false
     triggers:
+    - imageChangeParams:
+        automatic: true
+        containerNames:
+          - hygieia-jenkins-build-collector
+        from:
+          kind: ImageStreamTag
+          name: hygieia-jenkins-build-collector:latest
+          namespace: ${NAMESPACE}
+      type: ImageChange
     - type: ConfigChange
 parameters:
 - name: NAMESPACE
+- name: JENKINS_NAMESPACE
 - name: OPENSHIFT_DEFAULT_SUBDOMAIN

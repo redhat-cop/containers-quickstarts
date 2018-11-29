@@ -55,6 +55,8 @@ objects:
             value: ${GITHUB_PERSONAL_ACCESS_TOKEN}
           - name: DBPORT
             value: "27017"
+          - name: MONGO_PORT
+            value: "27017"
           - name: DBUSERNAME
             valueFrom:
               secretKeyRef:
