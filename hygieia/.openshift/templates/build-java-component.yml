@@ -2,46 +2,46 @@ apiVersion: v1
 kind: Template
 metadata:
   creationTimestamp: null
-  name: build-apiaudit
+  name: build-java-component
 objects:
 - apiVersion: v1
   kind: ImageStream
   metadata:
     labels:
-      application: apiaudit
-    name: apiaudit
+      application: ${COMPONENT}
+    name: ${COMPONENT}
 - apiVersion: v1
   kind: BuildConfig
   metadata:
     creationTimestamp: null
     labels:
-      app: apiaudit
-    name: apiaudit
+      app: ${COMPONENT}
+    name: ${COMPONENT}
   spec:
     nodeSelector: null
     output:
       to:
         kind: ImageStreamTag
-        name: apiaudit:latest
+        name: ${COMPONENT}:latest
     postCommit: {}
     resources: {}
     runPolicy: Serial
     source:
       git:
-        ref: master
-        uri: https://github.com/Hygieia/Hygieia.git
+        ref: ${SOURCE_CODE_REF}
+        uri: ${SOURCE_CODE_URL}
       type: Git
     strategy:
       sourceStrategy:
         env:
         - name: ARTIFACT_DIR
-          value: api-audit/target
+          value: ${COMPONENT}/target
         - name: ARTIFACT_COPY_ARGS
-          value: -r apiaudit.jar
+          value: -r ${JAR_NAME}${JAR_VERSION}.jar
         - name: MAVEN_ARGS
           value: -e -Prelease -DskipTests -Dfabric8.skip=true package
         - name: MAVEN_ARGS_APPEND
-          value: -pl api-audit -am
+          value: -pl ${COMPONENT} -am
         from:
           kind: ImageStreamTag
           name: java:latest
@@ -59,3 +59,11 @@ objects:
       type: GitHub
   status:
     lastVersion: 0
+parameters:
+  - name: COMPONENT
+  - name: JAR_NAME
+  - name: JAR_VERSION
+  - name: SOURCE_CODE_URL
+    value: https://github.com/Hygieia/Hygieia.git
+  - name: SOURCE_CODE_REF
+    value: v3.0.1

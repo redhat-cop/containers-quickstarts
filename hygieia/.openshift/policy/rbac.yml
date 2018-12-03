@@ -21,9 +21,15 @@ objects:
     name: tquinn
   - kind: User
     name: tgeorge
+  - kind: User
+    name: pcarney
+  - kind: User
+    name: dwasinge
   userNames:
   - esauer
   - cpitman
   - rspazzol
   - tquinn
   - tgeorge
+  - pcarney
+  - dwasinge
