@@ -1,4 +1,4 @@
-FROM openshift/jenkins-slave-base-centos7
+FROM openshift/jenkins-slave-base-centos7:v3.11
 
 ENV BASH_ENV=/usr/local/bin/scl_enable \
     ENV=/usr/local/bin/scl_enable \
