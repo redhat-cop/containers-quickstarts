@@ -51,6 +51,8 @@ openshift_cluster_content:
         - all
     - name: UI Builder and Runtime Images
       template: "{{ inventory_dir }}/../.openshift/templates/build-ui.yml"
+      params_from_vars:
+        COMPONENT: ui
       namespace: "{{ k8s_namespace }}"
       tags:
         - unpriv
@@ -80,6 +82,17 @@ openshift_cluster_content:
         SOURCE_CODE_REF: master
         JAR_NAME: exec-analysis
         JAR_VERSION: -1.0.0-SNAPSHOT
+      namespace: "{{ k8s_namespace }}"
+      tags:
+        - unpriv
+        - all
+    - name: Executive UI
+      template: "{{ inventory_dir }}/../.openshift/templates/build-exec-ui.yml"
+      params_from_vars:
+        COMPONENT: exec-ui
+        SOURCE_CODE_URL: https://github.com/Hygieia/ExecDashboard.git
+        SOURCE_CODE_REF: master
+        SOURCE_CODE_CONTEXT: /exec-ui
       namespace: "{{ k8s_namespace }}"
       tags:
         - unpriv
@@ -123,6 +136,7 @@ openshift_cluster_content:
       namespace: "{{ k8s_namespace }}"
       params_from_vars:
         NAMESPACE: "{{ k8s_namespace}}"
+        COMPONENT: ui
         OPENSHIFT_DEFAULT_SUBDOMAIN: "{{ openshift_default_subdomain }}"
       tags:
         - unpriv
@@ -162,6 +176,18 @@ openshift_cluster_content:
         JAR_NAME: exec-analysis
         JAR_VERSION: -1.0.0-SNAPSHOT
       namespace: "{{ k8s_namespace }}"
+      tags:
+        - unpriv
+        - all
+    - name: Executive UI
+      template: "{{ inventory_dir }}/../.openshift/templates/deployment-ui.yml"
+      namespace: "{{ k8s_namespace }}"
+      params_from_vars:
+        NAMESPACE: "{{ k8s_namespace}}"
+        COMPONENT: exec-ui
+        OPENSHIFT_DEFAULT_SUBDOMAIN: "{{ openshift_default_subdomain }}"
+        HOST: executive
+        API_HOST: exec-ui
       tags:
         - unpriv
         - all

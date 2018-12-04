@@ -54,6 +54,8 @@ objects:
               secretKeyRef:
                 name: mongodb
                 key: database-password
+          - name: PORTFOLIO_CRON
+            value: 0 0/30 * * * *
           image: ${COMPONENT}:latest
           imagePullPolicy: Always
           name: ${COMPONENT}
