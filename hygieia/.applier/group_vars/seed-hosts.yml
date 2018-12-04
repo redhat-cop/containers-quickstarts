@@ -9,7 +9,6 @@ openshift_cluster_content:
       params_from_vars:
         NAMESPACE: "{{ k8s_namespace }}"
         DISPLAY_NAME: Hygieia Deployment
-        OPENSHIFT_DEFAULT_SUBDOMAIN: "{{ openshift_default_subdomain }}"
       action: create
       tags:
         - priv
@@ -33,7 +32,10 @@ openshift_cluster_content:
   - object: Builds
     content:
     - name: API
-      template: "{{ inventory_dir }}/../.openshift/templates/build-api.yml"
+      template: "{{ inventory_dir }}/../.openshift/templates/build-java-component.yml"
+      params_from_vars:
+        COMPONENT: api
+        JAR_NAME: api
       namespace: "{{ k8s_namespace }}"
       tags:
         - unpriv
@@ -45,19 +47,58 @@ openshift_cluster_content:
         - unpriv
         - all
     - name: Audit API
-      template: "{{ inventory_dir }}/../.openshift/templates/build-apiaudit.yml"
+      template: "{{ inventory_dir }}/../.openshift/templates/build-java-component.yml"
+      params_from_vars:
+        COMPONENT: api-audit
+        JAR_NAME: apiaudit
       namespace: "{{ k8s_namespace }}"
       tags:
         - unpriv
         - all
     - name: UI Builder and Runtime Images
       template: "{{ inventory_dir }}/../.openshift/templates/build-ui.yml"
+      params_from_vars:
+        COMPONENT: ui
       namespace: "{{ k8s_namespace }}"
       tags:
         - unpriv
         - all
     - name: Jenkins collector
       template: "{{ inventory_dir }}/../.openshift/templates/build-hygieia-jenkins-collector.yml"
+      namespace: "{{ k8s_namespace }}"
+      tags:
+        - unpriv
+        - all
+    - name: Executive API
+      template: "{{ inventory_dir }}/../.openshift/templates/build-java-component.yml"
+      params_from_vars:
+        COMPONENT: exec-api
+        SOURCE_CODE_URL: https://github.com/Hygieia/ExecDashboard.git
+        SOURCE_CODE_REF: master
+        JAR_NAME: exec-api
+      namespace: "{{ k8s_namespace }}"
+      tags:
+        - unpriv
+        - all
+    - name: Executive Collector
+      template: "{{ inventory_dir }}/../.openshift/templates/build-java-component.yml"
+      params_from_vars:
+        COMPONENT: exec-analysis
+        SOURCE_CODE_URL: https://github.com/Hygieia/ExecDashboard.git
+        SOURCE_CODE_REF: master
+        JAR_NAME: exec-analysis
+        JAR_VERSION: -1.0.0-SNAPSHOT
+      namespace: "{{ k8s_namespace }}"
+      tags:
+        - unpriv
+        - all
+    - name: Executive UI
+      template: "{{ inventory_dir }}/../.openshift/templates/build-exec-ui.yml"
+      params_from_vars:
+        COMPONENT: exec-ui
+        SOURCE_CODE_URL: https://github.com/Hygieia/ExecDashboard.git
+        SOURCE_CODE_REF: master
+        SOURCE_CODE_CONTEXT: /exec-ui
       namespace: "{{ k8s_namespace }}"
       tags:
         - unpriv
@@ -79,7 +120,10 @@ openshift_cluster_content:
         - unpriv
         - all
     - name: API
-      template: "{{ inventory_dir }}/../.openshift/templates/deployment-api.yml"
+      template: "{{ inventory_dir }}/../.openshift/templates/deployment-java-component.yml"
+      params_from_vars:
+        COMPONENT: api
+        JAR_NAME: api
       namespace: "{{ k8s_namespace }}"
       tags:
         - unpriv
@@ -91,7 +135,10 @@ openshift_cluster_content:
         - unpriv
         - all
     - name: Audit API
-      template: "{{ inventory_dir }}/../.openshift/templates/deployment-apiaudit.yml"
+      template: "{{ inventory_dir }}/../.openshift/templates/deployment-java-component.yml"
+      params_from_vars:
+        COMPONENT: api-audit
+        JAR_NAME: apiaudit
       namespace: "{{ k8s_namespace }}"
       tags:
         - unpriv
@@ -101,12 +148,14 @@ openshift_cluster_content:
       namespace: "{{ k8s_namespace }}"
       params_from_vars:
         NAMESPACE: "{{ k8s_namespace}}"
+        COMPONENT: ui
+        OPENSHIFT_DEFAULT_SUBDOMAIN: "{{ openshift_default_subdomain }}"
       tags:
         - unpriv
         - all
     - name: Jenkins Collector
       template: "{{ inventory_dir }}/../.openshift/templates/hygieia-jenkins-build-collector-deployment.yml"
-      namespace: "{{ k8s_namespace }}"  
+      namespace: "{{ k8s_namespace }}"
       params_from_vars:
         NAMESPACE: "{{ k8s_namespace }}"
         JENKINS_NAMESPACE: "{{ jenkins_namespace }}"
@@ -123,28 +172,34 @@ openshift_cluster_content:
       tags:
         - unpriv
         - all
-  - object: Services
-    content:
-    - name: UI Service
-      template: "{{ inventory_dir }}/../.openshift/templates/ui-service.yml"
-      namespace: "{{ k8s_namespace }}"
-      tags:
-        - unpriv
-        - all
-    - name: API Service
-      template: "{{ inventory_dir }}/../.openshift/templates/api-service.yml"
-      namespace: "{{ k8s_namespace }}"
-      tags:
-        - unpriv
-        - all
-  - object: Routes
-    content:
-    - name: UI Route
-      template: "{{ inventory_dir }}/../.openshift/templates/ui-route.yml"
+    - name: Executive API
+      template: "{{ inventory_dir }}/../.openshift/templates/deployment-java-component.yml"
       params_from_vars:
-        NAMESPACE: "{{ k8s_namespace }}"
-        OPENSHIFT_DEFAULT_SUBDOMAIN: "{{ openshift_default_subdomain }}"
+        COMPONENT: exec-api
+        JAR_NAME: exec-api
       namespace: "{{ k8s_namespace }}"
+      tags:
+        - unpriv
+        - all
+    - name: Executive Collector
+      template: "{{ inventory_dir }}/../.openshift/templates/deployment-java-component.yml"
+      params_from_vars:
+        COMPONENT: exec-analysis
+        JAR_NAME: exec-analysis
+        JAR_VERSION: -1.0.0-SNAPSHOT
+      namespace: "{{ k8s_namespace }}"
+      tags:
+        - unpriv
+        - all
+    - name: Executive UI
+      template: "{{ inventory_dir }}/../.openshift/templates/deployment-ui.yml"
+      namespace: "{{ k8s_namespace }}"
+      params_from_vars:
+        NAMESPACE: "{{ k8s_namespace}}"
+        COMPONENT: exec-ui
+        OPENSHIFT_DEFAULT_SUBDOMAIN: "{{ openshift_default_subdomain }}"
+        HOST: executive
+        API_HOST: exec-ui
       tags:
         - unpriv
         - all

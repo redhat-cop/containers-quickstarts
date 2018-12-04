@@ -2,7 +2,7 @@ apiVersion: v1
 kind: Template
 metadata:
   creationTimestamp: null
-  name: deployment-apiaudit
+  name: deployment-${COMPONENT}
 objects:
 - apiVersion: v1
   kind: DeploymentConfig
@@ -10,12 +10,12 @@ objects:
     creationTimestamp: null
     generation: 1
     labels:
-      app: apiaudit
-    name: apiaudit
+      app: ${COMPONENT}
+    name: ${COMPONENT}
   spec:
     replicas: 1
     selector:
-      deploymentconfig: apiaudit
+      deploymentconfig: ${COMPONENT}
     strategy:
       activeDeadlineSeconds: 21600
       resources: {}
@@ -30,13 +30,13 @@ objects:
       metadata:
         creationTimestamp: null
         labels:
-          app: apiaudit
-          deploymentconfig: apiaudit
+          app: ${COMPONENT}
+          deploymentconfig: ${COMPONENT}
       spec:
         containers:
         - env:
           - name: JAVA_APP_JAR
-            value: apiaudit.jar
+            value: ${JAR_NAME}${JAR_VERSION}.jar
           - name: DBHOST
             value: mongodb
           - name: DBNAME
@@ -54,9 +54,11 @@ objects:
               secretKeyRef:
                 name: mongodb
                 key: database-password
-          image: apiaudit:latest
+          - name: PORTFOLIO_CRON
+            value: 0 0/30 * * * *
+          image: ${COMPONENT}:latest
           imagePullPolicy: Always
-          name: apiaudit
+          name: ${COMPONENT}
           ports:
           - containerPort: 8080
             protocol: TCP
@@ -77,9 +79,24 @@ objects:
     - imageChangeParams:
         automatic: true
         containerNames:
-        - apiaudit
+        - ${COMPONENT}
         from:
           kind: ImageStreamTag
-          name: apiaudit:latest
+          name: ${COMPONENT}:latest
       type: ImageChange
     - type: ConfigChange
+- apiVersion: v1
+  kind: Service
+  metadata:
+    name: ${COMPONENT}-service
+  spec:
+    selector:
+      app: ${COMPONENT}
+    ports:
+    - protocol: TCP
+      port: 8080
+      targetPort: 8080
+parameters:
+  - name: COMPONENT
+  - name: JAR_NAME
+  - name: JAR_VERSION
