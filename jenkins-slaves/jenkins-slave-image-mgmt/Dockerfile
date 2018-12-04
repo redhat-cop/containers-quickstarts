@@ -12,7 +12,6 @@ USER root
 
 RUN INSTALL_PKGS="skopeo" && \
     yum install -y --setopt=tsflags=nodocs \
-      --disablerepo=* \
       --enablerepo=rhel-7-server-rpms \
       --enablerepo=rhel-7-server-extras-rpms \
       INSTALL_PKGS && \
