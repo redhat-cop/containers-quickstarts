@@ -34,7 +34,7 @@ objects:
     output:
       to:
         kind: ImageStreamTag
-        name: ${JENKINS_SLAVE_NAME}:latest
+        name: ${JENKINS_SLAVE_NAME}:v3.11
     postCommit: {}
     resources: {}
     runPolicy: Serial
@@ -55,7 +55,7 @@ objects:
           value: ${ANSIBLE_YUM_REPO}
         from:
           kind: ImageStreamTag
-          name: jenkins-slave-base-rhel7:latest
+          name: jenkins-slave-base-rhel7:v3.11
       type: Docker
     triggers:
     - imageChange: {}
