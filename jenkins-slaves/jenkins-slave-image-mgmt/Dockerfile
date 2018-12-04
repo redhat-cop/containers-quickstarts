@@ -10,10 +10,12 @@ LABEL com.redhat.component="jenkins-slave-image-mgmt" \
       io.openshift.tags="openshift,jenkins,slave,copy"
 USER root
 
-RUN yum repolist > /dev/null && \
-    yum clean all && \
-    INSTALL_PKGS="skopeo" && \
-    yum install -y --enablerepo=rhel-7-server-extras-rpms --setopt=tsflags=nodocs $INSTALL_PKGS && \
+RUN INSTALL_PKGS="skopeo" && \
+    yum install -y --setopt=tsflags=nodocs \
+      --disablerepo=* \
+      --enablerepo=rhel-7-server-rpms \
+      --enablerepo=rhel-7-server-extras-rpms \
+      INSTALL_PKGS && \
     rpm -V $INSTALL_PKGS && \
     yum clean all
 
