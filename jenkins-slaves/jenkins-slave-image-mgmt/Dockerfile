@@ -1,4 +1,4 @@
-FROM registry.access.redhat.com/openshift3/jenkins-slave-base-rhel7:v3.11
+FROM openshift3/jenkins-slave-base-rhel7:v3.11
 
 MAINTAINER Andrew Block <ablock@redhat.com>
 
