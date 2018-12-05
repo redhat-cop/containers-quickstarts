@@ -1,0 +1,15 @@
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: hygieiea-plugin-config
+data:
+  jenkins.plugins.hygieia.HygieiaPublisher.xml: |-
+    <?xml version='1.1' encoding='UTF-8'?>
+    <jenkins.plugins.hygieia.HygieiaPublisher_-DescriptorImpl plugin="hygieia-publisher@2.1.5-SNAPSHOT">
+      <hygieiaAPIUrl>http://api-service.hygieia-esauer.svc.cluster.local:8080/api/</hygieiaAPIUrl>
+      <hygieiaToken>RvdA6V1/5qdAZKT+cztFq/enwVFr3x/c</hygieiaToken>
+      <hygieiaJenkinsName>Uncontained</hygieiaJenkinsName>
+      <useProxy>false</useProxy>
+      <hygieiaPublishBuildDataGlobal>false</hygieiaPublishBuildDataGlobal>
+      <hygieiaPublishSonarDataGlobal>false</hygieiaPublishSonarDataGlobal>
+    </jenkins.plugins.hygieia.HygieiaPublisher_-DescriptorImpl>

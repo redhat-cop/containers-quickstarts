@@ -47,12 +47,15 @@ objects:
         kind: ImageStreamTag
         name: jenkins2-s2i:latest
     source:
-      type: Git
-      contextDir: '2'
-      git:
-        uri: "${JENKINS_GIT_URL}"
-        ref: "${JENKINS_GIT_BRANCH}"
-      contextDir: ${JENKINS_GIT_CONTEXT_DIR}
+      images:
+      - as: null
+        from:
+          kind: ImageStreamTag
+          name: hygieia-plugin:latest
+        paths:
+        - destinationDir: "plugins/."
+          sourcePath: /tmp/src/target/hygieia-publisher.hpi
+      type: Image
     strategy:
       sourceStrategy:
         from:

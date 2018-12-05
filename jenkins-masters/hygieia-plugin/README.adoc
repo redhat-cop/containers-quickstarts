@@ -1,0 +1,35 @@
+= Jenkins Master with the Hygieia Publisher Plugin
+
+link:http://hygieia.github.io/Hygieia/getting_started.html[Hygieia] is a metrics collection and dashboarding tool for tracking DevOps related metrics. One of the ways in which those metrics can be collected is by instrumenting a Jenkins Pipeline to push Build, Test, and Deploy events to a Hygieia API. To do this requires a custom Jenkins master image with the link:https://github.com/Hygieia/Hygieia/tree/master/hygieia-jenkins-plugin[Hygieia Jenkins Plugin] installed. This plugin is not currently published to the public Jenkins CDN, so we must build it from source and stream the binary into Jenkins.
+
+This module provides the capability to do just that. It includes:
+
+- An S2I buildConfig that will build the Hygieia plugin `.hpi` file from source
+- An Image build that will copy the `.hpi` file into a Jenkins image
+- A sample Jenkins deployment that shows how this plugin can be configured.
+
+== Deploy the Quickstart
+
+Deploy the quickstart with the following commands
+
+[source,bash]
+----
+cd jenkins-masters/hygieia-plugin
+ansible-galaxy install -r requirements.yml -p galaxy
+ansible-playbook -i .applier/ galaxy/openshift-applier/playbooks/openshift-cluster-seed.yml
+----
+
+== Optional Configuration
+
+The Jenkins instance that gets deployed will have the Hygieia plugin installed and running, but by default it will not be configured to point to an actual Hygieia API. To do this, you can pass some extra parameters to the Jenkins template:
+
+----
+HYGIEIA_API_URL: # The url to your hygieia API stack. This typically looks like https://hygieia.example.com:8080/api/
+HYGIEIEA_API_TOKEN: # This is a token generated from the Hygieia UI. See http://hygieia.github.io/Hygieia/signup.html#generate-api-token for details
+----
+
+You can pass both of these straight into the Applier automation above via the command line:
+
+----
+ansible-playbook -i .applier/ galaxy/openshift-applier/playbooks/openshift-cluster-seed.yml -e hygieia_url=https://hygieia.example.com:8080/api/ -e hygieia_token=[paste token here]
+----
