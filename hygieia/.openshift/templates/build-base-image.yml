@@ -1,0 +1,64 @@
+apiVersion: v1
+kind: Template
+metadata:
+  creationTimestamp: null
+  name: base-image-build
+objects:
+- apiVersion: v1
+  kind: BuildConfig
+  metadata:
+    annotations:
+    creationTimestamp: null
+    labels:
+      build: openjdk8-custom
+    name: openjdk8-custom
+  spec:
+    failedBuildsHistoryLimit: 5
+    nodeSelector: null
+    output:
+      to:
+        kind: ImageStreamTag
+        name: openjdk8-custom:latest
+    postCommit: {}
+    resources: {}
+    runPolicy: Serial
+    source:
+      binary: {}
+      type: Binary
+    strategy:
+      dockerStrategy:
+        from:
+          kind: ImageStreamTag
+          name: java:latest
+          namespace: openshift
+      type: Docker
+    successfulBuildsHistoryLimit: 5
+    triggers:
+    - github:
+        secret: La4HMT7Q_PjcWPQ2O8m-
+      type: GitHub
+    - generic:
+        secret: KMPxPoEfhHqmWAn2ULK3
+      type: Generic
+- apiVersion: v1
+  kind: ImageStream
+  metadata:
+    annotations:
+    creationTimestamp: null
+    generation: 1
+    labels:
+      build: openjdk8-custom
+    name: openjdk8-custom
+  spec:
+    lookupPolicy:
+      local: false
+    tags:
+    - annotations: null
+      from:
+        kind: DockerImage
+        name: docker-registry.default.svc:5000/hygieia/openjdk8-custom:latest
+      generation: null
+      importPolicy: {}
+      name: latest
+      referencePolicy:
+        type: ""
