@@ -1,0 +1,19 @@
+namespace: jenkins-hygieia
+
+openshift_cluster_content:
+- object: Environment Setup
+  content:
+  - name: Create Projects
+    template: "{{ inventory_dir }}/../.openshift/projects/projects.yml"
+    action: create
+    params_from_vars:
+      NAMESPACE: "{{ namespace }}"
+- object: Builds
+  content:
+  - name: Jenkins Master Image
+    template: "{{ inventory_dir }}/../.openshift/templates/jenkins-s2i.yml"
+    namespace: "{{ namespace }}"
+    params_from_vars:
+      JENKINS_GIT_URL: https://github.com/etsauer/uncontained.io
+      JENKINS_GIT_BRANCH: integrate-hygieia
+      JENKINS_GIT_CONTEXT_DIR: jenkins-s2i
