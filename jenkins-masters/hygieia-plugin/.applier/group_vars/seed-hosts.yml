@@ -1,5 +1,5 @@
 namespace: jenkins-hygieia
-hygieia_url:
+hygieia_url: 
 hygieia_token:
 
 openshift_cluster_content:
@@ -12,6 +12,9 @@ openshift_cluster_content:
       NAMESPACE: "{{ namespace }}"
 - object: Builds
   content:
+  - name: Hygieia Jenkins Plugin
+    template: "{{ inventory_dir }}/../.openshift/templates/hygieia-plugin.yml"
+    namespace: "{{ namespace }}"
   - name: Jenkins Master Image
     template: "{{ inventory_dir }}/../.openshift/templates/jenkins-s2i.yml"
     namespace: "{{ namespace }}"
