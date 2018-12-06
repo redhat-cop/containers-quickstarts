@@ -56,6 +56,23 @@ objects:
                 key: database-password
           - name: PORTFOLIO_CRON
             value: 0 * * * * *
+          - name: PORTFOLIO_READURIDATABASE
+            value: ${OTHER_DATABASE_SERVICE_NAME}
+          - name: PORTFOLIO_READDATABASE
+            valueFrom:
+              secretKeyRef:
+                name: ${OTHER_DATABASE_SERVICE_NAME}
+                key: database-name
+          - name: PORTFOLIO_READURIUSERNAME
+            valueFrom:
+              secretKeyRef:
+                name: ${OTHER_DATABASE_SERVICE_NAME}
+                key: database-user
+          - name: PORTFOLIO_READURIPASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: ${OTHER_DATABASE_SERVICE_NAME}
+                key: database-password
           image: ${COMPONENT}:latest
           imagePullPolicy: Always
           name: ${COMPONENT}
@@ -101,3 +118,4 @@ parameters:
   - name: JAR_NAME
   - name: JAR_VERSION
   - name: DATABASE_SERVICE_NAME
+  - name: OTHER_DATABASE_SERVICE_NAME
