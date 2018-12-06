@@ -1,0 +1,82 @@
+apiVersion: v1
+kind: Template
+labels:
+  app: hygieia-plugin-jenkins
+  template: hygieia-plugin-jenkins-template
+message: |-
+  The Hygieia plugin for Jenkins is being built. Hygieia source can be found at: https://github.com/Hygieia/Hygieia/tree/master/hygieia-jenkins-plugin/src/main
+metadata:
+  annotations:
+    description: |-
+      Hygieia plugin for Jenkins
+    iconClass: icon-jenkins
+    openshift.io/display-name: Hygieia plugin for Jenkins
+    openshift.io/documentation-url: https://github.com/Hygieia/Hygieia/blob/master/README.md
+    tags: jenkins
+  creationTimestamp: null
+  name: hygieia-plugin-jenkins
+objects:
+- apiVersion: v1
+  kind: ImageStream
+  metadata:
+    annotations:
+    labels:
+      build: hygieia-plugin
+    name: hygieia-plugin
+  spec:
+    lookupPolicy:
+      local: false
+- apiVersion: v1
+  kind: BuildConfig
+  metadata:
+    annotations:
+    labels:
+      build: hygieia-plugin
+    name: hygieia-plugin
+  spec:
+    failedBuildsHistoryLimit: 5
+    nodeSelector: null
+    output:
+      to:
+        kind: ImageStreamTag
+        name: hygieia-plugin:latest
+    postCommit: {}
+    resources: {}
+    runPolicy: Serial
+    source:
+      contextDir: hygieia-jenkins-plugin
+      git:
+        ref: ${HYGIEIA_GIT_REPO_REF}
+        uri: https://github.com/Hygieia/Hygieia.git
+      type: Git
+    strategy:
+      sourceStrategy:
+        from:
+          kind: ImageStreamTag
+          name: java:${JAVA_IMAGE_STREAM_VERSION}
+          namespace: openshift
+      type: Source
+    successfulBuildsHistoryLimit: 5
+    triggers:
+    - github:
+        secret: "${WEBHOOK_SECRET}"
+      type: GitHub
+    - generic:
+        secret: "${WEBHOOK_SECRET}"
+      type: Generic
+    - type: ConfigChange
+    - type: ImageChange
+parameters:
+  - name: HYGIEIA_GIT_REPO_REF
+    displayName: Hygieia github.com repository branch ref
+    description: Hygieia github.com repository branch ref
+    value: v3.0.1
+  - name: JAVA_IMAGE_STREAM_VERSION
+    displayName: Version of the java image
+    description: Version of the java image
+    value: latest
+  - name: WEBHOOK_SECRET
+    displayName: Webhook Secret
+    description: A secret string used to configure the webhook.
+    generate: expression
+    from: "[a-zA-Z0-9]{40}"
