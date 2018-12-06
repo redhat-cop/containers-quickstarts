@@ -31,6 +31,7 @@ RUN INSTALL_PKGS="rh-nodejs${NODEJS_VERSION} rh-nodejs${NODEJS_VERSION}-npm rh-n
     yum -y localinstall \
       --disablerepo=* \
       --enablerepo=rhel-7-server-rpms \
+      --enablerepo=rhel-7-server-optional-rpms \
       google-chrome-stable_current_x86_64.rpm && \
     rm google-chrome-stable_current_x86_64.rpm && \
     rpm -V $INSTALL_PKGS google-chrome-stable && \
