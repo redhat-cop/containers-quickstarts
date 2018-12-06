@@ -1,5 +1,5 @@
 namespace: jenkins-hygieia
-hygieia_url: 
+hygieia_url:
 hygieia_token:
 
 openshift_cluster_content:
@@ -18,10 +18,6 @@ openshift_cluster_content:
   - name: Jenkins Master Image
     template: "{{ inventory_dir }}/../.openshift/templates/jenkins-s2i.yml"
     namespace: "{{ namespace }}"
-    params_from_vars:
-      JENKINS_GIT_URL: https://github.com/etsauer/containers-quickstarts.git
-      JENKINS_GIT_BRANCH: jenkins-hygieia
-      JENKINS_GIT_CONTEXT_DIR: jenkins-masters/hygieia-plugin/jenkins-s2i
 - object: Deployments
   content:
   - name: Demo Jenkins Master

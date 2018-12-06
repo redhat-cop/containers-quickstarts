@@ -9,20 +9,6 @@ metadata:
     iconClass: icon-jenkins
     tags: instant-app,jenkins,cicd
   name: jenkins2-s2i
-parameters:
-- description: Custom Jenkins for CD Pipeline SCM location
-  displayName: CD Jenkins Pipeline SCM URL
-  name: JENKINS_GIT_URL
-  required: true
-- description: Custom Jenkins for CD Pipeline SCM branch
-  displayName: CD Jenkins Pipeline SCM branch
-  name: JENKINS_GIT_BRANCH
-  required: true
-  value: 'master'
-- description: Context Directory inside of the Git repo
-  displayName: Context Directory
-  name: JENKINS_GIT_CONTEXT_DIR
-  value: ''
 objects:
 # Jenkins2
 - apiVersion: v1
