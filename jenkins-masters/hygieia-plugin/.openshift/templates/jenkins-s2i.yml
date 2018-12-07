@@ -28,6 +28,11 @@ objects:
   spec:
     triggers:
     - type: "ConfigChange"
+    - type: ImageChange
+      imageChange:
+        from:
+          kind: "ImageStreamTag"
+          name: "hygieia-plugin:latest"
     output:
       to:
         kind: ImageStreamTag
