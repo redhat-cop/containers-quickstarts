@@ -78,8 +78,8 @@ openshift_cluster_content:
       template: "{{ inventory_dir }}/../.openshift/templates/build-java-component.yml"
       params_from_vars:
         COMPONENT: exec-analysis
-        SOURCE_CODE_URL: https://github.com/Hygieia/ExecDashboard.git
-        SOURCE_CODE_REF: master
+        SOURCE_CODE_URL: https://github.com/etsauer/ExecDashboard.git
+        SOURCE_CODE_REF: fix-collector-config
         JAR_NAME: exec-analysis
         JAR_VERSION: -1.0.0-SNAPSHOT
       namespace: "{{ k8s_namespace }}"

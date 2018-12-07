@@ -56,23 +56,32 @@ objects:
                 key: database-password
           - name: PORTFOLIO_CRON
             value: 0 * * * * *
-          - name: PORTFOLIO_READURIDATABASE
+          - name: PORTFOLIO_READ_URI_PREFIX
+            value: mongodb
+          - name: PORTFOLIO_READ_URI_DATABASE
             value: ${OTHER_DATABASE_SERVICE_NAME}
-          - name: PORTFOLIO_READDATABASE
+          - name: PORTFOLIO_READ_DATABASE
             valueFrom:
               secretKeyRef:
                 name: ${OTHER_DATABASE_SERVICE_NAME}
                 key: database-name
-          - name: PORTFOLIO_READURIUSERNAME
+          - name: PORTFOLIO_READ_URI_USERNAME
             valueFrom:
               secretKeyRef:
                 name: ${OTHER_DATABASE_SERVICE_NAME}
                 key: database-user
-          - name: PORTFOLIO_READURIPASSWORD
+          - name: PORTFOLIO_READ_URI_PASSWORD
             valueFrom:
               secretKeyRef:
                 name: ${OTHER_DATABASE_SERVICE_NAME}
                 key: database-password
+          - name: PORTFOLIO_WRITE_URI
+            value: mongodb://${OTHER_DATABASE_SERVICE_NAME}
+          - name: PORTFOLIO_WRITE_DATABASE
+            valueFrom:
+              secretKeyRef:
+                name: ${OTHER_DATABASE_SERVICE_NAME}
+                key: database-name
           image: ${COMPONENT}:latest
           imagePullPolicy: Always
           name: ${COMPONENT}
