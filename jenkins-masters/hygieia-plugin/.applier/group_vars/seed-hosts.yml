@@ -1,0 +1,30 @@
+namespace: jenkins-hygieia
+hygieia_url:
+hygieia_token:
+
+openshift_cluster_content:
+- object: Environment Setup
+  content:
+  - name: Create Projects
+    template: "{{ inventory_dir }}/../.openshift/projects/projects.yml"
+    action: create
+    params_from_vars:
+      NAMESPACE: "{{ namespace }}"
+- object: Builds
+  content:
+  - name: Hygieia Jenkins Plugin
+    template: "{{ inventory_dir }}/../.openshift/templates/hygieia-plugin.yml"
+    namespace: "{{ namespace }}"
+  - name: Jenkins Master Image
+    template: "{{ inventory_dir }}/../.openshift/templates/jenkins-s2i.yml"
+    namespace: "{{ namespace }}"
+- object: Deployments
+  content:
+  - name: Demo Jenkins Master
+    template: "{{ inventory_dir }}/../.openshift/templates/jenkins-ephemeral.yml"
+    namespace: "{{ namespace }}"
+    params_from_vars:
+      JENKINS_IMAGE_STREAM_TAG: jenkins2-s2i:latest
+      NAMESPACE: "{{ namespace }}"
+      HYGIEIA_API_URL: "{{ hygieia_url }}"
+      HYGIEIEA_API_TOKEN: "{{ hygieia_token }}"

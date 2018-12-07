@@ -41,14 +41,14 @@ objects:
             valueFrom:
               secretKeyRef:
                 key: database-name
-                name: mongodb
+                name: ${DATABASE_SERVICE_NAME}
           - name: DBPASSWORD
             valueFrom:
               secretKeyRef:
                 key: database-password
-                name: mongodb
+                name: ${DATABASE_SERVICE_NAME}
           - name: DBHOST
-            value: mongodb.${NAMESPACE}.svc
+            value: ${DATABASE_SERVICE_NAME}.${NAMESPACE}.svc
           - name: JENKINS_CRON
             value: '5 * * * * *'
           - name: JENKINS_SERVERS
@@ -61,7 +61,7 @@ objects:
             valueFrom:
               secretKeyRef:
                 key: database-user
-                name: mongodb
+                name: ${DATABASE_SERVICE_NAME}
           - name: LOGGING_LEVEL_ROOT
             value: INFO
           - name: JENKINS_CLIENT_SECRET
@@ -99,3 +99,4 @@ parameters:
 - name: NAMESPACE
 - name: JENKINS_NAMESPACE
 - name: OPENSHIFT_DEFAULT_SUBDOMAIN
+- name: DATABASE_SERVICE_NAME
