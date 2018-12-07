@@ -119,13 +119,6 @@ openshift_cluster_content:
       tags:
         - unpriv
         - all
-    - name: Jenkins
-      template: "openshift//jenkins-persistent"
-      action: create
-      namespace: "{{ k8s_namespace }}"
-      tags:
-        - unpriv
-        - all
     - name: API
       template: "{{ inventory_dir }}/../.openshift/templates/deployment-java-component.yml"
       params_from_vars:
