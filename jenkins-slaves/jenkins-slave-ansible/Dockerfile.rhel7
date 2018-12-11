@@ -1,8 +1,8 @@
-FROM openshift3/jenkins-slave-base-rhel7:latest
+FROM openshift3/jenkins-slave-base-rhel7:v3.11
 
 LABEL com.redhat.component="jenkins-slave-ansible-rhel7-docker" \
       name="openshift3/jenkins-slave-ansible-rhel7" \
-      version="3.9" \
+      version="3.11" \
       architecture="x86_64" \
       release="1" \
       io.k8s.display-name="Jenkins Slave Ansible" \

@@ -1,6 +1,6 @@
 # Jenkins Ansible Slave
 
-This is a Jenkins Slave designed to run in OpenShift as described [here](https://docs.openshift.com/container-platform/3.10/using_images/other_images/jenkins.html#using-the-jenkins-kubernetes-plug-in). The slave should stay in sync with [the openshift applier image](https://github.com/redhat-cop/openshift-applier/tree/master/images/openshift-applier) in order to provide a common runtime environment.
+This is a Jenkins Slave designed to run in OpenShift as described [here](https://docs.openshift.com/container-platform/3.11/using_images/other_images/jenkins.html#using-the-jenkins-kubernetes-plug-in). The slave should stay in sync with [the openshift applier image](https://github.com/redhat-cop/openshift-applier/tree/master/images/openshift-applier) in order to provide a common runtime environment.
 
 Provides a docker image with ansible for use as a Jenkins slave.
 
