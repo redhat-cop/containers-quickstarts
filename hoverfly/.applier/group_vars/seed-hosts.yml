@@ -1,16 +1,15 @@
 namespace: hoverfly
-hoverfly_name: hoverfly
+app_name: hoverfly
 
-hoverfly:
-  build:
-    NAME: "{{ hoverfly_name }}"
-    SOURCE_REPOSITORY_URL: https://github.com/redhat-cop/containers-quickstarts.git
-    SOURCE_REPOSITORY_REF: master
-    SOURCE_CONTEXT_DIR: hoverfly
-  deploy:
-    NAMESPACE: "{{ namespace }}"
-    MEMORY_LIMIT: 2Gi
-    HOVERFLY_IMAGE_STREAM_TAG: "{{ hoverfly_name }}:latest"
+build:
+  NAME: "{{ app_name }}"
+  SOURCE_REPOSITORY_URL: https://github.com/redhat-cop/containers-quickstarts.git
+  SOURCE_REPOSITORY_REF: master
+  SOURCE_CONTEXT_DIR: hoverfly
+deploy:
+  NAMESPACE: "{{ namespace }}"
+  MEMORY_LIMIT: 2Gi
+  HOVERFLY_IMAGE_STREAM_TAG: "{{ app_name }}:latest"
 
 openshift_cluster_content:
 - object: Environment Setup
@@ -27,7 +26,7 @@ openshift_cluster_content:
   content:
   - name: hoverfly
     template: "{{ inventory_dir }}/../../build-docker-generic/.openshift/templates/docker-build-template.yml"
-    params_from_vars: "{{ hoverfly.build }}"
+    params_from_vars: "{{ build }}"
     namespace: "{{ namespace }}"
     tags:
       - build
@@ -35,7 +34,7 @@ openshift_cluster_content:
   content:
   - name: hoverfly
     template: "{{ inventory_dir }}/../.openshift/templates/hoverfly-deployment-template.yml"
-    params_from_vars: "{{ hoverfly.deploy }}"
+    params_from_vars: "{{ deploy }}"
     namespace: "{{ namespace }}"
     tags:
     - deploy
