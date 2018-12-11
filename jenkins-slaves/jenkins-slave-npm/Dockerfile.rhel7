@@ -1,9 +1,9 @@
 #invoke npm in jenkinsfile: sh "scl enable rh-nodejs6 'npm run build'"
-FROM openshift3/jenkins-slave-base-rhel7
+FROM openshift3/jenkins-slave-base-rhel7:v3.11
 
 LABEL com.redhat.component="jenkins-slave-nodejs-rhel7-docker" \
       name="openshift3/jenkins-slave-nodejs-rhel7" \
-      version="3.9" \
+      version="3.11" \
       architecture="x86_64" \
       release="1" \
       io.k8s.display-name="Jenkins Slave Nodejs" \
@@ -19,22 +19,17 @@ ENV NODEJS_VERSION=8 \
     CHROME_BIN=/bin/google-chrome
 
 COPY contrib/bin/scl_enable /usr/local/bin/scl_enable
-ADD https://dl.google.com/linux/direct/google-chrome-stable_current_x86_64.rpm google-chrome-stable_current_x86_64.rpm
+ADD src/google-chrome.repo /etc/yum.repos.d/
 
-RUN INSTALL_PKGS="rh-nodejs${NODEJS_VERSION} rh-nodejs${NODEJS_VERSION}-npm rh-nodejs${NODEJS_VERSION}-nodejs-nodemon nss_wrapper redhat-lsb libXScrnSaver xdg-utils" && \
+RUN INSTALL_PKGS="rh-nodejs${NODEJS_VERSION} rh-nodejs${NODEJS_VERSION}-npm rh-nodejs${NODEJS_VERSION}-nodejs-nodemon nss_wrapper redhat-lsb libXScrnSaver xdg-utils google-chrome-stable" && \
     yum install -y --setopt=tsflags=nodocs \
       --disablerepo=* \
       --enablerepo=rhel-7-server-rpms \
       --enablerepo=rhel-server-rhscl-7-rpms \
       --enablerepo=rhel-7-server-optional-rpms \
+      --enablerepo=rhel-7-server-extras-rpms \
+      --enablerepo=google-chrome \
       $INSTALL_PKGS && \
-    yum -y localinstall \
-      --disablerepo=* \
-      --enablerepo=rhel-7-server-rpms \
-      --enablerepo=rhel-7-server-optional-rpms \
-      google-chrome-stable_current_x86_64.rpm && \
-    rm google-chrome-stable_current_x86_64.rpm && \
-    rpm -V $INSTALL_PKGS google-chrome-stable && \
     yum clean all -y && \
     rm -rf /var/cache/yum
 

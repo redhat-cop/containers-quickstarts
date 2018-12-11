@@ -1,4 +1,4 @@
-FROM openshift/jenkins-slave-base-centos7
+FROM openshift/jenkins-slave-base-centos7:v3.11
 
 ENV RUBY_VERSION 2.4
 
@@ -13,7 +13,7 @@ It is simple, straight-forward, and extensible." \
   PATH=$PATH:/home/jenkins/bin \
   PROMPT_COMMAND=". /opt/app-root/etc/scl_enable" \
   HOME=/home/jenkins \
-  ORIGIN_CLIENT=https://github.com/openshift/origin/releases/download/v3.6.0/openshift-origin-client-tools-v3.6.0-c4dd4cf-linux-64bit.tar.gz
+  ORIGIN_CLIENT=https://mirror.openshift.com/pub/openshift-v3/clients/3.11.50/linux/oc.tar.gz
 
 
 LABEL summary="$SUMMARY" \
@@ -35,10 +35,8 @@ RUN yum install -y centos-release-scl && \
     yum remove -y origin-clients && \
     yum clean all -y
 
-RUN wget -O $HOME/origin-client.tar.gz $ORIGIN_CLIENT && \
-    tar -xzf $HOME/origin-client.tar.gz -C $HOME && \
-    cp $HOME/openshift-origin-client-tools-v3.6.0-c4dd4cf-linux-64bit/oc /usr/bin/oc && \
-    rm -rf origin-client*
+RUN curl $ORIGIN_CLIENT | tar -C /usr/local/bin/ -xzf - && \
+    chmod +x /usr/local/bin/oc
 
 # Copy extra files to the image.
 COPY ./root/ /
