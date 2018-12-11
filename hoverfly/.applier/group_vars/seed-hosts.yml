@@ -20,6 +20,7 @@ openshift_cluster_content:
     action: create
     params_from_vars:
       NAMESPACE: "{{ namespace }}"
+      NAMESPACE_DISPLAY_NAME: "{{ namespace }}"
     tags:
       - project
 - object: Builds
