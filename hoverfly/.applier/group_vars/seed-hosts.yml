@@ -34,7 +34,7 @@ openshift_cluster_content:
 - object: Deployments
   content:
   - name: hoverfly
-    template: "https://raw.githubusercontent.com/rht-labs/openshift-templates/master/hoverfly/hoverfly-deployment-template.yml"
+    template: "{{ inventory_dir }}/../.openshift/templates/hoverfly-deployment-template.yml"
     params_from_vars: "{{ hoverfly.deploy }}"
     namespace: "{{ namespace }}"
     tags:
