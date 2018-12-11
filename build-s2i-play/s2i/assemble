@@ -1,0 +1,25 @@
+#!/bin/sh
+
+LOCAL_SOURCE_DIR=${HOME}
+
+echo "Starting S2I Play Build ....."
+
+# Generate Secret
+if [ -z "${DISABLE_GENERATE_SECRET}" ]; then  
+
+    echo "Generating New Application Secret..."
+    activator playUpdateSecret
+fi
+
+# Build
+activator universal:packageZipTarball
+
+PLAY_ARCHIVE=$(ls -1 ${LOCAL_SOURCE_DIR}/target/universal/*.tgz)
+
+echo "Copying Archive to Deployments Folder"
+cp ${PLAY_ARCHIVE} /deployments
+
+# Remove Extra Files
+rm -rf ${LOCAL_SOURCE_DIR}/target ${HOME}/.ivy2 ${LOCAL_SOURCE_DIR}/.m2
+
+echo "S2I Assemble Complete"
