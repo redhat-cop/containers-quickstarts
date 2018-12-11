@@ -6,7 +6,7 @@
 
 1. Clone this repository:
    `git clone https://github.com/redhat-cop/containers-quickstarts`
-2. `cd containers-quickstarts/s2i-gows`
+2. `cd containers-quickstarts/build-s2i-gows`
 3. Run `ansible-galaxy install -r requirements.yml --roles-path=roles`
 4. Login to Openshift: `oc login -u <username> https://master.example.com:8443`
 5. Run openshift-applier: `ansible-playbook -i inventory/hosts roles/openshift-applier/playbooks/openshift-cluster-seed.yml`
@@ -18,7 +18,7 @@ By default our simple [demo site](demo/index.html) will be deployed.
 
 GoWS is a webserver built to do nothing more than to serve static content web sites on the smallest possible footprint. This S2I-enabled image makes this one step easier by being able to stream that content straight into the image from source.
 
-This repo contains both a `Dockerfile` for building the image and a directory of [sample content](/s2i-gows/demo).
+This repo contains both a `Dockerfile` for building the image and a directory of [sample content](/build-s2i-gows/demo).
 
 ## Bill of Materials
 
@@ -68,14 +68,14 @@ This image supports a couple of simple environment variables for customizing dir
 This image is available from Docker cloud:
 
 ```
-docker pull redhatcop/s2i-gows
+docker pull redhatcop/build-s2i-gows
 ```
 
 ## Building the Image
 
 ```
 cd ./image
-docker build -t redhatcop/s2i-gows .
+docker build -t redhatcop/build-s2i-gows .
 ```
 
 ## Cleaning up

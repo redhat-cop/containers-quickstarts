@@ -18,10 +18,10 @@ A set of examples of deploying various technologies on OpenShift
 
 A collection of custom built S2I base images
 
-* [GoWS](./s2i-gows)
-* [Jekyll](./s2i-jekyll)
-* [WebSphere Liberty](./s2i-liberty)
-* [Play Framework](./s2i-play)
+* [GoWS](./build-s2i-gows)
+* [Jekyll](./build-s2i-jekyll)
+* [WebSphere Liberty](./build-s2i-liberty)
+* [Play Framework](./build-s2i-play)
 
 ### Jenkins Slave Images
 
