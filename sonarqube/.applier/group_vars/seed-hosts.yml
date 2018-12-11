@@ -29,7 +29,7 @@ openshift_cluster_content:
 - object: Builds
   content:
   - name: sonarqube
-    template: "https://raw.githubusercontent.com/rht-labs/openshift-templates/v1.0/docker-build/docker-build-template.yml"
+    template: "{{ inventory_dir }}/../../build-docker-generic/.openshift/templates/docker-build-template.yml"
     params_from_vars: "{{ build }}"
     namespace: "{{ namespace }}"
     tags:
