@@ -1,6 +1,6 @@
 FROM registry.access.redhat.com/rhel7/rhel
 
-ENV HOVERFLY_DOWNLOAD_URI https://github.com/SpectoLabs/hoverfly/releases/download/v0.17.4/hoverfly_bundle_linux_amd64.zip
+ENV HOVERFLY_DOWNLOAD_URI https://github.com/SpectoLabs/hoverfly/releases/download/v0.17.7/hoverfly_bundle_linux_amd64.zip 
 ENV HOME /home/hoverfly
 
 RUN PACKAGE_LIST="less unzip" && \
