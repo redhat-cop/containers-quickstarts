@@ -1,0 +1,14 @@
+= Generic Docker Build Template
+
+This module provides the capability reuse a very generic docker build template for Openshift.
+
+== Deploy the Quickstart
+
+Deploy the quickstart with the following commands
+
+[source,bash]
+----
+cd build-docker-generic
+ansible-galaxy install -r requirements.yml -p galaxy
+ansible-playbook -i .applier/ galaxy/openshift-applier/playbooks/openshift-cluster-seed.yml
+----
