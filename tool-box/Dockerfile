@@ -1,6 +1,6 @@
 FROM fedora:latest
 
-ENV OC_CLIENT_MIRROR https://mirror.openshift.com/pub/openshift-v3/clients/3.9.14/linux/oc.tar.gz
+ENV OC_CLIENT_MIRROR https://mirror.openshift.com/pub/openshift-v3/clients/3.10.86/linux/oc.tar.gz
 ENV HOME /home/tool-box
 
 RUN dnf -y update && \
