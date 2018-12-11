@@ -33,6 +33,12 @@ A set of images we've developed for running as slave pods in a Jenkins Pipeline 
 * [Extended Maven Slave](./jenkins-slaves/jenkins-slave-mvn)
 * [Ruby](./jenkins-slaves/jenkins-slave-ruby)
 
+### Customized Jenkins Masters
+
+A set of buildConfigs for building custom Jenkins images for OpenShift.
+
+* [Jenkins Master with the Hygieia Plugin](./jenkins-masters/hygieia-plugin)
+
 ### Developer Tools
 
 * [Tool Box](./tool-box) - An openshift deployable contianer image that provides some necessary developer tools
