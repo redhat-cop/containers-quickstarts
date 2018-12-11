@@ -33,6 +33,10 @@ objects:
         kind: ImageStreamTag
         name: jenkins2-s2i:latest
     source:
+      git:
+        uri: https://github.com/etsauer/containers-quickstarts.git
+        ref: jenkins-root-url
+      contextDir: jenkins-masters/hygieia-plugin/
       images:
       - as: null
         from:
