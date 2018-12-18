@@ -18,7 +18,7 @@ The openshift-applier will create the following OpenShift objects:
 
 1. Clone this repository:
    `git clone https://github.com/redhat-cop/containers-quickstarts`
-2. `cd containers-quickstarts/s2i-jekyll`
+2. `cd containers-quickstarts/build-s2i-jekyll`
 3. Run `ansible-galaxy install -r requirements.yml --roles-path=roles`
 4. Login to Openshift: `oc login -u <username> https://master.example.com:8443`
 5. Run openshift-applier: `ansible-playbook -i inventory/hosts roles/openshift-applier/playbooks/openshift-cluster-seed.yml`

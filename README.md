@@ -18,10 +18,10 @@ A set of examples of deploying various technologies on OpenShift
 
 A collection of custom built S2I base images
 
-* [GoWS](./s2i-gows)
-* [Jekyll](./s2i-jekyll)
-* [WebSphere Liberty](./s2i-liberty)
-* [Play Framework](./s2i-play)
+* [GoWS](./build-s2i-gows)
+* [Jekyll](./build-s2i-jekyll)
+* [WebSphere Liberty](./build-s2i-liberty)
+* [Play Framework](./build-s2i-play)
 
 ### Jenkins Slave Images
 
@@ -32,6 +32,12 @@ A set of images we've developed for running as slave pods in a Jenkins Pipeline 
 * [Image Promotion](./jenkins-slaves/jenkins-slave-image-mgmt)
 * [Extended Maven Slave](./jenkins-slaves/jenkins-slave-mvn)
 * [Ruby](./jenkins-slaves/jenkins-slave-ruby)
+* [Arachni](./jenkins-slaves/jenkins-slave-arachni)
+* [Gradle](./jenkins-slaves/jenkins-slave-gradle)
+* [MongoDB](./jenkins-slaves/jenkins-slave-mongodb)
+* [Node](./jenkins-slaves/jenkins-slave-npm)
+* [Python](./jenkins-slaves/jenkins-slave-python)
+* [ZAP](./jenkins-slaves/jenkins-slave-zap)
 
 ### Customized Jenkins Masters
 

@@ -22,7 +22,7 @@ objects:
     output:
       to:
         kind: ImageStreamTag
-        name: ${JENKINS_SLAVE_NAME}:latest
+        name: ${JENKINS_SLAVE_NAME}:v3.11
     postCommit: {}
     resources: {}
     runPolicy: Serial
@@ -36,7 +36,7 @@ objects:
       dockerStrategy:
         from:
           kind: ImageStreamTag
-          name: jenkins-slave-base-centos7:latest
+          name: jenkins-slave-base-centos7:v3.11
       type: Docker
     triggers:
     - type: ConfigChange
