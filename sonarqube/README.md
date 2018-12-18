@@ -10,6 +10,17 @@ but it has been modified to allow permissions to be run in an OpenShift environm
 
 ## Usage
 
+1. Clone this repository: `git clone https://github.com/redhat-cop/containers-quickstarts`
+2. `cd containers-quickstarts/sonarqube`
+3. Run `ansible-galaxy install -r requirements.yml --roles-path=galaxy`
+4. Login to OpenShift: `oc login -u <username> https://master.example.com:8443`
+
+### Build and Deploy SonarQube Gogs
+
+Run the openshift-applier to create the `SonarQube` project and deploy required objects
+```
+ansible-playbook -i .applier galaxy/openshift-applier/playbooks/openshift-cluster-seed.yml
+
 ### Database
 
 By default, SonarQube will use H2 embedded, which is only for demo usage. To use a proper database, set `JDBC_USER`, `JDBC_PASSWORD` and `JDBC_URL` per [the docs](https://docs.sonarqube.org/display/SONAR/Installing+the+Server#InstallingtheServer-installingDatabaseInstallingtheDatabase).
