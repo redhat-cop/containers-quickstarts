@@ -71,12 +71,12 @@ The following prerequisites must be met prior to beginning to build and deploy t
 ## Build and Deployment
 
 1. Clone this repository: `git clone https://github.com/redhat-cop/containers-quickstarts`
-2. `cd containers-quickstarts/s2i-play`
+2. `cd containers-quickstarts/build-s2i-play`
 3. Run `ansible-galaxy install -r requirements.yml --roles-path=roles`
 4. Login in to OpenShift: `oc login -u <username> https://master.example.com:8443`
 5. Run openshift-applier: `ansible-playbook -i applier/inventory roles/openshift-applier/playbooks/openshift-cluster-seed.yml`
 
-Two new image builds will be kicked off automatically. They can be tracked by running `oc logs -f bc/s2i-play` and `oc logs -f bc/play-app` respectively.
+Two new image builds will be kicked off automatically. They can be tracked by running `oc logs -f bc/build-s2i-play` and `oc logs -f bc/play-app` respectively.
 Last the deployment will kick off which can be tracked by running `oc logs -f dc/play-app`.
 
 ### Verify the application

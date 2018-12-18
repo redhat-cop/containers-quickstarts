@@ -1,4 +1,4 @@
-FROM openshift/jenkins-slave-maven-centos7
+FROM openshift/jenkins-slave-maven-centos7:v3.11
 
 ENV GRADLE_VERSION=4.8
 

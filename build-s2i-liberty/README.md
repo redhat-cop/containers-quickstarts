@@ -64,7 +64,7 @@ The following steps are to be used to demonstrate two methods for producing the 
 ## Build and Deployment
 
 1. Clone this repository: `git clone https://github.com/redhat-cop/containers-quickstarts`
-2. `cd containers-quickstarts/s2i-liberty`
+2. `cd containers-quickstarts/build-s2i-liberty`
 3. Run `ansible-galaxy install -r requirements.yml --roles-path=roles`
 4. Login to OpenShift: `oc login -u <username> https://master.example.com:8443`
 5. Run openshift-applier: `ansible-playbook -i applier/inventory/ roles/openshift-applier/playbooks/openshift-cluster-seed.yml`
