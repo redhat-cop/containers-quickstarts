@@ -1,25 +1,25 @@
 # Hoverfly
 
-A simple container to run [hoverfly](https://docs.hoverfly.io/en/latest/). 
-
-TODO create a template
+A simple container to run [hoverfly](https://hoverfly.readthedocs.io/en/latest/pages/reference/api/api.html). 
 
 ## Usage
 
 ### Running in OpenShift
 
-Build the container and deploy it in openshift:
+https://github.com/redhat-cop/openshift-applier[OpenShift Applier]
 
-`$ oc new-app https://github.com/redhat-cop/containers-quickstarts --name=hoverfly --context-dir=hoverfly`
+Run the following to pull in applier:
 
-Expose the proxy/webserver port
+....
+ansible-galaxy install -r requirements.yml -p galaxy
+....
 
-`$ oc expose svc hoverfly --port 8500`
+Now, deploy to your openshift cluster:
 
-Expose the admin interface, including the rest API
-
-`$ oc expose svc hoverfly --port 8888 --name hoverfly-admin`
-
+....
+oc login <dev cluster>
+ansible-playbook -i .applier/ galaxy/openshift-applier/playbooks/openshift-cluster-seed.yml
+....
 
 ### Uploading Simulation Files in OpenShift
 
