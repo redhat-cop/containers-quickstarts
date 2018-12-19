@@ -10,16 +10,16 @@ A simple container to run [hoverfly](https://hoverfly.readthedocs.io/en/latest/p
 
 Run the following to pull in applier:
 
-....
+```
 ansible-galaxy install -r requirements.yml -p galaxy -f
-....
+```
 
 Now, deploy to your openshift cluster:
 
-....
+```
 oc login <dev cluster>
 ansible-playbook -i .applier/ galaxy/openshift-applier/playbooks/openshift-cluster-seed.yml
-....
+```
 
 ### Uploading Simulation Files in OpenShift
 
