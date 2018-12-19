@@ -6,12 +6,12 @@ A simple container to run [hoverfly](https://hoverfly.readthedocs.io/en/latest/p
 
 ### Running in OpenShift
 
-https://github.com/redhat-cop/openshift-applier[OpenShift Applier]
+[OpenShift Applier](https://github.com/redhat-cop/containers-quickstarts/pull/149)
 
 Run the following to pull in applier:
 
 ....
-ansible-galaxy install -r requirements.yml -p galaxy
+ansible-galaxy install -r requirements.yml -p galaxy -f
 ....
 
 Now, deploy to your openshift cluster:
