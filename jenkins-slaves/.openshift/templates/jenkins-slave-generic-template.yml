@@ -43,6 +43,7 @@ objects:
         from:
           kind: DockerImage
           name: "${BUILDER_IMAGE_NAME}"
+          imagePullPolicy: Always
       type: Docker
     triggers:
     - type: ConfigChange
