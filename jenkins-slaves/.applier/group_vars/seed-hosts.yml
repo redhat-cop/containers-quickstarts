@@ -11,7 +11,7 @@ jenkins:
     SOURCE_REPOSITORY_URL: https://github.com/rht-labs/s2i-config-jenkins.git
     SOURCE_REPOSITORY_REF: master #TODO NEEDS A TAG
     BUILDER_IMAGE_STREAM_NAME: jenkins-2-rhel7
-    BUILDER_IMAGE_STREAM_TAG_NAME: v3.9
+    BUILDER_IMAGE_STREAM_TAG_NAME: v3.11
     IMAGE_STREAM_NAMESPACE: "{{ namespace }}"
   deploy:
     NAMESPACE: "{{ namespace }}"
