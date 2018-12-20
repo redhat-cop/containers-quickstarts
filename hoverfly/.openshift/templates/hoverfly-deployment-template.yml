@@ -27,6 +27,18 @@ objects:
     port:
       targetPort: 8500-http
 - apiVersion: v1
+  kind: Route
+  metadata:
+    name: ${HOVERFLY_SERVICE_NAME}-admin
+    labels:
+      app: ${HOVERFLY_SERVICE_NAME}
+  spec:
+    to:
+      kind: Service
+      name: ${HOVERFLY_SERVICE_NAME}
+    port:
+      targetPort: 8888-http
+- apiVersion: v1
   kind: Service
   metadata:
     name: ${HOVERFLY_SERVICE_NAME}
