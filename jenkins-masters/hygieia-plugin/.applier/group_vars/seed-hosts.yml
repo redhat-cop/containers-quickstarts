@@ -10,14 +10,22 @@ openshift_cluster_content:
     action: create
     params_from_vars:
       NAMESPACE: "{{ namespace }}"
+    tags:
+      - project
 - object: Builds
   content:
   - name: Hygieia Jenkins Plugin
     template: "{{ inventory_dir }}/../.openshift/templates/hygieia-plugin.yml"
     namespace: "{{ namespace }}"
+    tags:
+      - build
+      - build-hygieia-plugin
   - name: Jenkins Master Image
     template: "{{ inventory_dir }}/../.openshift/templates/jenkins-s2i.yml"
     namespace: "{{ namespace }}"
+    tags:
+      - build
+      - build-jenkins
 - object: Deployments
   content:
   - name: Demo Jenkins Master
@@ -28,3 +36,5 @@ openshift_cluster_content:
       NAMESPACE: "{{ namespace }}"
       HYGIEIA_API_URL: "{{ hygieia_url }}"
       HYGIEIEA_API_TOKEN: "{{ hygieia_token }}"
+    tags:
+      - deploy

@@ -1,0 +1,206 @@
+k8s_namespace: hygieia
+filter_tags: unpriv
+
+openshift_cluster_content:
+  - object: Admin-level setup
+    content:
+    - name: Configure Projects
+      template: "{{ inventory_dir }}/../.openshift/templates/projects.yml"
+      params_from_vars:
+        NAMESPACE: "{{ k8s_namespace }}"
+        DISPLAY_NAME: Hygieia Deployment
+      action: create
+      tags:
+        - priv
+        - all
+    - name: Apply policy objects
+      template: "{{ inventory_dir }}/../.openshift/policy/"
+      namespace: "{{ k8s_namespace }}"
+      tags:
+        - priv
+        - all
+  - object: Secrets
+    content:
+    - name: Remote Jenkins authentication configuration
+      template: "{{ inventory_dir }}/../.openshift/templates/remote-jenkins-auth-secret.yml"
+      namespace: "{{ k8s_namespace }}"
+      tags:
+        - unpriv
+        - all
+      params_from_vars:
+        JENKINS_CLIENT_SECRET: "{{ jenkins_client_secret }}"
+  - object: Builds
+    content:
+    - name: API
+      template: "{{ inventory_dir }}/../.openshift/templates/build-java-component.yml"
+      params_from_vars:
+        COMPONENT: api
+        JAR_NAME: api
+      namespace: "{{ k8s_namespace }}"
+      tags:
+        - unpriv
+        - all
+    - name: Audit API
+      template: "{{ inventory_dir }}/../.openshift/templates/build-java-component.yml"
+      params_from_vars:
+        COMPONENT: api-audit
+        JAR_NAME: apiaudit
+      namespace: "{{ k8s_namespace }}"
+      tags:
+        - unpriv
+        - all
+    - name: UI Builder and Runtime Images
+      template: "{{ inventory_dir }}/../.openshift/templates/build-ui.yml"
+      params_from_vars:
+        COMPONENT: ui
+      namespace: "{{ k8s_namespace }}"
+      tags:
+        - unpriv
+        - all
+    - name: Jenkins collector
+      template: "{{ inventory_dir }}/../.openshift/templates/build-hygieia-jenkins-collector.yml"
+      namespace: "{{ k8s_namespace }}"
+      tags:
+        - unpriv
+        - all
+    - name: Executive API
+      template: "{{ inventory_dir }}/../.openshift/templates/build-java-component.yml"
+      params_from_vars:
+        COMPONENT: exec-api
+        SOURCE_CODE_URL: https://github.com/Hygieia/ExecDashboard.git
+        SOURCE_CODE_REF: master
+        JAR_NAME: exec-api
+      namespace: "{{ k8s_namespace }}"
+      tags:
+        - unpriv
+        - all
+    - name: Executive Collector
+      template: "{{ inventory_dir }}/../.openshift/templates/build-java-component.yml"
+      params_from_vars:
+        COMPONENT: exec-analysis
+        SOURCE_CODE_URL: https://github.com/etsauer/ExecDashboard.git
+        SOURCE_CODE_REF: fix-collector-config
+        JAR_NAME: exec-analysis
+        JAR_VERSION: -1.0.0-SNAPSHOT
+      namespace: "{{ k8s_namespace }}"
+      tags:
+        - unpriv
+        - all
+    - name: Executive UI
+      template: "{{ inventory_dir }}/../.openshift/templates/build-exec-ui.yml"
+      params_from_vars:
+        COMPONENT: exec-ui
+        SOURCE_CODE_URL: https://github.com/Hygieia/ExecDashboard.git
+        SOURCE_CODE_REF: master
+        SOURCE_CODE_CONTEXT: /exec-ui
+      namespace: "{{ k8s_namespace }}"
+      tags:
+        - unpriv
+        - all
+  - object: Deployments
+    content:
+    - name: Hygieia DB
+      template: "openshift//mongodb-persistent"
+      params_from_vars:
+        MONGODB_DATABASE: hygieiadb
+        DATABASE_SERVICE_NAME: mongo-hygieia
+      action: create
+      namespace: "{{ k8s_namespace }}"
+      tags:
+        - unpriv
+        - all
+    - name: Executive DB
+      template: "openshift//mongodb-persistent"
+      params_from_vars:
+        MONGODB_DATABASE: execdb
+        DATABASE_SERVICE_NAME: mongo-exec
+      action: create
+      namespace: "{{ k8s_namespace }}"
+      tags:
+        - unpriv
+        - all
+    - name: API
+      template: "{{ inventory_dir }}/../.openshift/templates/deployment-java-component.yml"
+      params_from_vars:
+        COMPONENT: api
+        JAR_NAME: api
+        DATABASE_SERVICE_NAME: mongo-hygieia
+      namespace: "{{ k8s_namespace }}"
+      tags:
+        - unpriv
+        - all
+    - name: Audit API
+      template: "{{ inventory_dir }}/../.openshift/templates/deployment-java-component.yml"
+      params_from_vars:
+        COMPONENT: api-audit
+        JAR_NAME: apiaudit
+        DATABASE_SERVICE_NAME: mongo-hygieia
+      namespace: "{{ k8s_namespace }}"
+      tags:
+        - unpriv
+        - all
+    - name: UI
+      template: "{{ inventory_dir }}/../.openshift/templates/deployment-ui.yml"
+      namespace: "{{ k8s_namespace }}"
+      params_from_vars:
+        NAMESPACE: "{{ k8s_namespace}}"
+        COMPONENT: ui
+        OPENSHIFT_DEFAULT_SUBDOMAIN: "{{ openshift_default_subdomain }}"
+      tags:
+        - unpriv
+        - all
+    - name: Jenkins Collector
+      template: "{{ inventory_dir }}/../.openshift/templates/hygieia-jenkins-build-collector-deployment.yml"
+      namespace: "{{ k8s_namespace }}"
+      params_from_vars:
+        NAMESPACE: "{{ k8s_namespace }}"
+        JENKINS_NAMESPACE: "{{ jenkins_namespace }}"
+        OPENSHIFT_DEFAULT_SUBDOMAIN: "{{ openshift_default_subdomain }}"
+        DATABASE_SERVICE_NAME: mongo-hygieia
+      tags:
+        - unpriv
+        - all
+    - name: GitHub Collector
+      template: "{{ inventory_dir }}/../.openshift/templates/hygieia-github-collector-deployment.yml"
+      namespace: "{{ k8s_namespace }}"
+      params_from_vars:
+        NAMESPACE: "{{ k8s_namespace }}"
+        GITHUB_PERSONAL_ACCESS_TOKEN: "{{ github_personal_access_token }}"
+        DATABASE_SERVICE_NAME: mongo-hygieia
+      tags:
+        - unpriv
+        - all
+    - name: Executive API
+      template: "{{ inventory_dir }}/../.openshift/templates/deployment-java-component.yml"
+      params_from_vars:
+        COMPONENT: exec-api
+        JAR_NAME: exec-api
+        DATABASE_SERVICE_NAME: mongo-exec
+      namespace: "{{ k8s_namespace }}"
+      tags:
+        - unpriv
+        - all
+    - name: Executive Collector
+      template: "{{ inventory_dir }}/../.openshift/templates/deployment-exec-collector.yml"
+      params_from_vars:
+        COMPONENT: exec-analysis
+        JAR_NAME: exec-analysis
+        JAR_VERSION: -1.0.0-SNAPSHOT
+        DATABASE_SERVICE_NAME: mongo-exec
+        OTHER_DATABASE_SERVICE_NAME: mongo-hygieia
+      namespace: "{{ k8s_namespace }}"
+      tags:
+        - unpriv
+        - all
+    - name: Executive UI
+      template: "{{ inventory_dir }}/../.openshift/templates/deployment-ui.yml"
+      namespace: "{{ k8s_namespace }}"
+      params_from_vars:
+        NAMESPACE: "{{ k8s_namespace}}"
+        COMPONENT: exec-ui
+        OPENSHIFT_DEFAULT_SUBDOMAIN: "{{ openshift_default_subdomain }}"
+        HOST: executive
+        API_HOST: exec-ui
+      tags:
+        - unpriv
+        - all
