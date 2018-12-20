@@ -1,5 +1,4 @@
 SOURCE_REPOSITORY_URL=https://github.com/openshift/jenkins
 SOURCE_CONTEXT_DIR=agent-nodejs-8
-BUILDER_IMAGE_NAME=openshift/jenkins-slave-base-centos7
+BUILDER_IMAGE_NAME=openshift/jenkins-slave-base-centos7:v3.11
 NAME=jenkins-slave-npm
-SOURCE_REPOSITORY_REF=master

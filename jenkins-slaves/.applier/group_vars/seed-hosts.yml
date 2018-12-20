@@ -3,6 +3,8 @@ namespace: jenkins-slaves
 base_openshift_url: something.ocp.com
 jenkins_name: jenkins
 
+slave_repo_ref: v1.3
+
 jenkins:
   build:
     NAME: "{{ jenkins_name }}"
@@ -48,30 +50,11 @@ openshift_cluster_content:
       - jenkins-deploy
 - object: jenkins-slave-nodes
   content:
-  - name: jenkins-slave-mvn
-    template: "{{ inventory_dir }}/../.openshift/templates/jenkins-slave-generic-template.yml"
-    params: "{{ inventory_dir }}/../.openshift/params/mvn"
-    namespace: "{{ namespace }}"
-    tags:
-    - jenkins-slaves
-    - mvn-slave
-  - name: jenkins-slave-npm
-    template: "{{ inventory_dir }}/../.openshift/templates/jenkins-slave-generic-template.yml"
-    params: "{{ inventory_dir }}/../.openshift/params/npm"
-    namespace: "{{ namespace }}"
-    tags:
-    - jenkins-slaves
-    - npm-slave
-  - name: jenkins-slave-zap
-    template: "{{ inventory_dir }}/../.openshift/templates/jenkins-slave-generic-template.yml"
-    params: "{{ inventory_dir }}/../.openshift/params/zap"
-    namespace: "{{ namespace }}"
-    tags:
-    - jenkins-slaves
-    - zap-slave
   - name: jenkins-slave-ansible
     template: "{{ inventory_dir }}/../.openshift/templates/jenkins-slave-generic-template.yml"
     params: "{{ inventory_dir }}/../.openshift/params/ansible"
+    params_from_vars:
+      SOURCE_REPOSITORY_REF: "{{ slave_repo_ref }}"
     namespace: "{{ namespace }}"
     tags:
       - jenkins-slaves
@@ -79,38 +62,75 @@ openshift_cluster_content:
   - name: jenkins-slave-arachni
     template: "{{ inventory_dir }}/../.openshift/templates/jenkins-slave-generic-template.yml"
     params: "{{ inventory_dir }}/../.openshift/params/arachni"
+    params_from_vars:
+      SOURCE_REPOSITORY_REF: "{{ slave_repo_ref }}"
     namespace: "{{ namespace }}"
     tags:
       - jenkins-slaves
       - arachni-slave
-  - name: jenkins-slave-gradle
-    template: "{{ inventory_dir }}/../.openshift/templates/jenkins-slave-generic-template.yml"
-    params: "{{ inventory_dir }}/../.openshift/params/gradle"
-    namespace: "{{ namespace }}"
-    tags:
-      - jenkins-slaves
-      - gradle-slave
   - name: jenkins-slave-golang
     template: "{{ inventory_dir }}/../.openshift/templates/jenkins-slave-generic-template.yml"
     params: "{{ inventory_dir }}/../.openshift/params/golang"
+    params_from_vars:
+      SOURCE_REPOSITORY_REF: "{{ slave_repo_ref }}"
     namespace: "{{ namespace }}"
     tags:
       - jenkins-slaves
       - golang-slave
+  - name: jenkins-slave-gradle
+    template: "{{ inventory_dir }}/../.openshift/templates/jenkins-slave-generic-template.yml"
+    params: "{{ inventory_dir }}/../.openshift/params/gradle"
+    params_from_vars:
+      SOURCE_REPOSITORY_REF: "{{ slave_repo_ref }}"
+    namespace: "{{ namespace }}"
+    tags:
+      - jenkins-slaves
+      - gradle-slave
   - name: jenkins-slave-mongodb
     template: "{{ inventory_dir }}/../.openshift/templates/jenkins-slave-generic-template.yml"
     params: "{{ inventory_dir }}/../.openshift/params/mongodb"
+    params_from_vars:
+      SOURCE_REPOSITORY_REF: "{{ slave_repo_ref }}"
     namespace: "{{ namespace }}"
     tags:
       - jenkins-slaves
       - mongodb-slave
+  - name: jenkins-slave-mvn
+    template: "{{ inventory_dir }}/../.openshift/templates/jenkins-slave-generic-template.yml"
+    params: "{{ inventory_dir }}/../.openshift/params/mvn"
+    params_from_vars:
+      SOURCE_REPOSITORY_REF: "{{ slave_repo_ref }}"
+    namespace: "{{ namespace }}"
+    tags:
+    - jenkins-slaves
+    - mvn-slave
+  - name: jenkins-slave-npm
+    template: "{{ inventory_dir }}/../.openshift/templates/jenkins-slave-generic-template.yml"
+    params: "{{ inventory_dir }}/../.openshift/params/npm"
+    params_from_vars:
+      SOURCE_REPOSITORY_REF: "{{ slave_repo_ref }}"
+    namespace: "{{ namespace }}"
+    tags:
+    - jenkins-slaves
+    - npm-slave
   - name: jenkins-slave-python
     template: "{{ inventory_dir }}/../.openshift/templates/jenkins-slave-generic-template.yml"
     params: "{{ inventory_dir }}/../.openshift/params/python"
+    params_from_vars:
+      SOURCE_REPOSITORY_REF: "{{ slave_repo_ref }}"
     namespace: "{{ namespace }}"
     tags:
       - jenkins-slaves
       - python-slave
+  - name: jenkins-slave-zap
+    template: "{{ inventory_dir }}/../.openshift/templates/jenkins-slave-generic-template.yml"
+    params: "{{ inventory_dir }}/../.openshift/params/zap"
+    params_from_vars:
+      SOURCE_REPOSITORY_REF: "{{ slave_repo_ref }}"
+    namespace: "{{ namespace }}"
+    tags:
+    - jenkins-slaves
+    - zap-slave
 - object: ci-for-labs-ci-cd
   content:
   - name: pipeline-slaves

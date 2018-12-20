@@ -2,4 +2,3 @@ SOURCE_REPOSITORY_URL=https://github.com/redhat-cop/containers-quickstarts.git
 SOURCE_CONTEXT_DIR=jenkins-slaves/jenkins-slave-python
 BUILDER_IMAGE_NAME=registry.access.redhat.com/openshift3/jenkins-slave-base-rhel7:v3.11
 NAME=jenkins-slave-python
-SOURCE_REPOSITORY_REF=master
