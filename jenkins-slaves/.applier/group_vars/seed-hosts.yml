@@ -18,7 +18,7 @@ jenkins:
     JENKINS_URL: https://{{ jenkins_name }}-{{ namespace }}.apps.{{ base_openshift_url }}/
     JENKINS_IMAGE_STREAM_TAG: "{{ jenkins_name }}:latest"
     MEMORY_LIMIT: 2Gi
-    JENKINS_OPTS: "--sessionTimeout: 720"
+    JENKINS_OPTS: "--sessionTimeout=720"
     VOLUME_CAPACITY: 2Gi
 
 openshift_cluster_content:
