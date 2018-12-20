@@ -44,7 +44,7 @@ The build supports a few environment variables to specify the source of the site
 
 | Variable Name | Default Value | Description |
 | ------------- | ------------- | ----------- |
-| `SITE_CONTEXT_DIR` | `s2i-gows/demo` | Location of the site files within the git repository |
+| `SITE_CONTEXT_DIR` | `build-s2i-gows/demo` | Location of the site files within the git repository |
 | `SITE_SOURCE_REPOSITORY_REF` | `master` | Git branch/tag of the site files |
 | `SITE_SOURCE_REPOSITORY_URL` | `https://github.com/redhat-cop/containers-quickstarts` | Git repository of the site files |
 

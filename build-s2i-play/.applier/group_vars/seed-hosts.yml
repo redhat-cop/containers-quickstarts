@@ -1,0 +1,26 @@
+---
+namespace: play-demo
+
+openshift_cluster_content:
+- object: Environment Setup
+  content:
+  - name: Create Projects
+    template: "https://raw.githubusercontent.com/redhat-cop/cluster-lifecycle/v3.9.0/files/projectrequest/template.yml"
+    action: create
+    params_from_vars:
+      NAMESPACE: "{{ namespace }}"
+      NAMESPACE_DISPLAY_NAME: "{{ namespace }}"
+    tags:
+      - project
+- object: builds
+  content:
+  - name: build play
+    template: "{{ inventory_dir }}/../.openshift/templates/build.yml"
+    params: "{{ inventory_dir }}/../.openshift/params/build"
+    namespace: "{{ namespace }}"
+- object: deployments
+  content:
+  - name: deploy MongoDB config servers
+    template: "{{ inventory_dir }}/../.openshift/templates/deployment.yml"
+    params: "{{ inventory_dir }}/../.openshift/params/deployment"
+    namespace: "{{ namespace }}"

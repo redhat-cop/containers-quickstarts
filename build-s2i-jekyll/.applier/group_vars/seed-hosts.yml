@@ -1,0 +1,48 @@
+---
+namespace: s2i-jekyll
+
+openshift_cluster_content:
+- object: Environment Setup
+  content:
+  - name: Create Projects
+    template: "https://raw.githubusercontent.com/redhat-cop/cluster-lifecycle/v3.9.0/files/projectrequest/template.yml"
+    action: create
+    params_from_vars:
+      NAMESPACE: "{{ namespace }}"
+      NAMESPACE_DISPLAY_NAME: "{{ namespace }}"
+    tags:
+      - project
+- object: imagestream
+  content:
+  - name: ruby
+    template: "{{ inventory_dir }}/../.openshift/templates/imagestreams/template.yml"
+    params_from_vars:
+      IS_NAME: ruby
+      IS_TAG: 2.4.0-alpine
+    namespace: "{{ namespace }}"
+  - name: jekyll-builder
+    template: "{{ inventory_dir }}/../.openshift/templates/imagestreams/template.yml"
+    params_from_vars:
+      IS_NAME: jekyll-builder
+    namespace: "{{ namespace }}"
+  - name: openshift-playbooks
+    template: "{{ inventory_dir }}/../.openshift/templates/imagestreams/template.yml"
+    params_from_vars:
+      IS_NAME: openshift-playbooks
+    namespace: "{{ namespace }}"
+- object: deployments
+  content:
+  - name: s2i-jekyll
+    template: "{{ inventory_dir }}/../.openshift/templates/deployments/template.yml"
+    params: "{{ inventory_dir }}/../.openshift/params/deploy" #todo will this process without params?
+    namespace: "{{ namespace }}"
+- object: builds
+  content:
+  - name: jekyll-builder
+    template: "{{ inventory_dir }}/../.openshift/templates/builds/docker-template.yml"
+    params: "{{ inventory_dir }}/../.openshift/params/jekyll-build-params" #todo will this process without params?
+    namespace: "{{ namespace }}"
+  - name: openshift-playbooks
+    template: "{{ inventory_dir }}/../.openshift/templates/builds/source-template.yml"
+    params: "{{ inventory_dir }}/../.openshift/params/openshift-playbooks-build-params" #todo will this process without params?
+    namespace: "{{ namespace }}"

@@ -1,0 +1,5 @@
+SOURCE_REPOSITORY_URL=https://github.com/rht-labs/owasp-zap-openshift.git
+BUILDER_IMAGE_NAME=centos:centos7
+NAME=jenkins-slave-zap
+SOURCE_REPOSITORY_REF=master
+DOCKERFILE_PATH=Dockerfile

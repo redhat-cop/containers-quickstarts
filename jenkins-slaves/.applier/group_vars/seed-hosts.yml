@@ -1,0 +1,126 @@
+---
+namespace: jenkins-slaves
+base_openshift_url: something.ocp.com
+jenkins_name: jenkins
+
+jenkins:
+  build:
+    NAME: "{{ jenkins_name }}"
+    SOURCE_REPOSITORY_URL: https://github.com/rht-labs/s2i-config-jenkins.git
+    SOURCE_REPOSITORY_REF: master #TODO NEEDS A TAG
+    BUILDER_IMAGE_STREAM_NAME: jenkins-2-rhel7
+    BUILDER_IMAGE_STREAM_TAG_NAME: v3.9
+    IMAGE_STREAM_NAMESPACE: "{{ namespace }}"
+  deploy:
+    NAMESPACE: "{{ namespace }}"
+    JENKINS_URL: https://{{ jenkins_name }}-{{ namespace }}.apps.{{ base_openshift_url }}/
+    JENKINS_IMAGE_STREAM_TAG: "{{ jenkins_name }}:latest"
+    MEMORY_LIMIT: 2Gi
+    JENKINS_OPTS: "--sessionTimeout: 720"
+    VOLUME_CAPACITY: 2Gi
+
+openshift_cluster_content:
+- object: Environment Setup
+  content:
+  - name: Create Projects
+    template: "https://raw.githubusercontent.com/redhat-cop/cluster-lifecycle/v3.9.0/files/projectrequest/template.yml"
+    action: create
+    params_from_vars:
+      NAMESPACE: "{{ namespace }}"
+      NAMESPACE_DISPLAY_NAME: "{{ namespace }}"
+    tags:
+      - project
+- object: ci-cd-builds
+  content:
+  - name: jenkins-s2i #todo where to put this
+    template: "https://raw.githubusercontent.com/rht-labs/openshift-templates/v1.0/jenkins-s2i-build/jenkins-s2i-build-template.yml"
+    params_from_vars: "{{ jenkins.build }}"
+    namespace: "{{ namespace }}"
+    tags:
+    - jenkins
+    - jenkins-build
+  - name: jenkins-ephemeral
+    template: "https://raw.githubusercontent.com/rht-labs/openshift-templates/v1.0/jenkins/jenkins-ephemeral-template.yml"
+    params_from_vars: "{{ jenkins.deploy }}"
+    namespace: "{{ namespace }}"
+    tags:
+      - jenkins
+      - jenkins-deploy
+- object: jenkins-slave-nodes
+  content:
+  - name: jenkins-slave-mvn
+    template: "{{ inventory_dir }}/../.openshift/templates/jenkins-slave-generic-template.yml"
+    params: "{{ inventory_dir }}/../.openshift/params/mvn"
+    namespace: "{{ namespace }}"
+    tags:
+    - jenkins-slaves
+    - mvn-slave
+  - name: jenkins-slave-npm
+    template: "{{ inventory_dir }}/../.openshift/templates/jenkins-slave-generic-template.yml"
+    params: "{{ inventory_dir }}/../.openshift/params/npm"
+    namespace: "{{ namespace }}"
+    tags:
+    - jenkins-slaves
+    - npm-slave
+  - name: jenkins-slave-zap
+    template: "{{ inventory_dir }}/../.openshift/templates/jenkins-slave-generic-template.yml"
+    params: "{{ inventory_dir }}/../.openshift/params/zap"
+    namespace: "{{ namespace }}"
+    tags:
+    - jenkins-slaves
+    - zap-slave
+  - name: jenkins-slave-ansible
+    template: "{{ inventory_dir }}/../.openshift/templates/jenkins-slave-generic-template.yml"
+    params: "{{ inventory_dir }}/../.openshift/params/ansible"
+    namespace: "{{ namespace }}"
+    tags:
+      - jenkins-slaves
+      - ansible-slave
+  - name: jenkins-slave-arachni
+    template: "{{ inventory_dir }}/../.openshift/templates/jenkins-slave-generic-template.yml"
+    params: "{{ inventory_dir }}/../.openshift/params/arachni"
+    namespace: "{{ namespace }}"
+    tags:
+      - jenkins-slaves
+      - arachni-slave
+  - name: jenkins-slave-gradle
+    template: "{{ inventory_dir }}/../.openshift/templates/jenkins-slave-generic-template.yml"
+    params: "{{ inventory_dir }}/../.openshift/params/gradle"
+    namespace: "{{ namespace }}"
+    tags:
+      - jenkins-slaves
+      - gradle-slave
+  - name: jenkins-slave-golang
+    template: "{{ inventory_dir }}/../.openshift/templates/jenkins-slave-generic-template.yml"
+    params: "{{ inventory_dir }}/../.openshift/params/golang"
+    namespace: "{{ namespace }}"
+    tags:
+      - jenkins-slaves
+      - golang-slave
+  - name: jenkins-slave-mongodb
+    template: "{{ inventory_dir }}/../.openshift/templates/jenkins-slave-generic-template.yml"
+    params: "{{ inventory_dir }}/../.openshift/params/mongodb"
+    namespace: "{{ namespace }}"
+    tags:
+      - jenkins-slaves
+      - mongodb-slave
+  - name: jenkins-slave-python
+    template: "{{ inventory_dir }}/../.openshift/templates/jenkins-slave-generic-template.yml"
+    params: "{{ inventory_dir }}/../.openshift/params/python"
+    namespace: "{{ namespace }}"
+    tags:
+      - jenkins-slaves
+      - python-slave
+- object: ci-for-labs-ci-cd
+  content:
+  - name: pipeline-slaves
+    template: "https://raw.githubusercontent.com/rht-labs/openshift-templates/v1.0/jenkins-pipelines/jenkins-pipeline-no-ocp-triggers-template.yml"
+    params_from_vars:
+      NAME: test-slaves
+      PIPELINE_SOURCE_REPOSITORY_REF: master
+      PIPELINE_SOURCE_REPOSITORY_URL: https://github.com/labs-robot/labs-ci-cd.git
+      RUN_POLICY: Parallel
+      PIPELINE_FILENAME: tests/slaves/Jenkinsfile
+    namespace: "{{ namespace }}"
+    tags:
+      - ci

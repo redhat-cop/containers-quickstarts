@@ -1,0 +1,167 @@
+apiVersion: v1
+kind: Template
+labels:
+  template: gows-builder
+metadata:
+  name: gows
+objects:
+- apiVersion: v1
+  kind: ImageStream
+  metadata:
+    labels:
+      build: gows
+    name: gows
+  spec:
+    lookupPolicy:
+      local: false
+  status:
+    dockerImageRepository: ""
+- apiVersion: v1
+  kind: BuildConfig
+  metadata:
+    labels:
+      build: gows
+    name: gows-build
+  spec:
+    output:
+      to:
+        kind: ImageStreamTag
+        name: gows:build
+    source:
+      dockerfile: |
+        FROM golang:1.9.2
+        WORKDIR /go/src/github.com/redhatcop/gows
+        COPY main.go .
+        RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o gows .
+      git:
+        uri: https://github.com/redhat-cop/gows
+      type: Git
+    strategy:
+      dockerStrategy:
+        from:
+          kind: ImageStreamTag
+          name: golang:1.9.2
+      type: Docker
+    triggers:
+    - type: ConfigChange
+    - imageChangeParams:
+        automatic: true
+        from:
+          kind: ImageStreamTag
+          name: golang:1.9.2
+      type: ImageChange
+- apiVersion: v1
+  kind: BuildConfig
+  metadata:
+    labels:
+      build: gows
+    name: gows-busybox
+  spec:
+    output:
+      to:
+        kind: ImageStreamTag
+        name: gows:busybox
+    source:
+      images:
+      - from:
+          kind: ImageStreamTag
+          name: gows:build
+        paths:
+        - destinationDir: .
+          sourcePath: /go/src/github.com/redhatcop/gows/gows
+      dockerfile: |
+        FROM busybox
+        WORKDIR /opt
+        COPY gows /bin/gows
+        EXPOSE 8080
+        CMD ["/bin/gows"]
+      git:
+        uri: https://github.com/redhat-cop/gows
+      type: Git
+    strategy:
+      dockerStrategy:
+        from:
+          kind: ImageStreamTag
+          name: busybox:latest
+      type: Docker
+    triggers:
+    - type: ConfigChange
+    - imageChangeParams:
+        automatic: true
+        from:
+          kind: ImageStreamTag
+          name: gows:build
+      type: ImageChange
+- apiVersion: v1
+  kind: BuildConfig
+  metadata:
+    labels:
+      build: gows
+    name: gows-s2i
+  spec:
+    output:
+      to:
+        kind: ImageStreamTag
+        name: gows:s2i
+    source:
+      contextDir: build-s2i-gows
+      git:
+        uri: https://github.com/redhat-cop/containers-quickstarts
+      type: Git
+    strategy:
+      dockerStrategy:
+        from:
+          kind: ImageStreamTag
+          name: gows:busybox
+      type: Docker
+    triggers:
+    - type: ConfigChange
+    - imageChangeParams:
+        automatic: true
+        from:
+          kind: ImageStreamTag
+          name: gows:busybox
+      type: ImageChange
+- apiVersion: v1
+  kind: BuildConfig
+  metadata:
+    labels:
+      build: gows
+    name: gows
+  spec:
+    output:
+      to:
+        kind: ImageStreamTag
+        name: gows:latest
+    source:
+      contextDir: "${SITE_CONTEXT_DIR}"
+      git:
+        ref: "${SITE_SOURCE_REPOSITORY_REF}"
+        uri: "${SITE_SOURCE_REPOSITORY_URL}"
+      type: Git
+    strategy:
+      sourceStrategy:
+        from:
+          kind: ImageStreamTag
+          name: gows:s2i
+      type: Source
+    triggers:
+    - type: ConfigChange
+    - imageChangeParams:
+        automatic: true
+        from:
+          kind: ImageStreamTag
+          name: gows:s2i
+      type: ImageChange
+parameters:
+- description: Path within Git repository to build; empty for root of repository
+  name: SITE_CONTEXT_DIR
+  required: false
+  value: build-s2i-gows/demo
+- description: Git branch/tag reference
+  name: SITE_SOURCE_REPOSITORY_REF
+  value: master
+- description: Git source URL for application
+  name: SITE_SOURCE_REPOSITORY_URL
+  required: true
+  value: https://github.com/redhat-cop/containers-quickstarts

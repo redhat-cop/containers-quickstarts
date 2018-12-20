@@ -1,0 +1,29 @@
+namespace: tool-box
+app_name: toolbox
+
+openshift_cluster_content:
+- object: Environment Setup
+  content:
+  - name: Create Projects
+    template: "https://raw.githubusercontent.com/redhat-cop/cluster-lifecycle/v3.9.0/files/projectrequest/template.yml"
+    action: create
+    params_from_vars:
+      NAMESPACE: "{{ namespace }}"
+      NAMESPACE_DISPLAY_NAME: "{{ namespace }}"
+    tags:
+      - project
+- object: Builds
+  content:
+  - name: tool-box #TODO NEED TO TAG THIS TEMPLATE
+    template: "https://raw.githubusercontent.com/redhat-cop/containers-quickstarts/master/build-docker-generic/.openshift/templates/docker-build-template.yml"
+    params_from_vars:
+      NAME: "{{ app_name }}"
+      SOURCE_REPOSITORY_URL: https://github.com/redhat-cop/containers-quickstarts.git
+      SOURCE_REPOSITORY_REF: v1.1
+      SOURCE_CONTEXT_DIR: tool-box
+    namespace: "{{ namespace }}"
+    tags:
+      - tool-box
+- object: Deployments
+  content:
+# todo need a deployment for tool-box
