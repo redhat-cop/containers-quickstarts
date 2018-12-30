@@ -332,7 +332,7 @@ Several environment variables can be defined to enable and drive the functionali
 Execute the following command which will interrogate the running environment and set environment variable on the _nodejs-ex_ DeploymentConfig.
 
 ```
-$ oc env dc/nodejs-ex MONGO_URL='mongodb://user:pass@mongodb-mongos-ext.mongodb.svc:27017/example'
+$ oc set env dc/nodejs-ex MONGO_URL='mongodb://user:pass@mongodb-mongos-ext.mongodb.svc:27017/example'
 ```
 
 The resulting environment variable can be viewed with the following command
