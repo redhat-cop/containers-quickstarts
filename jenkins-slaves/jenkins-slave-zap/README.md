@@ -8,7 +8,7 @@ Provides a docker image of the zap runtime for use as a Jenkins slave. The publi
 
 ## Run local
 
-For local running and experimentation run `docker run -i -t jenkins-slave-zap /bin/bash` and have a play once inside the container. To check the zap runtime run `/zap/zap-baseline -r index.html -t http//<url-to-test>`
+For local running and experimentation run `docker run -i -t jenkins-slave-zap /bin/bash` and have a play once inside the container. To check the zap runtime run `/zap/zap-baseline.py -r index.html -t http//<url-to-test>`
 
 ## Build in OpenShift
 
