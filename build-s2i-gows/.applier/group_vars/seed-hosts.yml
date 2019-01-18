@@ -29,11 +29,9 @@ openshift_cluster_content:
   content:
   - name: s2i-gows
     template: "{{ inventory_dir }}/../.openshift/templates/deployments/template.yml"
-    params: "{{ inventory_dir }}/../.openshift/params/deploy" #todo will this process without params?
     namespace: "{{ namespace }}"
 - object: builds
   content:
   - name: gows
     template: "{{ inventory_dir }}/../.openshift/templates/builds/template.yml"
-    params: "{{ inventory_dir }}/../.openshift/params/build" #todo will this process without params?
     namespace: "{{ namespace }}"

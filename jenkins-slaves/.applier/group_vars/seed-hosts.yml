@@ -1,25 +1,7 @@
 ---
 namespace: jenkins-slaves
-base_openshift_url: something.ocp.com
-jenkins_name: jenkins
 
 slave_repo_ref: v1.3
-
-jenkins:
-  build:
-    NAME: "{{ jenkins_name }}"
-    SOURCE_REPOSITORY_URL: https://github.com/rht-labs/s2i-config-jenkins.git
-    SOURCE_REPOSITORY_REF: master #TODO NEEDS A TAG
-    BUILDER_IMAGE_STREAM_NAME: jenkins-2-rhel7
-    BUILDER_IMAGE_STREAM_TAG_NAME: v3.11
-    IMAGE_STREAM_NAMESPACE: "{{ namespace }}"
-  deploy:
-    NAMESPACE: "{{ namespace }}"
-    JENKINS_URL: https://{{ jenkins_name }}-{{ namespace }}.apps.{{ base_openshift_url }}/
-    JENKINS_IMAGE_STREAM_TAG: "{{ jenkins_name }}:latest"
-    MEMORY_LIMIT: 2Gi
-    JENKINS_OPTS: "--sessionTimeout=720"
-    VOLUME_CAPACITY: 2Gi
 
 openshift_cluster_content:
 - object: Environment Setup
@@ -32,22 +14,6 @@ openshift_cluster_content:
       NAMESPACE_DISPLAY_NAME: "{{ namespace }}"
     tags:
       - project
-- object: ci-cd-builds
-  content:
-  - name: jenkins-s2i #todo where to put this
-    template: "https://raw.githubusercontent.com/rht-labs/openshift-templates/v1.0/jenkins-s2i-build/jenkins-s2i-build-template.yml"
-    params_from_vars: "{{ jenkins.build }}"
-    namespace: "{{ namespace }}"
-    tags:
-    - jenkins
-    - jenkins-build
-  - name: jenkins-ephemeral
-    template: "https://raw.githubusercontent.com/rht-labs/openshift-templates/v1.0/jenkins/jenkins-ephemeral-template.yml"
-    params_from_vars: "{{ jenkins.deploy }}"
-    namespace: "{{ namespace }}"
-    tags:
-      - jenkins
-      - jenkins-deploy
 - object: jenkins-slave-nodes
   content:
   - name: jenkins-slave-ansible
@@ -131,16 +97,3 @@ openshift_cluster_content:
     tags:
     - jenkins-slaves
     - zap-slave
-- object: ci-for-labs-ci-cd
-  content:
-  - name: pipeline-slaves
-    template: "https://raw.githubusercontent.com/rht-labs/openshift-templates/v1.0/jenkins-pipelines/jenkins-pipeline-no-ocp-triggers-template.yml"
-    params_from_vars:
-      NAME: test-slaves
-      PIPELINE_SOURCE_REPOSITORY_REF: master
-      PIPELINE_SOURCE_REPOSITORY_URL: https://github.com/labs-robot/labs-ci-cd.git
-      RUN_POLICY: Parallel
-      PIPELINE_FILENAME: tests/slaves/Jenkinsfile
-    namespace: "{{ namespace }}"
-    tags:
-      - ci

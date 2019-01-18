@@ -1,4 +1,4 @@
 SOURCE_REPOSITORY_URL=https://github.com/rht-labs/owasp-zap-openshift.git
-BUILDER_IMAGE_NAME=centos:centos7 #TODO what is this? why isn't this a jenkins slave base
+BUILDER_IMAGE_NAME=centos:centos7
 NAME=jenkins-slave-zap
 DOCKERFILE_PATH=Dockerfile

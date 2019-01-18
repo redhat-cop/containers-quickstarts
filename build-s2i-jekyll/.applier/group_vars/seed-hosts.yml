@@ -34,15 +34,12 @@ openshift_cluster_content:
   content:
   - name: s2i-jekyll
     template: "{{ inventory_dir }}/../.openshift/templates/deployments/template.yml"
-    params: "{{ inventory_dir }}/../.openshift/params/deploy" #todo will this process without params?
     namespace: "{{ namespace }}"
 - object: builds
   content:
   - name: jekyll-builder
     template: "{{ inventory_dir }}/../.openshift/templates/builds/docker-template.yml"
-    params: "{{ inventory_dir }}/../.openshift/params/jekyll-build-params" #todo will this process without params?
     namespace: "{{ namespace }}"
   - name: openshift-playbooks
     template: "{{ inventory_dir }}/../.openshift/templates/builds/source-template.yml"
-    params: "{{ inventory_dir }}/../.openshift/params/openshift-playbooks-build-params" #todo will this process without params?
     namespace: "{{ namespace }}"
