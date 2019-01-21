@@ -1,4 +1,4 @@
-apiVersion: vi
+apiVersion: v1
 kind: List
 items:
 - apiVersion: v1
