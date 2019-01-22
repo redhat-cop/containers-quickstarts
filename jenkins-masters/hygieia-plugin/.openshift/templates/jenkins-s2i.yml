@@ -59,7 +59,7 @@ objects:
           namespace: openshift
       type: Source
 parameters:
-  name: SOURCE_CODE_URL
+- name: SOURCE_CODE_URL
   value: https://github.com/redhat-cop/containers-quickstarts.git
-  name: SOURCE_CODE_REF
+- name: SOURCE_CODE_REF
   value: master
