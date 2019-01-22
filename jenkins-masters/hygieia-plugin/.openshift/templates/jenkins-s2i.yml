@@ -38,6 +38,10 @@ objects:
         kind: ImageStreamTag
         name: jenkins2-s2i:latest
     source:
+      git:
+        uri: ${SOURCE_CODE_URL}
+        ref: ${SOURCE_CODE_REF}
+      contextDir: jenkins-masters/hygieia-plugin/
       images:
       - as: null
         from:
@@ -54,3 +58,8 @@ objects:
           name: jenkins:latest
           namespace: openshift
       type: Source
+parameters:
+  name: SOURCE_CODE_URL
+  value: https://github.com/redhat-cop/containers-quickstarts.git
+  name: SOURCE_CODE_REF
+  value: master
