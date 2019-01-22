@@ -57,12 +57,6 @@ openshift_cluster_content:
       tags:
         - unpriv
         - all
-    - name: Jenkins collector
-      template: "{{ inventory_dir }}/../.openshift/templates/build-hygieia-jenkins-collector.yml"
-      namespace: "{{ k8s_namespace }}"
-      tags:
-        - unpriv
-        - all
     - name: Executive API
       template: "{{ inventory_dir }}/../.openshift/templates/build-java-component.yml"
       params_from_vars:
@@ -146,17 +140,6 @@ openshift_cluster_content:
         NAMESPACE: "{{ k8s_namespace}}"
         COMPONENT: ui
         OPENSHIFT_DEFAULT_SUBDOMAIN: "{{ openshift_default_subdomain }}"
-      tags:
-        - unpriv
-        - all
-    - name: Jenkins Collector
-      template: "{{ inventory_dir }}/../.openshift/templates/hygieia-jenkins-build-collector-deployment.yml"
-      namespace: "{{ k8s_namespace }}"
-      params_from_vars:
-        NAMESPACE: "{{ k8s_namespace }}"
-        JENKINS_NAMESPACE: "{{ jenkins_namespace }}"
-        OPENSHIFT_DEFAULT_SUBDOMAIN: "{{ openshift_default_subdomain }}"
-        DATABASE_SERVICE_NAME: mongo-hygieia
       tags:
         - unpriv
         - all
