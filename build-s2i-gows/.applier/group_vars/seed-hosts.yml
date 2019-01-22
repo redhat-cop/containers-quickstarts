@@ -1,0 +1,37 @@
+---
+namespace: s2i-gows
+
+openshift_cluster_content:
+- object: Environment Setup
+  content:
+  - name: Create Projects
+    template: "https://raw.githubusercontent.com/redhat-cop/cluster-lifecycle/v3.9.0/files/projectrequest/template.yml"
+    action: create
+    params_from_vars:
+      NAMESPACE: "{{ namespace }}"
+      NAMESPACE_DISPLAY_NAME: "{{ namespace }}"
+    tags:
+      - project
+- object: imagestream
+  content:
+  - name: busybox
+    template: "{{ inventory_dir }}/../.openshift/templates/imagestreams/template.yml"
+    params_from_vars:
+      IS_NAME: busybox
+    namespace: "{{ namespace }}"
+  - name: golang
+    template: "{{ inventory_dir }}/../.openshift/templates/imagestreams/template.yml"
+    params_from_vars:
+      IS_NAME: golang
+      IS_TAG: 1.9.2
+    namespace: "{{ namespace }}"
+- object: deployments
+  content:
+  - name: s2i-gows
+    template: "{{ inventory_dir }}/../.openshift/templates/deployments/template.yml"
+    namespace: "{{ namespace }}"
+- object: builds
+  content:
+  - name: gows
+    template: "{{ inventory_dir }}/../.openshift/templates/builds/template.yml"
+    namespace: "{{ namespace }}"

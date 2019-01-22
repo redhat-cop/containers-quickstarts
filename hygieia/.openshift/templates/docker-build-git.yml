@@ -1,0 +1,76 @@
+apiVersion: v1
+kind: Template
+metadata:
+  creationTimestamp: null
+  name: docker-build
+objects:
+- apiVersion: v1
+  kind: BuildConfig
+  metadata:
+    annotations:
+    labels:
+      build: ${IMAGE_NAME}
+    name: ${IMAGE_NAME}
+    namespace: ${NAMESPACE}
+  spec:
+    failedBuildsHistoryLimit: 5
+    nodeSelector: null
+    output:
+      to:
+        kind: ImageStreamTag
+        name: ${IMAGE_NAME}:latest
+        namespace: ${OUTPUT_NAMESPACE}
+    postCommit: {}
+    resources: {}
+    runPolicy: Serial
+    source:
+      contextDir: ${CONTEXT_DIR}
+      git:
+        ref: ${GIT_REF}
+        uri: ${GIT_URL}
+      type: Git
+    strategy:
+      sourceStrategy:
+        from:
+          kind: ImageStreamTag
+          name: ${BASE_IMAGE_STREAM}
+          namespace: openshift
+      type: Source
+    successfulBuildsHistoryLimit: 5
+    triggers:
+    - github:
+        secret: ${GITHUB_WEBHOOK_SECRET}
+      type: GitHub
+    - generic:
+        secret: ${GENERIC_WEBHOOK_SECRET}
+      type: Generic
+    - type: ConfigChange
+    - imageChange: {}
+      type: ImageChange
+  status:
+    lastVersion: 0
+- apiVersion: v1
+  kind: ImageStream
+  metadata:
+    annotations:
+    generation: 1
+    labels:
+      build: ${IMAGE_NAME}
+    name: ${IMAGE_NAME}
+    namespace: ${OUTPUT_NAMESPACE}
+parameters:
+- name: IMAGE_NAME
+- name: BASE_IMAGE_STREAM
+- name: NAMESPACE
+- name: OUTPUT_NAMESPACE
+  value: openshift
+- name: CONTEXT_DIR
+  value:
+- name: GIT_URL
+  value: https://github.com/redhat-cop/openshift-toolkit
+- name: GIT_REF
+  value: master
+- name: GITHUB_WEBHOOK_SECRET
+  value: webhook123
+- name: GENERIC_WEBHOOK_SECRET
+  value: webhook123

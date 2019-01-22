@@ -10,7 +10,7 @@ Jenkins [Slave](https://wiki.jenkins-ci.org/display/JENKINS/Distributed+builds) 
 
 ## Instantiate Template
 
-A [template](../templates/jenkins-slave-image-mgmt-template.yml) is available providing the necessary OpenShift components to build and make the slave image available to be referenced by Jenkins.
+A [template](../.openshift/templates/jenkins-slave-image-mgmt-template.yml) is available providing the necessary OpenShift components to build and make the slave image available to be referenced by Jenkins.
 
 Execute the following command to instantiate the template:
 
