@@ -48,12 +48,12 @@ This demo should be run on an installation of OpenShift Enterprise V3
 ### OpenShift objects
 
 The openshift-applier will create the following OpenShift objects:
-* A project named `play-demo` (see [applier/projects/projects.yml](applier/projects/projects.yml))
-* Three ImageStreams named `rhel7`, `s2i-play` and `play-app` (see [applier/templates/build.yml](applier/templates/build.yml))
-* Two BuildConfigs named `s2i-play` and `play-app` (see [applier/templates/build.yml](applier/templates/build.yml))
-* A DeploymentConfig named `play-app` (see [applier/templates/deployment.yml](applier/templates/deployment.yml))
-* A Service named `play-app` (see [applier/templates/deployment.yml](applier/templates/deployment.yml))
-* A Route named `play-app` (see [applier/templates/deployment.yml](applier/templates/deployment.yml))
+* A project named `play-demo` (see [applier/projects/projects.yml](.applier/projects/projects.yml))
+* Three ImageStreams named `rhel7`, `s2i-play` and `play-app` (see [applier/templates/build.yml](.applier/templates/build.yml))
+* Two BuildConfigs named `s2i-play` and `play-app` (see [applier/templates/build.yml](.applier/templates/build.yml))
+* A DeploymentConfig named `play-app` (see [applier/templates/deployment.yml](.applier/templates/deployment.yml))
+* A Service named `play-app` (see [applier/templates/deployment.yml](.applier/templates/deployment.yml))
+* A Route named `play-app` (see [applier/templates/deployment.yml](.applier/templates/deployment.yml))
 
 >**NOTE:** This requires permission to create new projects and that the `play-demo` project doesn't already exist
 

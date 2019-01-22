@@ -1,0 +1,31 @@
+---
+namespace: rabbitmq
+
+openshift_cluster_content:
+- object: Environment Setup
+  content:
+  - name: Create Projects
+    template: "https://raw.githubusercontent.com/redhat-cop/cluster-lifecycle/v3.9.0/files/projectrequest/template.yml"
+    action: create
+    params_from_vars:
+      NAMESPACE: "{{ namespace }}"
+      NAMESPACE_DISPLAY_NAME: "{{ namespace }}"
+    tags:
+      - project
+- object: imagestream
+  content:
+  - name: rhel7
+    file: "{{ inventory_dir }}/../.openshift/templates/imagestreams/images.yml"
+    namespace: "{{ namespace }}"
+- object: deployments
+  content:
+  - name: rabbitmq
+    namespace: "{{ namespace }}"
+    template: "{{ inventory_dir }}/../.openshift/templates/deployments/template.yml"
+    params: "{{ inventory_dir }}/../.openshift/params/deploy"
+- object: builds
+  content:
+  - name: rabbitmq
+    namespace: "{{ namespace }}"
+    template: "{{ inventory_dir }}/../.openshift/templates/builds/template.yml"
+    params: "{{ inventory_dir }}/../.openshift/params/build"

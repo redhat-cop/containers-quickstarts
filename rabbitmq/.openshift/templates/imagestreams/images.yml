@@ -1,0 +1,36 @@
+apiVersion: v1
+kind: List
+items:
+- apiVersion: v1
+  kind: ImageStream
+  metadata:
+    name: rhel
+  spec:
+    dockerImageRepository: registry.access.redhat.com/rhel7/rhel
+    lookupPolicy:
+      local: false
+    tags:
+    - annotations: null
+      from:
+        kind: DockerImage
+        name: registry.access.redhat.com/rhel7/rhel:7.3
+      importPolicy: {}
+      name: "7.3"
+      referencePolicy:
+        type: Source
+    - annotations: null
+      from:
+        kind: DockerImage
+        name: registry.access.redhat.com/rhel7/rhel:7.4
+      importPolicy: {}
+      name: "7.4"
+      referencePolicy:
+        type: Source
+    - annotations: null
+      from:
+        kind: DockerImage
+        name: registry.access.redhat.com/rhel7/rhel:latest
+      importPolicy: {}
+      name: latest
+      referencePolicy:
+        type: Source
