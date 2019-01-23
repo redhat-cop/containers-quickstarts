@@ -3,6 +3,7 @@ hygieia_url:
 hygieia_token:
 source_code_url: https://github.com/redhat-cop/containers-quickstarts.git
 source_code_ref: master
+jenkins_memory_limit: 1024Mi
 
 openshift_cluster_content:
 - object: Environment Setup
@@ -41,5 +42,6 @@ openshift_cluster_content:
       NAMESPACE: "{{ namespace }}"
       HYGIEIA_API_URL: "{{ hygieia_url }}"
       HYGIEIEA_API_TOKEN: "{{ hygieia_token }}"
+      MEMORY_LIMIT: "{{ jenkins_memory_limit }}"
     tags:
       - deploy
