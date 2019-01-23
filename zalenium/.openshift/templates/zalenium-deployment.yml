@@ -1,0 +1,234 @@
+apiVersion: v1
+kind: Template
+labels:
+  template: zalenium
+metadata:
+  annotations:
+    description: zalenium deployment
+    tags: selenium,selenium-grid,zalenium
+  name: zalenium
+objects:
+- apiVersion: v1
+  kind: Role
+  metadata:
+    name: zalenium-role
+  rules:
+  - verbs: ['create','list','get','delete','watch']         
+    resources: ['pods']
+  - verbs: ['create', 'get']         
+    resources: ['pods/exec']    
+
+- apiVersion: v1
+  kind: ServiceAccount
+  metadata:
+    name: zalenium
+
+- apiVersion: rbac.authorization.k8s.io/v1beta1
+  kind: RoleBinding
+  metadata:
+    name: zalenium-role-binding
+  roleRef:
+    kind: Role
+    name: zalenium-role
+  subjects:
+  - kind: ServiceAccount
+    name: zalenium            
+
+- apiVersion: v1
+  kind: Service
+  metadata:
+    labels:
+      app: zalenium
+    name: zalenium
+  spec:
+    ports:
+    - name: zalenium
+      port: 4444
+      protocol: TCP
+      targetPort: 4444
+    selector:
+      app: zalenium
+      role: grid
+    type: ClusterIP
+- apiVersion: v1
+  kind: DeploymentConfig
+  metadata:
+    name: zalenium
+  spec:
+    replicas: 1
+    template:
+      metadata:
+        labels:
+          app: zalenium
+          role: grid
+      spec:
+        containers:
+          - name: zalenium
+            image: ${IMAGE}
+            args:
+              - start
+            env:
+              - name: ZALENIUM_KUBERNETES_CPU_REQUEST
+                value: ${CPU_REQUEST}
+              - name: ZALENIUM_KUBERNETES_CPU_LIMIT
+                value: ${CPU_LIMIT}
+              - name: ZALENIUM_KUBERNETES_MEMORY_REQUEST
+                value: ${MEMORY_REQUEST}
+              - name: ZALENIUM_KUBERNETES_MEMORY_LIMIT
+                value: ${MEMORY_LIMIT}
+              - name: DESIRED_CONTAINERS
+                value: ${DESIRED_CONTAINERS}
+              - name: MAX_DOCKER_SELENIUM_CONTAINERS
+                value: ${MAX_DOCKER_SELENIUM_CONTAINERS}
+              - name: SELENIUM_IMAGE_NAME
+                value: ${SELENIUM_IMAGE_NAME}
+              - name: VIDEO_RECORDING_ENABLED
+                value: ${VIDEO_RECORDING_ENABLED}
+              - name: SCREEN_WIDTH
+                value: ${SCREEN_WIDTH}
+              - name: SCREEN_HEIGHT
+                value: ${SCREEN_HEIGHT}
+              - name: MAX_TEST_SESSIONS
+                value: ${MAX_TEST_SESSIONS}
+              - name: NEW_SESSION_WAIT_TIMEOUT
+                value: ${NEW_SESSION_WAIT_TIMEOUT}
+              - name: DEBUG_ENABLED
+                value: ${DEBUG_ENABLED}
+              - name: SEND_ANONYMOUS_USAGE_INFO
+                value: ${SEND_ANONYMOUS_USAGE_INFO}
+              - name: TZ
+                value: ${TZ}
+              - name: KEEP_ONLY_FAILED_TESTS
+                value: ${KEEP_ONLY_FAILED_TESTS}
+              - name: RETENTION_PERIOD
+                value: ${RETENTION_PERIOD}
+              - name: CONTEXT_PATH
+                value: ${CONTEXT_PATH}
+            resources:
+              request:
+                cpu: 500m
+                memory: "500Mi"
+              limits:
+                cpu: "1000m"
+                memory: "2Gi"
+            ports:
+              - containerPort: 4444
+                protocol: TCP
+            volumeMounts:
+              - name: zalenium-videos
+                mountPath: /home/seluser/videos  
+        volumes:
+            - name: zalenium-videos
+              persistentVolumeClaim:
+                claimName: zalenium-videos
+        serviceAccountName: zalenium
+        serviceAccount: zalenium
+
+- apiVersion: route.openshift.io/v1
+  kind: Route
+  metadata:
+    annotations:
+      haproxy.router.openshift.io/timeout: 15m
+    name: zalenium
+  spec:
+    to:
+      kind: Service
+      name: zalenium
+
+
+- apiVersion: v1
+  kind: PersistentVolumeClaim
+  metadata:
+    name: zalenium-videos
+  spec:
+    accessModes:
+      - ReadWriteOnce
+    resources:
+      requests:
+        storage: ${VIDEOS_STORAGE_SIZE}
+
+parameters:
+- name: CPU_REQUEST
+  description: Minium CPU for Zalenium slaves
+  required: true
+  value: "100m"
+- name: CPU_LIMIT
+  description: Max CPU for Zalenium slaves
+  required: true
+  value: "1000m"
+- name: MEMORY_REQUEST
+  description: Minimum Memory for Zalenium slaves
+  required: true
+  value: "1Gi"
+- name: MEMORY_LIMIT
+  description: Max Memory for Zalenium slaves
+  required: true
+  value: "2Gi"
+- name: VIDEOS_STORAGE_SIZE
+  description: Max Memory for Zalenium slaves
+  required: true
+  value: "10G"
+- name: DATA_STORAGE_SIZE
+  description: Max Memory for Zalenium slaves
+  required: true
+  value: "2G"
+- name: IMAGE
+  required: true
+  description: Dockerimage location:tag
+  value: dosel/zalenium:3
+- name: DESIRED_CONTAINERS
+  required: true
+  description: Number of containers created on startup.
+  value: "0"
+- name: MAX_DOCKER_SELENIUM_CONTAINERS
+  required: true
+  description: Maximum number of docker-selenium containers running at the same time.
+  value: "10"
+- name: SELENIUM_IMAGE_NAME
+  required: true
+  description: Enables overriding of the Docker selenium image to use.
+  value: "elgalu/selenium"
+- name: VIDEO_RECORDING_ENABLED
+  required: true
+  description: Sets if video is recorded in every test.
+  value: "true"
+- name: SCREEN_WIDTH
+  required: true
+  description: Sets the screen width.
+  value: "1920"
+- name: SCREEN_HEIGHT
+  required: true
+  description: Sets the screen height.
+  value: "1080"
+- name: MAX_TEST_SESSIONS
+  required: true
+  description: Maximum amount of tests executed per container.
+  value: "1"
+- name: NEW_SESSION_WAIT_TIMEOUT
+  required: true
+  description: Time in ms that a session will be kept in the queue before it timesout while waiting for a node to be available.
+  value: "600000"
+- name: DEBUG_ENABLED
+  required: true
+  description: Enables LogLevel.FINE.
+  value: "false"
+- name: SEND_ANONYMOUS_USAGE_INFO
+  required: true
+  description: Send anonymous usage info
+  value: "false"
+- name: TZ
+  required: true
+  description: Sets the time zone in the containers.
+  value: "Etc/UTC"
+- name: KEEP_ONLY_FAILED_TESTS
+  required: true
+  description: Keeps only failed tests on the dashboard (you need to send a cookie with the test result).
+  value: "false"
+- name: RETENTION_PERIOD
+  required: true
+  description: Number of day's a testentry should be kept in dashboard before cleanup. Note, You need to manually push the Cleanup button or create a cronjob 
+  value: "3"
+- name: CONTEXT_PATH
+  required: true
+  description: Context path for incoming HTTP traffic from a Route
+  value: "/"

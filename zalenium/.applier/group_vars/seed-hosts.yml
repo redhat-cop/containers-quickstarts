@@ -1,0 +1,29 @@
+---
+namespace: zalenium
+app_name: zalenium
+
+app_params:
+  ETC_VOL_SIZE: 100Mi
+  GITLAB_DATA_VOL_SIZE: 5Gi
+  POSTGRESQL_VOL_SIZE: 5Gi
+  GITLAB_ROOT_PASSWORD: secretpassword
+  NAMESPACE: "{{ namespace }}"
+
+
+openshift_cluster_content:
+- object: Environment Setup
+  content:
+  - name: Create Projects
+    template: "{{ inventory_dir }}/../.openshift/templates/projects.yml"
+    action: create
+    params_from_vars:
+      NAMESPACE: "{{ namespace }}"
+      NAMESPACE_DISPLAY_NAME: "{{ namespace }}"
+    tags:
+      - project
+- object: deployments
+  content:
+  - name: Zalenium
+    template: "{{ inventory_dir }}/../.openshift/templates/zalenium-deployment.yml"
+    params_from_vars: "{{ app_params }}"
+    namespace: "{{ namespace }}"
