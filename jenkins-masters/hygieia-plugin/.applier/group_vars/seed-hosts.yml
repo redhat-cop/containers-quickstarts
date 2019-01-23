@@ -1,6 +1,8 @@
 namespace: jenkins-hygieia
 hygieia_url:
 hygieia_token:
+source_code_url: https://github.com/redhat-cop/containers-quickstarts.git
+source_code_ref: master
 
 openshift_cluster_content:
 - object: Environment Setup
@@ -22,6 +24,9 @@ openshift_cluster_content:
       - build-hygieia-plugin
   - name: Jenkins Master Image
     template: "{{ inventory_dir }}/../.openshift/templates/jenkins-s2i.yml"
+    params_from_vars:
+      SOURCE_CODE_URL: "{{ source_code_url }}"
+      SOURCE_CODE_REF: "{{ source_code_ref }}"
     namespace: "{{ namespace }}"
     tags:
       - build
