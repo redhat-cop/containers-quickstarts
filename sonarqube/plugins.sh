@@ -12,7 +12,7 @@ printf "Downloading additional plugins\n"
 for PLUGIN in "$@"
 do
 	printf '\tExtracting plugin download location - %s\n' ${PLUGIN}
-	MATCH_STRING=$(cat /tmp/pluginList.txt | grep requiredSonarVersions | grep "[=,]6\.3\(\.1\)\?" | sed 's@\.requiredSonarVersions.*@@g' | sort -V | grep "^${PLUGIN}\." | tail -n 1 | sed 's@$@.downloadUrl@g')
+	MATCH_STRING=$(cat /tmp/pluginList.txt | grep requiredSonarVersions | grep "[=,]$SONAR_VERSION\?" | sed 's@\.requiredSonarVersions.*@@g' | sort -V | grep "^${PLUGIN}\." | tail -n 1 | sed 's@$@.downloadUrl@g')
 
 	if ! [[ -z "${MATCH_STRING}" ]]; then
 		DOWNLOAD_URL=$(cat /tmp/pluginList.txt | grep ${MATCH_STRING} | awk -F"=" '{print $2}' | sed 's@\\:@:@g')

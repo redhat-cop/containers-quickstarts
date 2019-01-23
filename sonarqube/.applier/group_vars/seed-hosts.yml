@@ -3,8 +3,8 @@ app_name: sonarqube
 
 build:
   NAME: "{{ app_name }}"
-  SOURCE_REPOSITORY_URL: https://github.com/pcarney8/containers-quickstarts.git
-  SOURCE_REPOSITORY_REF: add-sonarqube
+  SOURCE_REPOSITORY_URL: https://github.com/redhat-cop/containers-quickstarts.git
+  SOURCE_REPOSITORY_REF: master
   SOURCE_CONTEXT_DIR: "{{ app_name }}"
 postgresql:
   POSTGRESQL_DATABASE: sonar

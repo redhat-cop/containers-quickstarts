@@ -10,17 +10,48 @@ but it has been modified to allow permissions to be run in an OpenShift environm
 
 ## Usage
 
+1. Clone this repository: `git clone https://github.com/redhat-cop/containers-quickstarts`
+2. `cd containers-quickstarts/sonarqube`
+3. Run `ansible-galaxy install -r requirements.yml --roles-path=galaxy`
+4. Login to OpenShift: `oc login -u <username> https://master.example.com:8443`
+
+### Build and Deploy SonarQube
+
+Run the openshift-applier to create the `SonarQube` project and deploy required objects
+```
+ansible-playbook -i .applier galaxy/openshift-applier/playbooks/openshift-cluster-seed.yml
+```
+
+### Using SonarQube
+
+Once the SonarQube is running you need to login using username `admin` and password `admin`.
+A first time setup wizard will launch that will create the first project and security token.
+Save this security token as it needs to be manually set to your Jenkins server.
+Go to: `Manage Jenkins` -> `Configure System` -> `SonarQube Servers`.
+* Select `Enable injection of SonarQube server configuration as build environment variables`
+* `Name` can be anything usually it's just `sonar`
+* `Server URL` should be `http://sonarqube:9000` if deployed to same project as Jenkins
+* `Server authentication token` should be the one you got from SonarQube
+
+Once this is setup the Jenkins pipelines have environment variables required to use SonarQube plugins.
+
+For example for NodeJS project you could run the SonarQube with following Jenkins pipeline script:
+```
+script {
+    def scannerHome = tool 'sonar-scanner-tool';
+    withSonarQubeEnv('sonar') {
+        sh "${scannerHome}/bin/sonar-runner"
+        }
+    }
+```
+
 ### Database
 
 By default, SonarQube will use H2 embedded, which is only for demo usage. To use a proper database, set `JDBC_USER`, `JDBC_PASSWORD` and `JDBC_URL` per [the docs](https://docs.sonarqube.org/display/SONAR/Installing+the+Server#InstallingtheServer-installingDatabaseInstallingtheDatabase).
 
-
 ### Plugin Installation
 
-TODO
-
-When the container image is built, the environment variable "SONAR_PLUGINS_LIST" should contain a space separated list 
-of plugins which should be installed. More plugins can always be installed later as well.
+When the conatiner image is built, the Dockerfile has hardcoded list of plugins that are installed.
 
 ### Configuration
 Some configuration settings are well defined, but you can always pass additional configuration using the catchall
