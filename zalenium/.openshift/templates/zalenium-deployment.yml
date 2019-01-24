@@ -56,6 +56,10 @@ objects:
     name: zalenium
   spec:
     replicas: 1
+    strategy:
+      recreateParams:
+        timeoutSeconds: 600
+      type: Recreate
     template:
       metadata:
         labels:
@@ -105,6 +109,9 @@ objects:
               - name: CONTEXT_PATH
                 value: ${CONTEXT_PATH}
             resources:
+              requests:
+                cpu: ${ZALENIUM_CPU_REQUEST}
+                memory: "${ZALENIUM_MEMORY_REQUEST}"
               limits:
                 cpu: ${ZALENIUM_CPU_LIMIT}
                 memory: "${ZALENIUM_MEMORY_LIMIT}"
@@ -145,14 +152,22 @@ objects:
         storage: ${VIDEOS_STORAGE_SIZE}
 
 parameters:
+- name: ZALENIUM_MEMORY_REQUEST
+  description: Min Memory for Zalenium Zalenium (Selenium Grid) master
+  required: true
+  value: "500Mi"
+- name: ZALENIUM_CPU_REQUEST
+  description: Min CPU for Zalenium (Selenium Grid) master
+  required: true
+  value: "100m"
 - name: ZALENIUM_MEMORY_LIMIT
   description: Max Memory for Zalenium Zalenium (Selenium Grid) master
   required: true
-  value: "1000m"
+  value: "2Gi"
 - name: ZALENIUM_CPU_LIMIT
   description: Max CPU for Zalenium (Selenium Grid) master
   required: true
-  value: "2Gi"
+  value: "1000m"
 - name: SLAVE_CPU_REQUEST
   description: Minium CPU for Zalenium slaves
   required: true

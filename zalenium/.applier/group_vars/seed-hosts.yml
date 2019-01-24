@@ -3,8 +3,8 @@ namespace: zalenium
 app_name: zalenium
 
 app_params:
-  ZALENIUM_MEMORY_LIMIT: "1000m"
-  ZALENIUM_CPU_LIMIT: "2Gi"
+  ZALENIUM_MEMORY_LIMIT: "2Gi"
+  ZALENIUM_CPU_LIMIT: "1000m"
   VIDEOS_STORAGE_SIZE: "10G"
   SLAVE_CPU_REQUEST: "100m"
   SLAVE_CPU_LIMIT: "1000m"
