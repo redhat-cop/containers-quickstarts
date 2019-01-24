@@ -106,7 +106,7 @@ objects:
                 value: ${CONTEXT_PATH}
             resources:
               limits:
-                cpu: {ZALENIUM_CPU_LIMIT}
+                cpu: ${ZALENIUM_CPU_LIMIT}
                 memory: "${ZALENIUM_MEMORY_LIMIT}"
             ports:
               - containerPort: 4444
