@@ -69,13 +69,13 @@ objects:
               - start
             env:
               - name: ZALENIUM_KUBERNETES_CPU_REQUEST
-                value: ${CPU_REQUEST}
+                value: ${SLAVE_CPU_REQUEST}
               - name: ZALENIUM_KUBERNETES_CPU_LIMIT
-                value: ${CPU_LIMIT}
+                value: ${SLAVE_CPU_LIMIT}
               - name: ZALENIUM_KUBERNETES_MEMORY_REQUEST
-                value: ${MEMORY_REQUEST}
+                value: ${SLAVE_MEMORY_REQUEST}
               - name: ZALENIUM_KUBERNETES_MEMORY_LIMIT
-                value: ${MEMORY_LIMIT}
+                value: ${SLAVE_MEMORY_LIMIT}
               - name: DESIRED_CONTAINERS
                 value: ${DESIRED_CONTAINERS}
               - name: MAX_DOCKER_SELENIUM_CONTAINERS
@@ -105,12 +105,9 @@ objects:
               - name: CONTEXT_PATH
                 value: ${CONTEXT_PATH}
             resources:
-              request:
-                cpu: 500m
-                memory: "500Mi"
               limits:
-                cpu: "1000m"
-                memory: "2Gi"
+                cpu: {ZALENIUM_CPU_LIMIT}
+                memory: "${ZALENIUM_MEMORY_LIMIT}"
             ports:
               - containerPort: 4444
                 protocol: TCP
@@ -148,19 +145,27 @@ objects:
         storage: ${VIDEOS_STORAGE_SIZE}
 
 parameters:
-- name: CPU_REQUEST
+- name: ZALENIUM_MEMORY_LIMIT
+  description: Max Memory for Zalenium Zalenium (Selenium Grid) master
+  required: true
+  value: "1000m"
+- name: ZALENIUM_CPU_LIMIT
+  description: Max CPU for Zalenium (Selenium Grid) master
+  required: true
+  value: "2Gi"
+- name: SLAVE_CPU_REQUEST
   description: Minium CPU for Zalenium slaves
   required: true
   value: "100m"
-- name: CPU_LIMIT
+- name: SLAVE_CPU_LIMIT
   description: Max CPU for Zalenium slaves
   required: true
   value: "1000m"
-- name: MEMORY_REQUEST
+- name: SLAVE_MEMORY_REQUEST
   description: Minimum Memory for Zalenium slaves
   required: true
   value: "1Gi"
-- name: MEMORY_LIMIT
+- name: SLAVE_MEMORY_LIMIT
   description: Max Memory for Zalenium slaves
   required: true
   value: "2Gi"
@@ -168,10 +173,6 @@ parameters:
   description: Max Memory for Zalenium slaves
   required: true
   value: "10G"
-- name: DATA_STORAGE_SIZE
-  description: Max Memory for Zalenium slaves
-  required: true
-  value: "2G"
 - name: IMAGE
   required: true
   description: Dockerimage location:tag

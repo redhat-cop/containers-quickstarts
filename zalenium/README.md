@@ -24,7 +24,7 @@ ansible-playbook -i .applier galaxy/openshift-applier/playbooks/openshift-cluste
 ### Next steps
 
 Access your Zalenium:
-* Life Dashboard of ongoing tests:
+* Live Dashboard of ongoing tests:
 http://zalenium-zalenium.apps.example.com/grid/admin/live?refresh=20
 * Recordings of previous tests:
 http://zalenium-zalenium.apps.example.com/dashboard/#

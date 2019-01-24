@@ -3,11 +3,13 @@ namespace: zalenium
 app_name: zalenium
 
 app_params:
-  ETC_VOL_SIZE: 100Mi
-  GITLAB_DATA_VOL_SIZE: 5Gi
-  POSTGRESQL_VOL_SIZE: 5Gi
-  GITLAB_ROOT_PASSWORD: secretpassword
-  NAMESPACE: "{{ namespace }}"
+  ZALENIUM_MEMORY_LIMIT: "1000m"
+  ZALENIUM_CPU_LIMIT: "2Gi"
+  VIDEOS_STORAGE_SIZE: "10G"
+  SLAVE_CPU_REQUEST: "100m"
+  SLAVE_CPU_LIMIT: "1000m"
+  SLAVE_MEMORY_REQUEST: "1Gi"
+  SLAVE_MEMORY_LIMIT: "2Gi"
 
 
 openshift_cluster_content:
