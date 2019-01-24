@@ -48,7 +48,7 @@ objects:
           kind: ImageStreamTag
           name: hygieia-plugin:latest
         paths:
-        - destinationDir: "jenkins-masters/hygieia-plugin/plugins"
+        - destinationDir: jenkins-masters/hygieia-plugin/plugins
           sourcePath: /tmp/src/target/hygieia-publisher.hpi
       type: Image
     strategy:
