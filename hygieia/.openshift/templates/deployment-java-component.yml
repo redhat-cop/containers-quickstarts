@@ -38,24 +38,24 @@ objects:
           - name: JAVA_APP_JAR
             value: ${JAR_NAME}${JAR_VERSION}.jar
           - name: DBHOST
-            value: mongodb
+            value: ${DATABASE_SERVICE_NAME}
           - name: DBNAME
             valueFrom:
               secretKeyRef:
-                name: mongodb
+                name: ${DATABASE_SERVICE_NAME}
                 key: database-name
           - name: DBUSERNAME
             valueFrom:
               secretKeyRef:
-                name: mongodb
+                name: ${DATABASE_SERVICE_NAME}
                 key: database-user
           - name: DBPASSWORD
             valueFrom:
               secretKeyRef:
-                name: mongodb
+                name: ${DATABASE_SERVICE_NAME}
                 key: database-password
           - name: PORTFOLIO_CRON
-            value: 0 0/30 * * * *
+            value: 0 * * * * *
           image: ${COMPONENT}:latest
           imagePullPolicy: Always
           name: ${COMPONENT}
@@ -100,3 +100,4 @@ parameters:
   - name: COMPONENT
   - name: JAR_NAME
   - name: JAR_VERSION
+  - name: DATABASE_SERVICE_NAME

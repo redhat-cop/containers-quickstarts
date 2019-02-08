@@ -119,6 +119,6 @@ parameters:
   - name: SOURCE_CODE_URL
     value: https://github.com/tomgeorge/Hygieia
   - name: SOURCE_CODE_REF
-    value: override-default-nginx-conf
+    value: master
   - name: SOURCE_CODE_CONTEXT
     value: /UI

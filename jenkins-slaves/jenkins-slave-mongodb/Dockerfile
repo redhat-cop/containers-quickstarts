@@ -1,4 +1,4 @@
-FROM openshift/jenkins-slave-base-centos7:latest
+FROM openshift/jenkins-slave-base-centos7:v3.11
 
 USER root
 

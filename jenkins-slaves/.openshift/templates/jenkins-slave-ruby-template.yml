@@ -1,0 +1,82 @@
+apiVersion: v1
+kind: Template
+labels:
+  template: jenkins-slave-ruby
+metadata:
+  annotations:
+    description: Jenkins slave for building ruby apps
+    iconClass: icon-ruby
+    tags: jenkins,ruby
+    version: 1.0.0
+  name: jenkins-slave-ruby
+objects:
+- apiVersion: v1
+  kind: BuildConfig
+  metadata:
+    creationTimestamp: null
+    labels:
+      build: ${JENKINS_SLAVE_NAME}
+    name: ${JENKINS_SLAVE_NAME}
+  spec:
+    nodeSelector: null
+    output:
+      to:
+        kind: ImageStreamTag
+        name: ${JENKINS_SLAVE_NAME}:v3.11
+    postCommit: {}
+    resources: {}
+    runPolicy: Serial
+    source:
+      contextDir: ${CONTEXT_DIR}
+      git:
+        ref: ${SOURCE_REPOSITORY_REF}
+        uri: ${SOURCE_REPOSITORY_URL}
+      type: Git
+    strategy:
+      dockerStrategy:
+        from:
+          kind: ImageStreamTag
+          name: jenkins-slave-base-centos7:v3.11
+      type: Docker
+    triggers:
+    - type: ConfigChange
+    - imageChange: {}
+      type: ImageChange
+- apiVersion: v1
+  kind: ImageStream
+  metadata:
+    creationTimestamp: null
+    generation: 2
+    labels:
+      build: ${JENKINS_SLAVE_NAME}
+    name: jenkins-slave-base-centos7
+  spec:
+    dockerImageRepository: docker.io/openshift/jenkins-slave-base-centos7
+- apiVersion: v1
+  kind: ImageStream
+  metadata:
+    creationTimestamp: null
+    generation: 1
+    name: ${JENKINS_SLAVE_NAME}
+    labels:
+      role: jenkins-slave
+    annotations:
+      slave-label: ${JENKINS_SLAVE_NAME}
+  spec:
+parameters:
+- description: The name for the Jenkins slave.
+  name: JENKINS_SLAVE_NAME
+  value: jenkins-slave-ruby
+  required: true
+- description: Git source URI for application
+  name: SOURCE_REPOSITORY_URL
+  value: https://github.com/redhat-cop/containers-quickstarts.git
+  required: true
+- description: Git branch/tag reference
+  name: SOURCE_REPOSITORY_REF
+  value: master
+  required: true
+- description: Path within Git project to build; empty for root project directory.
+  name: CONTEXT_DIR
+  value: jenkins-slaves/jenkins-slave-ruby
+  required: true

@@ -1,0 +1,114 @@
+apiVersion: v1
+kind: Template
+labels:
+  template: hoverfly-template
+message: A Hoverfly service has been created in your project.
+metadata:
+  annotations:
+    description: |-
+      Hoverfly service
+    iconClass: icon-openshift
+    description: Hoverfly. A lightweight, opensource API simulation tool.
+    tags: instant-app
+    template.openshift.io/provider-display-name: SpectoLabs
+    template.openshift.io/support-url: https://hoverfly.io
+  name: hoverfly
+objects:
+- apiVersion: v1
+  kind: Route
+  metadata:
+    name: ${HOVERFLY_SERVICE_NAME}
+    labels:
+      app: ${HOVERFLY_SERVICE_NAME}
+  spec:
+    to:
+      kind: Service
+      name: ${HOVERFLY_SERVICE_NAME}
+    port:
+      targetPort: 8500-http
+- apiVersion: v1
+  kind: Service
+  metadata:
+    name: ${HOVERFLY_SERVICE_NAME}
+    labels:
+      app: ${HOVERFLY_SERVICE_NAME}
+  spec:
+    ports:
+    - name: 8500-http
+      protocol: TCP
+      port: 8500
+      targetPort: 8500
+    - name: 8888-http
+      protocol: TCP
+      port: 8888
+      targetPort: 8888
+    selector:
+      app: ${HOVERFLY_SERVICE_NAME}
+      deploymentConfig: ${HOVERFLY_SERVICE_NAME}
+    type: ClusterIP
+    sessionAffinity: None
+- apiVersion: v1
+  kind: DeploymentConfig
+  metadata:
+    name: ${HOVERFLY_SERVICE_NAME}
+    labels:
+      app: ${HOVERFLY_SERVICE_NAME}
+  spec:
+    replicas: 1
+    selector:
+      app: ${HOVERFLY_SERVICE_NAME}
+      deploymentConfig: ${HOVERFLY_SERVICE_NAME}
+    strategy:
+      type: Recreate
+    template:
+      metadata:
+        labels:
+          app: ${HOVERFLY_SERVICE_NAME}
+          deploymentConfig: ${HOVERFLY_SERVICE_NAME}
+      spec:
+        containers:
+        - name: ${HOVERFLY_SERVICE_NAME}
+          image: ' '
+          ports:
+            - containerPort: 8500
+              protocol: TCP
+            - containerPort: 8888
+              protocol: TCP
+          resources:
+            limits:
+              memory: ${MEMORY_LIMIT}
+            requests:
+              memory: 512Mi
+          terminationMessagePath: /dev/termination-log
+          imagePullPolicy: IfNotPresent
+        restartPolicy: Always
+        terminationGracePeriodSeconds: 30
+        dnsPolicy: ClusterFirst
+    triggers:
+    - type: ImageChange
+      imageChangeParams:
+        automatic: true
+        containerNames:
+        - ${HOVERFLY_SERVICE_NAME}
+        from:
+          kind: ImageStreamTag
+          name: ${HOVERFLY_IMAGE_STREAM_TAG}
+          namespace: ${NAMESPACE}
+    - type: ConfigChange
+parameters:
+- description: The name of the OpenShift Service exposed for the Hoverfly container.
+  displayName: Hoverfly Service Name
+  name: HOVERFLY_SERVICE_NAME
+  value: hoverfly
+- description: Name of the ImageStreamTag to be used for the Hoverfly image.
+  displayName: Hoverfly ImageStreamTag
+  name: HOVERFLY_IMAGE_STREAM_TAG
+  value: hoverfly:latest
+- description: The OpenShift Namespace where the Hoverfly ImageStream resides.
+  displayName: Hoverfly ImageStream Namespace
+  name: NAMESPACE
+  value: openshift
+- description: The memory limit for the Hoverfly container.
+  displayName: Hoverfly Memory Limit
+  name: MEMORY_LIMIT
+  value: 2Gi

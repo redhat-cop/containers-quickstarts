@@ -1,0 +1,130 @@
+apiVersion: v1
+kind: Template
+metadata:
+  creationTimestamp: null
+  name: deployment-${COMPONENT}
+objects:
+- apiVersion: v1
+  kind: DeploymentConfig
+  metadata:
+    creationTimestamp: null
+    generation: 1
+    labels:
+      app: ${COMPONENT}
+    name: ${COMPONENT}
+  spec:
+    replicas: 1
+    selector:
+      deploymentconfig: ${COMPONENT}
+    strategy:
+      activeDeadlineSeconds: 21600
+      resources: {}
+      rollingParams:
+        intervalSeconds: 1
+        maxSurge: 25%
+        maxUnavailable: 25%
+        timeoutSeconds: 600
+        updatePeriodSeconds: 1
+      type: Rolling
+    template:
+      metadata:
+        creationTimestamp: null
+        labels:
+          app: ${COMPONENT}
+          deploymentconfig: ${COMPONENT}
+      spec:
+        containers:
+        - env:
+          - name: JAVA_APP_JAR
+            value: ${JAR_NAME}${JAR_VERSION}.jar
+          - name: DBHOST
+            value: ${DATABASE_SERVICE_NAME}
+          - name: DBNAME
+            valueFrom:
+              secretKeyRef:
+                name: ${DATABASE_SERVICE_NAME}
+                key: database-name
+          - name: DBUSERNAME
+            valueFrom:
+              secretKeyRef:
+                name: ${DATABASE_SERVICE_NAME}
+                key: database-user
+          - name: DBPASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: ${DATABASE_SERVICE_NAME}
+                key: database-password
+          - name: PORTFOLIO_CRON
+            value: 0 * * * * *
+          - name: PORTFOLIO_READ_URI_PREFIX
+            value: mongodb
+          - name: PORTFOLIO_READ_URI_DATABASE
+            value: ${OTHER_DATABASE_SERVICE_NAME}
+          - name: PORTFOLIO_READ_DATABASE
+            valueFrom:
+              secretKeyRef:
+                name: ${OTHER_DATABASE_SERVICE_NAME}
+                key: database-name
+          - name: PORTFOLIO_READ_URI_USERNAME
+            valueFrom:
+              secretKeyRef:
+                name: ${OTHER_DATABASE_SERVICE_NAME}
+                key: database-user
+          - name: PORTFOLIO_READ_URI_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: ${OTHER_DATABASE_SERVICE_NAME}
+                key: database-password
+          - name: PORTFOLIO_WRITE_URI
+            value: mongodb://${OTHER_DATABASE_SERVICE_NAME}
+          - name: PORTFOLIO_WRITE_DATABASE
+            valueFrom:
+              secretKeyRef:
+                name: ${OTHER_DATABASE_SERVICE_NAME}
+                key: database-name
+          image: ${COMPONENT}:latest
+          imagePullPolicy: Always
+          name: ${COMPONENT}
+          ports:
+          - containerPort: 8080
+            protocol: TCP
+          - containerPort: 8443
+            protocol: TCP
+          - containerPort: 8778
+            protocol: TCP
+          resources: {}
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext: {}
+        terminationGracePeriodSeconds: 30
+    test: false
+    triggers:
+    - imageChangeParams:
+        automatic: true
+        containerNames:
+        - ${COMPONENT}
+        from:
+          kind: ImageStreamTag
+          name: ${COMPONENT}:latest
+      type: ImageChange
+    - type: ConfigChange
+- apiVersion: v1
+  kind: Service
+  metadata:
+    name: ${COMPONENT}-service
+  spec:
+    selector:
+      app: ${COMPONENT}
+    ports:
+    - protocol: TCP
+      port: 8080
+      targetPort: 8080
+parameters:
+  - name: COMPONENT
+  - name: JAR_NAME
+  - name: JAR_VERSION
+  - name: DATABASE_SERVICE_NAME
+  - name: OTHER_DATABASE_SERVICE_NAME
