@@ -90,9 +90,9 @@ objects:
         - destinationDir: .
           sourcePath: /opt/app-root/src/dist/.
         - destinationDir: ./nginx-default-cfg
-          sourcePath: /opt/app-root/src/docker/api.conf
+          sourcePath: /opt/app-root/src/docker/rhel/api.conf
         - destinationDir: ./nginx-start
-          sourcePath: /opt/app-root/src/docker/substitute-nginx-proxy-pass.sh
+          sourcePath: /opt/app-root/src/docker/rhel/substitute-nginx-proxy-pass.sh
       type: Image
     strategy:
       sourceStrategy:
@@ -119,6 +119,6 @@ parameters:
   - name: SOURCE_CODE_URL
     value: https://github.com/tomgeorge/Hygieia
   - name: SOURCE_CODE_REF
-    value: override-default-nginx-conf
+    value: master
   - name: SOURCE_CODE_CONTEXT
     value: /UI
