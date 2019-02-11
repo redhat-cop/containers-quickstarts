@@ -162,3 +162,47 @@ variable like `SONARQUBE_WEB_JVM_OPTS="-Dsonar.auth.google.allowUsersToSignUp=fa
   * displayName: Require Authentication
   * Description: Require authentication for all requests to sonarqube
   * Default Value: "true"
+
+## Example LDAP Configurations
+
+### OpenLDAP/FreeIPA/Red Hat Identity Manager
+```
+POSTGRES_DATABASE_NAME=sonar
+POSTGRES_PASSWORD=sonar
+POSTGRES_USERNAME=sonar
+SONAR_LDAP_STARTTLS=true
+SONAR_LDAP_BIND_DN=uid=admin,CN=users,CN=compat,DC=mycompany,DC=com
+SONAR_LDAP_BIND_PASSWORD='S0m3P4s$woRd'
+SONAR_LDAP_URL=ldaps://idm.mycompany.com:389
+SONAR_LDAP_AUTHENTICATION=simple
+SONAR_LDAP_USER_BASEDN=DC=mycompany,DC=com
+SONAR_LDAP_USER_REAL_NAME_ATTR=cn
+SONAR_LDAP_USER_EMAIL_ATTR=mail
+SONAR_LDAP_USER_REQUEST=(&(objectClass=inetOrgPerson)(uid={login}))
+SONAR_LDAP_GROUP_REQUEST=(&(objectClass=posixgroup)(memberUid={uid}))
+SONAR_LDAP_GROUP_BASEDN=DC=mycompany,DC=com
+SONAR_LDAP_GROUP_ID_ATTR=cn
+SONAR_AUTOCREATE_USERS=true
+SONAR_AUTH_REALM=LDAP
+```
+
+### Active Directory
+```
+POSTGRES_DATABASE_NAME=sonar
+POSTGRES_PASSWORD=sonar
+POSTGRES_USERNAME=sonar
+SONAR_LDAP_STARTTLS=false
+SONAR_LDAP_BIND_DN=uid=admin,CN=users,CN=compat,DC=mycompany,DC=com
+SONAR_LDAP_BIND_PASSWORD='S0m3P4s$woRd'
+SONAR_LDAP_URL=ldap://mycompany.com:389
+SONAR_LDAP_AUTHENTICATION=simple
+SONAR_LDAP_USER_BASEDN=DC=mycompany,DC=com
+SONAR_LDAP_USER_REAL_NAME_ATTR=cn
+SONAR_LDAP_USER_EMAIL_ATTR=mail
+SONAR_LDAP_USER_REQUEST=(&(objectClass=user)(sAMAccountName={login}))
+SONAR_LDAP_GROUP_REQUEST=(&(objectClass=group)(member={dn}))
+SONAR_LDAP_GROUP_BASEDN=DC=mycompany,DC=com
+SONAR_LDAP_GROUP_ID_ATTR=cn
+SONAR_AUTOCREATE_USERS=true
+SONAR_AUTH_REALM=LDAP
+```
