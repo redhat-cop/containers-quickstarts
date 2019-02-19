@@ -18,10 +18,8 @@ RUN INSTALL_PKGS="nodejs redhat-lsb libXScrnSaver xdg-utils liberation-fonts" &&
     rm google-chrome-stable_current_x86_64.rpm && \
     rpm -V $INSTALL_PKGS google-chrome-stable && \
     yum clean all -y && \
-    rm -rf /var/cache/yum
-
-USER root
-RUN npm install --unsafe-perm -g npm-audit-html npm-audit-ci-wrapper sonar-scanner || cat /home/jenkins/.npm/_logs/*-debug.log
-RUN sonar-scanner || echo
+    rm -rf /var/cache/yum && \
+    npm install --unsafe-perm -g npm-audit-html npm-audit-ci-wrapper sonar-scanner || cat /home/jenkins/.npm/_logs/*-debug.log && \
+    sonar-scanner || echo
 
 USER 1001
