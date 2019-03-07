@@ -9,7 +9,7 @@ For local running and experimentation run `docker run -i -t jenkins-slave-npm /b
 
 ## Build in OpenShift
 ```bash
-oc process -f ../templates/jenkins-slave-generic-template.yml \
+oc process -f ../.openshift/templates/jenkins-slave-generic-template.yml \
     -p NAME=jenkins-slave-npm \
     -p SOURCE_CONTEXT_DIR=jenkins-slaves/jenkins-slave-npm \
     | oc apply -f -
