@@ -14,6 +14,12 @@ ENV GO_VERSION=1.10.2 \
     GOPATH=/usr/src/go
 ENV PATH=$GOPATH/bin:$GOROOT/bin:$PATH
 
+WORKDIR /opt
+RUN curl -L -o /tmp/sonar-scanner.zip https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-3.3.0.1492.zip && \
+    unzip /tmp/sonar-scanner.zip && \
+    mv sonar-scanner-* sonar-scanner && \
+    ln -s /opt/sonar-scanner/bin/sonar-scanner /usr/local/bin/sonar-scanner && \
+    chmod 755 /usr/local/bin/sonar-scanner
 ADD https://dl.google.com/go/go${GO_VERSION}.linux-amd64.tar.gz /usr/
 RUN mkdir -p /usr/src/go/src/redhat && \
     tar -xzf /usr/go${GO_VERSION}.linux-amd64.tar.gz && \
