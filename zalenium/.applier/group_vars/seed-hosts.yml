@@ -1,0 +1,31 @@
+---
+namespace: zalenium
+app_name: zalenium
+
+app_params:
+  ZALENIUM_MEMORY_LIMIT: "2Gi"
+  ZALENIUM_CPU_LIMIT: "1000m"
+  VIDEOS_STORAGE_SIZE: "10G"
+  SLAVE_CPU_REQUEST: "100m"
+  SLAVE_CPU_LIMIT: "1000m"
+  SLAVE_MEMORY_REQUEST: "1Gi"
+  SLAVE_MEMORY_LIMIT: "2Gi"
+
+
+openshift_cluster_content:
+- object: Environment Setup
+  content:
+  - name: Create Projects
+    template: "{{ inventory_dir }}/../.openshift/templates/projects.yml"
+    action: create
+    params_from_vars:
+      NAMESPACE: "{{ namespace }}"
+      NAMESPACE_DISPLAY_NAME: "{{ namespace }}"
+    tags:
+      - project
+- object: deployments
+  content:
+  - name: Zalenium
+    template: "{{ inventory_dir }}/../.openshift/templates/zalenium-deployment.yml"
+    params_from_vars: "{{ app_params }}"
+    namespace: "{{ namespace }}"

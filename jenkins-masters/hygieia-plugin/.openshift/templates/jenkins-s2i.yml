@@ -1,0 +1,65 @@
+apiVersion: v1
+kind: Template
+labels:
+  template: jenkins2-s2i
+  group: jenkins2-s2i
+metadata:
+  annotations:
+    description: Creates the Jenkins2 image for CD Pipeline builds
+    iconClass: icon-jenkins
+    tags: instant-app,jenkins,cicd
+  name: jenkins2-s2i
+objects:
+# Jenkins2
+- apiVersion: v1
+  kind: ImageStream
+  metadata:
+    labels:
+      app: jenkins2-s2i
+      template: jenkins2-s2i
+    name: jenkins2-s2i
+- apiVersion: v1
+  kind: BuildConfig
+  metadata:
+    labels:
+      application: jenkins2-s2i
+      template: jenkins2-s2i
+    name: jenkins2-s2i
+  spec:
+    triggers:
+    - type: "ConfigChange"
+    - type: ImageChange
+      imageChange:
+        from:
+          kind: "ImageStreamTag"
+          name: "hygieia-plugin:latest"
+    output:
+      to:
+        kind: ImageStreamTag
+        name: jenkins2-s2i:latest
+    source:
+      git:
+        uri: ${SOURCE_CODE_URL}
+        ref: ${SOURCE_CODE_REF}
+      contextDir: jenkins-masters/hygieia-plugin/
+      images:
+      - as: null
+        from:
+          kind: ImageStreamTag
+          name: hygieia-plugin:latest
+        paths:
+        - destinationDir: jenkins-masters/hygieia-plugin/plugins
+          sourcePath: /tmp/src/target/hygieia-publisher.hpi
+      type: Image
+    strategy:
+      sourceStrategy:
+        from:
+          kind: ImageStreamTag
+          name: jenkins:latest
+          namespace: openshift
+      type: Source
+parameters:
+- name: SOURCE_CODE_URL
+  value: https://github.com/redhat-cop/containers-quickstarts.git
+- name: SOURCE_CODE_REF
+  value: master

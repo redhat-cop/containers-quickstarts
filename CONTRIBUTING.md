@@ -22,4 +22,4 @@
 
 ## Quickstart Model Example
 
-For a good example of what a quickstart should look like, see the [S2I Play](/s2i-play) directory.
+For a good example of what a quickstart should look like, see the [S2I Play](/build-s2i-play) directory.

@@ -1,0 +1,10 @@
+#!/bin/bash
+
+echo copying .jar, .war, .ear .rar in $S2I_DESTINATION to /config/dropins/
+find $S2I_DESTINATION/src -name \*.war -exec cp {} /config/dropins \;
+find $S2I_DESTINATION/src -name \*.ear -exec cp {} /config/dropins \;
+find $S2I_DESTINATION/src -name \*.jar -exec cp {} /config/dropins \;
+find $S2I_DESTINATION/src -name \*.rar -exec cp {} /config/dropins \;
+
+echo copying .xml in $S2I_DESTINATION/src to /config
+find $S2I_DESTINATION/src -name \*.xml -exec cp {} /config \;

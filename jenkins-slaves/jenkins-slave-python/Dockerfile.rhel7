@@ -1,4 +1,4 @@
-FROM openshift3/jenkins-slave-base-rhel7
+FROM openshift3/jenkins-slave-base-rhel7:v3.11
 
 EXPOSE 8080
 

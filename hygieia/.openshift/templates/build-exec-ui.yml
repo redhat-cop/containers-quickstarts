@@ -1,0 +1,120 @@
+apiVersion: v1
+kind: Template
+metadata:
+  creationTimestamp: null
+  name: build-${COMPONENT}
+objects:
+- apiVersion: v1
+  kind: ImageStream
+  metadata:
+    annotations:
+    creationTimestamp: null
+    generation: 1
+    labels:
+      app: ${COMPONENT}
+    name: build-${COMPONENT}
+- apiVersion: v1
+  kind: BuildConfig
+  metadata:
+    creationTimestamp: null
+    labels:
+      app: ${COMPONENT}
+    name: build-${COMPONENT}
+  spec:
+    nodeSelector: null
+    output:
+      to:
+        kind: ImageStreamTag
+        name: build-${COMPONENT}:latest
+    postCommit: {}
+    resources: {}
+    runPolicy: Serial
+    source:
+      contextDir: ${SOURCE_CODE_CONTEXT}
+      git:
+        ref: ${SOURCE_CODE_REF}
+        uri: ${SOURCE_CODE_URL}
+      type: Git
+    strategy:
+      sourceStrategy:
+        from:
+          kind: ImageStreamTag
+          name: nodejs:8
+          namespace: openshift
+      type: Source
+    triggers:
+    - imageChange: {}
+      type: ImageChange
+    - type: ConfigChange
+    - generic:
+        secret: 019d3db99764e75e
+      type: Generic
+    - github:
+        secret: dca9639337f3d252
+      type: GitHub
+  status:
+    lastVersion: 0
+- apiVersion: v1
+  kind: ImageStream
+  metadata:
+    annotations:
+      labels:
+        app: ${COMPONENT}
+    name: ${COMPONENT}
+    spec:
+      lookupPolicy:
+        local: false
+- apiVersion: v1
+  kind: BuildConfig
+  metadata:
+    creationTimestamp: null
+    labels:
+      app: ${COMPONENT}
+    name: ${COMPONENT}
+  spec:
+    nodeSelector: null
+    output:
+      to:
+        kind: ImageStreamTag
+        name: ${COMPONENT}:latest
+    postCommit: {}
+    resources: {}
+    runPolicy: Serial
+    source:
+      images:
+      - as: null
+        from:
+          kind: ImageStreamTag
+          name: build-${COMPONENT}:latest
+        paths:
+        - destinationDir: .
+          sourcePath: /opt/app-root/src/dist/.
+      type: Image
+    strategy:
+      sourceStrategy:
+        from:
+          kind: ImageStreamTag
+          name: nginx:latest
+          namespace: openshift
+      type: Source
+    successfulBuildsHistoryLimit: 5
+    triggers:
+    - imageChange: {}
+      type: ImageChange
+    - type: ConfigChange
+    - generic:
+        secret: 767b7d2dbfffde5d
+      type: Generic
+    - github:
+        secret: 1ba0322210651c63
+      type: GitHub
+  status:
+    lastVersion: 0
+parameters:
+  - name: COMPONENT
+  - name: SOURCE_CODE_URL
+    value: https://github.com/tomgeorge/Hygieia
+  - name: SOURCE_CODE_REF
+    value: override-default-nginx-conf
+  - name: SOURCE_CODE_CONTEXT
+    value: /UI

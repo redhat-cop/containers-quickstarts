@@ -1,0 +1,94 @@
+apiVersion: v1
+kind: Template
+metadata:
+  creationTimestamp: null
+  name: deployment-ui
+objects:
+- apiVersion: v1
+  kind: DeploymentConfig
+  metadata:
+    creationTimestamp: null
+    generation: 1
+    labels:
+      app: ${COMPONENT}
+    name: ${COMPONENT}
+  spec:
+    replicas: 1
+    selector:
+      deploymentconfig: ${COMPONENT}
+    strategy:
+      activeDeadlineSeconds: 21600
+      resources: {}
+      rollingParams:
+        intervalSeconds: 1
+        maxSurge: 25%
+        maxUnavailable: 25%
+        timeoutSeconds: 600
+        updatePeriodSeconds: 1
+      type: Rolling
+    template:
+      metadata:
+        creationTimestamp: null
+        labels:
+          app: ${COMPONENT}
+          deploymentconfig: ${COMPONENT}
+      spec:
+        containers:
+        - env:
+          - name: API_PORT
+            value: "8080"
+          - name: API_HOST
+            value: ${API_HOST}.${NAMESPACE}.svc
+          image: ${COMPONENT}:latest
+          imagePullPolicy: Always
+          name: ${COMPONENT}
+          ports:
+          - containerPort: 8080
+            protocol: TCP
+          resources: {}
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext: {}
+        terminationGracePeriodSeconds: 30
+    test: false
+    triggers:
+    - imageChangeParams:
+        automatic: true
+        containerNames:
+        - ${COMPONENT}
+        from:
+          kind: ImageStreamTag
+          name: ${COMPONENT}:latest
+      type: ImageChange
+    - type: ConfigChange
+- apiVersion: v1
+  kind: Route
+  metadata:
+    name: ${COMPONENT}-route
+  spec:
+    host: ${HOST}.${NAMESPACE}.${OPENSHIFT_DEFAULT_SUBDOMAIN}
+    to:
+      kind: Service
+      name: ${COMPONENT}-service
+- apiVersion: v1
+  kind: Service
+  metadata:
+    name: ${COMPONENT}-service
+  spec:
+    selector:
+      app: ${COMPONENT}
+    ports:
+    - protocol: TCP
+      port: 8080
+      targetPort: 8080
+parameters:
+- name: NAMESPACE
+- name: OPENSHIFT_DEFAULT_SUBDOMAIN
+- name: COMPONENT
+- name: HOST
+  value: hygieia
+- name: API_HOST
+  value: api-service
