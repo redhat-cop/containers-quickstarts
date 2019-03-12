@@ -153,6 +153,15 @@ objects:
       activeDeadlineSeconds: 21600
       recreateParams:
         timeoutSeconds: 600
+        post:
+          execNewPod:
+            command:
+            - /bin/sh
+            - -c
+            - sleep 30 && curl http://admin:admin@sonarqube:9000/api/webhooks/create
+              -X POST -d "name=jenkins&url=http://jenkins/sonarqube-webhook/"
+            containerName: sonarqube
+          failurePolicy: Abort
       resources:
         limits:
           cpu: "2"
