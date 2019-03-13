@@ -4,18 +4,6 @@ metadata:
   name: "sonarqube"
 objects:
 - apiVersion: v1
-  kind: Secret
-  stringData:
-    database-name: ${POSTGRES_DATABASE_NAME}
-    database-password: ${POSTGRES_PASSWORD}
-    database-user: ${POSTGRES_USERNAME}
-  metadata:
-    labels:
-      app: sonarqube
-      template: postgresql-persistent-template
-    name: sonardb
-  type: Opaque
-- apiVersion: v1
   stringData:
     password: ${SONAR_LDAP_BIND_PASSWORD}
     username: ${SONAR_LDAP_BIND_DN}
@@ -34,109 +22,6 @@ objects:
       requests:
         storage: ${SONARQUBE_PERSISTENT_VOLUME_SIZE}
   status: {}
-- apiVersion: v1
-  kind: DeploymentConfig
-  metadata:
-    generation: 1
-    labels:
-      app: sonarqube
-      template: postgresql-persistent-template
-    name: sonardb
-  spec:
-    replicas: 1
-    selector:
-      name: sonardb
-    strategy:
-      activeDeadlineSeconds: 21600
-      recreateParams:
-        timeoutSeconds: 600
-      resources: {}
-      type: Recreate
-    template:
-      metadata:
-        labels:
-          name: sonardb
-      spec:
-        containers:
-        - env:
-          - name: POSTGRESQL_USER
-            valueFrom:
-              secretKeyRef:
-                key: database-user
-                name: sonardb
-          - name: POSTGRESQL_PASSWORD
-            valueFrom:
-              secretKeyRef:
-                key: database-password
-                name: sonardb
-          - name: POSTGRESQL_DATABASE
-            valueFrom:
-              secretKeyRef:
-                key: database-name
-                name: sonardb
-          imagePullPolicy: IfNotPresent
-          livenessProbe:
-            failureThreshold: 3
-            initialDelaySeconds: 30
-            periodSeconds: 10
-            successThreshold: 1
-            tcpSocket:
-              port: 5432
-            timeoutSeconds: 1
-          name: postgresql
-          ports:
-          - containerPort: 5432
-            protocol: TCP
-          readinessProbe:
-            exec:
-              command:
-              - /bin/sh
-              - -i
-              - -c
-              - psql -h 127.0.0.1 -U $POSTGRESQL_USER -q -d $POSTGRESQL_DATABASE -c
-                'SELECT 1'
-            failureThreshold: 3
-            initialDelaySeconds: 5
-            periodSeconds: 10
-            successThreshold: 1
-            timeoutSeconds: 1
-          resources:
-            limits:
-              memory: ${POSTGRES_CONTAINER_MEMORY_SIZE_LIMIT}
-              cpu: ${POSTGRES_CONTAINER_CPU_LIMIT}
-            requests:
-              memory: 1Gi
-          securityContext:
-            capabilities: {}
-            privileged: false
-          terminationMessagePath: /dev/termination-log
-          terminationMessagePolicy: File
-          volumeMounts:
-          - mountPath: /var/lib/pgsql/data
-            name: sonardb-data
-        dnsPolicy: ClusterFirst
-        restartPolicy: Always
-        schedulerName: default-scheduler
-        securityContext: {}
-        terminationGracePeriodSeconds: 30
-        volumes:
-        - name: sonardb-data
-          persistentVolumeClaim:
-            claimName: sonardb
-    test: false
-    triggers:
-    - imageChangeParams:
-        automatic: true
-        containerNames:
-          - postgresql
-        from:
-          kind: ImageStreamTag
-          name: 'postgresql:9.6'
-          namespace: openshift
-        lastTriggeredImage: >-
-          registry.access.redhat.com/rhscl/postgresql-96-rhel7@sha256:2fea3ba5978862cc04ce5921462e9ca9caaec03f095c9b5c7be074358861b5c7
-      type: ImageChange
-    - type: ConfigChange
 - apiVersion: v1
   kind: DeploymentConfig
   metadata:
@@ -162,10 +47,6 @@ objects:
               -X POST -d "name=jenkins&url=http://jenkins/sonarqube-webhook/"
             containerName: sonarqube
           failurePolicy: Abort
-      resources:
-        limits:
-          cpu: "2"
-          memory: 2Gi
       type: Recreate
     template:
       metadata:
@@ -303,27 +184,6 @@ objects:
 - apiVersion: v1
   kind: Service
   metadata:
-    annotations:
-      template.openshift.io/expose-uri: postgres://{.spec.clusterIP}:{.spec.ports[?(.name=="postgresql")].port}
-    labels:
-      app: sonarqube
-      template: postgresql-persistent-template
-    name: sonardb
-  spec:
-    ports:
-    - name: postgresql
-      port: 5432
-      protocol: TCP
-      targetPort: 5432
-    selector:
-      name: sonardb
-    sessionAffinity: None
-    type: ClusterIP
-  status:
-    loadBalancer: {}
-- apiVersion: v1
-  kind: Service
-  metadata:
     labels:
       app: sonarqube
     name: sonarqube
@@ -339,59 +199,13 @@ objects:
     type: ClusterIP
   status:
     loadBalancer: {}
-- apiVersion: v1
-  kind: PersistentVolumeClaim
-  metadata:
-    labels:
-      app: sonarqube
-      template: postgresql-persistent-template
-    name: sonardb
-  spec:
-    accessModes:
-    - ReadWriteOnce
-    resources:
-      requests:
-        storage: ${POSTGRES_PERSISTENT_VOLUME_CLAIM_SIZE}
   status: {}
 parameters:
-  - description: Password for the Posgres Database to be used by Sonarqube
-    displayName: Postgres password
-    name: POSTGRES_PASSWORD
-    generate: expression
-    from: '[a-zA-Z0-9]{16}'
-    required: true
-  - description: Username for the Posgres Database to be used by Sonarqube
-    displayName: Postgres username
-    name: POSTGRES_USERNAME
-    generate: expression
-    from: 'user[a-z0-9]{8}'
-    required: true
   - description: Database name for the Posgres Database to be used by Sonarqube
     displayName: Postgres database name
     name: POSTGRES_DATABASE_NAME
     value: sonar
     required: true
-  - description: Postgres Persistent volume claim size
-    displayName: Postgres Persistent volume claim size
-    name: POSTGRES_PERSISTENT_VOLUME_CLAIM_SIZE
-    value: 5Gi
-    required: true
-  - description: Postgres Container Memory size limit
-    displayName: Postgres Container Memory size limit
-    name: POSTGRES_CONTAINER_MEMORY_SIZE_LIMIT
-    value: 1Gi
-  - description: Postgres Container CPU limit
-    displayName: Postgres Container CPU limit
-    name: POSTGRES_CONTAINER_CPU_LIMIT
-    value: 2000m
-  - name: SONARQUBE_MEMORY
-    description: SonarQube memory
-    displayName: SonarQube memory
-    value: 2Gi
-  - name: SONARQUBE_CPU
-    description: SonarQube Container CPU limit
-    displayName: SonarQube Container CPU limit
-    value: 2000m
   - name: SONARQUBE_PERSISTENT_VOLUME_SIZE
     description: The persistent storage volume for SonarQube to use for plugins/config/logs/etc...
     displayName: SonarQube Storage Space Size
