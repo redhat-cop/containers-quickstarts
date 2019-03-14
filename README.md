@@ -2,6 +2,8 @@
 
 This repository is meant to help bootstrap users of the OpenShift Container Platform to get started in building and using Source-to-Image to build applications to run in OpenShift.
 
+For more details on what a _Quickstart_ is, please read our [contribution guide](./CONTRIBUTING.md).
+
 ## What's In This Repo?
 
 This repo contains OpenShift related quickstarts of several different flavors.
@@ -13,6 +15,8 @@ A set of examples of deploying various technologies on OpenShift
 * [MongoDB Cluster StatefulSet](./mongodb)
 * [RabbitMQ Cluster StatefulSet](./rabbitmq)
 * [GitLab CE Deployment](./gitlab-ce)
+* [SonarQube](./sonarqube)
+* [Zalenium](./zalenium)
 
 ### Custom S2I Base Images
 
@@ -52,6 +56,8 @@ A set of buildConfigs for building custom Jenkins images for OpenShift.
 ## Related Content
 
 * [Container Pipelines](https://github.com/redhat-cop/container-pipelines) - A set of Jenkins piplines for OpenShift
+* [Labs CI/CD](https://github.com/rht-labs/labs-ci-cd) - A comprehensive end to end pipeline using many modern testing and quality tools
+* [OpenShift Templates](https://github.com/rht-labs/openshift-templates) - A library of OpenShift template examples & references
 
 ## Contributing
 
