@@ -58,6 +58,7 @@ A set of buildConfigs for building custom Jenkins images for OpenShift.
 * [Container Pipelines](https://github.com/redhat-cop/container-pipelines) - A set of Jenkins piplines for OpenShift
 * [Labs CI/CD](https://github.com/rht-labs/labs-ci-cd) - A comprehensive end to end pipeline using many modern testing and quality tools
 * [OpenShift Templates](https://github.com/rht-labs/openshift-templates) - A library of OpenShift template examples & references
+* [OpenShift Applier](https://github.com/redhat-cop/openshift-applier) - An automation framework for keeping manifests and templates applied to a cluster
 
 ## Contributing
 

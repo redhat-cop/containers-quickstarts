@@ -5,6 +5,15 @@ In the context of this repo, a _Quickstart_ is a collection of manifests, opensh
 | NOTE: If you have some interesting manifests or templates you would like to contribute as examples or references and they do not fit the description of a _quickstart_, please contribute them to https://github.com/rht-labs/openshift-templates |
 | --- |
 
+## Guiding Principles for Writing a Quickstart
+
+In general, a good quickstart should:
+
+- Serve as a standalone example of some sort of deployment to OpenShift
+- Have comprehensive, clear documentation
+- Follow the standard structure documented below
+- Be automated using [OpenShift Applier](https://github.com/redhat-cop/openshift-applier)
+
 ## Structure of a QuickStart
 
 This documents the expected directory structure of a Quickstart.
@@ -33,7 +42,7 @@ Describe the tools, environments, and assumed skills needed to understand the qu
 
 ## Deploy Quickstart
 
-As briefly as possible, walk through the steps to deploy. Ideally this step should just be the commands for running the applier inventory
+As briefly as possible, walk through the steps to deploy. Ideally this step should just be the commands for running the openshift-applier inventory
 
 ## Architecture and Details
 
