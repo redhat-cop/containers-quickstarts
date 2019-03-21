@@ -15,7 +15,6 @@ ENV NODEJS_VERSION=10 \
     PATH=$HOME/node_modules/.bin/:$HOME/.npm-global/bin/:$PATH \
     CHROME_BIN=/bin/google-chrome
 
-COPY contrib/bin/scl_enable /usr/local/bin/scl_enable
 ADD src/google-chrome.repo /etc/yum.repos.d/
 
 RUN INSTALL_PKGS="rh-nodejs${NODEJS_VERSION} rh-nodejs${NODEJS_VERSION}-npm rh-nodejs${NODEJS_VERSION}-nodejs-nodemon nss_wrapper redhat-lsb libXScrnSaver xdg-utils google-chrome-stable" && \
