@@ -1,5 +1,5 @@
 #invoke npm in jenkinsfile: sh "scl enable rh-nodejs6 'npm run build'"
-FROM openshift3/jenkins-slave-base-rhel7:v3.11
+FROM registry.access.redhat.com/openshift3/jenkins-slave-base-rhel7:v3.11
 
 LABEL com.redhat.component="jenkins-slave-nodejs-rhel7-docker" \
       name="openshift3/jenkins-slave-nodejs-rhel7" \
@@ -15,10 +15,9 @@ ENV NODEJS_VERSION=10 \
     PATH=$HOME/node_modules/.bin/:$HOME/.npm-global/bin/:$PATH \
     CHROME_BIN=/bin/google-chrome
 
-COPY contrib/bin/scl_enable /usr/local/bin/scl_enable
 ADD src/google-chrome.repo /etc/yum.repos.d/
 
-RUN INSTALL_PKGS="rh-nodejs${NODEJS_VERSION} rh-nodejs${NODEJS_VERSION}-npm rh-nodejs${NODEJS_VERSION}-nodejs-nodemon nss_wrapper redhat-lsb libXScrnSaver xdg-utils google-chrome-stable" && \
+RUN INSTALL_PKGS="npm nss_wrapper redhat-lsb libXScrnSaver xdg-utils google-chrome-stable" && \
     yum install -y --setopt=tsflags=nodocs \
       --disablerepo=* \
       --enablerepo=rhel-7-server-rpms \
@@ -29,7 +28,9 @@ RUN INSTALL_PKGS="rh-nodejs${NODEJS_VERSION} rh-nodejs${NODEJS_VERSION}-npm rh-n
       $INSTALL_PKGS && \
     yum clean all -y && \
     rm -rf /var/cache/yum && \
-    npm install -g npm-audit-html npm-audit-ci-wrapper sonar-scanner && \
-    sonar-scanner || echo
+    npm install --unsafe-perm -g npm-audit-html npm-audit-ci-wrapper sonar-scanner && \
+    chown root:root /home/jenkins -R && \
+    chmod 775 /home/jenkins/.config -R && \
+    chmod 775 /home/jenkins/.npm -R
 
 USER 1001
