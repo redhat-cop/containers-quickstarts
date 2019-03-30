@@ -69,3 +69,7 @@ parameters:
   name: CONTEXT_DIR
   required: false
   value: jenkins-slaves/jenkins-slave-image-mgmt
+- description: The RHEL releasever
+  name: RHEL_RELEASEVER
+  required: true
+  value: 7Server
