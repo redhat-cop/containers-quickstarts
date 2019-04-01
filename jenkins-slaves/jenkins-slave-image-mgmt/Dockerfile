@@ -11,9 +11,11 @@ LABEL com.redhat.component="jenkins-slave-image-mgmt" \
 USER root
 
 RUN INSTALL_PKGS="skopeo" && \
+    if [ -z $RHEL_RELEASEVER ] ; then RHEL_RELEASEVER=7Server ; fi && \
     yum install -y --setopt=tsflags=nodocs \
       --enablerepo=rhel-7-server-rpms \
       --enablerepo=rhel-7-server-extras-rpms \
+      --releasever=${RHEL_RELEASEVER} \
       $INSTALL_PKGS && \
     rpm -V $INSTALL_PKGS && \
     yum clean all
