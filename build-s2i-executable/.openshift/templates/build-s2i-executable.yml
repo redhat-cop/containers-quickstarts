@@ -34,6 +34,7 @@ objects:
       type: Git
     strategy:
       dockerStrategy:
+        dockerFilePath: ${DOCKERFILE_NAME}
         from:
           kind: ImageStreamTag
           name: rhel7:${BASE_IMAGE_TAG}
@@ -70,3 +71,7 @@ parameters:
   name: OUTPUT_IMAGE_TAG
   required: true
   value: latest
+- description: Name of the Dockerfile.
+  name: DOCKERFILE_NAME
+  required: true
+  value: Dockerfile
