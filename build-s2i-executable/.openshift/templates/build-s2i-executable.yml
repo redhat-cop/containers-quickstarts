@@ -34,7 +34,7 @@ objects:
       type: Git
     strategy:
       dockerStrategy:
-        dockerFilePath: ${DOCKERFILE_NAME}
+        dockerfilePath: ${DOCKERFILE_NAME}
         from:
           kind: ImageStreamTag
           name: rhel7:${BASE_IMAGE_TAG}
