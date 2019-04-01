@@ -17,6 +17,7 @@ A set of examples of deploying various technologies on OpenShift
 * [GitLab CE Deployment](./gitlab-ce)
 * [SonarQube](./sonarqube)
 * [Zalenium](./zalenium)
+* [Owasp-Zap](./owasp-zap)
 
 ### Custom S2I Base Images
 

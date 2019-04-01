@@ -1,0 +1,28 @@
+namespace: docker-build
+app_name: dockerbuild
+
+build:
+  NAME: "{{ app_name }}"
+  SOURCE_REPOSITORY_URL: https://github.com/redhat-cop/containers-quickstarts.git
+  SOURCE_REPOSITORY_REF: master
+  SOURCE_CONTEXT_DIR: owasp-zap
+
+openshift_cluster_content:
+- object: Environment Setup
+  content:
+  - name: Create Projects
+    template: "https://raw.githubusercontent.com/redhat-cop/cluster-lifecycle/v3.9.0/files/projectrequest/template.yml"
+    action: create
+    params_from_vars:
+      NAMESPACE: "{{ namespace }}"
+      NAMESPACE_DISPLAY_NAME: "{{ namespace }}"
+    tags:
+      - project
+- object: Builds
+  content:
+  - name: "{{ app_name }}"
+    template: "{{ inventory_dir }}/../.openshift/templates/docker-build-template.yml"
+    params_from_vars: "{{ build }}"
+    namespace: "{{ namespace }}"
+    tags:
+      - build
