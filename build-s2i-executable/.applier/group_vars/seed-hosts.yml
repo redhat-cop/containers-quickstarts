@@ -1,4 +1,5 @@
 namespace: build-s2i-executable
+app_params: {}
 
 openshift_cluster_content:
 - object: Environment Setup
@@ -16,5 +17,6 @@ openshift_cluster_content:
   - name: "build-s2i-executable"
     template: "{{ inventory_dir }}/../.openshift/templates/build-s2i-executable.yml"
     namespace: "{{ namespace }}"
+    params_from_vars: "{{ app_params }}"
     tags:
       - build
