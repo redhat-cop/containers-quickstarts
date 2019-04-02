@@ -1,0 +1,12 @@
+#!/bin/bash
+shopt -s dotglob
+
+echo "---> Installing executable binary ..."
+mv /tmp/src/* "$RUNTIME_DIRECTORY"
+
+echo "---> Fixing Permissions ..."
+find "$RUNTIME_DIRECTORY" -exec chgrp 0 {} \;
+find "$RUNTIME_DIRECTORY" -exec chmod gu+rxw {} \;
+find "$RUNTIME_DIRECTORY" -type d -exec chmod g+x {} +
+
+echo "Complete"
