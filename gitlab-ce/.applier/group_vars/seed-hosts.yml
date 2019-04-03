@@ -17,6 +17,8 @@ app_params:
   POSTGRESQL_VOL_SIZE: 5Gi
   GITLAB_ROOT_PASSWORD: secretpassword
   NAMESPACE: "{{ namespace }}"
+  SSL_CERTIFICATE: "<customer certificate base64 value>"
+  SSL_KEY: "<customer certificate private key base64 value>"
 
 
 openshift_cluster_content:
@@ -30,6 +32,7 @@ openshift_cluster_content:
       NAMESPACE_DISPLAY_NAME: "{{ namespace }}"
     tags:
       - project
+      
 - object: deployments
   content:
   - name: gitlab
