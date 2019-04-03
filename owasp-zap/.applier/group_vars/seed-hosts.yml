@@ -1,11 +1,15 @@
-namespace: docker-build
-app_name: dockerbuild
+namespace: zap
+app_name: zap
 
 build:
   NAME: "{{ app_name }}"
   SOURCE_REPOSITORY_URL: https://github.com/redhat-cop/containers-quickstarts.git
   SOURCE_REPOSITORY_REF: master
   SOURCE_CONTEXT_DIR: owasp-zap
+deploy:
+  NAME: "{{ app_name }}"
+  ZAP_IMAGE_STREAM_TAG: "{{ app_name }}:latest"
+  MEMORY_LIMIT: 2Gi
 
 openshift_cluster_content:
 - object: Environment Setup
@@ -21,8 +25,16 @@ openshift_cluster_content:
 - object: Builds
   content:
   - name: "{{ app_name }}"
-    template: "{{ inventory_dir }}/../.openshift/templates/docker-build-template.yml"
+    template: "{{ inventory_dir }}/../../build-docker-generic/.openshift/templates/docker-build-template.yml"
     params_from_vars: "{{ build }}"
     namespace: "{{ namespace }}"
     tags:
       - build
+- object: Deployments
+  content:
+  - name: "{{ app_name }}"
+    template: "{{ inventory_dir }}/../.openshift/templates/zap-deployment-template.yml"
+    params_from_vars: "{{ deploy }}"
+    namespace: "{{ namespace }}"
+    tags:
+    - deploy
