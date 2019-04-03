@@ -14,14 +14,52 @@ labels:
   createdBy: gitlab-ce-template
 objects:
 - kind: SecurityContextConstraints
-  apiVersion: v1
+  apiVersion: security.openshift.io/v1
+  allowHostDirVolumePlugin: false
+  allowHostIPC: false
+  allowHostNetwork: false
+  allowHostPID: false
+  allowHostPorts: false
+  allowPrivilegeEscalation: true
+  allowPrivilegedContainer: false
+  allowedCapabilities: null
+  defaultAddCapabilities: null
+  fsGroup:
+    type: RunAsAny
+  groups:
+  - system:cluster-admins
   metadata:
     annotations:
       kubernetes.io/description: anyuid provides all features of the restricted SCC
         but allows users to run with any UID and any GID.
-    name: anyuid
+    name: "${APPLICATION_NAME}-anyuid"
+  priority: 10
+  readOnlyRootFilesystem: false
+  requiredDropCapabilities:
+  - MKNOD
+  runAsUser:
+    type: RunAsAny
+  seLinuxContext:
+    type: MustRunAs
+  supplementalGroups:
+    type: RunAsAny
   users:
   - system:serviceaccount:${NAMESPACE}:${APPLICATION_NAME}-user
+  volumes:
+  - configMap
+  - downwardAPI
+  - emptyDir
+  - persistentVolumeClaim
+  - projected
+  - secret
+- apiVersion: v1
+  kind: Secret
+  data:
+    gitlab.crt: "${SSL_CERTIFICATE}"
+    gitlab.key: "${SSL_KEY}"
+  metadata:
+    name: gitlab-certs
+  type: Opaque
 - kind: ImageStream
   apiVersion: v1
   metadata:
@@ -30,10 +68,10 @@ objects:
       app: "${APPLICATION_NAME}"
   spec:
     tags:
-    - name: gitlab-10.2.3
+    - name: gitlab-11.9.1
       from:
         kind: DockerImage
-        name: gitlab/gitlab-ce:10.2.3-ce.0
+        name: gitlab/gitlab-ce:11.9.1-ce.0
 - kind: ImageStream
   apiVersion: v1
   metadata:
@@ -42,10 +80,10 @@ objects:
       app: "${APPLICATION_NAME}"
   spec:
     tags:
-    - name: 3.2.3
+    - name: 5.0.4
       from:
         kind: DockerImage
-        name: redis:3.2.3-alpine
+        name: redis:5.0.4-alpine
 - kind: ServiceAccount
   apiVersion: v1
   metadata:
@@ -59,17 +97,6 @@ objects:
   spec:
     strategy:
       type: Recreate
-      recreateParams:
-        pre:
-          failurePolicy: Retry
-          execNewPod:
-            containerName: gitlab-ce
-            command:
-            - bash
-            - -c
-            - test -e "/etc/gitlab/${APPLICATION_HOSTNAME}.crt" && { echo "Custom SSL certificates already present"; exit 0; }; /opt/gitlab/embedded/bin/openssl req -newkey rsa:2048 -nodes -keyout /etc/gitlab/${APPLICATION_HOSTNAME}.key -x509 -days 365 -out /etc/gitlab/${APPLICATION_HOSTNAME}.crt -subj "/C=GB/ST=London/L=London/O=Container and PaaS CoP/CN=${APPLICATION_HOSTNAME}"
-            volumes:
-            - gitlab-ce-volume-1
     triggers:
     - type: ConfigChange
     - type: ImageChange
@@ -79,7 +106,7 @@ objects:
         - gitlab-ce
         from:
           kind: ImageStreamTag
-          name: "${APPLICATION_NAME}:gitlab-10.2.3"
+          name: "${APPLICATION_NAME}:gitlab-11.9.1"
     replicas: 1
     test: false
     selector:
@@ -98,6 +125,15 @@ objects:
         - name: gitlab-ce-volume-2
           persistentVolumeClaim:
             claimName: "${APPLICATION_NAME}-data"
+        - name: gitlab-certificates
+          secret:
+            defaultMode: 420
+            items:
+            - key: "gitlab.crt"
+              path: "gitlab.crt"
+            - key: "gitlab.key"
+              path: "gitlab.key"
+            secretName: gitlab-certs
         containers:
         - name: gitlab-ce
           image: gitlab-ce
@@ -110,8 +146,8 @@ objects:
           - name: GITLAB_OMNIBUS_CONFIG
             value:
               external_url "https://${APPLICATION_HOSTNAME}/";
-              nginx['ssl_certificate']="/etc/gitlab/${APPLICATION_HOSTNAME}.crt";
-              nginx['ssl_certificate_key']="/etc/gitlab/${APPLICATION_HOSTNAME}.key";
+              nginx['ssl_certificate']="/etc/gitlab-ssl/gitlab.crt";
+              nginx['ssl_certificate_key']="/etc/gitlab-ssl/gitlab.key";
               gitlab_rails['gitlab_https']=true;
               gitlab_rails['gitlab_port']=443;
               root_pass='${GITLAB_ROOT_PASSWORD}';
@@ -121,19 +157,24 @@ objects:
               gitlab_rails['db_password']='${POSTGRESQL_PASSWORD}';
               gitlab_rails['db_username']='${POSTGRESQL_USER}';
               gitlab_rails['db_database']='${POSTGRESQL_DATABASE}';
-              redis['enable'] = false; gitlab_rails['redis_host']='${APPLICATION_NAME}-redis';
-              unicorn['worker_processes'] = ${UNICORN_WORKERS}; manage_accounts['enable'] = true;
-              manage_storage_directories['manage_etc'] = false; gitlab_shell['auth_file'] = '/gitlab-data/ssh/authorized_keys';
+              redis['enable'] = false; 
+              gitlab_rails['redis_host']='${APPLICATION_NAME}-redis';
+              unicorn['worker_processes'] = ${UNICORN_WORKERS}; 
+              manage_accounts['enable'] = true;
+              manage_storage_directories['manage_etc'] = false; 
+              gitlab_shell['auth_file'] = '/gitlab-data/ssh/authorized_keys';
               git_data_dirs({ 'default' => { 'path' => '/gitlab-data/git-data' } });
-              gitlab_rails['shared_path'] = '/gitlab-data/shared'; gitlab_rails['uploads_directory'] = '/gitlab-data/uploads';
+              gitlab_rails['shared_path'] = '/gitlab-data/shared'; 
+              gitlab_rails['uploads_directory'] = '/gitlab-data/uploads';
               gitlab_ci['builds_directory'] = '/gitlab-data/builds';
               prometheus_monitoring['enable'] = false;
               gitlab_rails['ldap_enabled'] = true;
               gitlab_rails['ldap_servers'] = { 'main' => { 'label' => '${LDAP_LABEL}', 'host' => '${LDAP_HOST}', 'port' => '${LDAP_PORT}', 'uid' => 'uid', 'bind_dn' => '${LDAP_BIND_DN}', 'password' => '${LDAP_PASSWORD}', 'encryption' => '${LDAP_ENCRYPTION}', 'verify_certificates' => ${LDAP_VERIFY_CERTIFICATE}, 'allow_username_or_email_login' => true, 'block_auto_created_users' => false, 'active_directory' => false, 'base' => '${LDAP_BASE}', 'user_filter' => '${LDAP_USER_FILTER}', 'attributes' => { 'username' => ['uid'], 'email' => ['mail'], 'name' => 'displayName' } } };
+              gitlab_rails['rack_attack_git_basic_auth'] = { 'enabled' => false, };
           resources:
             limits:
-              cpu: '1'
-              memory: 2Gi
+              cpu: '2'
+              memory: 6Gi
             requests:
               cpu: 500m
               memory: 1Gi
@@ -142,6 +183,9 @@ objects:
             mountPath: "/etc/gitlab"
           - name: gitlab-ce-volume-2
             mountPath: "/gitlab-data"
+          - name: gitlab-certificates
+            mountPath: /etc/gitlab-ssl
+          readOnly: true
           livenessProbe:
             httpGet:
               path: "/help"
@@ -188,7 +232,7 @@ objects:
         - gitlab-ce-redis
         from:
           kind: ImageStreamTag
-          name: "${APPLICATION_NAME}-redis:3.2.3"
+          name: "${APPLICATION_NAME}-redis:5.0.4"
     replicas: 1
     test: false
     selector:
@@ -247,7 +291,7 @@ objects:
             command:
             - "/usr/bin/scl"
             - enable
-            - rh-postgresql94
+            - rh-postgresql96
             - export PGPASSWORD='${POSTGRESQL_ADMIN_PASSWORD}'; psql -h '${APPLICATION_NAME}-postgresql'
               -U postgres -d ${POSTGRESQL_DATABASE} -c 'CREATE EXTENSION IF NOT EXISTS
               pg_trgm;'
@@ -268,7 +312,7 @@ objects:
         - gitlab-ce-postgresql
         from:
           kind: ImageStreamTag
-          name: postgresql:9.4
+          name: postgresql:9.6
           namespace: openshift
     replicas: 1
     test: false
@@ -318,7 +362,7 @@ objects:
           resources:
             limits:
               cpu: '1'
-              memory: 512Mi
+              memory: 1024Mi
             requests:
               cpu: 300m
               memory: 300Mi
@@ -528,7 +572,7 @@ parameters:
 - description: Volume size for GitLab data
   displayName: GitLab data volume size
   name: GITLAB_DATA_VOL_SIZE
-  value: 5Gi
+  value: 10Gi
 - description: Volume size for postgresql data
   displayName: postgresql volume size
   name: POSTGRESQL_VOL_SIZE
@@ -541,4 +585,12 @@ parameters:
   displayName: Namespace name where Gitlab CE will be deployed
   description: Namespace name where Gitlab CE will be deployed
   value: gitlab
+  required: true
+- name: SSL_CERTIFICATE
+  displayName: SSL Fullchain Certificate in base64 format
+  description: SSL Fullchain Certificate in base64 format
+  required: true
+- name: SSL_KEY
+  displayName: SSL Private Key Certificate in base64 format
+  description: SSL Private Key Certificate in base64 format
   required: true
