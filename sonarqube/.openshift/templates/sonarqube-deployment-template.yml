@@ -4,10 +4,10 @@ metadata:
   name: "sonarqube"
 objects:
 - apiVersion: v1
+  kind: Secret
   stringData:
     password: ${SONAR_LDAP_BIND_PASSWORD}
     username: ${SONAR_LDAP_BIND_DN}
-  kind: Secret
   metadata:
     name: sonar-ldap-bind-dn
   type: kubernetes.io/basic-auth
