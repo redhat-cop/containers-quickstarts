@@ -75,7 +75,7 @@ parameters:
 - name: SLAVE_IMAGE_TAG
   displayName: Image tag for Jenkins slave.
   description: This is the image tag used for the Jenkins slave.
-  value: v3.11
+  value: latest 
 - name: DOCKERFILE_PATH
   displayName: Path to Dockerfile
   description: Path for alternate Dockerfile to use for build
