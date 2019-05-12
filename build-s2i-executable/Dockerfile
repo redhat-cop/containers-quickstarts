@@ -1,4 +1,4 @@
-FROM centos:7
+FROM registry.redhat.io/ubi7/ubi-minimal
 
 LABEL \
     io.k8s.display-name="Executable Applications" \
@@ -12,9 +12,9 @@ ENV RUNTIME_DIRECTORY="/app"
 
 COPY s2i /usr/local/s2i
 
-RUN INSTALL_PKGS="tar" && \ 
-    yum -y --setopt=tsflags=nodocs install $INSTALL_PKGS && \
-    yum clean all && \
+RUN INSTALL_PKGS="tar shadow-utils" && \ 
+    microdnf --nodocs install $INSTALL_PKGS && \
+    microdnf clean all && \
     groupadd -r default -g 185 && useradd -u 1001 -r -g root -G default -m -d /home/default -s /sbin/nologin -c "Default user" default && \
     mkdir -p $RUNTIME_DIRECTORY && \
     chmod -R "ug+rwX" $RUNTIME_DIRECTORY && \
