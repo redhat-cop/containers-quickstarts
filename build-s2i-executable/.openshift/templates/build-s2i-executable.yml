@@ -10,7 +10,7 @@ objects:
 - apiVersion: v1
   kind: ImageStream
   metadata:
-    name: rhel7
+    name: ubi-minimal
   spec:
     dockerImageRepository: ${BASE_IMAGE_REGISTRY}
 - apiVersion: v1
@@ -37,7 +37,7 @@ objects:
         dockerfilePath: ${DOCKERFILE_NAME}
         from:
           kind: ImageStreamTag
-          name: rhel7:${BASE_IMAGE_TAG}
+          name: ubi-minimal:${BASE_IMAGE_TAG}
       type: Docker
     triggers:
     - imageChange: {}
@@ -62,7 +62,7 @@ parameters:
 - description: Location of the base image registry.
   name: BASE_IMAGE_REGISTRY
   required: true
-  value: registry.access.redhat.com/rhel7/rhel
+  value: registry.access.redhat.com/ubi7/ubi-minimal
 - description: Tag for the base image.
   name: BASE_IMAGE_TAG
   required: true
