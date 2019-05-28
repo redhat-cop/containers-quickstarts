@@ -1,0 +1,31 @@
+FROM openshift3/jenkins-slave-base-rhel7:v3.11
+
+LABEL com.redhat.component="jenkins-slave-cpp-rhel7-docker" \
+      name="openshift3/jenkins-slave-cpp-rhel7" \
+      version="3.11" \
+      architecture="x86_64" \
+      release="1" \
+      io.k8s.display-name="Jenkins Slave C/C++" \
+      io.k8s.description="The jenkins slave C/C++ image has the C/C++ runtime on top of the jenkins slave base image." \
+      io.openshift.tags="openshift,jenkins,slave,cpp,c"
+
+WORKDIR /opt
+
+# Install additional REPOs - if any
+COPY yum.repos.d/* /etc/yum.repos.d/
+
+RUN curl -L -o /tmp/sonar-scanner.zip https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-3.3.0.1492.zip && \
+    unzip /tmp/sonar-scanner.zip && \
+    mv sonar-scanner-* sonar-scanner && \
+    ln -s /opt/sonar-scanner/bin/sonar-scanner /usr/local/bin/sonar-scanner && \
+    chmod 755 /usr/local/bin/sonar-scanner
+
+
+# Install developer tools for C/C++
+RUN rpm -Uvh https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm && \
+      yum install -y \
+        doxygen gcc gcc-c++ make cmake zlib-devel wget libtool \
+        boost-devel qpid-cpp-client-devel qpid-proton-cpp-devel graphviz-devel \
+        tbb-devel openssl-devel libcurl-devel gnutls-devel sqlite-devel && \
+      yum clean all
+
