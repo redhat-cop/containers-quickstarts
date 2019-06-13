@@ -3,13 +3,14 @@ namespace: ipa
 app_name: ipa
 base_openshift_url: example.com 
 realm: "EXAMPLE.COM"
+admin_password: "Password123"
 
 params:
   IPA_SERVER_SERVICE: "{{ app_name }}"
   IPA_SERVER_IMAGE: "freeipa-server:rhel-7"
   IPA_SERVER_HOSTNAME: "{{ app_name }}.apps.{{ base_openshift_url }}"
   IPA_SERVER_INSTALL_OPTS: "-U -r {{ realm }} --setup-dns --no-forwarders --no-ntp"
-  IPA_ADMIN_PASSWORD: "Password123"
+  IPA_ADMIN_PASSWORD: "{{ admin_password }}"
   SERVICE_ACCOUNT_USEROOT: "{{ app_name }}-sa"
   VOLUME_CAPACITY: 1G
   TIMEOUT: 600
