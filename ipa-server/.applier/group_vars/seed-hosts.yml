@@ -1,0 +1,61 @@
+---
+namespace: ipa
+app_name: ipa
+base_openshift_url: example.com 
+realm: "EXAMPLE.COM"
+
+params:
+  IPA_SERVER_SERVICE: "{{ app_name }}"
+  IPA_SERVER_IMAGE: "freeipa-server:rhel-7"
+  IPA_SERVER_HOSTNAME: "{{ app_name }}.apps.{{ base_openshift_url }}"
+  IPA_SERVER_INSTALL_OPTS: "-U -r {{ realm }} --setup-dns --no-forwarders --no-ntp"
+  IPA_ADMIN_PASSWORD: "Password123"
+  SERVICE_ACCOUNT_USEROOT: "{{ app_name }}-sa"
+  VOLUME_CAPACITY: 1G
+  TIMEOUT: 600
+
+openshift_cluster_content:
+- object: Environment Setup
+  content:
+  - name: Create Projects
+    template: "https://raw.githubusercontent.com/redhat-cop/openshift-templates/v1.4.4/project-requests/create-project.yml"
+    action: create
+    params_from_vars:
+      NAMESPACE: "{{ namespace }}"
+      NAMESPACE_DISPLAY_NAME: "{{ namespace }}"
+    tags:
+      - project
+
+- object: Image Streams
+  content:
+  - name: "{{ app_name }}-streams"
+    file: "https://raw.githubusercontent.com/freeipa/freeipa-container/master/freeipa-server-openshift-image.json"
+    namespace: "{{ namespace }}"
+    tags:
+      - imagestream
+
+- object: Service Account
+  content:
+  - name: "{{ app_name }}-sa"
+    template: "https://raw.githubusercontent.com/redhat-cop/openshift-templates/master/service-accounts/generic-service-account.yml"
+    params_from_vars:
+      SA_NAME: "{{ params.SERVICE_ACCOUNT_USEROOT }}"
+      SA_NAMESPACE: "{{ namespace }}"
+    tags:
+      - serviceaccount
+  - name: "{{ app_name }}-sa-policy"
+    template: "https://raw.githubusercontent.com/redhat-cop/openshift-templates/master/scc/project-run-anyuid-template.yml"
+    params_from_vars:
+      NAMESPACE: "{{ namespace }}"
+      NAME: "{{ params.SERVICE_ACCOUNT_USEROOT }}"
+    tags:
+      - serviceaccount
+
+- object: Deployments
+  content:
+  - name: ipa
+    template: "https://raw.githubusercontent.com/freeipa/freeipa-container/master/freeipa-server-openshift.json"
+    params_from_vars: "{{ params }}"
+    namespace: "{{ namespace }}"
+    tags:
+      - deployment
