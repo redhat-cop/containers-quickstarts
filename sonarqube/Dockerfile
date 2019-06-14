@@ -1,7 +1,7 @@
 FROM docker.io/sonarqube:latest
 
 USER root
-ARG sonar_plugins="pmd gitlab github ldap"
+ARG sonar_plugins="pmd ldap"
 ADD sonar.properties /opt/sonarqube/conf/sonar.properties
 ADD run.sh /opt/sonarqube/bin/run.sh
 CMD /opt/sonarqube/bin/run.sh
