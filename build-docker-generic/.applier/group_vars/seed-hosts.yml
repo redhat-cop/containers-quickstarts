@@ -11,7 +11,7 @@ openshift_cluster_content:
 - object: Environment Setup
   content:
   - name: Create Projects
-    template: "https://raw.githubusercontent.com/redhat-cop/cluster-lifecycle/v3.9.0/files/projectrequest/template.yml"
+    template: "https://raw.githubusercontent.com/redhat-cop/openshift-templates/v1.4.5/project-requests/create-project.yml"
     action: create
     params_from_vars:
       NAMESPACE: "{{ namespace }}"
