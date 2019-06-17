@@ -35,4 +35,6 @@ ENV ZAP_PATH /zap/zap.sh
 ENTRYPOINT ["/zap/zap-daemon-openshift.sh"]
 CMD ["/zap/zap.sh", "-daemon", "-host", "0.0.0.0", "-port 9080", "-config", "api.addrs.addr.name=.*", "-config", "api.addrs.addr.regex=true", "-config", "api.disablekey=true"]
 
+EXPOSE 9080
+
 USER 1001
