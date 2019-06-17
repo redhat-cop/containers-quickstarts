@@ -1,53 +1,33 @@
-# This dockerfile builds the zap stable release
-FROM centos:centos7
-LABEL maintainer="Deven Phillips <deven.phillips@redhat.com>"
+FROM registry.access.redhat.com/openshift3/jenkins-slave-base-rhel7:latest
 
-RUN yum install -y epel-release && \
-    yum clean all && \
-    yum install -y redhat-rpm-config \
-    make automake autoconf gcc gcc-c++ \
-    libstdc++ libstdc++-devel \
-    java-1.8.0-openjdk wget curl \
-    xmlstarlet git x11vnc gettext tar \
-    xorg-x11-server-Xvfb openbox xterm \
-    net-tools python-pip \
-    firefox nss_wrapper java-1.8.0-openjdk-headless \
-    java-1.8.0-openjdk-devel nss_wrapper git && \
-    yum clean all && \
-    pip install --upgrade pip && \
-    pip install zapcli && \
-    pip install python-owasp-zap-v2.4 && \
-    mkdir -p /zap/wrk && \
-    mkdir -p /var/lib/jenkins/.vnc
+LABEL com.redhat.component="jenkins-slave-zap-rhel7-docker" \
+      name="openshift3/jenkins-slave-zap-rhel7" \
+      version="3.10" \
+      architecture="x86_64" \
+      release="1" \
+      io.k8s.display-name="Jenkins Slave ZAP" \
+      io.k8s.description="The jenkins slave ZAP image has the OWASP Zed Attack Proxy on top of the jenkins slave base image." \
+      io.openshift.tags="openshift,jenkins,slave,zap,owasp"
 
-ADD zap /zap/
+USER root
 
-# Copy the entrypoint
-COPY configuration/* /var/lib/jenkins/
-COPY configuration/run-jnlp-client /usr/local/bin/run-jnlp-client
-
-ENV JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64/ \
-    PATH=$JAVA_HOME/bin:/zap:$PATH \
-    ZAP_PATH=/zap/zap.sh \
-    HOME=/var/lib/jenkins \
-    ZAP_PORT=8080
-
-COPY policies /var/lib/jenkins/.ZAP/policies/
-COPY .xinitrc /var/lib/jenkins/
-
+ENV PATH /zap:/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin
 WORKDIR /zap
-# Download and expand the latest stable release 
-RUN curl -s https://raw.githubusercontent.com/zaproxy/zap-admin/master/ZapVersions-dev.xml | xmlstarlet sel -t -v //url |grep -i Linux | wget -q --content-disposition -i - -O - | tar zx --strip-components=1 && \
-    curl -s -L https://bitbucket.org/meszarv/webswing/downloads/webswing-2.3-distribution.zip | jar -x && \
-    touch AcceptedLicense && \
-    chown root:root /zap -R && \
-    chown root:root -R /var/lib/jenkins && \
-    chmod 777 /var/lib/jenkins -R && \
-    chmod 777 /zap -R
+RUN curl -s https://raw.githubusercontent.com/zaproxy/zap-admin/master/ZapVersions-dev.xml | \
+    grep "<url>" | grep ZAP | grep Linux | sed -e 's@^[^>]*>\([^<]*\).*$@\1@g' | xargs -n 1 curl -s -L -o zap.tar.gz && \
+    tar --strip-components=1 -xzf zap.tar.gz && \
+    rm -f zap.tar.gz && \
+    touch AcceptedLicense
 
-ADD webswing.config /zap/webswing-2.3/webswing.config
+COPY policies /home/jenkins/.ZAP/policies/
+COPY scripts /home/jenkins/.ZAP/scripts/
+RUN chown root:root /home/jenkins -R; \
+    chmod 770 /home/jenkins -R; \
+    chown root:root /home/jenkins/.ZAP -R; \
+    chmod 770 /home/jenkins/.ZAP -R; \ 
+    chown root:root /zap; \
+    chown 770 /zap -R
 
-WORKDIR /var/lib/jenkins
+ENV ZAP_PATH /zap/zap.sh
 
-# Run the Jenkins JNLP client
-ENTRYPOINT ["/usr/local/bin/run-jnlp-client"]
+USER 1001

@@ -2,11 +2,7 @@
 // By default it will raise 'Low' level alerts for content types that are not expected to be returned by APIs.
 // But it can be easily changed.
 
-// The following handles differences in printing between Java 7's Rhino JS engine
-// and Java 8's Nashorn JS engine
-if (typeof println == 'undefined') this.println = print;
-
-var pluginid = 100001	// https://github.com/zaproxy/zaproxy/blob/develop/src/doc/scanners.md
+var pluginid = 100001	// https://github.com/zaproxy/zaproxy/blob/develop/docs/scanners.md
 
 var extensionAlert = org.parosproxy.paros.control.Control.getSingleton().getExtensionLoader().getExtension(
 		org.zaproxy.zap.extension.alert.ExtensionAlert.NAME)
@@ -14,6 +10,8 @@ var extensionAlert = org.parosproxy.paros.control.Control.getSingleton().getExte
 var expectedTypes = [
 		"application/json",
 		"application/octet-stream",
+		"application/problem+json",
+		"application/problem+xml",
 		"application/soap+xml",
 		"application/xml",
 		"application/x-yaml",
@@ -26,6 +24,11 @@ function sendingRequest(msg, initiator, helper) {
 }
 
 function responseReceived(msg, initiator, helper) {
+	if (initiator == 7) { // CHECK_FOR_UPDATES_INITIATOR
+		// Not of interest.
+		return
+	}
+
 	if (extensionAlert != null) {
 		var ctype = msg.getResponseHeader().getHeader("Content-Type")
 		if (ctype != null) {
@@ -66,9 +69,6 @@ function responseReceived(msg, initiator, helper) {
 							break
 						case 6:	// MANUAL_REQUEST_INITIATOR
 							type = 15 // User 
-							break
-						case 7:	// CHECK_FOR_UPDATES_INITIATOR
-							type = 1 // Proxied 
 							break
 						case 8:	// BEAN_SHELL_INITIATOR
 							type = 15 // User 
