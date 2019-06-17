@@ -19,20 +19,20 @@ RUN curl -s https://raw.githubusercontent.com/zaproxy/zap-admin/master/ZapVersio
     rm -f zap.tar.gz && \
     touch AcceptedLicense
 
-COPY policies /home/jenkins/.ZAP/policies/
-COPY scripts /home/jenkins/.ZAP/scripts/
-RUN chown root:root /home/jenkins -R; \
-    chmod 770 /home/jenkins -R; \
-    chown root:root /home/jenkins/.ZAP -R; \
-    chmod 770 /home/jenkins/.ZAP -R; \
-    chown root:root /zap; \
-    chown 770 /zap -R; \
-    /sbin/update-alternatives --auto java
+COPY policies /zap/.ZAP/policies/
+COPY scripts /zap/.ZAP/scripts/
+COPY zap /zap/
+RUN chown root:root /zap -R; \
+    chmod 770 /zap -R; \
+    chown root:root /zap/.ZAP -R; \
+    chmod 770 /zap/.ZAP -R; \
+    /sbin/update-alternatives --auto java; \
+    chown root:root /etc/passwd; \
+    chmod 664 /etc/passwd
 
 ENV ZAP_PATH /zap/zap.sh
 
-
-
-ENTRYPOINT ["/zap/zap.sh", "-daemon", "-host", "0.0.0.0", "-port 9080", "-config", "api.addrs.addr.name=.*", "-config", "api.addrs.addr.regex=true", "-config", "api.disablekey=true"]
+ENTRYPOINT ["/zap/zap-daemon-openshift.sh"]
+CMD ["/zap/zap.sh", "-daemon", "-host", "0.0.0.0", "-port 9080", "-config", "api.addrs.addr.name=.*", "-config", "api.addrs.addr.regex=true", "-config", "api.disablekey=true"]
 
 USER 1001
