@@ -1,0 +1,35 @@
+FROM openjdk:8
+
+LABEL com.redhat.component="zap-rhel7-docker" \
+      name="openjdk" \
+      version="1.6-20" \
+      architecture="x86_64" \
+      release="1" \
+      io.k8s.display-name="OWASP Zed Attack Proxy" \
+      io.k8s.description="The ZAP image has the OWASP Zed Attack Proxy on top of the RHEL OpenJDK base image." \
+      io.openshift.tags="openshift,zap,owasp"
+
+USER root
+
+ENV PATH /zap:/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin
+WORKDIR /zap
+RUN curl -s https://raw.githubusercontent.com/zaproxy/zap-admin/master/ZapVersions-dev.xml | \
+    grep "<url>" | grep ZAP | grep Linux | sed -e 's@^[^>]*>\([^<]*\).*$@\1@g' | xargs -n 1 curl -s -L -o zap.tar.gz && \
+    tar --strip-components=1 -xzf zap.tar.gz && \
+    rm -f zap.tar.gz && \
+    touch AcceptedLicense
+
+COPY policies /home/jenkins/.ZAP/policies/
+COPY scripts /home/jenkins/.ZAP/scripts/
+RUN chown root:root /home/jenkins -R; \
+    chmod 770 /home/jenkins -R; \
+    chown root:root /home/jenkins/.ZAP -R; \
+    chmod 770 /home/jenkins/.ZAP -R; \
+    chown root:root /zap; \
+    chown 770 /zap -R
+
+ENV ZAP_PATH /zap/zap.sh
+
+ENTRYPOINT ["/zap/zap.sh", "-daemon", "-host", "0.0.0.0", "-port 9080", "-config", "api.addrs.addr.name=.*", "-config", "api.addrs.addr.regex=true", "-config", "api.disablekey=true"]
+
+USER 1001
