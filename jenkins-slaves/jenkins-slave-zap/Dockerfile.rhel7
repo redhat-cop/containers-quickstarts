@@ -1,4 +1,4 @@
-FROM openjdk:8
+FROM registry.redhat.io/redhat-openjdk-18/openjdk18-openshift:latest
 
 LABEL com.redhat.component="zap-rhel7-docker" \
       name="openjdk" \
@@ -26,9 +26,12 @@ RUN chown root:root /home/jenkins -R; \
     chown root:root /home/jenkins/.ZAP -R; \
     chmod 770 /home/jenkins/.ZAP -R; \
     chown root:root /zap; \
-    chown 770 /zap -R
+    chown 770 /zap -R; \
+    /sbin/update-alternatives --auto java
 
 ENV ZAP_PATH /zap/zap.sh
+
+
 
 ENTRYPOINT ["/zap/zap.sh", "-daemon", "-host", "0.0.0.0", "-port 9080", "-config", "api.addrs.addr.name=.*", "-config", "api.addrs.addr.regex=true", "-config", "api.disablekey=true"]
 
