@@ -31,3 +31,5 @@ before_script:
 
 script:
   - oc whoami
+  - oc new-project containers-quickstarts-tests
+  - oc process -f jenkins-slaves/.openshift/templates/jenkins-slave-ruby-template.yml | oc apply -f-
