@@ -1,6 +1,6 @@
 env:
   global:
-    - OC_BINARY_URL=https://mirror.openshift.com/pub/openshift-v3/clients/3.11.104/linux/oc.tar.gz
+    - OC_BINARY_URL=https://mirror.openshift.com/pub/openshift-v3/clients/3.11.98/linux/oc.tar.gz
 
 before_install:
   - sudo apt-get update -qq
