@@ -1,6 +1,6 @@
 env:
   global:
-    - OC_BINARY_URL=https://mirror.openshift.com/pub/openshift-v3/clients/3.10.45/linux/oc.tar.gz
+    - OC_BINARY_URL=https://mirror.openshift.com/pub/openshift-v3/clients/3.11.104/linux/oc.tar.gz
 
 before_install:
   - sudo apt-get update -qq
@@ -36,4 +36,9 @@ before_script:
 script:
   - oc whoami
   - oc new-project containers-quickstarts-tests
-  - oc process -f jenkins-slaves/.openshift/templates/jenkins-slave-ruby-template.yml | oc apply -f-
+  - |
+    oc process -f jenkins-slaves/.openshift/templates/jenkins-slave-ruby-template.yml \
+    -p SOURCE_REPOSITORY_URL=https://github.com/${TRAVIS_REPO_SLUG}.git \
+    -p SOURCE_REPOSITORY_REF=${TRAVIS_BRANCH}
+    | oc apply -f-
+  - oc start-build jenkins-slave-ruby --wait --follow
