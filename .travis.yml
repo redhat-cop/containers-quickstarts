@@ -41,6 +41,6 @@ script:
   - |
     oc process -f jenkins-slaves/.openshift/templates/jenkins-slave-ruby-template.yml \
     -p SOURCE_REPOSITORY_URL=https://github.com/${TRAVIS_REPO_SLUG}.git \
-    -p SOURCE_REPOSITORY_REF=${TRAVIS_BRANCH}
+    -p SOURCE_REPOSITORY_REF=${TRAVIS_BRANCH} \
     | oc apply -f-
   - oc start-build jenkins-slave-ruby --wait --follow
