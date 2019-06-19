@@ -1,0 +1,33 @@
+before_install:
+  - sudo apt-get update -qq
+
+install:
+  # Configure OpenShift Binary
+  - sudo wget -qO- ${OC_BINARY_URL} | sudo tar -xvz -C /bin
+
+before_script:
+  # Configure Docker
+  - sudo service docker stop
+  - sudo mkdir -p /etc/docker
+  - echo '{"insecure-registries":["172.30.0.0/16"]}' | sudo tee /etc/docker/daemon.json
+  - sudo service docker start
+  # Launch OpenShift Environment
+  - |
+    set +e
+    built=false
+    while true; do
+      DEV=$(ip link | awk '/state UP/{ gsub(":", ""); print $2}')
+      IP_ADDR=$(ip addr show $DEV | awk '/inet /{ gsub("/.*", ""); print $2}')
+      oc cluster up --public-hostname=${IP_ADDR} --routing-suffix=${IP_ADDR}.nip.io --base-dir=/home/travis/ocp
+      if [ "$?" -eq 0 ]; then
+        built=true
+        break
+      fi
+      echo "Retrying oc cluster up after failure"
+      oc cluster down
+      sleep 5
+    done
+    echo "OpenShift Cluster Running"
+
+script:
+  - oc whoami
