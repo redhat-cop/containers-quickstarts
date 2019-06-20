@@ -1,13 +1,13 @@
-FROM registry.redhat.io/redhat-openjdk-18/openjdk18-openshift:latest
+FROM registry.access.redhat.com/openshift3/jenkins-slave-base-rhel7:latest
 
-LABEL com.redhat.component="zap-rhel7-docker" \
-      name="openjdk" \
-      version="1.6-20" \
+LABEL com.redhat.component="jenkins-slave-zap-rhel7-docker" \
+      name="openshift3/jenkins-slave-zap-rhel7" \
+      version="3.11" \
       architecture="x86_64" \
       release="1" \
-      io.k8s.display-name="OWASP Zed Attack Proxy" \
-      io.k8s.description="The ZAP image has the OWASP Zed Attack Proxy on top of the RHEL OpenJDK base image." \
-      io.openshift.tags="openshift,zap,owasp"
+      io.k8s.display-name="Jenkins Slave ZAP" \
+      io.k8s.description="The jenkins slave ZAP image has the OWASP Zed Attack Proxy on top of the jenkins slave base image." \
+      io.openshift.tags="openshift,jenkins,slave,zap,owasp"
 
 USER root
 
@@ -19,22 +19,15 @@ RUN curl -s https://raw.githubusercontent.com/zaproxy/zap-admin/master/ZapVersio
     rm -f zap.tar.gz && \
     touch AcceptedLicense
 
-COPY policies /zap/.ZAP/policies/
-COPY scripts /zap/.ZAP/scripts/
-COPY zap /zap/
-RUN chown root:root /zap -R; \
-    chmod 770 /zap -R; \
-    chown root:root /zap/.ZAP -R; \
-    chmod 770 /zap/.ZAP -R; \
-    /sbin/update-alternatives --auto java; \
-    chown root:root /etc/passwd; \
-    chmod 664 /etc/passwd
+COPY policies /home/jenkins/.ZAP/policies/
+COPY scripts /home/jenkins/.ZAP/scripts/
+RUN chown root:root /home/jenkins -R; \
+    chmod 770 /home/jenkins -R; \
+    chown root:root /home/jenkins/.ZAP -R; \
+    chmod 770 /home/jenkins/.ZAP -R; \ 
+    chown root:root /zap; \
+    chown 770 /zap -R
 
 ENV ZAP_PATH /zap/zap.sh
-
-ENTRYPOINT ["/zap/zap-daemon-openshift.sh"]
-CMD ["/zap/zap.sh", "-daemon", "-host", "0.0.0.0", "-port 9080", "-config", "api.addrs.addr.name=.*", "-config", "api.addrs.addr.regex=true", "-config", "api.disablekey=true"]
-
-EXPOSE 9080
 
 USER 1001

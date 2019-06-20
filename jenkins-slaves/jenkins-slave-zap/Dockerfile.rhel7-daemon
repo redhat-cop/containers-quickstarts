@@ -1,0 +1,40 @@
+FROM registry.redhat.io/redhat-openjdk-18/openjdk18-openshift:latest
+
+LABEL com.redhat.component="zap-rhel7-daemon" \
+      name="openjdk" \
+      version="1.6-20" \
+      architecture="x86_64" \
+      release="1" \
+      io.k8s.display-name="OWASP Zed Attack Proxy" \
+      io.k8s.description="The ZAP image has the OWASP Zed Attack Proxy on top of the RHEL OpenJDK base image." \
+      io.openshift.tags="openshift,zap,owasp"
+
+USER root
+
+ENV PATH /zap:/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin
+WORKDIR /zap
+RUN curl -s https://raw.githubusercontent.com/zaproxy/zap-admin/master/ZapVersions-dev.xml | \
+    grep "<url>" | grep ZAP | grep Linux | sed -e 's@^[^>]*>\([^<]*\).*$@\1@g' | xargs -n 1 curl -s -L -o zap.tar.gz && \
+    tar --strip-components=1 -xzf zap.tar.gz && \
+    rm -f zap.tar.gz && \
+    touch AcceptedLicense
+
+COPY policies /zap/.ZAP/policies/
+COPY scripts /zap/.ZAP/scripts/
+COPY zap /zap/
+RUN chown root:root /zap -R; \
+    chmod 770 /zap -R; \
+    chown root:root /zap/.ZAP -R; \
+    chmod 770 /zap/.ZAP -R; \
+    /sbin/update-alternatives --auto java; \
+    chown root:root /etc/passwd; \
+    chmod 664 /etc/passwd
+
+ENV ZAP_PATH /zap/zap.sh
+
+ENTRYPOINT ["/zap/zap-daemon-openshift.sh"]
+CMD ["/zap/zap.sh", "-daemon", "-host", "0.0.0.0", "-port 8080", "-config", "api.addrs.addr.name=.*", "-config", "api.addrs.addr.regex=true", "-config", "api.disablekey=true"]
+
+EXPOSE 8080 8778
+
+USER 1001

@@ -1,8 +1,8 @@
-FROM registry.access.redhat.com/openshift3/jenkins-slave-base-rhel7:latest
+FROM openshift/jenkins-2-centos7
 
-LABEL com.redhat.component="jenkins-slave-zap-rhel7-docker" \
-      name="openshift3/jenkins-slave-zap-rhel7" \
-      version="3.10" \
+LABEL com.redhat.component="jenkins-slave-zap-centos-docker" \
+      name="openshift3/jenkins-slave-zap-centos" \
+      version="3.11" \
       architecture="x86_64" \
       release="1" \
       io.k8s.display-name="Jenkins Slave ZAP" \

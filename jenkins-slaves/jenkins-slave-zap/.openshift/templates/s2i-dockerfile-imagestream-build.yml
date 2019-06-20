@@ -1,0 +1,80 @@
+---
+kind: Template
+apiVersion: v1
+metadata:
+  name: "${NAME}"
+  annotations:
+    openshift.io/display-name: Generic Dockerfile Build
+objects:
+- kind: ImageStream
+  apiVersion: image.openshift.io/v1
+  metadata:
+    name: ${NAME}
+  spec:
+    lookupPolicy:
+      local: false
+- kind: BuildConfig
+  apiVersion: build.openshift.io/v1
+  metadata:
+    labels:
+      build: "${NAME}"
+      template: docker-build-template-binary-with-push-secret
+    name: "${NAME}"
+  spec:
+    failedBuildsHistoryLimit: 5
+    output:
+      to:
+        kind: ImageStream
+        name: "${NAME}:latest"
+    postCommit: {}
+    resources: {}
+    runPolicy: Serial
+    source:
+      contextDir: ${SOURCE_CONTEXT_DIR}
+      git:
+        ref: ${SOURCE_REPOSITORY_REF}
+        uri: ${SOURCE_REPOSITORY_URL}
+      type: Git
+    strategy:
+      dockerStrategy:
+        dockerfilePath: Dockerfile.rhel7-daemon
+        from:
+          kind: ImageStreamTag
+          namespace: openshift
+          name: "${BUILDER_IMAGE_NAME}"
+      type: Source
+    successfulBuildsHistoryLimit: 5
+    triggers:
+      - type: "configChange"
+      - type: "imageChange"
+        imageChange:
+          from:
+            kind: "ImageStreamTag"
+            namespace: openshift
+            name: "${BUILDER_IMAGE_NAME}"
+parameters:
+- name: NAME
+  displayName: Name
+  description: The name assigned to all objects.
+  required: true
+- name: DOCKERFILE_NAME
+  displayName: Docker file path.
+  description: Docker file path.
+  required: true
+  value: Dockerfile.rhel7-daemon
+- name: SOURCE_REPOSITORY_URL
+  displayName: Git Repository URL
+  description: The git URL for the source code
+  required: true
+- name: SOURCE_REPOSITORY_REF
+  displayName: Tag or Branch to checkout from Git
+  description: Tag or Branch to checkout from Git
+  required: true
+  value: master
+- name: SOURCE_CONTEXT_DIR
+  displayName: Context Directory
+  description: The subdirectory within the Git project where the Docker build artifacts are located
+- name: BUILDER_IMAGE_NAME
+  displayName: ImageStreamTag name from which to build this pod
+  description: The ImageStreamTag which this build pod will extend to create it's new build pod type.
+  required: true

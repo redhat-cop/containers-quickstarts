@@ -1,0 +1,71 @@
+---
+kind: Template
+apiVersion: v1
+metadata:
+  name: app-deploy
+  annotations:
+    openshift.io/display-name: App Deploy Template
+    description: A template to deploy your an App
+    iconClass: icon-cube
+    tags: app-deploy
+objects:
+- apiVersion: v1
+  kind: ImageStream
+  metadata:
+    labels:
+      build: "${NAME}"
+    name: "${NAME}"
+  spec: {}
+- apiVersion: v1
+  kind: DeploymentConfig
+  metadata:
+    name: "${NAME}"
+    labels:
+      app: "${NAME}"
+  spec:
+    replicas: 1
+    selector:
+      name: "${NAME}"
+    strategy:
+      activeDeadlineSeconds: 21600
+      resources: {}
+      rollingParams:
+        intervalSeconds: 1
+        maxSurge: 25%
+        maxUnavailable: 25%
+        timeoutSeconds: 600
+        updatePeriodSeconds: 1
+      type: Rolling
+    template:
+      metadata:
+        labels:
+          name: "${NAME}"
+      spec:
+        containers:
+        - image: "${NAME}"
+          imagePullPolicy: Always
+          name: "${NAME}"
+          resources: {}
+          terminationMessagePath: "/dev/termination-log"
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+        securityContext: {}
+        terminationGracePeriodSeconds: 30
+    test: false
+    triggers:
+    - type: ConfigChange
+    - imageChangeParams:
+        automatic: true
+        containerNames:
+        - "${NAME}"
+        from:
+          kind: ImageStreamTag
+          name: "${NAME}:latest"
+      type: ImageChange
+parameters:
+- name: NAME
+  displayName: Name
+  description: The name assigned to all objects and the related imagestream.
+  required: true
+labels:
+  template: app-deploy-template
