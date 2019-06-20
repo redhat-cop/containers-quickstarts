@@ -20,11 +20,11 @@ cluster_up() {
   echo "OpenShift Cluster Running"
 }
 
-setup() {
+applier() {
   echo "${TRAVIS_BRANCH:=master}"
   echo "${TRAVIS_REPO_SLUG:=redhat-cop/containers-quickstarts}"
-  ansible-galaxy install -r jenkins-slaves/requirements.yml -p galaxy --force
-  ansible-playbook -i jenkins-slaves/.applier/ galaxy/openshift-applier/playbooks/openshift-cluster-seed.yml -e namespace=containers-quickstarts-tests -e slave_repo_ref=${TRAVIS_BRANCH} -e repository_url=https://github.com/${TRAVIS_REPO_SLUG}.git
+  ansible-galaxy install -r requirements.yml -p galaxy --force
+  ansible-playbook -i .applier/ galaxy/openshift-applier/playbooks/openshift-cluster-seed.yml -e namespace=containers-quickstarts-tests -e slave_repo_ref=${TRAVIS_BRANCH} -e repository_url=https://github.com/${TRAVIS_REPO_SLUG}.git
 }
 
 get_build_phases() {

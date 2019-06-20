@@ -33,7 +33,7 @@ before_script:
   # Launch OpenShift Environment
   - _test/setup.sh cluster_up
   # Run Applier to provision all of the builds
-  - _test/setup.sh setup
+  - _test/setup.sh applier
 
 script:
   # Test to ensure that builds all succeed
