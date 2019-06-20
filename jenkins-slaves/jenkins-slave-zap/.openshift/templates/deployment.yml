@@ -45,6 +45,9 @@ objects:
         - image: "${NAME}"
           imagePullPolicy: Always
           name: "${NAME}"
+          ports:
+            - containerPort: 8080
+              protocol: TCP
           resources: {}
           terminationMessagePath: "/dev/termination-log"
         dnsPolicy: ClusterFirst
