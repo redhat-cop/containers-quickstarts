@@ -1,13 +1,28 @@
 dist: xenial
+language: python
+python:
+  - "2.7"
+  - "3.7"
+
+cache:
+  directories:
+    - $HOME/.cache/pip
 
 env:
   global:
+    - ANSIBLE_HOST_KEY_CHECKING=False
+    - PIP_DOWNLOAD_CACHE=$HOME/.cache/pip
     - OC_BINARY_URL=https://mirror.openshift.com/pub/openshift-v3/clients/3.10.45/linux/oc.tar.gz
+  matrix:
+    - ANSIBLE_VERSION="2.7"
 
 before_install:
   - sudo apt-get update -qq
 
 install:
+  - pip install -U pip
+  - if [ "$ANSIBLE_VERSION" = "latest" ]; then pip install ansible; else pip install ansible~=$ANSIBLE_VERSION; fi
+  #- pip install "ansible-lint<4.0" yamllint flake8 molecule docker "pytest<3.10" "testinfra==3.0.4"
   # Configure OpenShift Binary
   - sudo wget -qO- ${OC_BINARY_URL} | sudo tar -xvz -C /bin
 
@@ -18,29 +33,10 @@ before_script:
   - echo '{"insecure-registries":["172.30.0.0/16"]}' | sudo tee /etc/docker/daemon.json
   - sudo service docker start
   # Launch OpenShift Environment
-  - |
-    set +e
-    built=false
-    while true; do
-      DEV=$(ip link | awk '/state UP/{ gsub(":", ""); print $2}')
-      IP_ADDR=$(ip addr show $DEV | awk '/inet /{ gsub("/.*", ""); print $2}')
-      oc cluster up --public-hostname=${IP_ADDR} --routing-suffix=${IP_ADDR}.nip.io --base-dir=/home/travis/ocp
-      if [ "$?" -eq 0 ]; then
-        built=true
-        break
-      fi
-      echo "Retrying oc cluster up after failure"
-      oc cluster down
-      sleep 5
-    done
-    echo "OpenShift Cluster Running"
+  - _test/setup.sh cluster_up
+  # Run Applier to provision all of the builds
+  - _test/setup.sh setup
 
 script:
-  - oc whoami
-  - oc new-project containers-quickstarts-tests
-  - |
-    oc process -f jenkins-slaves/.openshift/templates/jenkins-slave-ruby-template.yml \
-    -p SOURCE_REPOSITORY_URL=https://github.com/${TRAVIS_REPO_SLUG}.git \
-    -p SOURCE_REPOSITORY_REF=${TRAVIS_BRANCH} \
-    | oc apply -f-
-  - oc start-build jenkins-slave-ruby --wait --follow
+  # Test to ensure that builds all succeed
+  - _test/setup.sh test

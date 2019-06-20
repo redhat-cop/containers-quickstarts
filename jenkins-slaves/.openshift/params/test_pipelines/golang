@@ -1,0 +1,2 @@
+NAME=jenkins-slave-golang
+PIPELINE_CONTEXT_DIR=jenkins-slaves/jenkins-slave-golang

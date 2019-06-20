@@ -1,6 +1,7 @@
 ---
 namespace: jenkins-slaves
 
+repository_url: https://github.com/redhat-cop/containers-quickstarts.git
 slave_repo_ref: v1.3
 
 openshift_cluster_content:
@@ -21,6 +22,7 @@ openshift_cluster_content:
     params: "{{ inventory_dir }}/../.openshift/params/ansible"
     params_from_vars:
       SOURCE_REPOSITORY_REF: "{{ slave_repo_ref }}"
+      SOURCE_REPOSITORY_URL: "{{ repository_url }}"
     namespace: "{{ namespace }}"
     tags:
       - jenkins-slaves
@@ -30,6 +32,7 @@ openshift_cluster_content:
     params: "{{ inventory_dir }}/../.openshift/params/arachni"
     params_from_vars:
       SOURCE_REPOSITORY_REF: "{{ slave_repo_ref }}"
+      SOURCE_REPOSITORY_URL: "{{ repository_url }}"
     namespace: "{{ namespace }}"
     tags:
       - jenkins-slaves
@@ -39,6 +42,7 @@ openshift_cluster_content:
     params: "{{ inventory_dir }}/../.openshift/params/golang"
     params_from_vars:
       SOURCE_REPOSITORY_REF: "{{ slave_repo_ref }}"
+      SOURCE_REPOSITORY_URL: "{{ repository_url }}"
     namespace: "{{ namespace }}"
     tags:
       - jenkins-slaves
@@ -48,6 +52,7 @@ openshift_cluster_content:
     params: "{{ inventory_dir }}/../.openshift/params/gradle"
     params_from_vars:
       SOURCE_REPOSITORY_REF: "{{ slave_repo_ref }}"
+      SOURCE_REPOSITORY_URL: "{{ repository_url }}"
     namespace: "{{ namespace }}"
     tags:
       - jenkins-slaves
@@ -57,6 +62,7 @@ openshift_cluster_content:
     params: "{{ inventory_dir }}/../.openshift/params/mongodb"
     params_from_vars:
       SOURCE_REPOSITORY_REF: "{{ slave_repo_ref }}"
+      SOURCE_REPOSITORY_URL: "{{ repository_url }}"
     namespace: "{{ namespace }}"
     tags:
       - jenkins-slaves
@@ -66,6 +72,7 @@ openshift_cluster_content:
     params: "{{ inventory_dir }}/../.openshift/params/mvn"
     params_from_vars:
       SOURCE_REPOSITORY_REF: "{{ slave_repo_ref }}"
+      SOURCE_REPOSITORY_URL: "{{ repository_url }}"
     namespace: "{{ namespace }}"
     tags:
     - jenkins-slaves
@@ -75,6 +82,7 @@ openshift_cluster_content:
     params: "{{ inventory_dir }}/../.openshift/params/npm"
     params_from_vars:
       SOURCE_REPOSITORY_REF: "{{ slave_repo_ref }}"
+      SOURCE_REPOSITORY_URL: "{{ repository_url }}"
     namespace: "{{ namespace }}"
     tags:
     - jenkins-slaves
@@ -84,6 +92,7 @@ openshift_cluster_content:
     params: "{{ inventory_dir }}/../.openshift/params/python"
     params_from_vars:
       SOURCE_REPOSITORY_REF: "{{ slave_repo_ref }}"
+      SOURCE_REPOSITORY_URL: "{{ repository_url }}"
     namespace: "{{ namespace }}"
     tags:
       - jenkins-slaves
@@ -93,7 +102,20 @@ openshift_cluster_content:
     params: "{{ inventory_dir }}/../.openshift/params/zap"
     params_from_vars:
       SOURCE_REPOSITORY_REF: "{{ slave_repo_ref }}"
+      SOURCE_REPOSITORY_URL: "{{ repository_url }}"
     namespace: "{{ namespace }}"
     tags:
     - jenkins-slaves
     - zap-slave
+- object: test-pipelines
+  content:
+  - name: Deploy all test pipelines
+    template: "https://raw.githubusercontent.com/redhat-cop/openshift-templates/v1.4.5/jenkins-pipelines/jenkins-pipeline-template-no-ocp-triggers.yml"
+    params: "{{ inventory_dir }}/../.openshift/params/test_pipelines/"
+    params_from_vars:
+      PIPELINE_SOURCE_REPOSITORY_URL: "{{ repository_url }}"
+      PIPELINE_SOURCE_REPOSITORY_REF: "{{ slave_repo_ref }}"
+      PIPELINE_FILENAME: "Jenkinsfile.test"
+    namespace: "{{ namespace }}"
+    tags:
+    - test-pipelines
