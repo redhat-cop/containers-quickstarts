@@ -4,8 +4,10 @@ cluster_up() {
   set +e
   built=false
   while true; do
-    DEV=$(ip link | awk '/state UP/{ gsub(":", ""); print $2}')
-    IP_ADDR=$(ip addr show $DEV | awk '/inet /{ gsub("/.*", ""); print $2}')
+    if [ -z $IP_ADDR ]; then
+      DEV=$(ip link | awk '/state UP/{ gsub(":", ""); print $2}')
+      IP_ADDR=$(ip addr show $DEV | awk '/inet /{ gsub("/.*", ""); print $2}')
+    fi
     oc cluster up --public-hostname=${IP_ADDR} --routing-suffix=${IP_ADDR}.nip.io --base-dir=$HOME/ocp
     if [ "$?" -eq 0 ]; then
       built=true
@@ -21,29 +23,40 @@ cluster_up() {
 setup() {
   echo "${TRAVIS_BRANCH:=master}"
   echo "${TRAVIS_REPO_SLUG:=redhat-cop/containers-quickstarts}"
-  ansible-galaxy install -r jenkins-slaves/requirements.yml -p galaxy
+  ansible-galaxy install -r jenkins-slaves/requirements.yml -p galaxy --force
   ansible-playbook -i jenkins-slaves/.applier/ galaxy/openshift-applier/playbooks/openshift-cluster-seed.yml -e namespace=containers-quickstarts-tests -e slave_repo_ref=${TRAVIS_BRANCH} -e repository_url=https://github.com/${TRAVIS_REPO_SLUG}.git
 }
 
 get_build_phases() {
   phase=$1
-  oc get builds -o jsonpath="{.items[?(@.status.phase==\"${phase}\")]}" -n $NAMESPACE | wc -w
+  oc get builds -o jsonpath="{.items[?(@.status.phase==\"${phase}\")].metadata.name}" -n $NAMESPACE | wc -w
 }
 
 test() {
-  # Wait for builds to start
-  while [ $(get_build_phases "New") -ne 0 ]; do
+  oc status || exit 1
+
+  echo "Ensure all Builds are executed..."
+  for pipeline in $(oc get bc -n ${NAMESPACE} -o jsonpath='{.items[*].metadata.name}'); do
+    if [ "$(oc get build -n containers-quickstarts-tests -o jsonpath="{.items[?(@.metadata.annotations.openshift\.io/build-config\.name==\"${pipeline}\")].metadata.name}")" == "" ]; then
+      oc start-build ${pipeline} -n ${NAMESPACE}
+    fi
+  done
+
+  echo "Waiting for all builds to start..."
+  while [[ $(get_build_phases "New") -ne 0 || $(get_build_phases "Pending") -ne 0 ]]; do
+    echo -ne "New Builds: $(get_build_phases "New"), Pending Builds: $(get_build_phases "Pending")\r"
     sleep 1
   done
 
-  # Wait for all builds to complete
+  echo "Waiting for all builds to complete..."
   while [ $(get_build_phases "Running") -ne 0 ]; do
+    echo -ne "Running Builds: $(get_build_phases "Running")\r"
     sleep 1
   done
 
-  # Check to see how many builds Failed
+  echo "Check to see how many builds Failed"
   if [ $(get_build_phases "Failed") -ne 0 ]; then
-    "Some builds failed. Printing Report"
+    echo "Some builds failed. Printing Report"
     oc get builds -n $NAMESPACE -o custom-columns=NAME:.metadata.name,TYPE:.spec.strategy.type,FROM:.spec.source.type,STATUS:.status.phase,REASON:.status.reason
     exit 1
   fi
