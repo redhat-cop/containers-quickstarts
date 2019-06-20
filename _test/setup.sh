@@ -1,3 +1,6 @@
+#!/bin/bash
+trap "exit 1" TERM
+export TOP_PID=$$
 NAMESPACE=containers-quickstarts-tests
 
 cluster_up() {
@@ -29,11 +32,11 @@ applier() {
 
 get_build_phases() {
   phase=$1
-  oc get builds -o jsonpath="{.items[?(@.status.phase==\"${phase}\")].metadata.name}" -n $NAMESPACE | wc -w
+  oc get builds -o jsonpath{}="{.items[?(@.status.phase==\"${phase}\")].metadata.name}" -n $NAMESPACE || kill -s TERM $TOP_PID | wc -w
 }
 
 test() {
-  oc status || exit 1
+  #oc status || exit 1
 
   echo "Ensure all Builds are executed..."
   for pipeline in $(oc get bc -n ${NAMESPACE} -o jsonpath='{.items[*].metadata.name}'); do
