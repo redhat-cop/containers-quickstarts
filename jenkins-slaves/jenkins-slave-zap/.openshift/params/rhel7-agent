@@ -1,6 +1,6 @@
 NAME=jenkins-slave-zap
 DOCKERFILE_NAME=Dockerfile.rhel7
-SOURCE_REPOSITORY_URL=git@github.com:redhat-cop/containers-quickstarts.git
+SOURCE_REPOSITORY_URL=https://github.com/redhat-cop/containers-quickstarts.git
 SOURCE_REPOSITORY_REF=1.12
 SOURCE_CONTEXT_DIR=jenkins-slaves/jenkins-slave-zap
 BUILDER_IMAGE_NAME=registry.access.redhat.com/openshift3/jenkins-slave-base-rhel7:latest

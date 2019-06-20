@@ -1,6 +1,6 @@
 NAME=zap-daemon
 DOCKERFILE_NAME=Dockerfile.rhel7-daemon
-SOURCE_REPOSITORY_URL=git@github.com:redhat-cop/containers-quickstarts.git
+SOURCE_REPOSITORY_URL=https://github.com/redhat-cop/containers-quickstarts.git
 SOURCE_REPOSITORY_REF=1.12
 SOURCE_CONTEXT_DIR=jenkins-slaves/jenkins-slave-zap
 BUILDER_IMAGE_NAME=java:8
