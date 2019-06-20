@@ -1,3 +1,4 @@
+NAMESPACE=containers-quickstarts-tests
 
 cluster_up() {
   set +e
@@ -24,16 +25,30 @@ setup() {
   ansible-playbook -i jenkins-slaves/.applier/ galaxy/openshift-applier/playbooks/openshift-cluster-seed.yml -e namespace=containers-quickstarts-tests -e slave_repo_ref=${TRAVIS_BRANCH} -e repository_url=https://github.com/${TRAVIS_REPO_SLUG}.git
 }
 
+get_build_phases() {
+  phase=$1
+  oc get builds -o jsonpath="{.items[?(@.status.phase==\"${phase}\")]}" -n $NAMESPACE | wc -w
+}
+
 test() {
   # Wait for builds to start
-  while [ "$(oc get builds)" == "" ]; do
+  while [ $(get_build_phases "New") -ne 0 ]; do
     sleep 1
   done
 
   # Wait for all builds to complete
-  while [ "$(oc get builds -o jsonpath='{}')" != "" ]; do
+  while [ $(get_build_phases "Running") -ne 0 ]; do
     sleep 1
   done
+
+  # Check to see how many builds Failed
+  if [ $(get_build_phases "Failed") -ne 0 ]; then
+    "Some builds failed. Printing Report"
+    oc get builds -n $NAMESPACE -o custom-columns=NAME:.metadata.name,TYPE:.spec.strategy.type,FROM:.spec.source.type,STATUS:.status.phase,REASON:.status.reason
+    exit 1
+  fi
+
+  echo "Tests Completed Successfully!"
 }
 
 # Process arguments

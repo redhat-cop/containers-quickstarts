@@ -1,7 +1,6 @@
 dist: xenial
 language: python
 python:
-  - "2.7"
   - "3.7"
 
 cache:
@@ -13,7 +12,6 @@ env:
     - ANSIBLE_HOST_KEY_CHECKING=False
     - PIP_DOWNLOAD_CACHE=$HOME/.cache/pip
     - OC_BINARY_URL=https://mirror.openshift.com/pub/openshift-v3/clients/3.10.45/linux/oc.tar.gz
-  matrix:
     - ANSIBLE_VERSION="2.7"
 
 before_install:
