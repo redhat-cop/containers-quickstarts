@@ -32,7 +32,8 @@ applier() {
 
 get_build_phases() {
   phase=$1
-  oc get builds -o jsonpath{}="{.items[?(@.status.phase==\"${phase}\")].metadata.name}" -n $NAMESPACE || kill -s TERM $TOP_PID | wc -w
+  result=$(oc get builds -o jsonpath="{.items[?(@.status.phase==\"${phase}\")].metadata.name}" -n $NAMESPACE) || kill -s TERM $TOP_PID
+  echo ${result} | wc -w
 }
 
 test() {
@@ -46,7 +47,7 @@ test() {
   done
 
   echo "Waiting for all builds to start..."
-  while [[ $(get_build_phases "New") -ne 0 || $(get_build_phases "Pending") -ne 0 ]]; do
+  while [[ "$(get_build_phases "New")" -ne 0 || $(get_build_phases "Pending") -ne 0 ]]; do
     echo -ne "New Builds: $(get_build_phases "New"), Pending Builds: $(get_build_phases "Pending")\r"
     sleep 1
   done
