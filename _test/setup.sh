@@ -69,8 +69,8 @@ case $1 in
   cluster_up)
     cluster_up
     ;;
-  setup)
-    setup
+  applier)
+    applier
     ;;
   test)
     test
