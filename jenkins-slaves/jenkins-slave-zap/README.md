@@ -109,3 +109,56 @@ Add a new Kubernetes Container template called `jenkins-slave-zap` (if you've bu
       }
     }
    ```
+
+## Using the ZAP Service Container (Dockerfile.rhel7-daemon) in a Jenkinsfile
+
+1. Deploy ZAP as a service in the same namespace as Jenkins and name it `zap-daemon`
+2. In your pipeline, depending on what your platform and language are, you will need to set up your integration tests to use ZAP:
+   ```groovy
+    // Implement stage to run Integration Tests Here
+    stage('Integration/Acceptance Tests') {
+      steps {
+        script {
+          def testApiHost = ""
+          openshift.withCluster() {
+            openshift.withProject(env.TEST) {
+              def routeDef = openshift.selector("route", env.APP_NAME).object()
+              testApiHost = "${routeDef.spec.host}"
+            }
+          }
+          lock('zap-daemon') {
+            sh "curl -x zap-daemon:9080 'http://zap/JSON/core/action/newSession/?name=${env.APP_NAME}-${env.BUILD_ID}&overwrite=true'"
+            def jsonReport = "{}"
+            withEnv([ "INTEGRATION_TEST_HOST=http://${testApiHost}/v1"]) {
+              try {
+                sh 'mvn -T 1.5C -Pintegration-testing failsafe:integration-test failsafe:verify'
+                retry(10) { // Poll the ZAP API and wait for reports to be generated from existing records
+                  sleep 20
+                  def result = sh returnStdout: true, script: 'curl -x zap-daemon:9080 -s -k http://zap/JSON/pscan/view/recordsToScan'
+                  echo result
+                  if (result.trim() != '{"recordsToScan":"0"}') {
+                    error "ZAP Analysis incomplete"
+                  }
+                }
+                sh 'mkdir zap-report'
+                sh 'curl -v -o ./zap-report/zap-report.html -x zap-daemon:9080 -s -k http://zap/OTHER/core/other/htmlreport'
+                jsonReport = sh(returnStdout: true, script: 'curl -x zap-daemon:9080 -s -k http://zap/OTHER/core/other/jsonreport')
+              } catch (Exception e) {
+                throw e
+              }
+            }
+          }
+          // Process the JSON report and check for issues exceeding the defined threshold.
+          def jsonData = new JsonSlurper().parseText(jsonReport)
+          def highCriticalRisks = jsonData.site.each { site ->
+            site.alerts.each { alert ->
+              def alertValue = alert.riskcode as Integer
+              if (alertValue >= 3) {
+                error 'High/Critical Risks Detected By Zed Attack Proxy'
+              }
+            }
+          }
+        }
+      }
+    }
+   ```
