@@ -42,7 +42,7 @@ objects:
           kind: ImageStreamTag
           namespace: openshift
           name: "${BUILDER_IMAGE_NAME}"
-      type: Source
+      type: Docker
     successfulBuildsHistoryLimit: 5
     triggers:
       - type: "configChange"
