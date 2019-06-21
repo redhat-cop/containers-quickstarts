@@ -19,18 +19,13 @@ For local running and experimentation run `docker run -i -t jenkins-slave-zap /b
 ## Build ZAP Agent in OpenShift
 
 ```bash
-oc process -f ../templates/jenkins-slave-generic-template.yml \
-    -p NAME=jenkins-slave-zap \
-    -p SOURCE_CONTEXT_DIR=jenkins-slaves/jenkins-slave-zap \
-    -p BUILDER_IMAGE_NAME=registry.access.redhat.com/openshift3/jenkins-slave-base-rhel7:latest \
-    -p DOCKERFILE_PATH=Dockerfile.rhel7 \
-    | oc create -f -
+oc process -f .openshift/templates/s2i-dockerfile-build.yml --param-file=.openshift/params/rhel7-agent | oc apply -f -
 ```
 
 ## Build ZAP Daemon in OpenShift
 
 ```bash
-oc process -f .openshift/templates/s2i-dockerfile-imagestream-build.yml --param-file=.openshift/params/rhel7-daemon | oc create -f -
+oc process -f .openshift/templates/s2i-dockerfile-imagestream-build.yml --param-file=.openshift/params/rhel7-daemon | oc apply -f -
 ```
 
 For all params see the list in the `../templates/jenkins-slave-generic-template.yml` or run `oc process --parameters -f ../templates/jenkins-slave-generic-template.yml`.
