@@ -1,6 +1,12 @@
-# jenkins-slave-zap
+# Zed Attack Proxy
 
-Provides a docker image of the zap runtime for use as a Jenkins slave. The public docker registry version of OWASP's Zed Attack Proxy (ZAP) is not compatible with OpenShift without using privleged containers. This Docker image resolves that issue.
+Provides Docker images of the zap runtime for use as a Jenkins slave or as a persistent service. The public docker registry version of OWASP's Zed Attack Proxy (ZAP) is not compatible with OpenShift without using privileged containers. These Docker images resolve that issue.
+
+## Use cases
+
+1. ZAP as a Jenkins Agent, which can run as part of a [Multi-Container Pod](Multi-Container_Pipeline_In_Jenkins_On_OpenShift.md)
+2. ZAP as a service running in OpenShift, and it can be used by any pipeline
+   - ZAP session management requires that there is only a single user at any given time or the results will get mixed up. In your Jenkinsfile, you will need to use `lock('zap-daemon') {}` to wrap your stages/steps for using ZAP.
 
 ## Build local
 
@@ -37,7 +43,7 @@ Add a new Kubernetes Container template called `jenkins-slave-zap` (if you've bu
 
 1. Start by reading [Multi-Container Pipeline In Jenkins On OpenShift](Multi-Container_Pipeline_In_Jenkins_On_OpenShift.md)
    - This will explain how to configure a multi-container pod for Jenkins
-1. In your pipeline, depending on what your platform and language are, you will need to set up your integration tests to use ZAP:
+2. In your pipeline, depending on what your platform and language are, you will need to set up your integration tests to use ZAP:
    ```groovy
     stage('Integration And Penetration Testing') {
       parallel {
