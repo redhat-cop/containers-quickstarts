@@ -1,0 +1,2 @@
+NAME=jenkins-slave-ruby
+PIPELINE_CONTEXT_DIR=jenkins-slaves/jenkins-slave-ruby

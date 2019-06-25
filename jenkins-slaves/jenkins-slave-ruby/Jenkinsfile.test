@@ -1,0 +1,20 @@
+pipeline {
+    agent {
+      label 'jenkins-slave-ruby'
+    }
+
+    stages {
+        stage ('Run Test') {
+            steps {
+              sh """
+                echo "source 'https://rubygems.org'
+                gem 'nokogiri'" > Gemfile
+                bundle install
+                gem env
+              """
+            }
+        }
+
+    }
+
+}
