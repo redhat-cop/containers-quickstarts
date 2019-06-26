@@ -7,10 +7,10 @@ pipeline {
         stage ('Run Test') {
             steps {
               sh """
+                ruby -v
                 echo "source 'https://rubygems.org'
-                gem 'nokogiri'" > Gemfile
+                gem 'http'" > Gemfile
                 bundle install
-                gem env
               """
             }
         }
