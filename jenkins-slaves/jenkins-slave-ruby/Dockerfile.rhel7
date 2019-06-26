@@ -32,7 +32,7 @@ RUN INSTALL_PKGS="rh-ruby$RUBY_SHORT_VERSION rh-ruby$RUBY_SHORT_VERSION-ruby-dev
       --disablerepo=* \
       --enablerepo=rhel-server-rhscl-7-rpms \
       --enablerepo=rhel-7-server-extras-rpms \
-      --enablerepo=rhel-7-server-rpms \
+      --enablerepo=rhel-7-server-rpms && \
     yum install -y --setopt=tsflags=nodocs \
       --disablerepo=* \
       --enablerepo=rhel-server-rhscl-7-rpms \
