@@ -8,9 +8,7 @@ pipeline {
             steps {
               sh """
                 ruby -v
-                echo "source 'https://rubygems.org'
-                gem 'http'" > Gemfile
-                bundle install
+                gem install rdoc
               """
             }
         }

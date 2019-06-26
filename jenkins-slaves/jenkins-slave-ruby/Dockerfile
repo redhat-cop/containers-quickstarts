@@ -44,3 +44,5 @@ RUN curl $ORIGIN_CLIENT | tar -C /usr/local/bin/ -xzf - && \
 COPY ./root/ /
 
 RUN chown -R 1001:0 /opt/app-root && chmod -R ug+rwx /opt/app-root
+
+WORKDIR /opt/app-root
