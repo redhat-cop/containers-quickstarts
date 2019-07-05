@@ -1,2 +1,2 @@
-FROM openshift3/jenkins-agent-maven-35-rhel7:latest
+FROM quay.io/openshift/origin-jenkins-agent-base:4.1
 ADD settings.xml $HOME/.m2/settings.xml

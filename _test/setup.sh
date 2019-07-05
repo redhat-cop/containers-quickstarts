@@ -1,7 +1,9 @@
 #!/bin/bash
 trap "exit 1" TERM
 export TOP_PID=$$
-NAMESPACE=containers-quickstarts-tests
+NAMESPACE="${2:-containers-quickstarts-tests}"
+TRAVIS_BRANCH="${3:-master}"
+TRAVIS_REPO_SLUG="${4:-redhat-cop/containers-quickstarts}"
 
 cluster_up() {
   set +e
@@ -24,10 +26,10 @@ cluster_up() {
 }
 
 applier() {
-  echo "${TRAVIS_BRANCH:=master}"
-  echo "${TRAVIS_REPO_SLUG:=redhat-cop/containers-quickstarts}"
+  echo "${TRAVIS_BRANCH}"
+  echo "${TRAVIS_REPO_SLUG}"
   ansible-galaxy install -r requirements.yml -p galaxy --force
-  ansible-playbook -i .applier/ galaxy/openshift-applier/playbooks/openshift-cluster-seed.yml -e namespace=containers-quickstarts-tests -e slave_repo_ref=${TRAVIS_BRANCH} -e repository_url=https://github.com/${TRAVIS_REPO_SLUG}.git
+  ansible-playbook -i .applier/ galaxy/openshift-applier/playbooks/openshift-cluster-seed.yml -e namespace=${NAMESPACE} -e slave_repo_ref=${TRAVIS_BRANCH} -e repository_url=https://github.com/${TRAVIS_REPO_SLUG}.git
 }
 
 get_build_phases() {
@@ -41,7 +43,7 @@ test() {
 
   echo "Ensure all Builds are executed..."
   for pipeline in $(oc get bc -n ${NAMESPACE} -o jsonpath='{.items[*].metadata.name}'); do
-    if [ "$(oc get build -n containers-quickstarts-tests -o jsonpath="{.items[?(@.metadata.annotations.openshift\.io/build-config\.name==\"${pipeline}\")].metadata.name}")" == "" ]; then
+    if [ "$(oc get build -n ${NAMESPACE} -o jsonpath="{.items[?(@.metadata.annotations.openshift\.io/build-config\.name==\"${pipeline}\")].metadata.name}")" == "" ]; then
       oc start-build ${pipeline} -n ${NAMESPACE}
     fi
   done
