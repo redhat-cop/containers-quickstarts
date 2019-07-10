@@ -2,7 +2,7 @@
 namespace: jenkins-slaves
 
 repository_url: https://github.com/redhat-cop/containers-quickstarts.git
-slave_repo_ref: v1.3
+slave_repo_ref: v1.11
 
 openshift_cluster_content:
 - object: Environment Setup
