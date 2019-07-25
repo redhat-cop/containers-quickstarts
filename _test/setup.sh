@@ -1,7 +1,9 @@
 #!/bin/bash
 trap "exit 1" TERM
 export TOP_PID=$$
-NAMESPACE=containers-quickstarts-tests
+NAMESPACE="${2:-containers-quickstarts-tests}"
+TRAVIS_REPO_SLUG="${3:-redhat-cop/containers-quickstarts}"
+TRAVIS_BRANCH="${4:-master}"
 
 cluster_up() {
   set +e
@@ -24,10 +26,10 @@ cluster_up() {
 }
 
 applier() {
-  echo "${TRAVIS_BRANCH:=master}"
-  echo "${TRAVIS_REPO_SLUG:=redhat-cop/containers-quickstarts}"
+  echo "${TRAVIS_BRANCH}"
+  echo "${TRAVIS_REPO_SLUG}"
   ansible-galaxy install -r requirements.yml -p galaxy --force
-  ansible-playbook -i .applier/ galaxy/openshift-applier/playbooks/openshift-cluster-seed.yml -e namespace=containers-quickstarts-tests -e slave_repo_ref=${TRAVIS_BRANCH} -e repository_url=https://github.com/${TRAVIS_REPO_SLUG}.git
+  ansible-playbook -i .applier/ galaxy/openshift-applier/playbooks/openshift-cluster-seed.yml -e namespace=${NAMESPACE} -e slave_repo_ref=${TRAVIS_BRANCH} -e repository_url=https://github.com/${TRAVIS_REPO_SLUG}.git
 }
 
 get_build_phases() {
@@ -37,11 +39,16 @@ get_build_phases() {
 }
 
 test() {
-  #oc status || exit 1
+  # Make sure we're logged in, and we've found at least one build to test.
+  oc status > /dev/null || echo "Please log in before running tests." || exit 1
+  if [ $(oc get builds -n ${NAMESPACE} --no-headers | grep -c .) -lt 1 ]; then
+    echo "Did not find any builds, make sure you've passed the proper arguments."
+    exit 1
+  fi
 
   echo "Ensure all Builds are executed..."
   for pipeline in $(oc get bc -n ${NAMESPACE} -o jsonpath='{.items[*].metadata.name}'); do
-    if [ "$(oc get build -n containers-quickstarts-tests -o jsonpath="{.items[?(@.metadata.annotations.openshift\.io/build-config\.name==\"${pipeline}\")].metadata.name}")" == "" ]; then
+    if [ "$(oc get build -n ${NAMESPACE} -o jsonpath="{.items[?(@.metadata.annotations.openshift\.io/build-config\.name==\"${pipeline}\")].metadata.name}")" == "" ]; then
       oc start-build ${pipeline} -n ${NAMESPACE}
     fi
   done
