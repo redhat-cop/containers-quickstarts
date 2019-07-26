@@ -2,8 +2,8 @@
 trap "exit 1" TERM
 export TOP_PID=$$
 NAMESPACE="${2:-containers-quickstarts-tests}"
-TRAVIS_BRANCH="${3:-master}"
-TRAVIS_REPO_SLUG="${4:-redhat-cop/containers-quickstarts}"
+TRAVIS_REPO_SLUG="${3:-redhat-cop/containers-quickstarts}"
+TRAVIS_BRANCH="${4:-master}"
 
 cluster_up() {
   set +e
@@ -39,7 +39,12 @@ get_build_phases() {
 }
 
 test() {
-  #oc status || exit 1
+  # Make sure we're logged in, and we've found at least one build to test.
+  oc status > /dev/null || echo "Please log in before running tests." || exit 1
+  if [ $(oc get builds -n ${NAMESPACE} --no-headers | grep -c .) -lt 1 ]; then
+    echo "Did not find any builds, make sure you've passed the proper arguments."
+    exit 1
+  fi
 
   echo "Ensure all Builds are executed..."
   for pipeline in $(oc get bc -n ${NAMESPACE} -o jsonpath='{.items[*].metadata.name}'); do

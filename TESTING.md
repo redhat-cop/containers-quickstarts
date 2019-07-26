@@ -23,10 +23,24 @@ Every build that gets created will then be executed, and the test script will wa
 
 ## Running the tests locally.
 
-There are a number of ways to run the tests, but the easiest is to run all phases against a local cluster with `oc cluster up`:
+For convenience, a script is provided that allows users to run tests locally. The script usage is as follows:
 
 ```
-oc cluster up --base-dir=$HOME/ocp && \
+./_test/setup.sh <applier|test> [project name] [repo slug] [branch name]
+```
+
+For example, to test against master:
+
+```
+oc login ... && \
   ./_test/setup.sh applier && \
   ./_test/setup.sh test
+```
+
+To test against an alternate fork/branch:
+
+```
+oc login ... && \
+  ./_test/setup.sh applier etsauer-feature123 etsauer/containers-quickstarts feature123 && \
+  ./_test/setup.sh test etsauer-feature123 etsauer/containers-quickstarts feature123
 ```
