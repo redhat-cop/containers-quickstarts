@@ -2,6 +2,7 @@
 namespace: jenkins-slaves
 repository_url: https://github.com/redhat-cop/containers-quickstarts.git
 slave_repo_ref: v1.11
+templates_repo_ref: v1.4.8
 
 jenkins_slaves:
   build:
@@ -89,6 +90,13 @@ openshift_cluster_content:
       NAMESPACE_DISPLAY_NAME: "{{ namespace }}"
     tags:
       - project
+- object: jenkins-ephemeral
+  content:
+  - name: jenkins-ephemeral
+    template: 'openshift//jenkins-ephemeral'
+    namespace: "{{ namespace }}"
+    tags:
+      - jenkins-ephemeral
 - object: jenkins-slave-nodes
   content:
   - name: jenkins-slave-ansible
@@ -131,15 +139,15 @@ openshift_cluster_content:
     params_from_vars: "{{ jenkins_slaves.build.mvn }}"
     namespace: "{{ namespace }}"
     tags:
-    - jenkins-slaves
-    - mvn-slave
+      - jenkins-slaves
+      - mvn-slave
   - name: jenkins-slave-npm
     template: "{{ inventory_dir }}/../.openshift/templates/jenkins-slave-generic-template.yml"
     params_from_vars: "{{ jenkins_slaves.build.npm }}"
     namespace: "{{ namespace }}"
     tags:
-    - jenkins-slaves
-    - npm-slave
+      - jenkins-slaves
+      - npm-slave
   - name: jenkins-slave-python
     template: "{{ inventory_dir }}/../.openshift/templates/jenkins-slave-generic-template.yml"
     params_from_vars: "{{ jenkins_slaves.build.python }}"
@@ -152,13 +160,14 @@ openshift_cluster_content:
     params_from_vars: "{{ jenkins_slaves.build.zap }}"
     namespace: "{{ namespace }}"
     tags:
-    - jenkins-slaves
-    - zap-slave
+      - jenkins-slaves
+      - zap-slave
 - object: test-pipelines
   content:
-  - name: Deploy all test pipelines
-    template: "https://raw.githubusercontent.com/redhat-cop/openshift-templates/v1.4.5/jenkins-pipelines/jenkins-pipeline-template-no-ocp-triggers.yml"
+  - name: Deploy golang-slave test pipelines
+    template: "https://raw.githubusercontent.com/redhat-cop/openshift-templates/{{ templates_repo_ref }}/jenkins-pipelines/jenkins-pipeline-template-no-ocp-triggers.yml"
     params_from_vars: "{{ test_pipelines.deploy.golang }}"
     namespace: "{{ namespace }}"
     tags:
-    - test-pipelines
+      - test-pipelines
+      - golang-slave-pipeline

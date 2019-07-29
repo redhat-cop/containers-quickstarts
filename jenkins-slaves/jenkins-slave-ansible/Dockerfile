@@ -22,9 +22,4 @@ RUN INSTALL_PKGS="rh-python36-python-pip" && \
     yum $DISABLE_REPOS clean all -y && \
     rm -rf /var/cache/yum
 
-ADD scl_enable /usr/share/container-scripts/
-ENV BASH_ENV=/usr/share/container-scripts/scl_enable \
-    ENV=/usr/share/container-scripts/scl_enable \
-    PROMPT_COMMAND=". /usr/share/container-scripts/scl_enable"
-
 USER 1001
