@@ -5,6 +5,10 @@ NAMESPACE="${2:-containers-quickstarts-tests}"
 TRAVIS_REPO_SLUG="${3:-redhat-cop/containers-quickstarts}"
 TRAVIS_BRANCH="${4:-master}"
 
+cleanup() {
+  oc delete project ${NAMESPACE}
+}
+
 cluster_up() {
   set +e
   built=false
@@ -77,6 +81,9 @@ test() {
 
 # Process arguments
 case $1 in
+  cleanup)
+    cleanup
+    ;;
   cluster_up)
     cluster_up
     ;;

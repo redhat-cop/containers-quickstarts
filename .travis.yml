@@ -11,8 +11,9 @@ env:
   global:
     - ANSIBLE_HOST_KEY_CHECKING=False
     - PIP_DOWNLOAD_CACHE=$HOME/.cache/pip
-    - OC_BINARY_URL=https://mirror.openshift.com/pub/openshift-v3/clients/3.10.45/linux/oc.tar.gz
+    - OC_BINARY_URL=https://mirror.openshift.com/pub/openshift-v3/clients/3.11.133/linux/oc.tar.gz
     - ANSIBLE_VERSION="2.7"
+    - CI_CLUSTER_URL=https://console.ci-1.cop.rht-labs.com
 
 before_install:
   - sudo apt-get update -qq
@@ -25,16 +26,19 @@ install:
   - sudo wget -qO- ${OC_BINARY_URL} | sudo tar -xvz -C /bin
 
 before_script:
-  # Configure Docker
-  - sudo service docker stop
-  - sudo mkdir -p /etc/docker
-  - echo '{"insecure-registries":["172.30.0.0/16"]}' | sudo tee /etc/docker/daemon.json
-  - sudo service docker start
-  # Launch OpenShift Environment
-  - _test/setup.sh cluster_up
+  # Login to the CI cluster
+  - oc login --token ${CI_CLUSTER_TOKEN} ${CI_CLUSTER_URL}
   # Run Applier to provision all of the builds
   - _test/setup.sh applier cqci-${TRAVIS_JOB_ID} ${TRAVIS_REPO_SLUG} ${TRAVIS_BRANCH}
 
 script:
   # Test to ensure that builds all succeed
-  - _test/setup.sh test cqci-${TRAVIS_JOB_ID} ${TRAVIS_REPO_SLUG} ${TRAVIS_BRANCH}
+  - _test/setup.sh test cqci-${TRAVIS_JOB_ID}
+
+after_success:
+  # Delete CI project on successful completion
+  - _test/setup.sh cleanup cqci-${TRAVIS_JOB_ID}
+
+after_failure:
+  - echo "Job failed and will be deleted in 12 hours."
+  - echo "${TRAVIS_TEST_RESULT}"
