@@ -9,11 +9,12 @@ cache:
 
 env:
   global:
-    - ANSIBLE_HOST_KEY_CHECKING=False
-    - PIP_DOWNLOAD_CACHE=$HOME/.cache/pip
-    - OC_BINARY_URL=https://mirror.openshift.com/pub/openshift-v3/clients/3.11.133/linux/oc.tar.gz
+    - ANSIBLE_HOST_KEY_CHECKING="False"
+    - PIP_DOWNLOAD_CACHE="$HOME/.cache/pip"
+    - OC_BINARY_URL="https://mirror.openshift.com/pub/openshift-v3/clients/3.11.133/linux/oc.tar.gz"
     - ANSIBLE_VERSION="2.7"
-    - CI_CLUSTER_URL=https://console.ci-1.cop.rht-labs.com
+    - OCP_CLUSTER_URL="https://console.ci-1.cop.rht-labs.com"
+    - LE_CA_CERT="https://letsencrypt.org/certs/lets-encrypt-x3-cross-signed.pem.txt"
 
 before_install:
   - sudo apt-get update -qq
@@ -24,10 +25,12 @@ install:
   #- pip install "ansible-lint<4.0" yamllint flake8 molecule docker "pytest<3.10" "testinfra==3.0.4"
   # Configure OpenShift Binary
   - sudo wget -qO- ${OC_BINARY_URL} | sudo tar -xvz -C /bin
+  # Download Lets Encrypt CA cert
+  - wget -qO le-ca-cert.pem ${LE_CA_CERT}
 
 before_script:
   # Login to the CI cluster
-  - oc login --token ${CI_CLUSTER_TOKEN} ${CI_CLUSTER_URL}
+  - oc login --token ${CI_CLUSTER_TOKEN} --server ${OCP_CLUSTER_URL} --certificate-authority le-ca-cert.pem
   # Run Applier to provision all of the builds
   - _test/setup.sh applier cqci-${TRAVIS_JOB_ID} ${TRAVIS_REPO_SLUG} ${TRAVIS_BRANCH}
 
