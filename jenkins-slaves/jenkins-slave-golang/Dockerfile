@@ -1,6 +1,6 @@
 FROM openshift/jenkins-slave-base-centos7:v3.11
 
-ENV GO_VERSION=1.10.2 \
+ENV GO_VERSION_DEFAULT=1.10.2 \
     GOROOT=/usr/local/go \
     GOPATH=/usr/src/go
 ENV PATH=$GOPATH/bin:$GOROOT/bin:$PATH
@@ -11,8 +11,9 @@ RUN curl -L -o /tmp/sonar-scanner.zip https://binaries.sonarsource.com/Distribut
     mv sonar-scanner-* sonar-scanner && \
     ln -s /opt/sonar-scanner/bin/sonar-scanner /usr/local/bin/sonar-scanner && \
     chmod 755 /usr/local/bin/sonar-scanner
-ADD https://dl.google.com/go/go${GO_VERSION}.linux-amd64.tar.gz /usr/
-RUN mkdir -p /usr/src/go/src/redhat && \
+RUN if [ -z $GO_VERSION ] ; then GO_VERSION=${GO_VERSION_DEFAULT} ; fi && \
+    curl -L -o /usr/go${GO_VERSION}.linux-amd64.tar.gz https://dl.google.com/go/go${GO_VERSION}.linux-amd64.tar.gz && \
+    mkdir -p /usr/src/go/src/redhat && \
     tar -xzf /usr/go${GO_VERSION}.linux-amd64.tar.gz && \
     mv $(pwd)/go /usr/local/ && \
     go get -u github.com/golang/dep/cmd/dep && \

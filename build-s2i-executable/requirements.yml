@@ -1,5 +1,5 @@
 # This is the Ansible Galaxy requirements file to pull in the correct roles
-# to support the operation of CASL provisioning/runs.
+# to support the operation of CASL provisioning/runs. 
 
 # From 'openshift-applier'
 - name: openshift-applier

@@ -1,0 +1,21 @@
+#!/bin/bash
+
+cd ${RUNTIME_DIRECTORY}
+
+# Locate First Executable file in directory
+EXECUTABLE=$(find $(pwd) -maxdepth 1 -type f -executable -print | head -n 1)
+
+if [ ! -z "${EXECUTABLE}" ]; then
+
+    if [ ! -z "${EXECUTABLE_ARGS}" ]; then
+
+        EXECUTABLE="${EXECUTABLE} ${EXECUTABLE_ARGS}"
+
+    fi
+
+    exec "${EXECUTABLE}"
+
+else
+    echo "Failed to find Executable Artifact"
+    exit 1
+fi

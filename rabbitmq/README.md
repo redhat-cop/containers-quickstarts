@@ -40,7 +40,7 @@ This is the equivivalent of `docker build --build-arg ERLANG_VERSION=19.3.6` to 
 2. `cd containers-quickstarts/rabbitmq`
 3. Run `ansible-galaxy install -r requirements.yml --roles-path=roles`
 4. Login to Openshift: `oc login -u <username> https://master.example.com:8443`
-5. Run openshift-applier: `ansible-playbook -i inventory/hosts roles/openshift-applier/playbooks/openshift-cluster-seed.yml`
+5. Run openshift-applier: `ansible-playbook -i .applier/ roles/openshift-applier/playbooks/openshift-cluster-seed.yml`
 
 ## Verify your pods are running
 ```

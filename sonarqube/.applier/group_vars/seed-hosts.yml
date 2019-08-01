@@ -7,13 +7,13 @@ build:
   SOURCE_REPOSITORY_REF: master
   SOURCE_CONTEXT_DIR: "{{ app_name }}"
 postgresql:
+  DATABASE_SERVICE_NAME: sonardb
   POSTGRESQL_DATABASE: sonar
   VOLUME_CAPACITY: 5
   POSTGRESQL_PASSWORD: sonar
   POSTGRESQL_USER: sonar
 deploy:
   POSTGRES_DATABASE_NAME: "{{ postgresql.POSTGRESQL_DATABASE }}"
-
 
 openshift_cluster_content:
 - object: Environment Setup
