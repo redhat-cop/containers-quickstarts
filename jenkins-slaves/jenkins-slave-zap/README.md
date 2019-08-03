@@ -38,6 +38,8 @@ stage('OWASP Scan') {
   }
   steps {
       sh '''
+          # this is where your index.html will end up so in an ephemeral container running in jenkins it will be /tmp/workspace/$JOBNAME
+          export REPORT_DIR="$WORKSPACE/" # slash needed cuz 🐍
           /zap/zap-baseline.py -r index.html -t http://<some website url> || return_code=$?
           echo "exit value was  - " $return_code
       '''
@@ -49,7 +51,7 @@ stage('OWASP Scan') {
           allowMissing: false,
           alwaysLinkToLastBuild: false,
           keepAll: true,
-          reportDir: '/zap/wrk',
+          reportDir: '${REPORT_DIR}',
           reportFiles: 'index.html',
           reportName: 'OWASP Zed Attack Proxy'
         ]
