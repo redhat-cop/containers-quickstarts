@@ -37,4 +37,4 @@ before_script:
 
 script:
   # Test to ensure that builds all succeed
-  - _test/setup.sh test cqci-${TRAVIS_JOB_ID}
+  - _test/setup.sh test cqci-${TRAVIS_JOB_ID} ${TRAVIS_REPO_SLUG} ${TRAVIS_BRANCH}
