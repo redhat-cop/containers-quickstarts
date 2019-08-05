@@ -1,8 +1,83 @@
 ---
 namespace: jenkins-slaves
-
 repository_url: https://github.com/redhat-cop/containers-quickstarts.git
 slave_repo_ref: v1.11
+templates_repo_ref: v1.4.8
+
+jenkins_slaves:
+  build:
+    ansible:
+      BUILDER_IMAGE_NAME: quay.io/openshift/origin-jenkins-agent-base:4.1
+      DOCKERFILE_PATH: Dockerfile
+      NAME: jenkins-slave-ansible
+      SOURCE_CONTEXT_DIR: jenkins-slaves/jenkins-slave-ansible
+      SOURCE_REPOSITORY_REF: "{{ slave_repo_ref }}"
+      SOURCE_REPOSITORY_URL: "{{ repository_url }}"
+    arachni:
+      BUILDER_IMAGE_NAME: quay.io/openshift/origin-jenkins-agent-base:4.1
+      DOCKERFILE_PATH: Dockerfile
+      NAME: jenkins-slave-arachni
+      SOURCE_CONTEXT_DIR: jenkins-slaves/jenkins-slave-arachni
+      SOURCE_REPOSITORY_REF: "{{ slave_repo_ref }}"
+      SOURCE_REPOSITORY_URL: "{{ repository_url }}"
+    python:
+      BUILDER_IMAGE_NAME: quay.io/openshift/origin-jenkins-agent-base:4.1
+      DOCKERFILE_PATH: Dockerfile
+      NAME: jenkins-slave-python
+      SOURCE_CONTEXT_DIR: jenkins-slaves/jenkins-slave-python
+      SOURCE_REPOSITORY_REF: "{{ slave_repo_ref }}"
+      SOURCE_REPOSITORY_URL: "{{ repository_url }}"
+    golang:
+      BUILDER_IMAGE_NAME: quay.io/openshift/origin-jenkins-agent-base:4.1
+      DOCKERFILE_PATH: Dockerfile
+      NAME: jenkins-slave-golang
+      SOURCE_CONTEXT_DIR: jenkins-slaves/jenkins-slave-golang
+      SOURCE_REPOSITORY_REF: "{{ slave_repo_ref }}"
+      SOURCE_REPOSITORY_URL: "{{ repository_url }}"
+    gradle:
+      BUILDER_IMAGE_NAME: quay.io/openshift/origin-jenkins-agent-base:4.1
+      DOCKERFILE_PATH: Dockerfile
+      NAME: jenkins-slave-gradle
+      SOURCE_CONTEXT_DIR: jenkins-slaves/jenkins-slave-gradle
+      SOURCE_REPOSITORY_REF: "{{ slave_repo_ref }}"
+      SOURCE_REPOSITORY_URL: "{{ repository_url }}"
+    mongodb:
+      BUILDER_IMAGE_NAME: quay.io/openshift/origin-jenkins-agent-base:4.1
+      DOCKERFILE_PATH: Dockerfile
+      NAME: jenkins-slave-mongodb
+      SOURCE_CONTEXT_DIR: jenkins-slaves/jenkins-slave-mongodb
+      SOURCE_REPOSITORY_REF: "{{ slave_repo_ref }}"
+      SOURCE_REPOSITORY_URL: "{{ repository_url }}"
+    mvn:
+      BUILDER_IMAGE_NAME: quay.io/openshift/origin-jenkins-agent-base:4.1
+      DOCKERFILE_PATH: Dockerfile
+      NAME: jenkins-slave-mvn
+      SOURCE_CONTEXT_DIR: jenkins-slaves/jenkins-slave-mvn
+      SOURCE_REPOSITORY_REF: "{{ slave_repo_ref }}"
+      SOURCE_REPOSITORY_URL: "{{ repository_url }}"
+    npm:
+      BUILDER_IMAGE_NAME: openshift/jenkins-slave-base-centos7:v3.11
+      DOCKERFILE_PATH: Dockerfile
+      NAME: jenkins-slave-npm
+      SOURCE_CONTEXT_DIR: jenkins-slaves/jenkins-slave-npm
+      SOURCE_REPOSITORY_REF: "{{ slave_repo_ref }}"
+      SOURCE_REPOSITORY_URL: "{{ repository_url }}"
+    zap:
+      BUILDER_IMAGE_NAME: centos:centos7
+      DOCKERFILE_PATH: Dockerfile
+      NAME: jenkins-slave-zap
+      SOURCE_CONTEXT_DIR: jenkins-slaves/jenkins-slave-zap
+      SOURCE_REPOSITORY_REF: "{{ slave_repo_ref }}"
+      SOURCE_REPOSITORY_URL: "{{ repository_url }}"
+
+test_pipelines:
+  deploy:
+    golang:
+      NAME: jenkins-slave-golang
+      PIPELINE_CONTEXT_DIR: jenkins-slaves/jenkins-slave-golang
+      PIPELINE_FILENAME: "Jenkinsfile.test"
+      PIPELINE_SOURCE_REPOSITORY_REF: "{{ slave_repo_ref }}"
+      PIPELINE_SOURCE_REPOSITORY_URL: "{{ repository_url }}"
 
 openshift_cluster_content:
 - object: Environment Setup
@@ -15,107 +90,84 @@ openshift_cluster_content:
       NAMESPACE_DISPLAY_NAME: "{{ namespace }}"
     tags:
       - project
+- object: jenkins-ephemeral
+  content:
+  - name: jenkins-ephemeral
+    template: 'openshift//jenkins-ephemeral'
+    namespace: "{{ namespace }}"
+    tags:
+      - jenkins-ephemeral
 - object: jenkins-slave-nodes
   content:
   - name: jenkins-slave-ansible
     template: "{{ inventory_dir }}/../.openshift/templates/jenkins-slave-generic-template.yml"
-    params: "{{ inventory_dir }}/../.openshift/params/ansible"
-    params_from_vars:
-      SOURCE_REPOSITORY_REF: "{{ slave_repo_ref }}"
-      SOURCE_REPOSITORY_URL: "{{ repository_url }}"
+    params_from_vars: "{{ jenkins_slaves.build.ansible }}"
     namespace: "{{ namespace }}"
     tags:
       - jenkins-slaves
       - ansible-slave
   - name: jenkins-slave-arachni
     template: "{{ inventory_dir }}/../.openshift/templates/jenkins-slave-generic-template.yml"
-    params: "{{ inventory_dir }}/../.openshift/params/arachni"
-    params_from_vars:
-      SOURCE_REPOSITORY_REF: "{{ slave_repo_ref }}"
-      SOURCE_REPOSITORY_URL: "{{ repository_url }}"
+    params_from_vars: "{{ jenkins_slaves.build.arachni }}"
     namespace: "{{ namespace }}"
     tags:
       - jenkins-slaves
       - arachni-slave
   - name: jenkins-slave-golang
     template: "{{ inventory_dir }}/../.openshift/templates/jenkins-slave-generic-template.yml"
-    params: "{{ inventory_dir }}/../.openshift/params/golang"
-    params_from_vars:
-      SOURCE_REPOSITORY_REF: "{{ slave_repo_ref }}"
-      SOURCE_REPOSITORY_URL: "{{ repository_url }}"
+    params_from_vars: "{{ jenkins_slaves.build.golang }}"
     namespace: "{{ namespace }}"
     tags:
       - jenkins-slaves
       - golang-slave
   - name: jenkins-slave-gradle
     template: "{{ inventory_dir }}/../.openshift/templates/jenkins-slave-generic-template.yml"
-    params: "{{ inventory_dir }}/../.openshift/params/gradle"
-    params_from_vars:
-      SOURCE_REPOSITORY_REF: "{{ slave_repo_ref }}"
-      SOURCE_REPOSITORY_URL: "{{ repository_url }}"
+    params_from_vars: "{{ jenkins_slaves.build.gradle }}"
     namespace: "{{ namespace }}"
     tags:
       - jenkins-slaves
       - gradle-slave
   - name: jenkins-slave-mongodb
     template: "{{ inventory_dir }}/../.openshift/templates/jenkins-slave-generic-template.yml"
-    params: "{{ inventory_dir }}/../.openshift/params/mongodb"
-    params_from_vars:
-      SOURCE_REPOSITORY_REF: "{{ slave_repo_ref }}"
-      SOURCE_REPOSITORY_URL: "{{ repository_url }}"
+    params_from_vars: "{{ jenkins_slaves.build.mongodb }}"
     namespace: "{{ namespace }}"
     tags:
       - jenkins-slaves
       - mongodb-slave
   - name: jenkins-slave-mvn
     template: "{{ inventory_dir }}/../.openshift/templates/jenkins-slave-generic-template.yml"
-    params: "{{ inventory_dir }}/../.openshift/params/mvn"
-    params_from_vars:
-      SOURCE_REPOSITORY_REF: "{{ slave_repo_ref }}"
-      SOURCE_REPOSITORY_URL: "{{ repository_url }}"
+    params_from_vars: "{{ jenkins_slaves.build.mvn }}"
     namespace: "{{ namespace }}"
     tags:
-    - jenkins-slaves
-    - mvn-slave
+      - jenkins-slaves
+      - mvn-slave
   - name: jenkins-slave-npm
     template: "{{ inventory_dir }}/../.openshift/templates/jenkins-slave-generic-template.yml"
-    params: "{{ inventory_dir }}/../.openshift/params/npm"
-    params_from_vars:
-      SOURCE_REPOSITORY_REF: "{{ slave_repo_ref }}"
-      SOURCE_REPOSITORY_URL: "{{ repository_url }}"
+    params_from_vars: "{{ jenkins_slaves.build.npm }}"
     namespace: "{{ namespace }}"
     tags:
-    - jenkins-slaves
-    - npm-slave
+      - jenkins-slaves
+      - npm-slave
   - name: jenkins-slave-python
     template: "{{ inventory_dir }}/../.openshift/templates/jenkins-slave-generic-template.yml"
-    params: "{{ inventory_dir }}/../.openshift/params/python"
-    params_from_vars:
-      SOURCE_REPOSITORY_REF: "{{ slave_repo_ref }}"
-      SOURCE_REPOSITORY_URL: "{{ repository_url }}"
+    params_from_vars: "{{ jenkins_slaves.build.python }}"
     namespace: "{{ namespace }}"
     tags:
       - jenkins-slaves
       - python-slave
   - name: jenkins-slave-zap
     template: "{{ inventory_dir }}/../.openshift/templates/jenkins-slave-generic-template.yml"
-    params: "{{ inventory_dir }}/../.openshift/params/zap"
-    params_from_vars:
-      SOURCE_REPOSITORY_REF: "{{ slave_repo_ref }}"
-      SOURCE_REPOSITORY_URL: "{{ repository_url }}"
+    params_from_vars: "{{ jenkins_slaves.build.zap }}"
     namespace: "{{ namespace }}"
     tags:
-    - jenkins-slaves
-    - zap-slave
+      - jenkins-slaves
+      - zap-slave
 - object: test-pipelines
   content:
-  - name: Deploy all test pipelines
-    template: "https://raw.githubusercontent.com/redhat-cop/openshift-templates/v1.4.5/jenkins-pipelines/jenkins-pipeline-template-no-ocp-triggers.yml"
-    params: "{{ inventory_dir }}/../.openshift/params/test_pipelines/"
-    params_from_vars:
-      PIPELINE_SOURCE_REPOSITORY_URL: "{{ repository_url }}"
-      PIPELINE_SOURCE_REPOSITORY_REF: "{{ slave_repo_ref }}"
-      PIPELINE_FILENAME: "Jenkinsfile.test"
+  - name: Deploy golang-slave test pipelines
+    template: "https://raw.githubusercontent.com/redhat-cop/openshift-templates/{{ templates_repo_ref }}/jenkins-pipelines/jenkins-pipeline-template-no-ocp-triggers.yml"
+    params_from_vars: "{{ test_pipelines.deploy.golang }}"
     namespace: "{{ namespace }}"
     tags:
-    - test-pipelines
+      - test-pipelines
+      - golang-slave-pipeline
