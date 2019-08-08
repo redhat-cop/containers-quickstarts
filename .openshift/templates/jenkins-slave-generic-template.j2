@@ -1,0 +1,55 @@
+---
+kind: Template
+apiVersion: v1
+metadata:
+  name: Generic Jenkins Agent Template
+  annotations:
+    openshift.io/display-name: Generic Jenkins Agent Build Template
+    description: "Generic build pod template pre-configured to use a jenkins agent in the
+      same project/namespace"
+objects:
+{% if jenkins_slaves is defined %}
+{% for agent in jenkins_slaves.build.values() %}
+- apiVersion: v1
+  kind: ImageStream
+  metadata:
+    labels:
+      build: {{ agent.NAME }}
+      role: jenkins-slave
+    name: {{ agent.NAME }}
+- apiVersion: v1
+  kind: BuildConfig
+  metadata:
+    labels:
+      build: {{ agent.NAME }}
+      type: image
+    name: {{ agent.NAME }}
+  spec:
+    nodeSelector:
+    output:
+      to:
+        kind: ImageStreamTag
+        name: {{ agent.NAME }}:{{ agent.SLAVE_IMAGE_TAG | default('latest') }}
+    postCommit: {}
+    resources: {}
+    runPolicy: Serial
+    source:
+      contextDir: {{ agent.SOURCE_CONTEXT_DIR }}
+      git:
+        ref: {{ agent.SOURCE_REPOSITORY_REF | default('v1.11') }}
+        uri: {{ agent.SOURCE_REPOSITORY_URL | default('https://github.com/redhat-cop/containers-quickstarts') }}
+      type: Git
+    strategy:
+      dockerStrategy:
+        dockerfilePath: {{ agent.DOCKERFILE_PATH | default('Dockerfile') }}
+        from:
+          kind: DockerImage
+          name: {{ agent.BUILDER_IMAGE_NAME | default('quay.io/openshift/origin-jenkins-agent-base:4.1') }}
+          imagePullPolicy: Always
+      type: Docker
+    triggers:
+    - type: ConfigChange
+    - type: ImageChange
+{% endfor %}
+{% endif %}
+...
