@@ -39,7 +39,6 @@ objects:
           name: jenkins-slave-base-centos7:v3.11
       type: Docker
     triggers:
-    - type: ConfigChange
     - imageChange: {}
       type: ImageChange
 - apiVersion: v1
