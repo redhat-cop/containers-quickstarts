@@ -64,7 +64,7 @@ variable like `SONARQUBE_WEB_JVM_OPTS="-Dsonar.auth.google.allowUsersToSignUp=fa
 
 * Variable: SONAR_PLUGINS_LIST
   * displayName: SonarQube Plugins List
-  * Description: "Space separated list of plugins (See: https://docs.sonarqube.org/display/PLUG/Plugin+Version+Matrix)"
+  * Description: "Space separated list of plugins See: [here](https://docs.sonarqube.org/display/PLUG/Plugin+Version+Matrix)"
   * Default Value: findbugs pmd ldap buildbreaker github gitlab
 * Variable: SONARQUBE_WEB_JVM_OPTS
   * displayName: Extra SonarQube startup properties
@@ -100,7 +100,7 @@ variable like `SONARQUBE_WEB_JVM_OPTS="-Dsonar.auth.google.allowUsersToSignUp=fa
   * Default Value:
 * Variable: LDAP_REALM
   * displayName: LDAP realm
-  * Description: "A realm defines the namespace from which the authentication entity (the value of the Context.SECURITY_PRINCIPAL property) is selected. (See: http://docs.oracle.com/javase/jndi/tutorial/ldap/security/digest.html)"
+  * Description: "A realm defines the namespace from which the authentication entity (the value of the Context.SECURITY_PRINCIPAL property) is selected. See: [here](http://docs.oracle.com/javase/jndi/tutorial/ldap/security/digest.html)"
   * Default Value:
 * Variable: LDAP_CONTEXTFACTORY
   * displayName: JNDI ContextFactory to be used

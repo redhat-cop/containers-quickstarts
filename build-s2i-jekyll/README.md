@@ -8,11 +8,11 @@ This example is using the [OpenShift Applier](https://github.com/redhat-cop/open
 ## OpenShift objects
 The openshift-applier will create the following OpenShift objects:
 * A Project named `s2i-jekyll` (see [files/projects/projects.yml](files/projects/projects.yml))
-* Three ImageStreams named `ruby`, `jekyll-builder` and `openshift-playbooks` (see [files/imagestreams/template.yml](files/imagestreams/template.yml).
-* Two BuildConfigs named `jekyll-builder` and `openshift-playbooks` (see [files/builds/docker-template.yml](files/builds/docker-template.yml) and [files/builds/source-template.yml](files/builds/source-template.yml))
-* A Service named `openshift-playbooks` (see [files/deployments/template.yml](files/deployments/template.yml))
-* A Route named `openshift-playbooks` (see [files/deployments/template.yml](files/deployments/template.yml))
-* A DeploymentConfig named `openshift-playbooks` (see [files/deployments/template.yml](files/deployments/template.yml))
+* Three ImageStreams named `ruby`, `jekyll-builder` and `openshift-playbooks` (see [.openshift/templates/imagestreams/template.yml](.openshift/templates/imagestreams/template.yml).
+* Two BuildConfigs named `jekyll-builder` and `openshift-playbooks` (see [.openshift/templates/builds/docker-template.yml](.openshift/templates/builds/docker-template.yml) and [.openshift/templates/builds/source-template.yml](.openshift/templates/builds/source-template.yml))
+* A Service named `openshift-playbooks` (see [.openshift/templates/deployments/template.yml](.openshift/templates/deployments/template.yml))
+* A Route named `openshift-playbooks` (see [.openshift/templates/deployments/template.yml](.openshift/templates/deployments/template.yml))
+* A DeploymentConfig named `openshift-playbooks` (see [.openshift/templates/deployments/template.yml](.openshift/templates/deployments/template.yml))
 
 ## Quickstart
 
@@ -25,4 +25,4 @@ The openshift-applier will create the following OpenShift objects:
 
 Now we can `oc get routes` to get the hostname of the route that was just created, or click the link in the OpenShift Web Console, and test our newly published jekyll site.
 
->**_NOTE_**: This image is not intended to be used to serve the content provided by jekyll. It can do so, but is meant for testing purposes only. For hosting the html site produced by this image, consider using the [s2i-httpd image](/s2i-httpd/), or for someting even more light weight, check out our [Go Web Server](https://github.com/redhat-cop/gows).
+>**_NOTE_**: This image is not intended to be used to serve the content provided by jekyll. It can do so, but is meant for testing purposes only. For hosting the html site produced by this image, consider using the [s2i-httpd image](../deprecated/s2i-httpd/), or for someting even more light weight, check out our [Go Web Server](https://github.com/redhat-cop/gows).

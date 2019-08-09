@@ -113,6 +113,6 @@ The application can be successfully validated if the webpage can be accessed
 
 ## Resources
 * [Apache HTTPD Web Server](https://httpd.apache.org/)
-* [Source to Image](https://docs.openshift.com/enterprise/latest/architecture/core_concepts/builds_and_image_streams.html#source-build)
-* [Builds](https://docs.openshift.com/enterprise/latest/dev_guide/builds.html)
-* [Developer CLI Reference](https://docs.openshift.com/enterprise/latest/cli_reference/basic_cli_operations.html)
+* [Source to Image](https://docs.openshift.com/container-platform/3.11/architecture/core_concepts/builds_and_image_streams.html#source-build)
+* [Builds](https://docs.openshift.com/container-platform/3.11/dev_guide/builds/index.html)
+* [Developer CLI Reference](https://docs.openshift.com/container-platform/3.11/cli_reference/basic_cli_operations.html)
