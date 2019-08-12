@@ -76,7 +76,7 @@ parameters:
 - description: Path within Git project to build; empty for root project directory.
   name: CONTEXT_DIR
   required: false
-  value: jenkins-slaves/jenkins-slave-ansible-stacks
+  value: jenkins-slaves/jenkins-slave-ansible
 - description: Git source URI for application
   name: ANSIBLE_STACKS_SOURCE_REPOSITORY_URL
   required: true
