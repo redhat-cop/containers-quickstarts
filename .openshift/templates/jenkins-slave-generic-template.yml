@@ -1,0 +1,84 @@
+---
+kind: Template
+apiVersion: v1
+metadata:
+  name: "${NAME}"
+  annotations:
+    openshift.io/display-name: Generic Build Pod
+    description: "${NAME} build pod template pre-configured to use a jenkins slave in the
+      same project/namespace"
+objects:
+- apiVersion: v1
+  kind: ImageStream
+  metadata:
+    labels:
+      build: "${NAME}"
+      role: jenkins-slave
+    name: "${NAME}"
+- apiVersion: v1
+  kind: BuildConfig
+  metadata:
+    labels:
+      build: "${NAME}"
+      type: image
+    name: "${NAME}"
+  spec:
+    nodeSelector:
+    output:
+      to:
+        kind: ImageStreamTag
+        name: "${NAME}:${SLAVE_IMAGE_TAG}"
+    postCommit: {}
+    resources: {}
+    runPolicy: Serial
+    source:
+      contextDir: "${SOURCE_CONTEXT_DIR}"
+      git:
+        ref: "${SOURCE_REPOSITORY_REF}"
+        uri: "${SOURCE_REPOSITORY_URL}"
+      type: Git
+    strategy:
+      dockerStrategy:
+        dockerfilePath: "${DOCKERFILE_PATH}"
+        from:
+          kind: DockerImage
+          name: "${BUILDER_IMAGE_NAME}"
+          imagePullPolicy: Always
+      type: Docker
+    triggers:
+    - type: ConfigChange
+    - type: ImageChange
+parameters:
+- name: NAME
+  displayName: Name
+  description: The name assigned to all objects and the resulting imagestream.
+  required: true
+- name: SOURCE_REPOSITORY_URL
+  displayName: Git Repository URL
+  description: The URL of the repository with your application source code.
+  required: true
+  value: https://github.com/redhat-cop/containers-quickstarts
+- name: SOURCE_REPOSITORY_REF
+  displayName: Git Reference
+  description: Set this to a branch name, tag or other ref of your repository if you
+    are not using the default (master) branch.
+  value: master
+- name: SOURCE_CONTEXT_DIR
+  displayName: Git Context Directory
+  description: Set this to the directory where the build information is (e.g. Dockerfile)
+    if not using the default
+- name: BUILDER_IMAGE_NAME
+  displayName: Image name from which to build this pod
+  description: The build image which this build pod will extend to create it's new
+    build pod type.
+  value: registry.access.redhat.com/openshift3/jenkins-slave-base-rhel7
+- name: SLAVE_IMAGE_TAG
+  displayName: Image tag for Jenkins slave.
+  description: This is the image tag used for the Jenkins slave.
+  value: latest 
+- name: DOCKERFILE_PATH
+  displayName: Path to Dockerfile
+  description: Path for alternate Dockerfile to use for build
+  value: Dockerfile.rhel7
+labels:
+  template: build-pod-template
