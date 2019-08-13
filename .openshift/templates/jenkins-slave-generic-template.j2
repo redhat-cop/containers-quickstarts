@@ -36,7 +36,7 @@ objects:
     source:
       contextDir: {{ agent.SOURCE_CONTEXT_DIR }}
       git:
-        ref: {{ agent.SOURCE_REPOSITORY_REF | default('v1.11') }}
+        ref: {{ agent.SOURCE_REPOSITORY_REF | default('master') }}
         uri: {{ agent.SOURCE_REPOSITORY_URL | default('https://github.com/redhat-cop/containers-quickstarts') }}
       type: Git
     strategy:

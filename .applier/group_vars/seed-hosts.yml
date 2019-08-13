@@ -1,7 +1,7 @@
 ---
 namespace: jenkins-slaves
 repository_url: https://github.com/redhat-cop/containers-quickstarts.git
-slave_repo_ref: v1.11
+slave_repo_ref: master
 templates_repo_ref: v1.4.8
 
 jenkins_slaves:
