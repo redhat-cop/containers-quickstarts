@@ -30,7 +30,7 @@ The openshift-applier will create the following OpenShift objects:
 
 The following prerequisites must be met prior to beginning to build and deploy Kafka
 
-* 6 [Persistent Volumes](https://docs.openshift.com/container-platform/latest/architecture/additional_concepts/storage.html). 3 for Kafka and 3 for Zookeeper ([see below](#verify-storage)) or a cluster that supports [dynamic provisioning with a default StorageClass](https://docs.openshift.com/container-platform/latest/install_config/storage_examples/storage_classes_dynamic_provisioning.html)
+* 6 [Persistent Volumes](https://docs.openshift.com/container-platform/3.11/architecture/additional_concepts/storage.html). 3 for Kafka and 3 for Zookeeper ([see below](#verify-storage)) or a cluster that supports [dynamic provisioning with a default StorageClass](https://docs.openshift.com/container-platform/3.11/install_config/storage_examples/storage_classes_dynamic_provisioning.html)
 * OpenShift Command Line Tool
 * Zookeeper ([see below](#zookeeper))
 * [Openshift Applier](https://github.com/redhat-cop/openshift-applier) to build and deploy Kafka. As a result you'll need to have [ansible installed](http://docs.ansible.com/ansible/latest/intro_installation.html)

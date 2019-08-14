@@ -49,11 +49,11 @@ This demo should be run on an installation of OpenShift Enterprise V3
 
 The openshift-applier will create the following OpenShift objects:
 * A project named `play-demo` (see [applier/projects/projects.yml](.applier/projects/projects.yml))
-* Three ImageStreams named `rhel7`, `s2i-play` and `play-app` (see [applier/templates/build.yml](.applier/templates/build.yml))
-* Two BuildConfigs named `s2i-play` and `play-app` (see [applier/templates/build.yml](.applier/templates/build.yml))
-* A DeploymentConfig named `play-app` (see [applier/templates/deployment.yml](.applier/templates/deployment.yml))
-* A Service named `play-app` (see [applier/templates/deployment.yml](.applier/templates/deployment.yml))
-* A Route named `play-app` (see [applier/templates/deployment.yml](.applier/templates/deployment.yml))
+* Three ImageStreams named `rhel7`, `s2i-play` and `play-app` (see [.openshift/templates/build.yml](.openshift/templates/build.yml))
+* Two BuildConfigs named `s2i-play` and `play-app` (see [.openshift/templates/build.yml](.openshift/templates/build.yml))
+* A DeploymentConfig named `play-app` (see [.openshift/templates/deployment.yml](.openshift/templates/deployment.yml))
+* A Service named `play-app` (see [.openshift/templates/deployment.yml](.openshift/templates/deployment.yml))
+* A Route named `play-app` (see [.openshift/templates/deployment.yml](.openshift/templates/deployment.yml))
 
 >**NOTE:** This requires permission to create new projects and that the `play-demo` project doesn't already exist
 
@@ -106,7 +106,7 @@ oc new-project play-demo
 
 ### Produce Builder Image
 
-The Play Framework builder image can be created using the [Git](https://docs.openshift.com/enterprise/latest/dev_guide/builds.html#source-code) or [Binary](https://docs.openshift.com/enterprise/latest/dev_guide/builds.html#binary-source) build source
+The Play Framework builder image can be created using the [Git](https://docs.openshift.com/container-platform/3.11/dev_guide/builds/build_inputs.html#source-code) or [Binary](https://docs.openshift.com/container-platform/3.11/dev_guide/builds/build_inputs.html#binary-source) build source
 
 #### Git Source
 
@@ -245,6 +245,6 @@ oc delete project play-demo
 
 ## Resources
 * [Play Framework](https://www.playframework.com/)
-* [Source to Image](https://docs.openshift.com/enterprise/latest/architecture/core_concepts/builds_and_image_streams.html#source-build)
-* [Builds](https://docs.openshift.com/enterprise/latest/dev_guide/builds.html)
-* [Developer CLI Reference](https://docs.openshift.com/enterprise/latest/cli_reference/basic_cli_operations.html)
+* [Source to Image](https://docs.openshift.com/container-platform/3.11/architecture/core_concepts/builds_and_image_streams.html#source-build)
+* [Builds](https://docs.openshift.com/container-platform/3.11/dev_guide/builds/index.html)
+* [Developer CLI Reference](https://docs.openshift.com/container-platform/3.11/cli_reference/basic_cli_operations.html)

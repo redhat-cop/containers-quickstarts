@@ -30,8 +30,8 @@ The requirements of this image are simple. All you need are:
 
 The openshift-applier will create the following OpenShift objects:
 * A Project named `build-s2i-executable` (see [files/projects/projects.yml](files/projects/projects.yml))
-* Two ImageStreams named `rhel7`, `build-s2i-executable` (see [.openshift/template/build-s2i-executable.yml](.openshift/template/build-s2i-executable.yml)).
-* One BuildConfig named `build-s2i-executable` (see [.openshift/template/build-s2i-executable.yml](.openshift/template/build-s2i-executable.yml)).
+* Two ImageStreams named `rhel7`, `build-s2i-executable` (see [.openshift/template/build-s2i-executable.yml](.openshift/templates/build-s2i-executable.yml)).
+* One BuildConfig named `build-s2i-executable` (see [.openshift/template/build-s2i-executable.yml](.openshift/templates/build-s2i-executable.yml)).
 
 ## Environment Variables
 

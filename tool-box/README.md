@@ -19,7 +19,7 @@ If you need something not here, let us know in an issue or submit a PR.
 
 ### OpenShift
 
-Assuming you have the [CLI installed](https://docs.openshift.com/container-platform/latest/cli_reference/get_started_cli.html)
+Assuming you have the [CLI installed](https://docs.openshift.com/container-platform/3.11/cli_reference/get_started_cli.html)
 
 Build the container and deploy it in OpenShift:
 

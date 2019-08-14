@@ -36,8 +36,8 @@ The above steps will create the `zookeeper` project and build a Zookeeper image 
 
 The openshift-applier will create the following OpenShift objects:
 * A project named `zookeeper` (see [files/projects/projects.yml](files/projects/projects.yml))
-* Two ImageStreams named `rhel` and `zookeeper` (see [files/imagestreams/images.yml](files/imagestreams/image.yml) and [files/builds/template.yml](files/builds/template.yml))
-* A BuildConfig named `zookeeper` (see [files/builds/template.yml](/files/builds/template.yml))
+* Two ImageStreams named `rhel` and `zookeeper` (see [files/imagestreams/images.yml](files/imagestreams/images.yml) and [files/builds/template.yml](files/builds/template.yml))
+* A BuildConfig named `zookeeper` (see [files/builds/template.yml](files/builds/template.yml))
 * Two Services `zookeeper` and `zookeeper-headless` (see [files/deployments/template.yml](files/deployments/template.yml))
 * A StatefulSet named `zookeeper` (see [files/deployments/template.yml](files/deployments/template.yml))
 * A ConfigMap named `zookeeper-config` (see [files/deployments/template.yml](files/deployments/template.yml))
