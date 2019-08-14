@@ -9,42 +9,42 @@ metadata:
       same project/namespace"
 objects:
 {% if jenkins_slaves is defined %}
-{% for agent in jenkins_slaves.build.values() %}
+{% for agent, params in jenkins_slaves.build.items() %}
 - apiVersion: v1
   kind: ImageStream
   metadata:
     labels:
-      build: {{ agent.NAME }}
+      build: {{ params.NAME | d('jenkins-slave-' + agent) }}
       role: jenkins-slave
-    name: {{ agent.NAME }}
+    name: {{ params.NAME | d('jenkins-slave-' + agent) }}
 - apiVersion: v1
   kind: BuildConfig
   metadata:
     labels:
-      build: {{ agent.NAME }}
+      build: {{ params.NAME | d('jenkins-slave-' + agent) }}
       type: image
-    name: {{ agent.NAME }}
+    name: {{ params.NAME | d('jenkins-slave-' + agent) }}
   spec:
     nodeSelector:
     output:
       to:
         kind: ImageStreamTag
-        name: {{ agent.NAME }}:{{ agent.SLAVE_IMAGE_TAG | default('latest') }}
+        name: {{ params.NAME | d('jenkins-slave-' + agent) }}:{{ params.SLAVE_IMAGE_TAG | d('latest') }}
     postCommit: {}
     resources: {}
     runPolicy: Serial
     source:
-      contextDir: {{ agent.SOURCE_CONTEXT_DIR }}
+      contextDir: {{ params.SOURCE_CONTEXT_DIR | d('jenkins-slaves/jenkins-slave-' + agent) }}
       git:
-        ref: {{ agent.SOURCE_REPOSITORY_REF | default('master') }}
-        uri: {{ agent.SOURCE_REPOSITORY_URL | default('https://github.com/redhat-cop/containers-quickstarts') }}
+        ref: {{ params.SOURCE_REPOSITORY_REF | d(slave_repo_ref) | d('master') }}
+        uri: {{ params.SOURCE_REPOSITORY_URL | d(repository_url) | d('https://github.com/redhat-cop/containers-quickstarts') }}
       type: Git
     strategy:
       dockerStrategy:
-        dockerfilePath: {{ agent.DOCKERFILE_PATH | default('Dockerfile') }}
+        dockerfilePath: {{ params.DOCKERFILE_PATH | d('Dockerfile') }}
         from:
           kind: DockerImage
-          name: {{ agent.BUILDER_IMAGE_NAME | default('quay.io/openshift/origin-jenkins-agent-base:4.1') }}
+          name: {{ params.BUILDER_IMAGE_NAME | d('quay.io/openshift/origin-jenkins-agent-base:4.1') }}
           imagePullPolicy: Always
       type: Docker
     triggers:
