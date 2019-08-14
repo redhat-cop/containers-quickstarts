@@ -52,7 +52,7 @@ objects:
       dockerStrategy:
         from:
           kind: "ImageStreamTag"
-          name: "{{ BUILDER_IMAGE_STREAM_NAME }}:{{ BUILDER_IMAGE_TAG }}"
+          name: "${BUILDER_IMAGE_STREAM_NAME}:${BUILDER_IMAGE_TAG}"
     triggers:
     - type: GitHub
       github:
