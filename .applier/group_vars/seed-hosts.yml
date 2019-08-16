@@ -11,7 +11,7 @@ jenkins_slaves:
       DOCKERFILE_PATH: Dockerfile
       NAME: jenkins-slave-ansible
       SOURCE_CONTEXT_DIR: jenkins-slaves/jenkins-slave-ansible
-      SOURCE_REPOSITORY_REF: master
+      SOURCE_REPOSITORY_REF: "{{ slave_repo_ref }}"
       SOURCE_REPOSITORY_URL: "{{ repository_url }}"
     arachni: {}
     python: {}
