@@ -51,7 +51,7 @@ By default, SonarQube will use H2 embedded, which is only for demo usage. To use
 
 ### Plugin Installation
 
-When the conatiner image is built, the Dockerfile has hardcoded list of plugins that are installed.
+When the container image is built, the Dockerfile has hardcoded list of plugins that are installed.
 
 ### Configuration
 Some configuration settings are well defined, but you can always pass additional configuration using the catchall
