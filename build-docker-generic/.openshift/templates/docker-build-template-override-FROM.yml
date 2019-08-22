@@ -13,6 +13,18 @@ objects:
       build: "${NAME}"
       app: "${NAME}"
     name: "${NAME}"
+- kind: ImageStream
+  apiVersion: image.openshift.io/v1
+  metadata:
+    name: ${FROM_DOCKER_IMAGE}
+  spec:
+    tags:
+    - annotations: null
+      from:
+        kind: DockerImage
+        name: ${FROM_DOCKER_IMAGE_REGISTRY_URL}:${FROM_DOCKER_TAG}
+      importPolicy: {}
+      name: ${FROM_DOCKER_TAG}
 - apiVersion: v1
   kind: BuildConfig
   metadata:
@@ -58,19 +70,6 @@ objects:
     - type: ConfigChange
     - type: ImageChange
 parameters:
-- name: DOCKER_FROM_KIND
-  description: Type of override for the Docker 'FROM' clause
-  displayName: FROM Kind (DockerImage or ImageStreamTag)
-  required: true
-  value: ImageStreamTag
-- name: FROM_DOCKER_IMAGE
-  description: Overrides the 'FROM' base image for the Dockerfile build
-  displayName: FROM docker image
-  required: true
-- name: FROM_DOCKER_TAG
-  description: Overrides the 'FROM' base image TAG for the Dockerfile build
-  displayName: FROM docker image TAG
-  required: true
 - name: NAME
   displayName: Name
   description: The name assigned to all objects and the resulting imagestream.
@@ -93,3 +92,19 @@ parameters:
   displayName: Git Context Directory
   description: Set this to the directory where the build information is (e.g. Dockerfile)
     if not using the root directory
+- name: DOCKER_FROM_KIND
+  description: Type of override for the Docker 'FROM' clause
+  displayName: FROM Kind (DockerImage or ImageStreamTag)
+  required: true
+  value: ImageStreamTag
+- name: FROM_DOCKER_IMAGE
+  description: Overrides the 'FROM' base image for the Dockerfile build
+  displayName: FROM docker image
+  required: true
+- name: FROM_DOCKER_TAG
+  description: Overrides the 'FROM' base image TAG for the Dockerfile build
+  displayName: FROM docker image TAG
+  required: true
+- name: FROM_DOCKER_IMAGE_REGISTRY_URL
+  displayName: External Registry URL
+  description: The URL for the registry that the image will be pulled from (e.g. registry.redhat.io)
