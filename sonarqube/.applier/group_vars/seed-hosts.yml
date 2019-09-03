@@ -3,6 +3,9 @@ app_name: sonarqube
 jenkins_url: http://jenkins:80
 
 build:
+  FROM_DOCKER_IMAGE: "{{ app_name }}"
+  FROM_DOCKER_IMAGE_REGISTRY_URL: docker.io/sonarqube
+  FROM_DOCKER_TAG: 7.9-community
   NAME: "{{ app_name }}"
   SOURCE_REPOSITORY_URL: https://github.com/redhat-cop/containers-quickstarts.git
   SOURCE_REPOSITORY_REF: master
@@ -31,7 +34,7 @@ openshift_cluster_content:
 - object: Builds
   content:
   - name: sonarqube
-    template: "{{ inventory_dir }}/../../build-docker-generic/.openshift/templates/docker-build-template.yml"
+    template: "{{ inventory_dir }}/../../build-docker-generic/.openshift/templates/docker-build-template-override-FROM.yml"
     params_from_vars: "{{ build }}"
     namespace: "{{ namespace }}"
     tags:
