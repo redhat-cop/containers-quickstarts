@@ -8,6 +8,8 @@ but it has been modified to allow permissions to be run in an OpenShift environm
 * supports for persistent volumes for configuration, plugins & elastic indices
 * additional configuration options
 
+>**NOTE:** By default this image will disable memory mapping in Elasticsearch. See upstream issues [#310](https://github.com/SonarSource/docker-sonarqube/issues/310) & [SONAR-12264](https://jira.sonarsource.com/browse/SONAR-12264). This is not suitable for production use. This can be changed by using an older version of sonarqube, add `-e upstream_sq_version=7.7-community -e sonar_search_java_additional_opts=''` to the `ansible-playbook` command below
+
 ## Usage
 
 1. Clone this repository: `git clone https://github.com/redhat-cop/containers-quickstarts`
@@ -162,6 +164,10 @@ variable like `SONARQUBE_WEB_JVM_OPTS="-Dsonar.auth.google.allowUsersToSignUp=fa
   * displayName: Require Authentication
   * Description: Require authentication for all requests to sonarqube
   * Default Value: "true"
+* Variable: SONAR_SEARCH_JAVA_ADDITIONAL_OPTS
+  * displayName: Add sonar.search.javaAdditionalOpts
+  * Description: Pass in additional Java opts to ElasticSearch
+  * Default Value:
 
 ## Example LDAP Configurations
 

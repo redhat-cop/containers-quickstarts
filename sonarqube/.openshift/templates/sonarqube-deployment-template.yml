@@ -275,3 +275,6 @@ parameters:
     description: The Jenkins URL used for the webhook
     displayName: Jenkins URL
     value: http://jenkins
+  - name: SONAR_SEARCH_JAVA_ADDITIONAL_OPTS
+    description: Pass in additional Java opts to ElasticSearch
+    displayName: Add sonar.search.javaAdditionalOpts

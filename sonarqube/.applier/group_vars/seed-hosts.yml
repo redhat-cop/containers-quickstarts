@@ -1,11 +1,13 @@
 namespace: sonarqube
 app_name: sonarqube
 jenkins_url: http://jenkins:80
+upstream_sq_version: 7.9-community
+sonar_search_java_additional_opts: '-Dnode.store.allow_mmapfs=false'
 
 build:
   FROM_DOCKER_IMAGE: "{{ app_name }}"
   FROM_DOCKER_IMAGE_REGISTRY_URL: docker.io/sonarqube
-  FROM_DOCKER_TAG: 7.9-community
+  FROM_DOCKER_TAG: "{{ upstream_sq_version }}"
   NAME: "{{ app_name }}"
   SOURCE_REPOSITORY_URL: https://github.com/redhat-cop/containers-quickstarts.git
   SOURCE_REPOSITORY_REF: master
@@ -19,6 +21,7 @@ postgresql:
 deploy:
   POSTGRES_DATABASE_NAME: "{{ postgresql.POSTGRESQL_DATABASE }}"
   JENKINS_URL: "{{ jenkins_url }}"
+  SONAR_SEARCH_JAVA_ADDITIONAL_OPTS: "{{ sonar_search_java_additional_opts }}"
 
 openshift_cluster_content:
 - object: Environment Setup
