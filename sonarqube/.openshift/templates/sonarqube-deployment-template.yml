@@ -114,6 +114,8 @@ objects:
               secretKeyRef:
                 key: password
                 name: sonar-ldap-bind-dn
+          - name: SONAR_SEARCH_JAVA_ADDITIONAL_OPTS
+            value: '-Dnode.store.allow_mmapfs=false'
           imagePullPolicy: Always
           livenessProbe:
             failureThreshold: 3
@@ -273,3 +275,6 @@ parameters:
     description: The Jenkins URL used for the webhook
     displayName: Jenkins URL
     value: http://jenkins
+  - name: SONAR_SEARCH_JAVA_ADDITIONAL_OPTS
+    description: Pass in additional Java opts to ElasticSearch
+    displayName: Add sonar.search.javaAdditionalOpts
