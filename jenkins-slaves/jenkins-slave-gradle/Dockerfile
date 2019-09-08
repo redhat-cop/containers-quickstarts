@@ -1,4 +1,4 @@
-FROM openshift/jenkins-slave-base-centos7:v3.11
+FROM quay.io/openshift/origin-jenkins-agent-base:4.1
 
 ENV GRADLE_VERSION=4.8
 
