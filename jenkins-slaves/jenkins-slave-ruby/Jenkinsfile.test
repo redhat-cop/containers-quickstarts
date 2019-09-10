@@ -1,0 +1,18 @@
+pipeline {
+    agent {
+      label 'jenkins-slave-ruby'
+    }
+
+    stages {
+        stage ('Run Test') {
+            steps {
+              sh """
+                ruby -v
+                gem install rdoc
+              """
+            }
+        }
+
+    }
+
+}
