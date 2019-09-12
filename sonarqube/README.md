@@ -49,7 +49,7 @@ script {
 
 ### Database
 
-By default, SonarQube will use H2 embedded, which is only for demo usage. To use a proper database, set `JDBC_USER`, `JDBC_PASSWORD` and `JDBC_URL` per [the docs](https://docs.sonarqube.org/display/SONAR/Installing+the+Server#InstallingtheServer-installingDatabaseInstallingtheDatabase).
+By default, SonarQube will use H2 embedded, which is only for demo usage. To use a proper database, set `JDBC_USERNAME`, `JDBC_PASSWORD` and `JDBC_URL` per [the docs](https://docs.sonarqube.org/display/SONAR/Installing+the+Server#InstallingtheServer-installingDatabaseInstallingtheDatabase).
 
 ### Plugin Installation
 
@@ -72,7 +72,7 @@ variable like `SONARQUBE_WEB_JVM_OPTS="-Dsonar.auth.google.allowUsersToSignUp=fa
   * displayName: Extra SonarQube startup properties
   * Description: Extra startup properties for SonarQube (in the form of "-Dsonar.someProperty=someValue")
   * Default Value:
-* Variable: JDBC_USER
+* Variable: JDBC_USERNAME
   * Description: Username for database user that will be used for accessing the database.
   * displayName: database Connection Username
   * from: user[A-Z0-9]{3}
