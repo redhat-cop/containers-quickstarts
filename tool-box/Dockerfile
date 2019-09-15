@@ -1,4 +1,4 @@
-FROM registry.access.redhat.io/ubi8
+FROM registry.access.redhat.com/ubi8
 
 MAINTAINER Aly Ibrahim<aly@redhat.com>
 
