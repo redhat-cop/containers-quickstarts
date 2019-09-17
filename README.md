@@ -51,7 +51,7 @@ A set of buildConfigs for building custom Jenkins images for OpenShift.
 
 ### Developer Tools
 
-* [Tool Box](./tool-box) - An openshift deployable contianer image that provides some necessary developer tools
+* [Tool Box](./tool-box) - An OpenShift deployable container image that provides some necessary developer tools
 
 ## Related Content
 
