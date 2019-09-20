@@ -44,7 +44,7 @@ objects:
             - /bin/sh
             - -c
             - sleep 30 && curl http://admin:admin@sonarqube:9000/api/webhooks/create
-              -X POST -d "name=jenkins&url=http://jenkins/sonarqube-webhook/"
+              -X POST -d "name=jenkins&url=${JENKINS_URL}/sonarqube-webhook/"
             containerName: sonarqube
           failurePolicy: Abort
       type: Recreate
@@ -114,6 +114,8 @@ objects:
               secretKeyRef:
                 key: password
                 name: sonar-ldap-bind-dn
+          - name: SONAR_SEARCH_JAVA_ADDITIONAL_OPTS
+            value: '-Dnode.store.allow_mmapfs=false'
           imagePullPolicy: Always
           livenessProbe:
             failureThreshold: 3
@@ -197,9 +199,6 @@ objects:
       deploymentconfig: sonarqube
     sessionAffinity: None
     type: ClusterIP
-  status:
-    loadBalancer: {}
-  status: {}
 parameters:
   - description: Database name for the Posgres Database to be used by Sonarqube
     displayName: Postgres database name
@@ -272,3 +271,10 @@ parameters:
     description: The ContextFactory implementation to be used when communicating with the LDAP server
     displayName: LDAP Context Factory
     value: com.sun.jndi.ldap.LdapCtxFactory
+  - name: JENKINS_URL
+    description: The Jenkins URL used for the webhook
+    displayName: Jenkins URL
+    value: http://jenkins
+  - name: SONAR_SEARCH_JAVA_ADDITIONAL_OPTS
+    description: Pass in additional Java opts to ElasticSearch
+    displayName: Add sonar.search.javaAdditionalOpts

@@ -1,0 +1,4 @@
+SOURCE_REPOSITORY_URL=https://github.com/redhat-cop/containers-quickstarts.git
+SOURCE_CONTEXT_DIR=jenkins-slaves/jenkins-slave-ruby
+BUILDER_IMAGE_NAME=openshift/jenkins-slave-base-centos7:v3.11
+NAME=jenkins-slave-ruby

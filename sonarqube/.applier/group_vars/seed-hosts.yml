@@ -1,7 +1,13 @@
 namespace: sonarqube
 app_name: sonarqube
+jenkins_url: http://jenkins:80
+upstream_sq_version: 7.9-community
+sonar_search_java_additional_opts: '-Dnode.store.allow_mmapfs=false'
 
 build:
+  FROM_DOCKER_IMAGE: "{{ app_name }}"
+  FROM_DOCKER_IMAGE_REGISTRY_URL: docker.io/sonarqube
+  FROM_DOCKER_TAG: "{{ upstream_sq_version }}"
   NAME: "{{ app_name }}"
   SOURCE_REPOSITORY_URL: https://github.com/redhat-cop/containers-quickstarts.git
   SOURCE_REPOSITORY_REF: master
@@ -14,12 +20,14 @@ postgresql:
   POSTGRESQL_USER: sonar
 deploy:
   POSTGRES_DATABASE_NAME: "{{ postgresql.POSTGRESQL_DATABASE }}"
+  JENKINS_URL: "{{ jenkins_url }}"
+  SONAR_SEARCH_JAVA_ADDITIONAL_OPTS: "{{ sonar_search_java_additional_opts }}"
 
 openshift_cluster_content:
 - object: Environment Setup
   content:
   - name: Create Projects
-    template: "https://raw.githubusercontent.com/redhat-cop/cluster-lifecycle/v3.9.0/files/projectrequest/template.yml"
+    template: "https://raw.githubusercontent.com/redhat-cop/openshift-templates/v1.4.12/project-requests/create-project.yml"
     action: create
     params_from_vars:
       NAMESPACE: "{{ namespace }}"
@@ -29,7 +37,7 @@ openshift_cluster_content:
 - object: Builds
   content:
   - name: sonarqube
-    template: "{{ inventory_dir }}/../../build-docker-generic/.openshift/templates/docker-build-template.yml"
+    template: "{{ inventory_dir }}/../../build-docker-generic/.openshift/templates/docker-build-template-override-FROM.yml"
     params_from_vars: "{{ build }}"
     namespace: "{{ namespace }}"
     tags:

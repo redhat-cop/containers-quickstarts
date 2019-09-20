@@ -1,0 +1,147 @@
+#!/bin/bash
+cp /usr/local/s2i/functions $(dirname $0)/functions
+. $(dirname $0)/functions
+
+HOME=/opt/app-root/src
+
+# we will move any code provided by s2i to here
+LOCAL_SOURCE_DIR=${HOME}/source
+mkdir -p $LOCAL_SOURCE_DIR
+# TODO: Verify a $HOME is set
+
+# Resulting artifact files will be deployed to /opt/openshift
+DEPLOY_DIR=/opt/openshift
+
+# Copy the source for compilation
+# TODO: Remove. Why do we need to move the source???
+if compgen -G "/tmp/src/*" >/dev/null; then
+  mkdir -p $LOCAL_SOURCE_DIR
+  cp -ad /tmp/src/* $LOCAL_SOURCE_DIR
+fi
+
+
+if [ -d $LOCAL_SOURCE_DIR/configuration ]; then
+  echo "Copying config files from project..."
+
+  if [ -f $LOCAL_SOURCE_DIR/configuration/settings.xml ]; then
+    mkdir -p $HOME/.m2
+    mv $LOCAL_SOURCE_DIR/configuration/settings.xml $HOME/.m2
+  fi
+
+  # We move the rest of the configuration, if provided to the place where the app will run
+  cp -v $LOCAL_SOURCE_DIR/configuration/* $DEPLOY_DIR
+fi
+
+configure_proxy
+configure_mirrors
+
+manage_incremental_build
+
+# If a pom.xml is present, this is a normal build scenario
+# so run maven.
+if [ -f "$LOCAL_SOURCE_DIR/pom.xml" ]; then
+  # the subdirectory within LOCAL_SOURCE_DIR from where we should copy build
+  # artifacts (*.war, *.jar)
+  ARTIFACT_DIR=${ARTIFACT_DIR:-target}
+
+  pushd $LOCAL_SOURCE_DIR &> /dev/null
+
+  MAVEN_ARGS=${MAVEN_ARGS--e -Popenshift -DskipTests -Dcom.redhat.xpaas.repo.redhatga package}
+
+  # Always force IPv4 (CLOUD-188)
+  # Append user-supplied arguments (CLOUD-412)
+  MAVEN_ARGS="$MAVEN_ARGS -Djava.net.preferIPv4Stack=true ${MAVEN_ARGS_APPEND}"
+
+  echo "Found pom.xml... attempting to build with 'mvn ${MAVEN_ARGS}'"
+
+  echo "Using $(mvn --version)"
+
+  # Execute the actual build
+  mvn -T 4 $MAVEN_ARGS
+
+  ERR=$?
+  if [ $ERR -ne 0 ]; then
+    echo "Aborting due to error code $ERR from Maven build"
+    exit $ERR
+  fi
+
+  # Copy built artifacts (if any!) from the target/ directory
+  # (or $ARTIFACT_DIR if specified)
+  # to the $DEPLOY_DIR directory for later deployment
+  copy_artifacts "$ARTIFACT_DIR" jar
+
+  # optionally clear the local maven repository after the build
+  clear_maven_repository
+
+  popd &> /dev/null
+elif [ -f "$LOCAL_SOURCE_DIR/build.gradle" ]; then
+  # the subdirectory within LOCAL_SOURCE_DIR from where we should copy build
+  # artifacts (*.war, *.jar)
+  ARTIFACT_DIR=${ARTIFACT_DIR:-build/libs}
+
+  echo "Building with gradle. $LOCAL_SOURCE_DIR/build.gradle found."
+
+  # Use Gradle wrapper if available
+  if [ -f "$LOCAL_SOURCE_DIR/gradlew" ]; then
+    GRADLE_CMD="./gradlew"
+  else
+    GRADLE_CMD="gradle"
+  fi
+      
+  pushd $LOCAL_SOURCE_DIR &> /dev/null
+
+  if [ -z "$BUILDER_ARGS" ]; then
+    export BUILDER_ARGS="build -x test"
+    # TODO: Specify setting file with -c sss
+  fi
+
+  echo "Found gradle.build ... attempting to build with '$GRADLE_CMD -s ${BUILDER_ARGS}'"
+
+  echo "Gradle version:"
+  $GRADLE_CMD --version
+
+  # Execute the actual build
+  $GRADLE_CMD -s  $BUILDER_ARGS
+
+  ERR=$?
+  if [ $ERR -ne 0 ]; then
+    echo "Aborting due to error code $ERR from Gradle build"
+    exit $ERR
+  fi
+
+  # Copy built artifacts (if any!) from the target/ directory
+  # (or $ARTIFACT_DIR if specified)
+  # to the $DEPLOY_DIR directory for later deployment
+  copy_artifacts "$ARTIFACT_DIR" jar
+
+
+  # clean up after maven
+  $GRADLE_CMD clean
+#  if [ -d "$HOME/.m2/repository" ]; then
+#    rm -r "$HOME/.m2/repository"
+#  fi
+
+  popd &> /dev/null
+else
+  # For binary builds
+  # the subdirectory within LOCAL_SOURCE_DIR from where we should copy build
+  # artifacts (*.war, *.jar)
+  ARTIFACT_DIR=${ARTIFACT_DIR:-.}
+
+  copy_artifacts "$ARTIFACT_DIR" jar
+fi
+
+# As Microservices you should only have 1 fat jar
+# if compgen -G "/tmp/src/*" >/dev/null; then
+# TODO: Review how best move these
+if [ $(ls ${DEPLOY_DIR}/*${APP_SUFFIX}.jar | wc -l) -eq 1 ]; then
+  echo "[INFO] Copying ${DEPLOY_DIR}/*${APP_SUFFIX}.jar into ${DEPLOY_DIR}/app.jar"
+  cp ${DEPLOY_DIR}/*${APP_SUFFIX}.jar ${DEPLOY_DIR}/app.jar
+  [ ! -f ${DEPLOY_DIR}/app.jar ] && echo "Application could not be properly built." && exit 1
+  echo "[INFO] Application jar file is located in ${DEPLOY_DIR}/app.jar"
+else
+  echo "[ERROR] No app.jar file located in ${DEPLOY_DIR}"
+  exit 1
+fi
+
+exit 0

@@ -1,0 +1,4 @@
+#!/bin/sh
+set -ue
+. $(dirname $0)/functions
+s2i_save_build_artifacts

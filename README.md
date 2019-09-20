@@ -1,3 +1,6 @@
+[![Build Status](https://travis-ci.org/redhat-cop/containers-quickstarts.svg?branch=master)](https://travis-ci.org/redhat-cop/containers-quickstarts)
+[![License](https://img.shields.io/hexpm/l/plug.svg?maxAge=2592000)]()
+
 # Container Quickstarts by Red Hat's Community of Practice
 
 This repository is meant to help bootstrap users of the OpenShift Container Platform to get started in building and using Source-to-Image to build applications to run in OpenShift.
@@ -51,7 +54,7 @@ A set of buildConfigs for building custom Jenkins images for OpenShift.
 
 ### Developer Tools
 
-* [Tool Box](./tool-box) - An openshift deployable contianer image that provides some necessary developer tools
+* [Tool Box](./tool-box) - An OpenShift deployable container image that provides some necessary developer tools
 
 ## Related Content
 

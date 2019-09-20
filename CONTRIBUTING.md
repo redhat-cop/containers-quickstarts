@@ -1,6 +1,6 @@
 # Contribution Guide
 
-In the context of this repo, a _Quickstart_ is a collection of manifests, openshift templates, images that can be used to easily build and/or deploy a piece of software to OpenShift. Each quickstart should be independently consumable and user friendly.
+In the context of this repo, a _Quickstart_ is a collection of manifests, OpenShift templates, images that can be used to easily build and/or deploy a piece of software to OpenShift. Each quickstart should be independently consumable and user friendly.
 
 | NOTE: If you have some interesting manifests or templates you would like to contribute as examples or references and they do not fit the description of a _quickstart_, please contribute them to https://github.com/rht-labs/openshift-templates |
 | --- |
