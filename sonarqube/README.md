@@ -7,6 +7,7 @@ but it has been modified to allow permissions to be run in an OpenShift environm
 * ability to define plugins to be installed the first time the container is run. 
 * supports for persistent volumes for configuration, plugins & elastic indices
 * additional configuration options
+* ability to login using the OpenShift provided OAuth server (enabled by default) - see [plugin docs](https://github.com/rht-labs/sonar-auth-openshift) for configuration and disable information
 
 >**NOTE:** By default this image will disable memory mapping in Elasticsearch. See upstream issues [#310](https://github.com/SonarSource/docker-sonarqube/issues/310) & [SONAR-12264](https://jira.sonarsource.com/browse/SONAR-12264). This is not suitable for production use. This can be changed by using an older version of sonarqube, add `-e upstream_sq_version=7.7-community -e sonar_search_java_additional_opts=''` to the `ansible-playbook` command below
 

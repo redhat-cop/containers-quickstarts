@@ -151,6 +151,8 @@ objects:
         restartPolicy: Always
         schedulerName: default-scheduler
         securityContext: {}
+        serviceAccount: sonarqube
+        serviceAccountName: sonarqube
         terminationGracePeriodSeconds: 30
         volumes:
         - name: sonar-data
@@ -199,6 +201,21 @@ objects:
       deploymentconfig: sonarqube
     sessionAffinity: None
     type: ClusterIP
+- apiVersion: v1
+  kind: ServiceAccount
+  metadata:
+    annotations:
+      serviceaccounts.openshift.io/oauth-redirectreference.sonarqube: '{"kind":"OAuthRedirectReference","apiVersion":"v1","reference":{"kind":"Route","name":"sonarqube"}}'
+    name: sonarqube
+- apiVersion: v1
+  kind: RoleBinding
+  metadata:
+    name: sonarqube_view
+  roleRef:
+    name: view
+  subjects:
+  - kind: ServiceAccount
+    name: sonarqube
 parameters:
   - description: Database name for the Posgres Database to be used by Sonarqube
     displayName: Postgres database name
