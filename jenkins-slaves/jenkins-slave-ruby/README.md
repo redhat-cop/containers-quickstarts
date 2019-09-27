@@ -4,19 +4,19 @@ Jenkins [Slave](https://wiki.jenkins-ci.org/display/JENKINS/Distributed+builds) 
 
 ## Primary Components
 
-* Ruby 2.4.0 runtime, including:
+* Ruby 2.5.0 runtime, including:
   ** Bundler
   ** RubyGems
-* Nodejs 6
+* Nodejs 8
 
 ## Instantiate Template
 
-A [template](../../.openshift/templates/jenkins-slave-ruby-template.yml) is available providing the necessary OpenShift components to build and make the slave image available to be referenced by Jenkins.
+A [template](../../.openshift/templates/jenkins-slave-generic-template.yml) is available providing the necessary OpenShift components to build and make the slave image available to be referenced by Jenkins.
 
 Execute the following command to instantiate the template:
 
 ```
-oc process -f ../templates/jenkins-slave-ruby-template.yml | oc apply -f-
+oc process -f ../../.openshift/templates/jenkins-slave-generic-template.yml | oc apply -f-
 ```
 
 A new image build will be started automatically

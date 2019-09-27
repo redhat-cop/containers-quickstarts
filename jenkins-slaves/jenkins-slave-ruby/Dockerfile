@@ -1,4 +1,4 @@
-FROM openshift/jenkins-slave-base-centos7:v3.11
+FROM quay.io/openshift/origin-jenkins-agent-base:4.1
 
 ENV RUBY_VERSION=2.5 \
   RUBY_SHORT_VERSION=25
@@ -29,13 +29,15 @@ LABEL summary="$SUMMARY" \
       release="1" \
       maintainer="SoftwareCollections.org <sclorg@redhat.com>"
 
-RUN yum install -y centos-release-scl && \
-    yum-config-manager --enable centos-sclo-rh-testing && \
-    yum update -y && \
-    INSTALL_PKGS="rh-ruby$RUBY_SHORT_VERSION rh-ruby$RUBY_SHORT_VERSION-ruby-devel rh-ruby$RUBY_SHORT_VERSION-rubygem-rake rh-ruby$RUBY_SHORT_VERSION-rubygem-bundler rh-nodejs6 autoconf automake" && \
-    yum install -y --setopt=tsflags=nodocs $INSTALL_PKGS && rpm -V $INSTALL_PKGS && \
+ADD ubi.repo /etc/yum.repos.d/ubi.repo
+
+RUN INSTALL_PKGS="rh-ruby$RUBY_SHORT_VERSION rh-ruby$RUBY_SHORT_VERSION-ruby-devel rh-ruby$RUBY_SHORT_VERSION-rubygem-rake rh-ruby$RUBY_SHORT_VERSION-rubygem-bundler rh-nodejs8 autoconf automake" && \
+    DISABLE_REPOS=--disablerepo='rhel-*' && \
+    yum $DISABLE_REPOS install -y --setopt=tsflags=nodocs $INSTALL_PKGS && rpm -V $INSTALL_PKGS && \
     yum remove -y origin-clients && \
-    yum clean all -y
+    yum $DISABLE_REPOS clean all -y && \
+
+    rm -rf /var/cache/yum
 
 RUN curl $ORIGIN_CLIENT | tar -C /usr/local/bin/ -xzf - && \
     chmod +x /usr/local/bin/oc
