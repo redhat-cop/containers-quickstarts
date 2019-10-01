@@ -1,0 +1,7 @@
+# This is the default playbook and will create a standard (relatively large) install.
+---
+- name: Create Projects and Policies
+  hosts: seed-hosts
+  tasks:
+    - include_role:
+        name: openshift-applier/roles/openshift-applier
