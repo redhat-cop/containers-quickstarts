@@ -1,6 +1,9 @@
 namespace: nexus
 app_name: nexus
 
+openshift_templates_raw: "https://raw.githubusercontent.com/redhat-cop/openshift-templates"
+openshift_templates_raw_version_tag: "v1.4.12"
+
 deploy:
   NAME: "{{ app_name }}"
 
@@ -9,6 +12,16 @@ build:
   SOURCE_REPOSITORY_URL: https://github.com/InfoSec812/containers-quickstarts.git
   SOURCE_REPOSITORY_REF: Issue-259-_-Nexus-OpenShift-plugin
   SOURCE_CONTEXT_DIR: "{{ app_name }}"
+
+nexus:
+  secret:
+    SECRET_NAME: "nexus"
+    USERNAME: admin
+    PASSWORD: "thisismytestpassword"
+  deploy:
+    VOLUME_CAPACITY: 10Gi
+    MEMORY_LIMIT: 2Gi
+    CONTAINER_IMAGE: sonatype/nexus3:latest
 
 openshift_cluster_content:
 - object: Environment Setup
@@ -31,10 +44,19 @@ openshift_cluster_content:
       - build
 - object: Deployments
   content:
-  - name: "{{ app_name }}"
-    template: "{{ inventory_dir }}/../.openshift/deploymentconfig.yml"
-    params_from_vars: "{{ deploy }}"
+  - name: nexus
+    template: "{{ openshift_templates_raw }}/{{ openshift_templates_raw_version_tag }}/secrets/secret-user-pass-plaintext.yml"
+    params_from_vars: "{{ nexus.secret }}"
     namespace: "{{ namespace }}"
     tags:
-    - deploy
-    - deploy-app
+    - jenkins
+    - secret
+    - ci-cd-secrets
+  - name: nexus
+    template: "{{ inventory_dir }}/../../.openshift/deploymentconfig.yaml"
+    params_from_vars: "{{ nexus.deploy }}"
+    namespace: "{{ namespace }}"
+    tags:
+      - nexus
+      - nexus-deploy
+      - ci-cd-deployments
