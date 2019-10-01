@@ -1,4 +1,4 @@
-FROM openshift/nexus-repository-manager:latest
+FROM image-registry.openshift-image-registry.svc:5000/openshift/nexus-repository-manager
 LABEL maintainer="Deven Phillips <deven.phillips@redhat.com>" \
       vendor="Red Hat Containers And PaaS Community of Practice" \
       description="Sonatype Nexus repository manager with Kubernetes/OpenShift Config plugin" \
