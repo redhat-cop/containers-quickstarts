@@ -3,14 +3,16 @@
 ## Testing
 1. Install Ansible on your local machine
 1. Log on to the OpenShift cluster with the CLI
-1. Clone this repository and open a terminal in the root of the project
-1. Change directory to `./nexus/test`
-1. Install the OpenShift Applier role(s)
+1. Import the `sonatype/nexus-repository-manager` image as an ImageStream into the `openshift` namespace
+   * `oc import-image sonatype/nexus-repository-manager --from=registry.connect.redhat.com/sonatype/nexus-repository-manager --confirm`
+2. Clone this repository and open a terminal in the root of the project
+3. Change directory to `./nexus/test`
+4. Install the OpenShift Applier role(s)
    1. `ansible-galaxy install -r requirements.yml -p ./roles`
-1. Run the applier playbook
+5. Run the applier playbook
    1. `ansible-playbook -i inventory test.yml`
-1. Wait for the Nexus application to become available
-1. Open the Nexus page and attempt to log on as `admin` with password `thisismytestpassword`
+6. Wait for the Nexus application to become available
+7. Open the Nexus page and attempt to log on as `admin` with password `thisismytestpassword`
    1. If this works, the container is correct.
 
 
