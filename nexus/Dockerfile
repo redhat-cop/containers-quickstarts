@@ -1,4 +1,4 @@
-FROM registry.connect.redhat.com/sonatype/nexus-repository-manager:latest
+FROM openshift/nexus-repository-manager:latest
 LABEL maintainer="Deven Phillips <deven.phillips@redhat.com>" \
       vendor="Red Hat Containers And PaaS Community of Practice" \
       description="Sonatype Nexus repository manager with Kubernetes/OpenShift Config plugin" \
