@@ -1,6 +1,9 @@
 namespace: nexus
 app_name: nexus
 
+deploy:
+  NAME: "{{ app_name }}"
+
 build:
   NAME: "{{ app_name }}"
   SOURCE_REPOSITORY_URL: https://github.com/InfoSec812/containers-quickstarts.git
