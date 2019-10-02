@@ -9,8 +9,8 @@ deploy:
 
 build:
   NAME: "{{ app_name }}"
-  SOURCE_REPOSITORY_URL: https://github.com/InfoSec812/containers-quickstarts.git
-  SOURCE_REPOSITORY_REF: Issue-259-_-Nexus-OpenShift-plugin
+  SOURCE_REPOSITORY_URL: https://github.com/redhat-cop/containers-quickstarts.git
+  SOURCE_REPOSITORY_REF: master
   SOURCE_CONTEXT_DIR: "{{ app_name }}"
 
 nexus:
