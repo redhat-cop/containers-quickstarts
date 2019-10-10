@@ -18,6 +18,12 @@ but it has been modified to allow permissions to be run in an OpenShift environm
 3. Run `ansible-galaxy install -r requirements.yml --roles-path=galaxy`
 4. Login to OpenShift: `oc login -u <username> https://master.example.com:8443`
 
+### Settings
+
+There are a couple of settings that may need to be configured in order for this to work properly. By default authorization is determined by the users membership in the groups `sonar-administrators` for admins and `sonar-users` for ordinary users. To change the group association review the configuration instructions [here](https://github.com/rht-labs/sonar-auth-openshift/). To create a custom group see the example [here](https://github.com/rht-labs/sonar-auth-openshift/blob/master/example/files/sonarqube-admin-group.yml).
+
+In many cases the certs that are associated with the pod are the same as those associated with the OpenShift oauth server. If true, then no configuration is necessary. If the cert is not the same than you will need to provide the correct cert. Your 2 options are to ignore the cert `ignore.certs=true` (only do this for testing puropses) or provide the correct cert. See [here](https://github.com/rht-labs/sonar-auth-openshift/) for instructions. 
+
 ### Build and Deploy SonarQube
 
 Run the openshift-applier to create the `SonarQube` project and deploy required objects
