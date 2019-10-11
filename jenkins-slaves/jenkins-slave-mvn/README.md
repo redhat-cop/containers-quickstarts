@@ -4,10 +4,10 @@ This slave extends [the Jenkins Maven Slave shipped with OpenShift](https://acce
 
 ## Build in OpenShift
 ```bash
-oc process -f ../templates/jenkins-slave-generic-template.yml \
+oc process -f ../../.openshift/templates/jenkins-slave-generic-template.yml \
     -p NAME=jenkins-slave-mvn \
     -p SOURCE_CONTEXT_DIR=jenkins-slaves/jenkins-slave-mvn \
     -p DOCKERFILE_PATH=Dockerfile \
     | oc create -f -
 ```
-For all params see the list in the `../templates/jenkins-slave-generic-template.yml` or run `oc process --parameters -f ../templates/jenkins-slave-generic-template.yml`.
+For all params see the list in the `../../.openshift/templates/jenkins-slave-generic-template.yml` or run `oc process --parameters -f ../../.openshift/templates/jenkins-slave-generic-template.yml`.

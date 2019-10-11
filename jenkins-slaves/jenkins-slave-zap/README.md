@@ -13,7 +13,7 @@ For local running and experimentation run `docker run -i -t jenkins-slave-zap /b
 ## Build in OpenShift
 
 ```bash
-oc process -f ../templates/jenkins-slave-generic-template.yml \
+oc process -f ../../.openshift/templates/jenkins-slave-generic-template.yml \
     -p NAME=jenkins-slave-zap \
     -p SOURCE_CONTEXT_DIR=jenkins-slaves/jenkins-slave-zap \
     -p BUILDER_IMAGE_NAME=centos:centos7 \
@@ -21,7 +21,7 @@ oc process -f ../templates/jenkins-slave-generic-template.yml \
     | oc create -f -
 ```
 
-For all params see the list in the `../templates/jenkins-slave-generic-template.yml` or run `oc process --parameters -f ../templates/jenkins-slave-generic-template.yml`.
+For all params see the list in the `../../.openshift/templates/jenkins-slave-generic-template.yml` or run `oc process --parameters -f ../../.openshift/templates/jenkins-slave-generic-template.yml`.
 
 ## Jenkins
 
