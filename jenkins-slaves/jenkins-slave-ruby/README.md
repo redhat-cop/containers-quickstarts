@@ -16,10 +16,13 @@ A [template](../../.openshift/templates/jenkins-slave-generic-template.yml) is a
 Execute the following command to instantiate the template:
 
 ```
-oc process -f ../../.openshift/templates/jenkins-slave-generic-template.yml | oc apply -f-
+oc process -f ../../.openshift/templates/jenkins-slave-generic-template.yml \
+    -p NAME=jenkins-slave-ruby \
+    -p SOURCE_CONTEXT_DIR=jenkins-slaves/jenkins-slave-ruby \
+    | oc create -f -
 ```
 
-A new image build will be started automatically
+A new image build will be started automatically. For all params see the list in the `../../.openshift/templates/jenkins-slave-generic-template.yml` or run `oc process --parameters -f ../../.openshift/templates/jenkins-slave-generic-template.yml`.
 
 ## Use within Jenkins
 

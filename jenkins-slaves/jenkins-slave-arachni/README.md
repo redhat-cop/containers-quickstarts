@@ -6,12 +6,12 @@ Provides a docker image of the arachni security tool with an additional reporter
 
 ## Build in OpenShift
 ```bash
-oc process -f .openshift/templates/jenkins-slave-generic-template.yml \
+oc process -f ../../.openshift/templates/jenkins-slave-generic-template.yml \
     -p NAME=jenkins-slave-arachni \
     -p SOURCE_CONTEXT_DIR=jenkins-slaves/jenkins-slave-arachni \
     | oc create -f -
 ```
-For all params see the list in the `.openshift/templates/jenkins-slave-generic-template.yml` or run `oc process --parameters -f .openshift/templates/jenkins-slave-generic-template.yml`.
+For all params see the list in the `../../.openshift/templates/jenkins-slave-generic-template.yml` or run `oc process --parameters -f ../../.openshift/templates/jenkins-slave-generic-template.yml`.
 
 ## Run
 For local running and experimentation run `docker run -i -t --rm jenkins-slave-arachni /bin/bash` and have a play once inside the container. `/arachni` is where the product is and  `/arachni/bin/arachni` for the binary
