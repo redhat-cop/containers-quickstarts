@@ -13,7 +13,7 @@ This demonstration describes how to create a RabbitMQ cluster in Openshift.
 ## OpenShift objects
 The openshift-applier will create the following OpenShift objects:
 * A Project named `rabbitmq` (see [files/projects/projects.yml](files/projects/projects.yml))
-* Two ImageStreams `rabbitmq` and `rhel` (see [.openshift/templates/builds/template.yml](.openshift/templates/builds/template.yml) and [.openshift/templates/imagestreams/images.yml](.openshift/templates/imagestreams/images.yml))
+* Two ImageStreams `rabbitmq` and `ubi` (see [.openshift/templates/builds/template.yml](.openshift/templates/builds/template.yml) and [.openshift/templates/imagestreams/images.yml](.openshift/templates/imagestreams/images.yml))
 * A BuildConfig named `rabbitmq` (see [.openshift/templates/builds/template.yml](.openshift/templates/builds/template.yml))
 * A RoleBinding named `rabbitmq` (see [.openshift/templates/deployments/template.yml](.openshift/templates/deployments/template.yml))
 * A Service named `rabbitmq` (see [.openshift/templates/deployments/template.yml](.openshift/templates/deployments/template.yml))
@@ -25,7 +25,7 @@ The openshift-applier will create the following OpenShift objects:
 | APPLICATION_NAME             | The name for the application        | rabbitmq                                             |
 | CONTEXT_DIR                  | Path within Git project to build    | rabbitmq                                             |
 | ERLANG_VERSION               | Erlang version to use               | 20.1.1                                               |
-| FROM_IMAGE                   | Docker image to build from          | rhel7:7.4                                            |
+| FROM_IMAGE                   | Docker image to build from          | ubi:7.7                                            |
 | RABBITMQ_AUTOCLUSTER_VERSION | RabbitMQ Autocluster version to use | 0.10.0                                               |
 | RABBITMQ_VERSION             | RabbitMQ version to build           | 3.6.12                                               |
 | SOURCE_REPOSITORY_REF        | Git branch/tag reference            | master                                               |
