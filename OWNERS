@@ -1,16 +1,16 @@
 # See the OWNERS docs at https://go.k8s.io/owners
 
-filters:
-  ".*":
-    reviewers:
-      - etsauer
-      - oybed
-      - pcarney8
-      - pabrahamsson
-      - sabre1041
-    approvers:
-      - etsauer
-      - oybed
-      - pcarney8
-      - pabrahamsson
-      - sabre1041
+reviewers:
+  - etsauer
+  - oybed
+  - pcarney8
+  - pabrahamsson
+  - sabre1041
+  - springdo
+  - tylerauerbeck
+approvers:
+  - etsauer
+  - oybed
+  - pcarney8
+  - pabrahamsson
+  - sabre1041
