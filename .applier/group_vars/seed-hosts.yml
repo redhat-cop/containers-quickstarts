@@ -19,6 +19,7 @@ jenkins_slaves:
     gradle: {}
     mongodb: {}
     mvn: {}
+      BUILDER_IMAGE_NAME: quay.io/openshift/origin-jenkins-agent-maven:4.1
     npm:
       BUILDER_IMAGE_NAME: openshift/jenkins-slave-base-centos7:v3.11
     ruby: {}
