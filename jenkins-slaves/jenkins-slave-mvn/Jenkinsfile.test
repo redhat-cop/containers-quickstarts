@@ -1,0 +1,17 @@
+pipeline {
+    agent {
+      label 'jenkins-slave-mvn'
+    }
+
+    stages {
+        stage ('Run Test') {
+            steps {
+              sh """
+                  mvn --version
+              """
+            }
+        }
+
+    }
+
+}
