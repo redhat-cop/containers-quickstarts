@@ -17,6 +17,11 @@ openshift_cluster_content:
   - name: rhel7
     file: "{{ inventory_dir }}/../.openshift/templates/imagestreams/images.yml"
     namespace: "{{ namespace }}"
+- object: configmap
+  content:
+  - name: rabbitmq_conf
+    namespace: "{{ namespace }}"
+    file: "{{ inventory_dir }}/../.openshift/templates/configmaps/template.yml"
 - object: deployments
   content:
   - name: rabbitmq

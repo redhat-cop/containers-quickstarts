@@ -99,6 +99,8 @@ objects:
           terminationMessagePath: /dev/termination-log
           terminationMessagePolicy: File
           volumeMounts:
+          - name: conf
+            mountPath: /etc/rabbitmq
           - name: mnesia
             mountPath: /var/lib/rabbitmq/mnesia
         dnsPolicy: ClusterFirst
@@ -106,6 +108,10 @@ objects:
         schedulerName: default-scheduler
         securityContext: {}
         terminationGracePeriodSeconds: 10
+        volumes:
+        - name: conf
+          configMap:
+            name: rabbitmq_conf
     volumeClaimTemplates:
     - metadata:
         name: mnesia
@@ -122,4 +128,4 @@ parameters:
 - description: RabbitMQ version to build
   name: RABBITMQ_VERSION
   required: true
-  value: 3.6.12
+  value: 3.7.19
