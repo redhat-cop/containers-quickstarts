@@ -31,7 +31,7 @@ The requirements of this image are simple. All you need are:
 ## OpenShift objects
 
 The openshift-applier will create the following OpenShift objects:
-* A Project named `s2i-gows` (see [files/projects/projects.yml](files/projects/projects.yml))
+* A Project named `s2i-gows` 
 * Three ImageStreams named `golang`, `busybox` and `gows` (see [.openshift/templates/imagestreams/template.yml](.openshift/templates/imagestreams/template.yml) and [.openshift/templates/builds/template.yml](.openshift/templates/builds/template.yml)).
 * Four BuildConfigs named `gows-build`, `gows-busybox`, `gows-s2i` and `gows` (see [.openshift/templates/builds/template.yml](.openshift/templates/builds/template.yml))
 * A Service named `gows` (see [.openshift/templates/deployments/template.yml](.openshift/templates/deployments/template.yml))
@@ -40,7 +40,7 @@ The openshift-applier will create the following OpenShift objects:
 ## Environment Variables
 
 ### Openshift Build Vars
-The build supports a few environment variables to specify the source of the site. The default values can be changed by setting the variables below in the [params file](files/builds/params).
+The build supports a few environment variables to specify the source of the site. The default values can be changed by setting the variables below in the [seed hosts file](.applier/group_vars/seed-hosts.yml).
 
 | Variable Name | Default Value | Description |
 | ------------- | ------------- | ----------- |
