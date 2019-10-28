@@ -1,6 +1,10 @@
 ---
 namespace: rabbitmq
 
+build:
+  SOURCE_REPOSITORY_REF: issue-265
+  SOURCE_REPOSITORY_URL: https://github.com/pabrahamsson/containers-quickstarts
+
 openshift_cluster_content:
 - object: Environment Setup
   content:
@@ -14,23 +18,23 @@ openshift_cluster_content:
       - project
 - object: imagestream
   content:
-  - name: rhel7
+  - name: ubi7
     file: "{{ inventory_dir }}/../.openshift/templates/imagestreams/images.yml"
     namespace: "{{ namespace }}"
+- object: builds
+  content:
+  - name: rabbitmq
+    namespace: "{{ namespace }}"
+    template: "{{ inventory_dir }}/../.openshift/templates/builds/template.yml"
+    params_from_vars: "{{ build }}"
 - object: configmap
   content:
   - name: rabbitmq_conf
     namespace: "{{ namespace }}"
-    file: "{{ inventory_dir }}/../.openshift/templates/configmaps/template.yml"
+    file: "{{ inventory_dir }}/../.openshift/templates/configmaps/config.yml"
 - object: deployments
   content:
   - name: rabbitmq
     namespace: "{{ namespace }}"
     template: "{{ inventory_dir }}/../.openshift/templates/deployments/template.yml"
     params: "{{ inventory_dir }}/../.openshift/params/deploy"
-- object: builds
-  content:
-  - name: rabbitmq
-    namespace: "{{ namespace }}"
-    template: "{{ inventory_dir }}/../.openshift/templates/builds/template.yml"
-    params: "{{ inventory_dir }}/../.openshift/params/build"

@@ -29,22 +29,16 @@ objects:
   spec:
     clusterIP: None
     ports:
-    - name: 4369-tcp
-      port: 4369
+    - name: http
       protocol: TCP
-      targetPort: 4369
-    - name: 5671-tcp
-      port: 5671
+      port: 15672
+      targetPort: 15672
+      nodePort: 31672
+    - name: amqp
       protocol: TCP
-      targetPort: 5671
-    - name: 5672-tcp
       port: 5672
-      protocol: TCP
       targetPort: 5672
-    - name: 25672-tcp
-      port: 25672
-      protocol: TCP
-      targetPort: 25672
+      nodePort: 30672
     selector:
       application: "${APPLICATION_NAME}"
     sessionAffinity: None
@@ -68,38 +62,41 @@ objects:
       spec:
         containers:
         - env:
-          - name: AUTOCLUSTER_DELAY
-            value: "10"
-          - name: AUTOCLUSTER_TYPE
-            value: k8s
-          - name: MY_POD_IP
+          - name: MY_POD_NAME
             valueFrom:
               fieldRef:
                 apiVersion: v1
-                fieldPath: status.podIP
+                fieldPath: metadata.name
+          - name: MY_POD_NAMESPACE
+            valueFrom:
+              fieldRef:
+                apiVersion: v1
+                fieldPath: metadata.namespace
+          - name: K8S_SERVICE_NAME
+            value: "${APPLICATION_NAME}"
+          - name: K8S_HOSTNAME_SUFFIX
+            value: .$(K8S_SERVICE_NAME).$(MY_POD_NAMESPACE).svc.cluster.local
           - name: RABBITMQ_ERLANG_COOKIE
             value: sup3rS3cr1+
           - name: RABBITMQ_NODENAME
-            value: rabbit@$(MY_POD_IP)
+            value: rabbit@$(MY_POD_NAME).$(K8S_SERVICE_NAME).$(MY_POD_NAMESPACE).svc.cluster.local
           - name: RABBITMQ_USE_LONGNAME
             value: "true"
           image: "${APPLICATION_NAME}:${RABBITMQ_VERSION}"
           imagePullPolicy: Always
           name: "${APPLICATION_NAME}"
           ports:
-          - containerPort: 25672
+          - name: http
             protocol: TCP
-          - containerPort: 4369
+            containerPort: 15672
+          - name: amqp
             protocol: TCP
-          - containerPort: 5671
-            protocol: TCP
-          - containerPort: 5672
-            protocol: TCP
+            containerPort: 5672
           resources: {}
           terminationMessagePath: /dev/termination-log
           terminationMessagePolicy: File
           volumeMounts:
-          - name: conf
+          - name: config-volume
             mountPath: /etc/rabbitmq
           - name: mnesia
             mountPath: /var/lib/rabbitmq/mnesia
@@ -109,9 +106,14 @@ objects:
         securityContext: {}
         terminationGracePeriodSeconds: 10
         volumes:
-        - name: conf
+        - name: config-volume
           configMap:
-            name: rabbitmq_conf
+            name: rabbitmq-config
+            items:
+            - key: rabbitmq.conf
+              path: rabbitmq.conf
+            - key: enabled_plugins
+              path: enabled_plugins
     volumeClaimTemplates:
     - metadata:
         name: mnesia
@@ -128,4 +130,4 @@ parameters:
 - description: RabbitMQ version to build
   name: RABBITMQ_VERSION
   required: true
-  value: 3.7.19
+  value: 3.8.0
