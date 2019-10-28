@@ -12,7 +12,7 @@ This demonstration describes how to create a RabbitMQ cluster in Openshift.
 
 ## OpenShift objects
 The openshift-applier will create the following OpenShift objects:
-* A Project named `rabbitmq` (see [files/projects/projects.yml](files/projects/projects.yml))
+* A Project named `rabbitmq` 
 * Two ImageStreams `rabbitmq` and `ubi` (see [.openshift/templates/builds/template.yml](.openshift/templates/builds/template.yml) and [.openshift/templates/imagestreams/images.yml](.openshift/templates/imagestreams/images.yml))
 * A BuildConfig named `rabbitmq` (see [.openshift/templates/builds/template.yml](.openshift/templates/builds/template.yml))
 * A RoleBinding named `rabbitmq` (see [.openshift/templates/deployments/template.yml](.openshift/templates/deployments/template.yml))

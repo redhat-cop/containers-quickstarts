@@ -37,7 +37,7 @@ It makes use of the following technologies:
 
 ### OpenShift objects
 The openshift-applier will create the following OpenShift objects:
-* A Project named `mongodb` (see [files/projects/projects.yml](files/projects/projects.yml))
+* A Project named `mongodb` 
 * Four Services named `mongodb-configsvr-internal`, `mongodb-replset-internal-abc`, `mongodb-replset-internal-def` and `mongodb-mongos-ext` (see [.openshift/templates/configsvr.yml](.openshift/templates/configsvr.yml), [.openshift/templates/replset.yml](.openshift/templates/replset.yml) and [.openshift/templates/mongos.yml](.openshift/templates/mongos.yml))
 * Three StatefulSets named `mongodbconfigsvr`, `mongodbreplset-abc`, `mongodbreplset-def` (see [.openshift/templates/configsvr.yml](.openshift/templates/configsvr.yml) and [.openshift/templates/replset.yml](.openshift/templates/replset.yml))
 * A DeploymentConfig named `mongodb-mongos` (see [.openshift/templates/mongos.yml](.openshift/templates/mongos.yml))

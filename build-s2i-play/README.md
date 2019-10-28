@@ -48,7 +48,7 @@ This demo should be run on an installation of OpenShift Enterprise V3
 ### OpenShift objects
 
 The openshift-applier will create the following OpenShift objects:
-* A project named `play-demo` (see [applier/projects/projects.yml](.applier/projects/projects.yml))
+* A project named `play-demo` 
 * Three ImageStreams named `rhel7`, `s2i-play` and `play-app` (see [.openshift/templates/build.yml](.openshift/templates/build.yml))
 * Two BuildConfigs named `s2i-play` and `play-app` (see [.openshift/templates/build.yml](.openshift/templates/build.yml))
 * A DeploymentConfig named `play-app` (see [.openshift/templates/deployment.yml](.openshift/templates/deployment.yml))

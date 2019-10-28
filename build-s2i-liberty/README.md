@@ -2,7 +2,7 @@
 
 This demonstration describes how to produce a new Source to Image (S2I) runtime image to deploy web application running on liberty on OpenShift.
 
-![IBM Liberty](https://browser-call.wasdev.developer.ibm.com/assets/liberty_logo_transp.png "IBM Liberty")
+![IBM Liberty](https://www.ibm.com/cloud/websphere-liberty)
 
 ## Table of Contents
 
@@ -40,7 +40,7 @@ This demo should be run on an installation of OpenShift Enterprise V3.7
 ### OpenShift objects
 
 The openshift-applier will create the following OpenShift objects:
-* A project named `liberty-demo` (see [applier/projects/projects.yml](.openshift/templates/projects/projects.yml))
+* A project named `liberty-demo` 
 * Five ImageStreams named `websphere-liberty`, `s2i-liberty`, `hello-world-artifacts`, `eap70-openshift` and `hello-world` (see [.openshift/templates/build.yml](.openshift/templates/build.yml))
 * Three BuildConfigs named `websphere-liberty`, `hello-world-artifacts` and `hello-world` (see [.openshift/templates/build.yml](.openshift/templates/build.yml))
 * A DeploymentConfig named `hello-world` (see [.openshift/templates/deployment.ym](.openshift/templates/deployment.yml))
