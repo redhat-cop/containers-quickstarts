@@ -40,7 +40,6 @@ RUN set -xe && \
     groupadd --system rabbitmq && \
     adduser -u 1001 -r -c "RabbitMQ User" -d /var/lib/rabbitmq -g rabbitmq rabbitmq && \
     mkdir -p /var/lib/rabbitmq /etc/rabbitmq && \
-    ${RABBITMQ_HOME}/sbin/rabbitmq-plugins enable rabbitmq_peer_discovery_k8s --offline && \
     chown -R 1001:0 /var/lib/rabbitmq /etc/rabbitmq ${RABBITMQ_HOME}/plugins && \
     chmod -R g=u /var/lib/rabbitmq /etc/rabbitmq && \
     rm -rf /var/lib/rabbitmq/.erlang.cookie && \
@@ -51,5 +50,5 @@ USER 1001
 ENV PATH=$RABBITMQ_HOME/sbin:$PATH
 ENTRYPOINT ["docker-entrypoint.sh"]
 
-EXPOSE 4369 5671 5672 25672
+EXPOSE 5672 25672
 CMD ["rabbitmq-server"]

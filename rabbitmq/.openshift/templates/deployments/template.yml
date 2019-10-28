@@ -33,12 +33,10 @@ objects:
       protocol: TCP
       port: 15672
       targetPort: 15672
-      nodePort: 31672
     - name: amqp
       protocol: TCP
       port: 5672
       targetPort: 5672
-      nodePort: 30672
     selector:
       application: "${APPLICATION_NAME}"
     sessionAffinity: None
@@ -84,6 +82,14 @@ objects:
             value: "true"
           image: "${APPLICATION_NAME}:${RABBITMQ_VERSION}"
           imagePullPolicy: Always
+          livenessProbe:
+            exec:
+              # Learn more at https://www.rabbitmq.com/monitoring.html#health-checks.
+              command: ["rabbitmq-diagnostics", "status"]
+            initialDelaySeconds: 60
+            # See https://www.rabbitmq.com/monitoring.html for monitoring frequency recommendations.
+            periodSeconds: 60
+            timeoutSeconds: 15
           name: "${APPLICATION_NAME}"
           ports:
           - name: http
@@ -92,6 +98,13 @@ objects:
           - name: amqp
             protocol: TCP
             containerPort: 5672
+          readinessProbe:
+            exec:
+              # Learn more at https://www.rabbitmq.com/monitoring.html#health-checks.
+              command: ["rabbitmq-diagnostics", "check_port_connectivity"]
+            initialDelaySeconds: 20
+            periodSeconds: 60
+            timeoutSeconds: 10
           resources: {}
           terminationMessagePath: /dev/termination-log
           terminationMessagePolicy: File
