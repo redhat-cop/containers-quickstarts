@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/redhat-cop/containers-quickstarts.svg?branch=master)](https://travis-ci.org/redhat-cop/containers-quickstarts)
+[![Build Status](https://prow-default.apps.ci-1.cop.rht-labs.com/badge.svg?jobs=cq-daily-master)](https://prow-default.apps.ci-1.cop.rht-labs.com/?job=cq-daily-master)
 [![License](https://img.shields.io/hexpm/l/plug.svg?maxAge=2592000)]()
 
 # Container Quickstarts by Red Hat's Community of Practice
