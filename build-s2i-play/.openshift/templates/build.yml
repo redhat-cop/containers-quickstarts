@@ -51,7 +51,7 @@ objects:
         dockerFilePath: Dockerfile
         from:
           kind: ImageStreamTag
-          name: rhel7-atomic:7.5
+          name: rhel7-atomic:7.7
       type: Docker
     triggers:
     - type: ConfigChange
@@ -115,15 +115,15 @@ parameters:
   displayName: Play application source url
   name: PLAY_APPLICATION_SOURCE_REPOSITORY_URL
   required: true
-  value: https://github.com/playframework/play-java-ebean-example.git
+  value: https://github.com/playframework/play-samples.git
 - description: Play Framework application source branch/tag reference.
   displayName: Play application source branch/tag reference.
   name: PLAY_APPLICATION_SOURCE_REPOSITORY_REF
   required: false
-  value: 2.6.x
+  value: 2.7.x
 - description: Path within Git project to build containing the Play Framework application;
     empty for root project directory.
   displayName: Play application context directory.
   name: PLAY_APPLICATION_CONTEXT_DIR
   required: false
-  value: ""
+  value: "play-java-ebean-example"

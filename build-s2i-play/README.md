@@ -48,7 +48,7 @@ This demo should be run on an installation of OpenShift Enterprise V3
 ### OpenShift objects
 
 The openshift-applier will create the following OpenShift objects:
-* A project named `play-demo` (see [applier/projects/projects.yml](.applier/projects/projects.yml))
+* A project named `play-demo` 
 * Three ImageStreams named `rhel7`, `s2i-play` and `play-app` (see [.openshift/templates/build.yml](.openshift/templates/build.yml))
 * Two BuildConfigs named `s2i-play` and `play-app` (see [.openshift/templates/build.yml](.openshift/templates/build.yml))
 * A DeploymentConfig named `play-app` (see [.openshift/templates/deployment.yml](.openshift/templates/deployment.yml))
@@ -113,13 +113,13 @@ The Play Framework builder image can be created using the [Git](https://docs.ope
 The content used to produce the Play builder image can originate from a Git repository. Execute the following command to start a new image build using the git source strategy.:
 
 ```
-oc new-build registry.access.redhat.com/rhel7.2~https://github.com/redhat-cop/containers-quickstarts --context-dir=s2i-play --name=s2i-play --strategy=docker --follow=true
+oc new-build registry.access.redhat.com/rhel7-atomic:7.7~https://github.com/redhat-cop/containers-quickstarts --context-dir=build-s2i-play --name=s2i-play --strategy=docker
 ```
 
 Let's break down the command in further detail
 
 * `oc new-build` - OpenShift command to create a new build
-* `registry.access.redhat.com/rhel7.2` - The location of the base Docker image for which a new ImageStream will be created
+* `registry.access.redhat.com/rhel7-atomic:7.7` - The location of the base Docker image for which a new ImageStream will be created
 * `~` - Specifying that source code will be provided
 * `https://github.com/redhat-cop/containers-quickstarts` - URL of the Git repository
 * `--context-dir` - Location within the repository containing source code
@@ -128,6 +128,21 @@ Let's break down the command in further detail
 * `--follow=true` - Follows the build process in the command window
 
 *Note: If the repository was moved to a different location (such as a fork), be sure to reference to correct location.*
+
+The build that was triggered by the `new-build` command can be found by executing the following command:
+
+```
+oc get builds -l=build=s2i-play
+```
+
+View the build logs by executing the following command:
+
+```
+oc logs builds/<build_name>
+```
+
+*Note: Replace `<build_name>` with the name of the build found in the previous command.*
+
 
 A new image called *s2i-play* was produced and can be used to build Play Framework applications in the subsequent sections.
 
@@ -138,18 +153,31 @@ Instead of referencing a git repository, the content can be provided directly to
 The first step is to obtain the source code containing the builder. Once the code has been obtained, navigate to the folder containing the Play Framework *Dockerfile*, and execute the following command to start a new image build using the binary source strategy:
 
 ```
-oc new-build registry.access.redhat.com/rhel7.2 --name=s2i-play --strategy=docker --from-dir=. --binary=true --follow=true
+oc new-build registry.access.redhat.com/rhel7-atomic:7.7 --name=s2i-play --context-dir=build-s2i-play --strategy=docker --binary=true
 ```
 
 Let's break down the command in further detail
 
 * `oc new-build` - OpenShift command to create a new build
-* `registry.access.redhat.com/rhel7.2` - The location of the base Docker image for which a new ImageStream will be created
-* `--from-dir` - Location of source code that will be used as the source for the build process. The contents will be tar'ed up and uploaded to the builder image.
+* `registry.access.redhat.com/rhel7-atomic:7.7` - The location of the base Docker image for which a new ImageStream will be created
 * `--name=s2i-play` - Name for the build and resulting image
+* `--context-dir` - Location within the repository containing source code
 * `--strategy=docker` - Name of the OpenShift source strategy that is used to produce the new image
 * `--binary=true` - Specifies this build will be of a binary source type
+
+Now, start a new build by pushing the binary contents of the repository to OpenShift
+
+```
+oc start-build s2i-play --from-dir=. --follow
+```
+
+Let's break down the command in further detail
+
+* `oc start-build` - OpenShift command to start a new build
+* `--name=s2i-play` - Name for the build and resulting image
+* `--from-dir` - Location of source code that will be used as the source for the build process. The contents will be tar'ed up and uploaded to the builder image.
 * `--follow=true` - Follows the build process in the command window
+
 
 A new image called *s2i-play* was produced and can be used to build Play Framework applications in the subsequent sections.
 
@@ -160,14 +188,15 @@ To demonstrate the usage of the newly created builder image, an example applicat
 Create the new application by passing in the name of the builder image created previously and the git repository containing the source code:
 
 ```
-oc new-app --image-stream=s2i-play --code=https://github.com/playframework/play-ebean-example.git --name=play-app
+oc new-app --image-stream=s2i-play --code=https://github.com/playframework/play-samples.git#2.7.x --name=play-app --context-dir=play-java-ebean-example
 ```
 
 Let's break down the command in further detail
 
 * `oc new-app` - OpenShift command to create a a new application
 * `--image-stream=s2i-play` - Name of the ImageStream that will be used as the Source to Image builder
-* `--code=https://github.com/playframework/play-ebean-example.git` - Location of appliation source code that will be applied to the builder image.
+* `--code=https://github.com/playframework/play-samples.git#2.7.x` - Location of appliation source code that will be applied to the builder image.
+* `--context-dir` - Location within the repository containing source code
 * `--name=play-app` - Name to be applied to the newly created resources
 
 The build that was triggered by the `new-app` command can be found by executing the following command:
@@ -216,7 +245,7 @@ Evolutions can be applied automatically, as described in the error message above
 Add the Java runtime argument to the DeploymentConfig by executing the following command:
 
 ```
-oc env dc/play-app JAVA_OPTS_EXT=-Dplay.evolutions.db.default.autoApply=true
+oc set env dc/play-app JAVA_OPTS_EXT=-Dplay.evolutions.db.default.autoApply=true
 ```
 
 The application will automatically deploy once a change to the configuration is detected. Wait a few moments and validate the application has started successfully by using the `oc get pods` and the `oc logs` command.

@@ -7,7 +7,7 @@ This example is using the [OpenShift Applier](https://github.com/redhat-cop/open
 
 ## OpenShift objects
 The openshift-applier will create the following OpenShift objects:
-* A Project named `s2i-jekyll` (see [files/projects/projects.yml](files/projects/projects.yml))
+* A Project named `s2i-jekyll` 
 * Three ImageStreams named `ruby`, `jekyll-builder` and `openshift-playbooks` (see [.openshift/templates/imagestreams/template.yml](.openshift/templates/imagestreams/template.yml).
 * Two BuildConfigs named `jekyll-builder` and `openshift-playbooks` (see [.openshift/templates/builds/docker-template.yml](.openshift/templates/builds/docker-template.yml) and [.openshift/templates/builds/source-template.yml](.openshift/templates/builds/source-template.yml))
 * A Service named `openshift-playbooks` (see [.openshift/templates/deployments/template.yml](.openshift/templates/deployments/template.yml))
