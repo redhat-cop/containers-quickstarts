@@ -25,6 +25,8 @@ jenkins_slaves:
     ruby: {}
     zap:
       BUILDER_IMAGE_NAME: centos:centos7
+    cpp:
+      BUILDER_IMAGE_NAME: openshift/jenkins-slave-base-rhel7:v3.11
 
 test_pipelines:
   deploy:
