@@ -1,9 +1,11 @@
 ---
 namespace: rabbitmq
+repository_ref: master
+repository_url: https://github.com/redhat-cop/containers-quickstarts
 
 build:
-  SOURCE_REPOSITORY_REF: issue-265
-  SOURCE_REPOSITORY_URL: https://github.com/pabrahamsson/containers-quickstarts
+  SOURCE_REPOSITORY_REF: "{{ repository_ref }}"
+  SOURCE_REPOSITORY_URL: "{{ repository_url }}"
 
 openshift_cluster_content:
 - object: Environment Setup
