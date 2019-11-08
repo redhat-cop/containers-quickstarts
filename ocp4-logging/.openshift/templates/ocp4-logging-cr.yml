@@ -1,0 +1,125 @@
+apiVersion: v1
+kind: Template
+metadata:
+  name: cluster-logging
+objects:
+- apiVersion: "logging.openshift.io/v1"
+  kind: "ClusterLogging"
+  metadata:
+    name: "instance"
+    namespace: openshift-logging
+  spec:
+    managementState: "Managed"
+    logStore:
+      type: "elasticsearch"
+      elasticsearch:
+        nodeCount: ${{ELASTICSEARCH_NODE_COUNT}}
+        resources:
+          limits:
+            memory: ${ELASTICSEARCH_MEMORY_LIMIT}
+          requests:
+            cpu: ${ELASTICSEARCH_CPU_REQUEST}
+            memory: ${ELASTICSEARCH_MEMORY_REQUEST}
+        storage:
+          storageClassName: ${ELASTICSEARCH_STORAGE_CLASS}
+          size: ${ELASTICSEARCH_VOLUME_CAPACITY}
+        redundancyPolicy: ${ELASTICSEARCH_REDUNDANCY_POLICY}
+        nodeSelector:
+          ${ELASTICSEARCH_NODE_SELECTOR}: ""
+    visualization:
+      type: "kibana"
+      kibana:
+        resources:
+          limits:
+            memory: ${KIBANA_MEMORY_LIMIT}
+          requests:
+            cpu: ${KIBANA_CPU_REQUEST}
+            memory: ${KIBANA_MEMORY_REQUEST}
+        proxy:
+          resources:
+            limits:
+              memory: ${KIBANA_PROXY_MEMORY_LIMIT}
+            requests:
+              cpu: ${KIBANA_PROXY_CPU_REQUEST}
+              memory: ${KIBANA_PROXY_MEMORY_REQUEST}
+        replicas: ${{KIBANA_NODE_COUNT}}
+        nodeSelector:
+          ${KIBANA_NODE_SELECTOR}: ""
+    curation:
+      type: "curator"
+      curator:
+        resources:
+          limits:
+            memory: ${CURATOR_MEMORY_LIMIT}
+          requests:
+            cpu: ${CURATOR_CPU_REQUEST}
+            memory: ${CURATOR_MEMORY_REQUEST}
+        schedule: ${CURATOR_SCHEDULE}
+        nodeSelector:
+          ${CURATOR_NODE_SELECTOR}: ""
+    collection:
+      logs:
+        type: "fluentd"
+        fluentd:
+          resources:
+            limits:
+              memory: ${FLUENTD_MEMORY_LIMIT}
+            requests:
+              cpu: ${FLUENTD_CPU_REQUEST}
+              memory: ${FLUENTD_MEMORY_REQUEST}
+parameters:
+- name: ELASTICSEARCH_REDUNDANCY_POLICY
+  value: "SingleRedundancy"
+- name: ELASTICSEARCH_NODE_COUNT
+  value: "2"
+  description: "Number of Elasticsearch nodes to create"
+- name: ELASTICSEARCH_NODE_SELECTOR
+  value: "node-role.kubernetes.io/worker"
+  description: "Node label to use to deploy Elasticsearch nodes"
+- name: ELASTICSEARCH_MEMORY_LIMIT
+  value: 2Gi
+- name: ELASTICSEARCH_CPU_REQUEST
+  value: 200m
+- name: ELASTICSEARCH_MEMORY_REQUEST
+  value: 2Gi
+- name: ELASTICSEARCH_STORAGE_CLASS
+  required: true
+- name: ELASTICSEARCH_VOLUME_CAPACITY
+  value: 10Gi
+  description: "Elasticsearch volume size"
+- name: KIBANA_MEMORY_LIMIT
+  value: 1Gi
+- name: KIBANA_CPU_REQUEST
+  value: 500m
+- name: KIBANA_MEMORY_REQUEST
+  value: 1Gi
+- name: KIBANA_PROXY_MEMORY_LIMIT
+  value: 100Mi
+- name: KIBANA_PROXY_CPU_REQUEST
+  value: 100m
+- name: KIBANA_PROXY_MEMORY_REQUEST
+  value: 100Mi
+- name: KIBANA_NODE_COUNT
+  value: "2"
+  description: "Number of Kibana nodes to create"
+- name: KIBANA_NODE_SELECTOR
+  value: "node-role.kubernetes.io/worker"
+  description: "Node label to use to deploy Kibana nodes"
+- name: CURATOR_MEMORY_LIMIT
+  value: 200Mi
+- name: CURATOR_CPU_REQUEST
+  value: 200m
+- name: CURATOR_MEMORY_REQUEST
+  value: "200Mi"
+- name: CURATOR_SCHEDULE
+  value: "30 3 * * *"
+  description: "Curator cron schedule to cleanup logs" 
+- name: CURATOR_NODE_SELECTOR
+  value: "node-role.kubernetes.io/worker"
+  description: "Node label to use to deploy Curator"
+- name: FLUENTD_MEMORY_LIMIT
+  value: 1Gi
+- name: FLUENTD_MEMORY_REQUEST
+  value: 1Gi
+- name: FLUENTD_CPU_REQUEST
+  value: 200m
