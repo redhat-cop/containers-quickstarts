@@ -1,6 +1,6 @@
 ---
 
-openshift_templates_raw: "https://raw.githubusercontent.com/tylerauerbeck/openshift-templates"
+openshift_templates_raw: "https://raw.githubusercontent.com/redhat-cop/openshift-templates"
 openshift_templates_version: "v1.4.14"
 
 openshift_cluster_content:
@@ -24,9 +24,9 @@ openshift_cluster_content:
     template: "{{ openshift_templates_raw }}/{{ openshift_templates_version }}/operatorhub/catalogsourceconfig.yml"
     namespace: openshift-marketplace
     params_from_vars:
-      NAME: cluster-logging-catalogsourceconfig
+      NAME: elasticsearch-operator 
       OPERATOR_NAMESPACE: openshift-operators
-      OPERATORS: elasticsearch-operator, cluster-logging
+      OPERATORS: elasticsearch-operator
     tags:
     - cluster-logging-csc
     - elasticsearch-csc
@@ -68,6 +68,7 @@ openshift_cluster_content:
       ELASTICSEARCH_STORAGE_CLASS: gp2
       ELASTICSEARCH_REDUNDANCY_POLICY: ZeroRedundancy
       ELASTICSEARCH_NODE_COUNT: 1
+      KIBANA_NODE_COUNT: 1
     namespace:  openshift-logging
     tags:
     - cluster-logging-cr
