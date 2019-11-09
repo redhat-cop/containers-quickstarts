@@ -4,12 +4,21 @@ openshift_templates_raw: "https://raw.githubusercontent.com/redhat-cop/openshift
 openshift_templates_version: "v1.4.14"
 
 openshift_cluster_content:
+- galaxy_requirements:
+  - "{{ inventory_dir }}/../galaxy-requirements.yml"
 - object: Cluster Logging Stack
   content:
   - name: Create Namespace 
     template: "{{ openshift_templates_raw }}/{{ openshift_templates_version }}/namespace/create-namespace.yml"
     params_from_vars:
       NAMESPACE: "openshift-logging"
+    post_steps:
+      - role: casl-ansible/roles/openshift-labels
+        vars:
+          label: "openshift.io/cluster-logging=true openshift.io/cluster-monitoring=true"
+          target_object: "namespace"
+          target_name: "openshift-logging"
+          target_namespace: "openshift-logging"
     tags:
     - cluster-logging-namespace
   - name: Create Operatorgroup
