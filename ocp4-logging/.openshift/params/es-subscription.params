@@ -1,0 +1,4 @@
+NAME=elasticsearch-operator
+OPERATOR_NAME=elasticsearch-operator
+OPERATOR_NAMESPACE=openshift-operators
+CATALOG_SOURCE_NAME=elasticsearch-operator

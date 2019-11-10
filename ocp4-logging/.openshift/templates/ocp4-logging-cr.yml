@@ -110,7 +110,7 @@ parameters:
 - name: CURATOR_CPU_REQUEST
   value: 200m
 - name: CURATOR_MEMORY_REQUEST
-  value: "200Mi"
+  value: 200Mi
 - name: CURATOR_SCHEDULE
   value: "30 3 * * *"
   description: "Curator cron schedule to cleanup logs" 

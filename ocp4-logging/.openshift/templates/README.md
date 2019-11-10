@@ -7,7 +7,7 @@ Below you can see the parameters that are available for the `ClusterLogging` tem
 | Name      | Description   | Default |
 | ----------- | ----------- | ------- |
 | ELASTICSEARCH_REDUNDANCY_POLICY | Sharding policy to be used with Elasticsearch (FullRedundancy, MultipleRedundancy, SingleRedundancy, ZeroRedundancy) | SingleRedundancy
-| ELASTICSEARCH_NODE_COUNT   | Number of Elasticsearch node to deploy        | 2 |
+| ELASTICSEARCH_NODE_COUNT | Number of Elasticsearch node to deploy        | 2 |
 | ELASTICSEARCH_NODE_SELECTOR | Selector to use to place Elasticsearch nodes on the appropriate OCP nodes | node-role.kubernetes.io/worker |
 | ELASTICSEARCH_MEMORY_LIMIT | The maximum amount of memory allowed to be used by an Elasticsearch pod | 2Gi |
 | ELASTICSEARCH_MEMORY_REQUEST | The amount of memory to request for each Elasticsearch pod| 2Gi |
