@@ -24,11 +24,11 @@ This quickstart will create the following:
 
 - Openshift 4.X cluster
 - The appropriate permissions to deploy/create these projects
-- Openshift-Applier v2.1.2 or higher
+- Openshift-Applier v2.1.2 or higher (this is accomplished via the ansible-galaxy step below)
 
 ## Deployment
 
-1. ansible-galaxy install -r requirements.yml -p roles
+1. ansible-galaxy install -r requirements.yml -p galaxy
 1. ansible-playbook -i .applier roles/openshift-applier/playbooks/openshift-cluster-seed.yml -e 'exclude_tags=cluster-logging-cr'
 1. ansible-playbook -i .applier roles/openshift-applier/playbooks/openshift-cluster-seed.yml -e 'include_tags=cluster-logging-cr'
 
