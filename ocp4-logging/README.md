@@ -15,10 +15,10 @@ If you're interested in the other parameters for this logging stack, you can see
 This quickstart will create the following:
 
 - A namespace called `openshift-logging` with the appropriate labels
-- One OperatorGroup: ``
-- Two `CatalogSourceConfig` objects: `` and ``
-- Two `Subscription` objects: `` and ``
-- One `ClusterLogging` custom resource named
+- One [OperatorGroup](https://docs.openshift.com/container-platform/4.1/applications/operators/olm-understanding-olm.html#olm-operatorgroups_olm-understanding-olm): `openshift-logging-operatorgroup`
+- Two [CatalogSourceConfig](https://docs.openshift.com/container-platform/4.1/applications/operators/olm-understanding-operatorhub.html#olm-operatorhub-arch-catalogsourceconfig_olm-understanding-operatorhub) objects created in the `openshift-marketplace` project: `elasticsearch-operator` and `cluster-logging-operator`
+- Two `Subscription` objects: `cluster-logging` in the `openshift-logging` project and `elasticsearch-operator` in the `openshift-operators` project
+- One [ClusterLogging](https://docs.openshift.com/container-platform/4.1/logging/efk-logging-deploying.html#additional-resources) custom resource named `instance` in the `openshift-logging` project
 
 ## Prerequisites
 
