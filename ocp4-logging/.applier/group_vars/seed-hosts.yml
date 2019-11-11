@@ -1,0 +1,63 @@
+---
+
+openshift_templates_raw: "https://raw.githubusercontent.com/redhat-cop/openshift-templates"
+openshift_templates_version: "v1.4.14"
+
+openshift_cluster_content:
+- galaxy_requirements:
+  - "{{ inventory_dir }}/../galaxy-requirements.yml"
+- object: Cluster Logging Stack
+  content:
+  - name: Create Namespace 
+    template: "{{ openshift_templates_raw }}/{{ openshift_templates_version }}/namespace/create-namespace.yml"
+    params_from_vars:
+      NAMESPACE: "openshift-logging"
+    post_steps:
+      - role: casl-ansible/roles/openshift-labels
+        vars:
+          label: "openshift.io/cluster-logging=true openshift.io/cluster-monitoring=true"
+          target_object: "namespace"
+          target_name: "openshift-logging"
+          target_namespace: "openshift-logging"
+    tags:
+    - cluster-logging-namespace
+  - name: Create Operatorgroup
+    template: "{{ openshift_templates_raw }}/{{ openshift_templates_version }}/operatorhub/operatorgroup.yml"
+    params: "{{ inventory_dir }}/../.openshift/params/operatorgroup.params"
+    namespace: "openshift-logging"
+    tags:
+    - cluster-logging-operatorgroup
+  - name: Create Elasticsearch CatalogSourceConfig
+    template: "{{ openshift_templates_raw }}/{{ openshift_templates_version }}/operatorhub/catalogsourceconfig.yml"
+    namespace: openshift-marketplace
+    params: "{{ inventory_dir }}/../.openshift/params/es-catalogsourceconfig.params"
+    tags:
+    - cluster-logging-csc
+    - elasticsearch-csc
+  - name: Create Cluster-Logging CatalogSourceConfig
+    template: "{{ openshift_templates_raw }}/{{ openshift_templates_version }}/operatorhub/catalogsourceconfig.yml"
+    params: "{{ inventory_dir }}/../.openshift/params/cl-catalogsourceconfig.params"
+    namespace: openshift-marketplace
+    tags:
+    - cluster-logging-csc
+    - logging-csc
+  - name: Create Elasticsearch Subscription
+    template: "{{ openshift_templates_raw }}/{{ openshift_templates_version }}/operatorhub/subscription.yml"
+    params: "{{ inventory_dir }}/../.openshift/params/es-subscription.params"
+    namespace: openshift-operators
+    tags:
+    - cluster-logging-subs
+    - elasticsearch-sub
+  - name: Create Cluster-Logging Subscription
+    template: "{{ openshift_templates_raw }}/{{ openshift_templates_version }}/operatorhub/subscription.yml"
+    params: "{{ inventory_dir }}/../.openshift/params/cl-subscription.params"
+    namespace: openshift-logging
+    tags:
+    - cluster-logging-subs
+    - logging-sub
+  - name: Deploy Logging Custom Resource
+    template: "{{ inventory_dir }}/../.openshift/templates/ocp4-logging-cr.yml"
+    params: "{{ inventory_dir }}/../.openshift/params/cluster-logging.params"
+    namespace:  openshift-logging
+    tags:
+    - cluster-logging-cr

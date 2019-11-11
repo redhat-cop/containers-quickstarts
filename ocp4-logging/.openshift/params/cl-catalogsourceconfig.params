@@ -1,0 +1,3 @@
+NAME=cluster-logging-operator
+OPERATOR_NAMESPACE=openshift-logging
+OPERATORS=cluster-logging
