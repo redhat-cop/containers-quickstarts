@@ -29,6 +29,11 @@ openshift_cluster_content:
       NAMESPACE_DISPLAY_NAME: "{{ namespace }}"
     tags:
       - ipa_project
+  - name: Deploy MachineConfig to configure SEbool
+    file: "{{ inventory_dir }}/../.openshift/files/01-worker-sebool.yml"
+    tags:
+      - ipa_ocp4
+      - ipa_machineconfig
 
 - object: Image Streams
   content:
@@ -44,7 +49,7 @@ openshift_cluster_content:
     template: "https://raw.githubusercontent.com/redhat-cop/openshift-templates/{{ openshift_templates_version }}/service-accounts/generic-service-account.yml"
     namespace: "{{ namespace }}"
     params_from_vars:
-      SA_NAME: "{{ params.SERVICE_ACCOUNT_USEROOT }}"
+      SA_NAME: "{{ app_name }}"
       SA_NAMESPACE: "{{ namespace }}"
     tags:
       - ipa_serviceaccount
@@ -53,7 +58,7 @@ openshift_cluster_content:
     namespace: "{{ namespace }}"
     params_from_vars:
       NAMESPACE: "{{ namespace }}"
-      NAME: "{{ params.SERVICE_ACCOUNT_USEROOT }}"
+      NAME: "{{ app_name }}"
     tags:
       - ipa_serviceaccount
 

@@ -1,0 +1,25 @@
+apiVersion: machineconfiguration.openshift.io/v1
+kind: MachineConfig
+metadata:
+  labels:
+    machineconfiguration.openshift.io/role: worker
+  name: 01-sebool
+spec:
+  config:
+    ignition:
+      version: 2.2.0
+    systemd:
+      units:
+      - contents: |
+          [Unit]
+          Description=Enable container_manage_cgroup on worker nodes
+          Before=kubelet.service
+
+          [Service]
+          ExecStart=/usr/sbin/setsebool container_manage_cgroup 1
+
+          [Install]
+          WantedBy=multi-user.target
+        enabled: true
+        name: sebool.service
+
