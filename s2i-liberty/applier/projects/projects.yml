@@ -1,9 +1,0 @@
-apiVersion: v1
-kind: List
-items:
-- kind: ProjectRequest
-  apiVersion: v1
-  metadata:
-    name: liberty-demo
-    creationTimestam: null
-  displayName: Liberty Demo

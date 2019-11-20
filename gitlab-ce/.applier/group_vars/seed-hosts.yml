@@ -1,0 +1,41 @@
+---
+namespace: gitlab
+app_name: gitlab
+base_openshift_url: myocpcluster.com
+
+app_params:
+  LDAP_BIND_DN: "uid: john.doe,ou: People,dc: example,dc: com"
+  LDAP_USER_FILTER: "(memberof: CN: YourGroup,OU: Users,DC: YourDomain,DC: com)"
+  LDAP_PASSWORD: secretpassword
+  APPLICATION_HOSTNAME: "{{ app_name }}.apps.{{ base_openshift_url }}"
+  LDAP_LABEL: "My Company LDAP"
+  LDAP_HOST: myldaphost
+  LDAP_PORT: 636
+  LDAP_BASE: "ou: People,dc: example,dc: com"
+  ETC_VOL_SIZE: 100Mi
+  GITLAB_DATA_VOL_SIZE: 5Gi
+  POSTGRESQL_VOL_SIZE: 5Gi
+  GITLAB_ROOT_PASSWORD: secretpassword
+  NAMESPACE: "{{ namespace }}"
+  SSL_CERTIFICATE: "<customer certificate base64 value>"
+  SSL_KEY: "<customer certificate private key base64 value>"
+
+
+openshift_cluster_content:
+- object: Environment Setup
+  content:
+  - name: Create Projects
+    template: "https://raw.githubusercontent.com/redhat-cop/openshift-templates/v1.4.12/project-requests/create-project.yml"
+    action: create
+    params_from_vars:
+      NAMESPACE: "{{ namespace }}"
+      NAMESPACE_DISPLAY_NAME: "{{ namespace }}"
+    tags:
+      - project
+      
+- object: deployments
+  content:
+  - name: gitlab
+    template: "{{ inventory_dir }}/../.openshift/templates/gitlab-ssl.yml"
+    params_from_vars: "{{ app_params }}"
+    namespace: "{{ namespace }}"

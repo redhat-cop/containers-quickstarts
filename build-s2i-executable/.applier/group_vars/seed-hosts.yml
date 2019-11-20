@@ -1,0 +1,22 @@
+namespace: build-s2i-executable
+app_params: {}
+
+openshift_cluster_content:
+- object: Environment Setup
+  content:
+  - name: Create Projects
+    template: "https://raw.githubusercontent.com/redhat-cop/openshift-templates/v1.4.12/project-requests/create-project.yml"
+    action: create
+    params_from_vars:
+      NAMESPACE: "{{ namespace }}"
+      NAMESPACE_DISPLAY_NAME: "{{ namespace }}"
+    tags:
+      - project
+- object: Image build
+  content:
+  - name: "build-s2i-executable"
+    template: "{{ inventory_dir }}/../.openshift/templates/build-s2i-executable.yml"
+    namespace: "{{ namespace }}"
+    params_from_vars: "{{ app_params }}"
+    tags:
+      - build

@@ -1,0 +1,36 @@
+#invoke npm in jenkinsfile: sh "scl enable rh-nodejs6 'npm run build'"
+FROM registry.access.redhat.com/openshift3/jenkins-slave-base-rhel7:v3.11
+
+LABEL com.redhat.component="jenkins-slave-nodejs-rhel7-docker" \
+      name="openshift3/jenkins-slave-nodejs-rhel7" \
+      version="3.11" \
+      architecture="x86_64" \
+      release="1" \
+      io.k8s.display-name="Jenkins Slave Nodejs" \
+      io.k8s.description="The jenkins slave arachni image has the nodejs tools on top of the jenkins slave base image." \
+      io.openshift.tags="openshift,jenkins,slave,nodejs"
+
+ENV NODEJS_VERSION=10 \
+    NPM_CONFIG_PREFIX=$HOME/.npm-global \
+    PATH=$HOME/node_modules/.bin/:$HOME/.npm-global/bin/:$PATH \
+    CHROME_BIN=/bin/google-chrome
+
+ADD src/google-chrome.repo /etc/yum.repos.d/
+
+RUN INSTALL_PKGS="npm nss_wrapper redhat-lsb libXScrnSaver xdg-utils google-chrome-stable" && \
+    yum install -y --setopt=tsflags=nodocs \
+      --disablerepo=* \
+      --enablerepo=rhel-7-server-rpms \
+      --enablerepo=rhel-7-server-rhoar-nodejs-10-rpms \
+      --enablerepo=rhel-7-server-optional-rpms \
+      --enablerepo=rhel-7-server-extras-rpms \
+      --enablerepo=google-chrome \
+      $INSTALL_PKGS && \
+    yum clean all -y && \
+    rm -rf /var/cache/yum && \
+    npm install --unsafe-perm -g npm-audit-html npm-audit-ci-wrapper sonar-scanner && \
+    chown root:root /home/jenkins -R && \
+    chmod 775 /home/jenkins/.config -R && \
+    chmod 775 /home/jenkins/.npm -R
+
+USER 1001

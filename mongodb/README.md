@@ -37,10 +37,10 @@ It makes use of the following technologies:
 
 ### OpenShift objects
 The openshift-applier will create the following OpenShift objects:
-* A Project named `mongodb` (see [files/projects/projects.yml](files/projects/projects.yml))
-* Four Services named `mongodb-configsvr-internal`, `mongodb-replset-internal-abc`, `mongodb-replset-internal-def` and `mongodb-mongos-ext` (see [applier/templates/configsvr.yml](applier/templates/configsvr.yml), [applier/templates/replset.yml](applier/templates/replset.yml) and [applier/templates/mongos.yml](applier/templates/mongos.yml))
-* Three StatefulSets named `mongodbconfigsvr`, `mongodbreplset-abc`, `mongodbreplset-def` (see [applier/templates/configsvr.yml](applier/templates/configsvr.yml) and [applier/templates/replset.yml](applier/templates/replset.yml))
-* A DeploymentConfig named `mongodb-mongos` (see [applier/templates/mongos.yml](applier/templates/mongos.yml))
+* A Project named `mongodb` 
+* Four Services named `mongodb-configsvr-internal`, `mongodb-replset-internal-abc`, `mongodb-replset-internal-def` and `mongodb-mongos-ext` (see [.openshift/templates/configsvr.yml](.openshift/templates/configsvr.yml), [.openshift/templates/replset.yml](.openshift/templates/replset.yml) and [.openshift/templates/mongos.yml](.openshift/templates/mongos.yml))
+* Three StatefulSets named `mongodbconfigsvr`, `mongodbreplset-abc`, `mongodbreplset-def` (see [.openshift/templates/configsvr.yml](.openshift/templates/configsvr.yml) and [.openshift/templates/replset.yml](.openshift/templates/replset.yml))
+* A DeploymentConfig named `mongodb-mongos` (see [.openshift/templates/mongos.yml](.openshift/templates/mongos.yml))
 
 >**NOTE:** This requires permission to create new projects and that the `mongodb` project doesn't already exist
 
@@ -48,7 +48,7 @@ The openshift-applier will create the following OpenShift objects:
 
 The following prerequisites must be met prior to beginning to deploy MongoDB
 
-* 11 [Persistent Volumes](https://docs.openshift.com/container-platform/latest/architecture/additional_concepts/storage.html). 3 for the config servers and 4 for each of the sharding replica sets [see below](#verify-storage)) or a cluster that supports [dynamic provisioning with a default StorageClass](https://docs.openshift.com/container-platform/latest/install_config/storage_examples/storage_classes_dynamic_provisioning.html)
+* 11 [Persistent Volumes](https://docs.openshift.com/container-platform/3.11/architecture/additional_concepts/storage.html). 3 for the config servers and 4 for each of the sharding replica sets [see below](#verify-storage)) or a cluster that supports [dynamic provisioning with a default StorageClass](https://docs.openshift.com/container-platform/3.11/install_config/storage_examples/storage_classes_dynamic_provisioning.html)
 * OpenShift Command Line Tool
 * [Openshift Applier](https://github.com/redhat-cop/openshift-applier) to deploy MongoDB. As a result you'll need to have [ansible installed](http://docs.ansible.com/ansible/latest/intro_installation.html)
 
@@ -56,17 +56,17 @@ The following prerequisites must be met prior to beginning to deploy MongoDB
 
 ### Environment Specifications
 
-This demo should be run on an installation of OpenShift Container Platform V3.5. A persistent volume must be statically predefined per replica set member pod, or configuration server member pod - this example will require 11 persistent volumes. Another option is have these persistent volumes allocated dynamically using a [StorageClass](https://docs.openshift.com/container-platform/latest/install_config/storage_examples/storage_classes_dynamic_provisioning.html). An EBS storage class is provided as an example.
+This demo should be run on an installation of OpenShift Container Platform V3.5. A persistent volume must be statically predefined per replica set member pod, or configuration server member pod - this example will require 11 persistent volumes. Another option is have these persistent volumes allocated dynamically using a [StorageClass](https://docs.openshift.com/container-platform/3.11/install_config/storage_examples/storage_classes_dynamic_provisioning.html). An EBS storage class is provided as an example.
 
 ### Template Files
 
 Three template files are available:
 
-[configsvr.yml](applier/templates/configsvr.yml)- Contains a template for deploying a replica set of shard configuration servers. At least one member is required for setting up a fully sharded cluster.
+[configsvr.yml](.openshift/templates/configsvr.yml)- Contains a template for deploying a replica set of shard configuration servers. At least one member is required for setting up a fully sharded cluster.
 
-[mongos.yml](applier/templates/mongos.yml)- Contains a template for deploying a MongoDB shard router
+[mongos.yml](.openshift/templates/mongos.yml)- Contains a template for deploying a MongoDB shard router
 
-[replset.yml](applier/templates/replset.yml) - Contains a template for deploying a replica set.
+[replset.yml](.openshift/templates/replset.yml) - Contains a template for deploying a replica set.
 
 ### Config Files
 
@@ -332,7 +332,7 @@ Several environment variables can be defined to enable and drive the functionali
 Execute the following command which will interrogate the running environment and set environment variable on the _nodejs-ex_ DeploymentConfig.
 
 ```
-$ oc env dc/nodejs-ex MONGO_URL='mongodb://user:pass@mongodb-mongos-ext.mongodb.svc:27017/example'
+$ oc set env dc/nodejs-ex MONGO_URL='mongodb://user:pass@mongodb-mongos-ext.mongodb.svc:27017/example'
 ```
 
 The resulting environment variable can be viewed with the following command

@@ -1,0 +1,47 @@
+namespace: jenkins-hygieia
+hygieia_url:
+hygieia_token:
+source_code_url: https://github.com/redhat-cop/containers-quickstarts.git
+source_code_ref: master
+jenkins_memory_limit: 1024Mi
+
+openshift_cluster_content:
+- object: Environment Setup
+  content:
+  - name: Create Projects
+    template: "{{ inventory_dir }}/../.openshift/projects/projects.yml"
+    action: create
+    params_from_vars:
+      NAMESPACE: "{{ namespace }}"
+    tags:
+      - project
+- object: Builds
+  content:
+  - name: Hygieia Jenkins Plugin
+    template: "{{ inventory_dir }}/../.openshift/templates/hygieia-plugin.yml"
+    namespace: "{{ namespace }}"
+    tags:
+      - build
+      - build-hygieia-plugin
+  - name: Jenkins Master Image
+    template: "{{ inventory_dir }}/../.openshift/templates/jenkins-s2i.yml"
+    params_from_vars:
+      SOURCE_CODE_URL: "{{ source_code_url }}"
+      SOURCE_CODE_REF: "{{ source_code_ref }}"
+    namespace: "{{ namespace }}"
+    tags:
+      - build
+      - build-jenkins
+- object: Deployments
+  content:
+  - name: Demo Jenkins Master
+    template: "{{ inventory_dir }}/../.openshift/templates/jenkins-ephemeral.yml"
+    namespace: "{{ namespace }}"
+    params_from_vars:
+      JENKINS_IMAGE_STREAM_TAG: jenkins2-s2i:latest
+      NAMESPACE: "{{ namespace }}"
+      HYGIEIA_API_URL: "{{ hygieia_url }}"
+      HYGIEIEA_API_TOKEN: "{{ hygieia_token }}"
+      MEMORY_LIMIT: "{{ jenkins_memory_limit }}"
+    tags:
+      - deploy

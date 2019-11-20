@@ -27,7 +27,7 @@ Registration is enabled until the following [issue](https://github.com/gogits/go
 
 The following prerequisites must be met prior to beginning to deploy Gogs
 
-* 2 [Persistent Volumes](https://docs.openshift.com/container-platform/latest/architecture/additional_concepts/storage.html). 1 for Gogs repositories data (pvc named `gogs-data`) and 1 for PostgreSQL data (pvc named `gogs-postgres-data`) or a cluster that supports [dynamic provisioning with a default StorageClass](https://docs.openshift.com/container-platform/latest/install_config/storage_examples/storage_classes_dynamic_provisioning.html)
+* 2 [Persistent Volumes](https://docs.openshift.com/container-platform/3.11/architecture/additional_concepts/storage.html). 1 for Gogs repositories data (pvc named `gogs-data`) and 1 for PostgreSQL data (pvc named `gogs-postgres-data`) or a cluster that supports [dynamic provisioning with a default StorageClass](https://docs.openshift.com/container-platform/3.11/install_config/storage_examples/storage_classes_dynamic_provisioning.html)
 * OpenShift Command Line Tool
 * [Openshift Applier](https://github.com/redhat-cop/openshift-applier/) to deploy Gogs. As a result you'll need to have [ansible installed](http://docs.ansible.com/ansible/latest/intro_installation.html)
 

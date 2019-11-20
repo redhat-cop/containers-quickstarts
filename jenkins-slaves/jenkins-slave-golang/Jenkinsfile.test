@@ -1,0 +1,17 @@
+pipeline {
+    agent {
+      label 'jenkins-slave-golang'
+    }
+
+    stages {
+        stage ('Run Test') {
+            steps {
+              sh """
+                  go version
+              """
+            }
+        }
+
+    }
+
+}

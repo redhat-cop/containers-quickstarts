@@ -1,0 +1,42 @@
+---
+namespace: rabbitmq
+repository_ref: master
+repository_url: https://github.com/redhat-cop/containers-quickstarts
+
+build:
+  SOURCE_REPOSITORY_REF: "{{ repository_ref }}"
+  SOURCE_REPOSITORY_URL: "{{ repository_url }}"
+
+openshift_cluster_content:
+- object: Environment Setup
+  content:
+  - name: Create Projects
+    template: "https://raw.githubusercontent.com/redhat-cop/openshift-templates/v1.4.12/project-requests/create-project.yml"
+    action: create
+    params_from_vars:
+      NAMESPACE: "{{ namespace }}"
+      NAMESPACE_DISPLAY_NAME: "{{ namespace }}"
+    tags:
+      - project
+- object: imagestream
+  content:
+  - name: ubi7
+    file: "{{ inventory_dir }}/../.openshift/templates/imagestreams/images.yml"
+    namespace: "{{ namespace }}"
+- object: builds
+  content:
+  - name: rabbitmq
+    namespace: "{{ namespace }}"
+    template: "{{ inventory_dir }}/../.openshift/templates/builds/template.yml"
+    params_from_vars: "{{ build }}"
+- object: configmap
+  content:
+  - name: rabbitmq_conf
+    namespace: "{{ namespace }}"
+    file: "{{ inventory_dir }}/../.openshift/templates/configmaps/config.yml"
+- object: deployments
+  content:
+  - name: rabbitmq
+    namespace: "{{ namespace }}"
+    template: "{{ inventory_dir }}/../.openshift/templates/deployments/template.yml"
+    params: "{{ inventory_dir }}/../.openshift/params/deploy"

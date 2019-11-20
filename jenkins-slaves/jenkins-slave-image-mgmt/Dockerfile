@@ -1,4 +1,4 @@
-FROM registry.access.redhat.com/openshift3/jenkins-slave-base-rhel7
+FROM registry.access.redhat.com/openshift3/jenkins-slave-base-rhel7:v3.11
 
 MAINTAINER Andrew Block <ablock@redhat.com>
 
@@ -10,10 +10,13 @@ LABEL com.redhat.component="jenkins-slave-image-mgmt" \
       io.openshift.tags="openshift,jenkins,slave,copy"
 USER root
 
-RUN yum repolist > /dev/null && \
-    yum clean all && \
-    INSTALL_PKGS="skopeo" && \
-    yum install -y --enablerepo=rhel-7-server-extras-rpms --setopt=tsflags=nodocs $INSTALL_PKGS && \
+RUN INSTALL_PKGS="skopeo" && \
+    if [ -z $RHEL_RELEASEVER ] ; then RHEL_RELEASEVER=7Server ; fi && \
+    yum install -y --setopt=tsflags=nodocs \
+      --enablerepo=rhel-7-server-rpms \
+      --enablerepo=rhel-7-server-extras-rpms \
+      --releasever=${RHEL_RELEASEVER} \
+      $INSTALL_PKGS && \
     rpm -V $INSTALL_PKGS && \
     yum clean all
 

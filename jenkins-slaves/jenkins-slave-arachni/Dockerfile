@@ -1,4 +1,4 @@
-FROM openshift/jenkins-slave-base-centos7:latest
+FROM quay.io/openshift/origin-jenkins-agent-base:4.1
 
 ARG VERSION=1.5.1
 ARG WEB_VERSION=0.5.12

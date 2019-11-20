@@ -1,14 +1,20 @@
+[![Docker Repository on Quay](https://quay.io/repository/redhat-cop/tool-box/status "Docker Repository on Quay")](https://quay.io/repository/redhat-cop/tool-box)
+
 # Tool Box
 
-This container exists to help folks that can't install ansible, git or other necessary tools. It is not to be used in any time of production setting and is not suppportable under an OpenShift subscription. 
+This container exists to help folks that can't install ansible, git or other necessary tools. It is not to be used in any time of production setting and is not suppportable under an OpenShift subscription.
 
 ## What's in the box?
 
-- `oc` version 3.9.14
-- `ansible` 2.5 (stable from `pip`)
+- `oc` version 3.11.0-0.32.0
+- `ansible` v2.8 (stable from `pip`)
+- `python` v3.6
 - `git`
-- `tree`
 - `unzip`
+- `jq` v1.6
+- `odo`
+- `helm` Client v2.14.3
+- `tkn` Client v0.3.1
 
 If you need something not here, let us know in an issue or submit a PR.
 
@@ -16,23 +22,27 @@ If you need something not here, let us know in an issue or submit a PR.
 
 ### OpenShift
 
-Assuming you have the [CLI installed](https://docs.openshift.com/container-platform/latest/cli_reference/get_started_cli.html)
+Assuming you have the [CLI installed](https://docs.openshift.com/container-platform/3.11/cli_reference/get_started_cli.html)
 
 Build the container and deploy it in OpenShift:
 
-`$ oc new-app https://github.com/redhat-cop/containers-quickstarts --name=tool-box --context-dir=tool-box`
-
-Wait for the build to finish and the container to deploy. You can now log into the terminal via the pod web console.
-
-If you want to shell in from your terminal, query the running pods:
-
-`$ oc get pods -l app=tool-box`
-
-Copy the NAME of the `tool-box` pod and then remote shell into it:
-
-`$ oc rsh <NAME>`
+`$ oc run -i -t tool-box-test --image=quay.io/redhat-cop/tool-box --rm bash`
 
 ### Docker
+
+Run the container in the background, then shell into. There are important things the container does at boot that you don't want to override. If you need sudo for docker:
+
+`$ sudo docker run -it tool-box /bin/bash`
+
+If you don't need sudo:
+
+`$ docker run -it tool-box /bin/bash`
+
+## Building the Image
+
+This image is available publicly at `quay.io/redhat-cop/tool-box`, so there's no need to build it yourself. If you need to build it for development reasons, here's how.
+
+### With Docker
 
 Clone this repo:
 
@@ -42,10 +52,6 @@ Build the container:
 
 `[containers-quickstarts/tool-box]$ docker build -t tool-box .`
 
-Run the container in the background, then shell into. There are important things the container does at boot that you don't want to override. If you need sudo for docker:
+### In OpenShift
 
-`$ sudo docker exec -it $(sudo docker run -d tool-box) /bin/bash`
-
-If you don't need sudo:
-
-`$ docker exec -it $(docker run -d tool-box) /bin/bash`
+`oc new-build https://github.com/redhat-cop/containers-quickstarts --name=tool-box --context-dir=tool-box`

@@ -1,0 +1,17 @@
+---
+apiVersion: v1
+kind: Template
+labels:
+  template: project-template
+metadata:
+  name: project-template
+objects:
+- kind: ProjectRequest
+  apiVersion: v1
+  metadata:
+    name: ${NAMESPACE}
+    creationTimestamp: null
+  displayName: ${DISPLAY_NAME}
+parameters:
+- name: NAMESPACE
+- name: DISPLAY_NAME

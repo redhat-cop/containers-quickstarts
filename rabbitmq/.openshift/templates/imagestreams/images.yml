@@ -1,0 +1,28 @@
+apiVersion: v1
+kind: List
+items:
+- apiVersion: v1
+  kind: ImageStream
+  metadata:
+    name: ubi
+  spec:
+    dockerImageRepository: registry.access.redhat.com/ubi7/ubi
+    lookupPolicy:
+      local: false
+    tags:
+    - annotations: null
+      from:
+        kind: DockerImage
+        name: registry.access.redhat.com/ubi7/ubi:7.7
+      importPolicy: {}
+      name: "7.7"
+      referencePolicy:
+        type: Source
+    - annotations: null
+      from:
+        kind: DockerImage
+        name: registry.access.redhat.com/ubi7/ubi:latest
+      importPolicy: {}
+      name: latest
+      referencePolicy:
+        type: Source

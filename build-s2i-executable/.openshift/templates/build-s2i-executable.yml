@@ -1,0 +1,77 @@
+apiVersion: v1
+kind: Template
+labels:
+  template: build-s2i-executable
+metadata:
+  annotations:
+    description: S2I Executable Image Template.
+  name: build-s2i-executable
+objects:
+- apiVersion: v1
+  kind: ImageStream
+  metadata:
+    name: ubi-minimal
+  spec:
+    dockerImageRepository: ${BASE_IMAGE_REGISTRY}
+- apiVersion: v1
+  kind: ImageStream
+  metadata:
+    name: ${NAME}
+- apiVersion: v1
+  kind: BuildConfig
+  metadata:
+    name: ${NAME}
+  spec:
+    output:
+      to:
+        kind: ImageStreamTag
+        name: ${NAME}:${OUTPUT_IMAGE_TAG}
+    source:
+      contextDir: ${CONTEXT_DIR}
+      git:
+        ref: ${SOURCE_REPOSITORY_REF}
+        uri: ${SOURCE_REPOSITORY_URL}
+      type: Git
+    strategy:
+      dockerStrategy:
+        dockerfilePath: ${DOCKERFILE_NAME}
+        from:
+          kind: ImageStreamTag
+          name: ubi-minimal:${BASE_IMAGE_TAG}
+      type: Docker
+    triggers:
+    - imageChange: {}
+      type: ImageChange
+parameters:
+- description: The name for the builder.
+  name: NAME
+  required: true
+  value: build-s2i-executable
+- description: Git source URI for application
+  name: SOURCE_REPOSITORY_URL
+  required: true
+  value: https://github.com/redhat-cop/containers-quickstarts.git
+- description: Git branch/tag reference
+  name: SOURCE_REPOSITORY_REF
+  required: false
+  value: master
+- description: Path within Git project to build; empty for root project directory.
+  name: CONTEXT_DIR
+  required: false
+  value: build-s2i-executable
+- description: Location of the base image registry.
+  name: BASE_IMAGE_REGISTRY
+  required: true
+  value: registry.access.redhat.com/ubi7/ubi-minimal
+- description: Tag for the base image.
+  name: BASE_IMAGE_TAG
+  required: true
+  value: "7.6"
+- description: Tag for the output image.
+  name: OUTPUT_IMAGE_TAG
+  required: true
+  value: latest
+- description: Name of the Dockerfile.
+  name: DOCKERFILE_NAME
+  required: true
+  value: Dockerfile

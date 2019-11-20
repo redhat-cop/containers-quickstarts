@@ -1,10 +1,11 @@
-FROM openshift/jenkins-slave-base-centos7:latest
+FROM quay.io/openshift/origin-jenkins-agent-base:4.1
 
 USER root
 
-COPY mongodb-org-3.6.repo /etc/yum.repos.d/
+COPY ubi.repo mongodb-org-3.6.repo /etc/yum.repos.d/
 
-RUN yum install -y mongodb-org-tools mongodb-org-shell  && \
+RUN DISABLE_REPOS=--disablerepo='rhel-*' && \
+    yum $DISABLE_REPOS --setopt=tsflags=nodocs install -y mongodb-org-tools mongodb-org-shell  && \
     yum clean all -y && \
     rm -rf /var/cache/yum
 

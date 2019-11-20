@@ -5,4 +5,4 @@
 - name: openshift-applier
   scm: git
   src: https://github.com/redhat-cop/openshift-applier
-  version: v3.7.2
+  version: v2.1.2

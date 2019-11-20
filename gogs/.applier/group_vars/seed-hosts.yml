@@ -1,0 +1,27 @@
+---
+namespace: gogs
+app_name: gogs
+
+app_params:
+  APPLICATION_NAME: "{{ app_name }}"
+  GOGS_VOLUME_CAPACITY: 10Gi
+  DB_VOLUME_CAPACITY: 5Gi
+  NAMESPACE: "{{ namespace }}"
+
+openshift_cluster_content:
+- object: Environment Setup
+  content:
+  - name: Create Projects
+    template: "https://raw.githubusercontent.com/redhat-cop/openshift-templates/v1.4.12/project-requests/create-project.yml"
+    action: create
+    params_from_vars:
+      NAMESPACE: "{{ namespace }}"
+      NAMESPACE_DISPLAY_NAME: "{{ namespace }}"
+    tags:
+      - project
+- object: deployments
+  content:
+  - name: gogs
+    template: "{{ inventory_dir }}/../.openshift/templates/gogs-persistent-template.yaml"
+    params_from_vars: "{{ app_params }}"
+    namespace: "{{ namespace }}"

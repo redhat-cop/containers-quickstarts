@@ -1,0 +1,32 @@
+---
+namespace: mongodb
+
+openshift_cluster_content:
+- object: Environment Setup
+  content:
+  - name: Create Projects
+    template: "https://raw.githubusercontent.com/redhat-cop/openshift-templates/v1.4.12/project-requests/create-project.yml"
+    action: create
+    params_from_vars:
+      NAMESPACE: "{{ namespace }}"
+      NAMESPACE_DISPLAY_NAME: "{{ namespace }}"
+    tags:
+      - project
+- object: deployments
+  content:
+  - name: deploy MongoDB config servers
+    template: "{{ inventory_dir }}/../.openshift/templates/configsvr.yml"
+    params: "{{ inventory_dir }}/../.openshift/params/configsvr"
+    namespace: "{{ namespace }}"
+  - name: deploy MongoDB replicaset abc
+    template: "{{ inventory_dir }}/../.openshift/templates/replset.yml"
+    params: "{{ inventory_dir }}/../.openshift/params/replset-abc"
+    namespace: "{{ namespace }}"
+  - name: deploy MongoDB replicaset def
+    template: "{{ inventory_dir }}/../.openshift/templates/replset.yml"
+    params: "{{ inventory_dir }}/../.openshift/params/replset-def"
+    namespace: "{{ namespace }}"
+  - name: deploy MongoDB shard router
+    template: "{{ inventory_dir }}/../.openshift/templates/mongos.yml"
+    params: "{{ inventory_dir }}/../.openshift/params/mongos"
+    namespace: "{{ namespace }}"
