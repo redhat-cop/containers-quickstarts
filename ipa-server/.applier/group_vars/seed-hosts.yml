@@ -34,6 +34,7 @@ openshift_cluster_content:
     tags:
       - ipa_ocp4
       - ipa_machineconfig
+      - never
 
 - object: Image Streams
   content:
@@ -47,7 +48,6 @@ openshift_cluster_content:
   content:
   - name: "{{ app_name }}-sa"
     template: "https://raw.githubusercontent.com/redhat-cop/openshift-templates/{{ openshift_templates_version }}/service-accounts/generic-service-account.yml"
-    namespace: "{{ namespace }}"
     params_from_vars:
       SA_NAME: "{{ app_name }}"
       SA_NAMESPACE: "{{ namespace }}"
@@ -55,7 +55,6 @@ openshift_cluster_content:
       - ipa_serviceaccount
   - name: "{{ app_name }}-sa-policy"
     template: "https://raw.githubusercontent.com/redhat-cop/openshift-templates/{{ openshift_templates_version }}/scc/project-run-anyuid-template.yml"
-    namespace: "{{ namespace }}"
     params_from_vars:
       NAMESPACE: "{{ namespace }}"
       NAME: "{{ app_name }}"
