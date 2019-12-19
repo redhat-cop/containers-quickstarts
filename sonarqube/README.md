@@ -7,6 +7,7 @@ but it has been modified to allow permissions to be run in an OpenShift environm
 * ability to define plugins to be installed the first time the container is run. 
 * supports for persistent volumes for configuration, plugins & elastic indices
 * additional configuration options
+* ability to login using the OpenShift provided OAuth server (enabled by default) - see [plugin docs](https://github.com/rht-labs/sonar-auth-openshift) for configuration and disable information
 
 >**NOTE:** By default this image will disable memory mapping in Elasticsearch. See upstream issues [#310](https://github.com/SonarSource/docker-sonarqube/issues/310) & [SONAR-12264](https://jira.sonarsource.com/browse/SONAR-12264). This is not suitable for production use. This can be changed by using an older version of sonarqube, add `-e upstream_sq_version=7.7-community -e sonar_search_java_additional_opts=''` to the `ansible-playbook` command below
 
@@ -16,6 +17,12 @@ but it has been modified to allow permissions to be run in an OpenShift environm
 2. `cd containers-quickstarts/sonarqube`
 3. Run `ansible-galaxy install -r requirements.yml --roles-path=galaxy`
 4. Login to OpenShift: `oc login -u <username> https://master.example.com:8443`
+
+### Settings
+
+There are a couple of settings that may need to be configured in order for this to work properly. By default authorization is determined by the users membership in the groups `sonar-administrators` for admins and `sonar-users` for ordinary users. To change the group association review the configuration instructions [here](https://github.com/rht-labs/sonar-auth-openshift/). To create a custom group see the example [here](https://github.com/rht-labs/sonar-auth-openshift/blob/master/example/files/sonarqube-admin-group.yml).
+
+In many cases the certs that are associated with the pod are the same as those associated with the OpenShift oauth server. If true, then no configuration is necessary. If the cert is not the same than you will need to provide the correct cert. Your 2 options are to ignore the cert `ignore.certs=true` (only do this for testing puropses) or provide the correct cert. See [here](https://github.com/rht-labs/sonar-auth-openshift/) for instructions. 
 
 ### Build and Deploy SonarQube
 
