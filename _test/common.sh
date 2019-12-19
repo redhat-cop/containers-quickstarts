@@ -7,6 +7,45 @@ get_build_phases() {
   echo ${result} | wc -w
 }
 
+get_build_phase_for() {
+  name=$1
+  result=$(retry 5 oc get builds ${name} -o jsonpath="{.status.phase}" -n $NAMESPACE) || kill -s TERM $TOP_PID
+  echo ${result}
+}
+
+get_buildnumber_for() {
+  name=$1
+  result=$(retry 5 oc get buildconfigs ${name} -o jsonpath="{.status.lastVersion}" -n $NAMESPACE) || kill -s TERM $TOP_PID
+  echo ${result}
+}
+
+download_jenkins_logs_for_failed() {
+  jobs=$1
+  expectedphase=$2
+
+  echo
+  echo "Checking jobs which should have an expected phase of ${expectedphase}..."
+
+  jenkins_url=$(oc get route jenkins -n ${NAMESPACE} -o jsonpath='{ .spec.host }')
+  token=$(oc whoami --show-token)
+
+  for pipeline in ${jobs}; do
+    build_number=$(get_buildnumber_for ${pipeline})
+    build="${pipeline}-${build_number}"
+
+    phase=$(get_build_phase_for ${build})
+    if [[ "${expectedphase}" != "${phase}" ]]; then
+      echo ""
+      echo "Downloading Jenkins logs for ${build} as phase (${phase}) does not match expected (${expectedphase})..."
+      curl -k -sS -H "Authorization: Bearer ${token}" "https://${jenkins_url}/blue/rest/organizations/jenkins/pipelines/${NAMESPACE}/pipelines/${NAMESPACE}-${pipeline}/runs/${build_number}/log/?start=0&download=true" -o "${pipeline}.log"
+
+      echo "## START LOGS: ${build}"
+      cat "${pipeline}.log"
+      echo "## END LOGS: ${build}"
+    fi
+  done
+}
+
 function retry {
   local retries=$1
   shift
