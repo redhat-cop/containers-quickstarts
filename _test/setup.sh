@@ -5,6 +5,9 @@ NAMESPACE="${2:-containers-quickstarts-tests}"
 TRAVIS_REPO_SLUG="${3:-redhat-cop/containers-quickstarts}"
 TRAVIS_BRANCH="${4:-master}"
 
+TEST_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+. ${TEST_DIR}/common.sh
+
 cluster_up() {
   set +e
   built=false
@@ -42,6 +45,7 @@ test() {
 
   echo "Ensure all Builds are executed..."
   for pipeline in $(oc get bc -n ${NAMESPACE} -o jsonpath='{.items[*].metadata.name}'); do
+    # Only start BuildConfigs which currently have 0 builds
     if [ "$(oc get build -n ${NAMESPACE} -o jsonpath="{.items[?(@.metadata.annotations.openshift\.io/build-config\.name==\"${pipeline}\")].metadata.name}")" == "" ]; then
       oc start-build ${pipeline} -n ${NAMESPACE}
     fi
@@ -63,6 +67,10 @@ test() {
   if [ $(get_build_phases "Failed") -ne 0 ]; then
     echo "Some builds failed. Printing Report"
     retry 5 oc get builds -n $NAMESPACE -o custom-columns=NAME:.metadata.name,TYPE:.spec.strategy.type,FROM:.spec.source.type,STATUS:.status.phase,REASON:.status.reason
+
+    failed_jobs=$(retry 5 oc get builds -o jsonpath="{.items[?(@.status.phase=='Failed')].metadata.annotations.openshift\.io/build-config\.name}" -n $NAMESPACE) || kill -s TERM $TOP_PID
+    download_jenkins_logs_for_failed ${failed_jobs} "Complete"
+
     exit 1
   fi
 
