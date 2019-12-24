@@ -1,0 +1,46 @@
+## Directory containing your source code
+sourceContextDir: "."
+## URI to a git repository (REQUIRED)
+sourceUri:
+## Ref to use from git repository
+sourceRef: master
+## Tag to give the built image, and tag of the image to deploy
+imageTag: latest
+
+## Should JGroups and client communication be encrypted?
+enableTls: false
+## Create a route so the application can be access from outside the OCP cluster?
+createRoute: true
+## Hostname of the OpenShift route. If left blank, a hostname will be automatically generated in the form <release-name>-<namespace>.<suffix>
+routeHostname: ""
+
+## DeploymentConfig update strategy. (Rolling | Recreate)
+updateStrategy: Rolling
+## Application resource requests and limits
+resources:
+  requests:
+    memory: 512Mi
+    cpu: 100m
+  limits:
+    memory: 1Gi
+    cpu: 300m
+## Number of pods to deploy
+replicas: 1
+
+## Password for node-to-node EAP cluster authentication
+jgroupsClusterPassword: testpass
+## Symmetric key for encrypting node-to-node communication
+jgroupsEncryptPassword: testpass
+## Name of the jgroups keystore
+jgroupsEncryptName: jgroups
+## Name of the jgroups keystore file
+jgroupsEncryptKeystore: jgroups.jceks
+## Name of the secret that contains the jgroups keystore
+jgroupsEncryptSecret: jgroups-keystore
+
+## Name of the https keystore
+httpsName: https
+## Password to the https keystore
+httpsPassword: testpass
+## Name of the https keystore file
+httpsKeystore: keystore.jks
