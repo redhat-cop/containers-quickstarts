@@ -44,7 +44,7 @@ objects:
         dockerfilePath: {{ params.DOCKERFILE_PATH | d('Dockerfile') }}
         from:
           kind: DockerImage
-          name: {{ params.BUILDER_IMAGE_NAME | d('quay.io/openshift/origin-jenkins-agent-base:4.1') }}
+          name: {{ params.BUILDER_IMAGE_NAME | d('quay.io/openshift/origin-jenkins-agent-base:4.2') }}
           imagePullPolicy: Always
       type: Docker
     triggers:

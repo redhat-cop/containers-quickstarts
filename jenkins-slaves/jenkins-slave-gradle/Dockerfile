@@ -1,4 +1,4 @@
-FROM quay.io/openshift/origin-jenkins-agent-base:4.1
+FROM quay.io/openshift/origin-jenkins-agent-base:4.2
 
 ENV GRADLE_VERSION=4.8
 
