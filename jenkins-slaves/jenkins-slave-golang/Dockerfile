@@ -1,4 +1,4 @@
-FROM quay.io/openshift/origin-jenkins-agent-base:4.1
+FROM quay.io/openshift/origin-jenkins-agent-base:4.2
 
 ENV GO_VERSION_DEFAULT=1.10.2 \
     GOROOT=/usr/local/go \

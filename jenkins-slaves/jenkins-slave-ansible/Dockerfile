@@ -1,8 +1,8 @@
-FROM quay.io/openshift/origin-jenkins-agent-base:4.1
+FROM quay.io/openshift/origin-jenkins-agent-base:4.2
 
 LABEL com.redhat.component="jenkins-agent-ansible-ubi7-docker" \
       name="openshift/origin-jenkins-agent-ansible-ubi7" \
-      version="4.1" \
+      version="4.2" \
       architecture="x86_64" \
       release="1" \
       io.k8s.display-name="Jenkins Agent Ansible" \

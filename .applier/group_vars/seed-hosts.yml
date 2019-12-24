@@ -7,7 +7,7 @@ templates_repo_ref: v1.4.12
 jenkins_slaves:
   build:
     ansible:
-      BUILDER_IMAGE_NAME: quay.io/openshift/origin-jenkins-agent-base:4.1
+      BUILDER_IMAGE_NAME: quay.io/openshift/origin-jenkins-agent-base:4.2
       DOCKERFILE_PATH: Dockerfile
       NAME: jenkins-slave-ansible
       SOURCE_CONTEXT_DIR: jenkins-slaves/jenkins-slave-ansible
@@ -19,7 +19,7 @@ jenkins_slaves:
     gradle: {}
     mongodb: {}
     mvn:
-      BUILDER_IMAGE_NAME: quay.io/openshift/origin-jenkins-agent-maven:4.1
+      BUILDER_IMAGE_NAME: quay.io/openshift/origin-jenkins-agent-maven:4.2
     npm:
       BUILDER_IMAGE_NAME: openshift/jenkins-slave-base-centos7:v3.11
     ruby: {}
