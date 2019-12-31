@@ -19,10 +19,6 @@ applier() {
 test() {
   # Make sure we're logged in, and we've found at least one build to test.
   oc status > /dev/null || echo "Please log in before running tests." || exit 1
-  if [ $(oc get builds -n ${NAMESPACE} --no-headers | grep -c .) -lt 1 ]; then
-    echo "Did not find any builds, make sure you've passed the proper arguments."
-    exit 1
-  fi
 
   echo "Ensure build is executed..."
   for bc in $(oc get bc -n ${NAMESPACE} -o jsonpath='{.items[*].metadata.name}'); do
