@@ -58,6 +58,8 @@ objects:
       spec:
         containers:
         - env:
+          - name: SONAR_LOG_LEVEL
+            value: ${SONAR_LOG_LEVEL}
           - name: JDBC_URL
             value: jdbc:postgresql://sonardb:5432/sonar
           - name: JDBC_USERNAME
@@ -120,6 +122,10 @@ objects:
             value: ${SONAR_SAR_ADMIN_GROUP}
           - name: SONAR_SAR_USER_GROUP
             value: ${SONAR_SAR_USER_GROUP}
+          - name: SONAR_OPENSHIFT_OAUTH_ACCEPT_INVALID_CERTS
+            value: ${SONAR_OPENSHIFT_OAUTH_ACCEPT_INVALID_CERTS}
+          - name: SONAR_OPENSHIFT_OAUTH_CA_CERT
+            value: ${SONAR_OPENSHIFT_OAUTH_CA_CERT}
           imagePullPolicy: Always
           livenessProbe:
             failureThreshold: 3
@@ -307,3 +313,19 @@ parameters:
     description: Group which will be given user privileges in SonarQube
     displayName: OAuth User Group
     value: sonar-users
+  - name: SONAR_LOG_LEVEL
+    value: WARN
+    description: Log4j log level for SonarQube
+    displayName: Log level
+  - name: SONARQUBE_WEB_JVM_OPTS
+    displayName: Additional JVM options for the SonarQube web app
+    description: Addition JVM options (e.g. -Dsome.property) for the web application
+    value: -Djava.security.egd=file:/dev/./urandom
+  - name: SONAR_OPENSHIFT_OAUTH_ACCEPT_INVALID_CERTS
+    value: "false"
+    displayName: Acept all certificates for OAuth
+    description: Allow the OAuth code to ignore invalid certificates (Not for production use)
+  - name: SONAR_OPENSHIFT_OAUTH_CA_CERT
+    displayName: OpenShift Certificate Path
+    description: The certificate which will allow OAuth callbacks to be validated
+    value: /run/secrets/kubernetes.io/serviceaccount/ca.crt
