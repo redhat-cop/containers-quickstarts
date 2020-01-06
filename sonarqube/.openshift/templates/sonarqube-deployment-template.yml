@@ -116,6 +116,10 @@ objects:
                 name: sonar-ldap-bind-dn
           - name: SONAR_SEARCH_JAVA_ADDITIONAL_OPTS
             value: '-Dnode.store.allow_mmapfs=false'
+          - name: SONAR_SAR_ADMIN_GROUP
+            value: ${SONAR_SAR_ADMIN_GROUP}
+          - name: SONAR_SAR_USER_GROUP
+            value: ${SONAR_SAR_USER_GROUP}
           imagePullPolicy: Always
           livenessProbe:
             failureThreshold: 3
@@ -295,3 +299,11 @@ parameters:
   - name: SONAR_SEARCH_JAVA_ADDITIONAL_OPTS
     description: Pass in additional Java opts to ElasticSearch
     displayName: Add sonar.search.javaAdditionalOpts
+  - name: SONAR_SAR_ADMIN_GROUP
+    description: Group which will be given admin privileges in SonarQube
+    displayName: OAuth Admin Group
+    value: sonar-administrators
+  - name: SONAR_SAR_USER_GROUP
+    description: Group which will be given user privileges in SonarQube
+    displayName: OAuth User Group
+    value: sonar-users
