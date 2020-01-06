@@ -24,5 +24,4 @@ if [ "${1:0:1}" != '-' ]; then
 fi
 
 java -jar lib/sonar-application-$SONAR_VERSION.jar \
-    -Dsonar.web.javaAdditionalOpts="-Djava.security.egd=file:/dev/./urandom ${SONARQUBE_WEB_JVM_OPTS}" \
     "$@"
