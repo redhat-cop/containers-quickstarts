@@ -314,7 +314,7 @@ parameters:
     displayName: OAuth User Group
     value: sonar-users
   - name: SONAR_LOG_LEVEL
-    value: WARN
+    value: INFO
     description: Log4j log level for SonarQube
     displayName: Log level
   - name: SONARQUBE_WEB_JVM_OPTS
