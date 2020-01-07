@@ -6,6 +6,9 @@ set -e
 ## If the mounted data volume is empty, populate it from the default data
 cp -a /opt/sonarqube/data-init/* /opt/sonarqube/data/
 
+cp ${JAVA_HOME}/lib/security/cacerts /tmp/cacerts
+${JAVA_HOME}/bin/keytool -import -noprompt -keystore /tmp/cacerts -file /run/secrets/kubernetes.io/serviceaccount/ca.crt -storepass changeit -alias openshift
+
 ## Link the plugins directory from the mounted volume
 rm -rf /opt/sonarqube/extensions/plugins
 ln -s /opt/sonarqube/data/plugins /opt/sonarqube/extensions/plugins
@@ -23,5 +26,5 @@ if [ "${1:0:1}" != '-' ]; then
   exec "$@"
 fi
 
-java -jar lib/sonar-application-$SONAR_VERSION.jar \
+java -jar lib/sonar-application-$SONAR_VERSION.jar -Djavax.net.ssl.trustStore=/tmp/cacerts \
     "$@"
