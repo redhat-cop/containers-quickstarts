@@ -135,7 +135,7 @@ objects:
               path: /
               port: 9000
               scheme: HTTP
-            initialDelaySeconds: ${SONAR_SERVICE_INITIAL_DELAY}
+            initialDelaySeconds: ${{SONAR_SERVICE_INITIAL_DELAY}}
             periodSeconds: 10
             successThreshold: 1
             timeoutSeconds: 1
@@ -149,7 +149,7 @@ objects:
               path: /
               port: 9000
               scheme: HTTP
-            initialDelaySeconds: ${SONAR_SERVICE_INITIAL_DELAY}
+            initialDelaySeconds: ${{SONAR_SERVICE_INITIAL_DELAY}}
             periodSeconds: 10
             successThreshold: 1
             timeoutSeconds: 1
@@ -333,6 +333,6 @@ parameters:
     description: The certificate which will allow OAuth callbacks to be validated
     value: /run/secrets/kubernetes.io/serviceaccount/ca.crt
   - name: SONAR_SERVICE_INITIAL_DELAY
-    value: 45
+    value: '45'
     description: The time to delay before the first liveness/readiness check
     displayName: Liveness/Readiness Initial Delay
