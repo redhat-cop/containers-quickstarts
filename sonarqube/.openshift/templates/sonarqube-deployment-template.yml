@@ -326,7 +326,7 @@ parameters:
     value: -Djava.security.egd=file:/dev/./urandom
   - name: SONAR_OPENSHIFT_OAUTH_ACCEPT_INVALID_CERTS
     value: "false"
-    displayName: Acept all certificates for OAuth
+    displayName: Accept all certificates for OAuth
     description: Allow the OAuth code to ignore invalid certificates (Not for production use)
   - name: SONAR_OPENSHIFT_OAUTH_CA_CERT
     displayName: OpenShift Certificate Path
