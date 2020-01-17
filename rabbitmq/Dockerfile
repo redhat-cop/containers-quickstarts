@@ -23,7 +23,7 @@ RUN set -xe && \
     curl -Lo rabbitmq-server.tar.xz.asc https://github.com/rabbitmq/rabbitmq-server/releases/download/v${RABBITMQ_VERSION}/rabbitmq-server-generic-unix-${RABBITMQ_VERSION}.tar.xz.asc && \
     export GNUPGHOME="$(mktemp -d)" && \
     env | grep GNUPG && \
-    gpg --keyserver ha.pool.sks-keyservers.net --recv-keys "$GPG_KEY" && \
+    gpg --keyserver hkp://ha.pool.sks-keyservers.net:80 --recv-keys "$GPG_KEY" && \
     gpg --batch --verify rabbitmq-server.tar.xz.asc rabbitmq-server.tar.xz && \
     rm -rf "$GNUPGHOME" && \
     mkdir -p "$RABBITMQ_HOME" && \
