@@ -1,4 +1,4 @@
-# Jenkins Maven Slave
+# Jenkins ArgoCD Slave
 
 This slave extends the base jenkins slave image and adds the argocd binary. We can use this slave image in a Jenkins pipeline to perform gitops actions and scaffold argocd projects.
 
