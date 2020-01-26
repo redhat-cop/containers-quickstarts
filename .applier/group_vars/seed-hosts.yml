@@ -14,7 +14,7 @@ jenkins_slaves:
       SOURCE_REPOSITORY_REF: "{{ slave_repo_ref }}"
       SOURCE_REPOSITORY_URL: "{{ repository_url }}"
     arachni: {}
-    python: {}
+    erlang: {}
     golang: {}
     gradle: {}
     mongodb: {}
@@ -22,6 +22,7 @@ jenkins_slaves:
       BUILDER_IMAGE_NAME: quay.io/openshift/origin-jenkins-agent-maven:4.2
     npm:
       BUILDER_IMAGE_NAME: openshift/jenkins-slave-base-centos7:v3.11
+    python: {}
     ruby: {}
     zap:
       BUILDER_IMAGE_NAME: centos:centos7
@@ -31,6 +32,12 @@ test_pipelines:
     ansible:
       NAME: jenkins-slave-ansible
       PIPELINE_CONTEXT_DIR: jenkins-slaves/jenkins-slave-ansible
+      PIPELINE_FILENAME: Jenkinsfile.test
+      PIPELINE_SOURCE_REPOSITORY_REF: "{{ slave_repo_ref }}"
+      PIPELINE_SOURCE_REPOSITORY_URL: "{{ repository_url }}"
+    erlang:
+      NAME: jenkins-slave-erlang
+      PIPELINE_CONTEXT_DIR: jenkins-slaves/jenkins-slave-erlang
       PIPELINE_FILENAME: Jenkinsfile.test
       PIPELINE_SOURCE_REPOSITORY_REF: "{{ slave_repo_ref }}"
       PIPELINE_SOURCE_REPOSITORY_URL: "{{ repository_url }}"
@@ -89,6 +96,13 @@ openshift_cluster_content:
     tags:
       - test-pipelines
       - ansible-slave-pipeline
+  - name: Deploy erlang-slave test pipelines
+    template: "https://raw.githubusercontent.com/redhat-cop/openshift-templates/{{ templates_repo_ref }}/jenkins-pipelines/jenkins-pipeline-template-no-ocp-triggers.yml"
+    params_from_vars: "{{ test_pipelines.deploy.erlang }}"
+    namespace: "{{ namespace }}"
+    tags:
+      - test-pipelines
+      - erlang-slave-pipeline
   - name: Deploy golang-slave test pipelines
     template: "https://raw.githubusercontent.com/redhat-cop/openshift-templates/{{ templates_repo_ref }}/jenkins-pipelines/jenkins-pipeline-template-no-ocp-triggers.yml"
     params_from_vars: "{{ test_pipelines.deploy.golang }}"
