@@ -2,7 +2,7 @@ FROM registry.access.redhat.com/ubi8
 
 MAINTAINER Aly Ibrahim<aly@redhat.com>
 
-ENV OC_CLIENT_MIRROR https://mirror.openshift.com/pub/openshift-v3/clients/3.11.127/linux/oc.tar.gz
+ENV OC_CLIENT_MIRROR https://mirror.openshift.com/pub/openshift-v4/clients/ocp/4.3.0/openshift-client-linux-4.3.0.tar.gz 
 ENV HOME /home/tool-box
 
 RUN yum -y update && \
