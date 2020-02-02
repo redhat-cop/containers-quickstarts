@@ -1,19 +1,6 @@
 pipeline {
     agent {
-        kubernetes {
-            label 'jenkins-slave-argocd'
-            cloud 'openshift'
-            serviceAccount 'jenkins'
-            containerTemplate {
-                name 'jnlp'
-                image "image-registry.openshift-image-registry.svc:5000/openshift/jenkins-slave-argocd"
-                alwaysPullImage true
-                workingDir '/tmp'
-                args '${computer.jnlpmac} ${computer.name}'
-                command ''
-                ttyEnabled false
-            }
-        }
+        label 'jenkins-slave-argocd'
     }
 
     stages {

@@ -18,6 +18,7 @@ jenkins_slaves:
     golang: {}
     gradle: {}
     mongodb: {}
+    argocd: {}
     mvn:
       BUILDER_IMAGE_NAME: quay.io/openshift/origin-jenkins-agent-maven:4.2
     npm:
