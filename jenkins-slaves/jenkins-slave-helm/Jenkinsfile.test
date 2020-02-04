@@ -1,0 +1,17 @@
+pipeline {
+    agent {
+        label 'jenkins-slave-helm'
+    }
+
+    stages {
+        stage ('Run Test') {
+            steps {
+              sh """
+                  helm help
+              """
+            }
+        }
+
+    }
+
+}
