@@ -66,7 +66,7 @@ test_pipelines:
       PIPELINE_FILENAME: Jenkinsfile.test
       PIPELINE_SOURCE_REPOSITORY_REF: "{{ slave_repo_ref }}"
       PIPELINE_SOURCE_REPOSITORY_URL: "{{ repository_url }}"      
-    argocd:
+    helm:
       NAME: jenkins-slave-helm
       PIPELINE_CONTEXT_DIR: jenkins-slaves/jenkins-slave-helm
       PIPELINE_FILENAME: Jenkinsfile.test
@@ -144,3 +144,10 @@ openshift_cluster_content:
     tags:
       - test-pipelines
       - argocd-slave-pipeline
+  - name: Deploy helm-slave test pipelines
+    template: "https://raw.githubusercontent.com/redhat-cop/openshift-templates/{{ templates_repo_ref }}/jenkins-pipelines/jenkins-pipeline-template-no-ocp-triggers.yml"
+    params_from_vars: "{{ test_pipelines.deploy.helm }}"
+    namespace: "{{ namespace }}"
+    tags:
+      - test-pipelines
+      - helm-slave-pipeline
