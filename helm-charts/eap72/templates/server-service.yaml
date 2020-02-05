@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Release.Name }}
+spec:
+  ports:
+{{- if .Values.enableTls }}
+    - port: 8443
+      targetPort: 8443
+{{- else }}
+    - port: 8080
+      targetPort: 8080
+{{- end }}
+  selector:
+    deploymentConfig: {{ .Release.Name }}

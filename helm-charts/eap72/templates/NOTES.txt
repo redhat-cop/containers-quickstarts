@@ -1,0 +1,17 @@
+Thank you for installing the eap72 chart!
+
+{{- if .Values.enableTls }}
+The "enableTls" value has been set to "true". You must create secrets for encrypting JGroups traffic and client traffic.
+
+To encrypt JGroups traffic:
+1) keytool -genseckey -keyalg AES -alias {{ .Values.jgroupsEncryptName }} -keystore {{ .Values.jgroupsEncryptKeystore }} -validity 360 -keysize 256 -deststoretype pkcs12
+2) oc create secret generic {{ .Values.jgroupsEncryptSecret }} --from-file={{ .Values.jgroupsEncryptKeystore }}={{ .Values.jgroupsEncryptKeystore }}
+
+To encrypt client traffic:
+1) keytool -genkey -keyalg RSA -alias {{ .Values.httpsName }} -keystore {{ .Values.httpsKeystore }} -validity 360 -keysize 2048
+2) oc create secret generic https-keystore --from-file={{ .Values.httpsKeystore }}={{ .Values.httpsKeystore }}
+
+Once these secrets are created, start a new build.
+{{- end }}
+
+Run "oc start-build {{ .Release.Name }}" if your build does not start automatically. Once the image is built, a rollout will automatically begin.
