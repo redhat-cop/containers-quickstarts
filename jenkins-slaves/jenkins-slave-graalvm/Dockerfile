@@ -5,8 +5,9 @@ ADD settings.xml $HOME/.m2/settings.xml
 
 
 USER root
+RUN yum install -y gcc glibc-devel zlib-devel libstdc++-static
 RUN mkdir /opt/graalvm
-RUN curl -L https://github.com/graalvm/graalvm-ce-builds/releases/download/vm-${GRAALVM_VERSION}/graalvm-ce-java11-linux-amd64-${GRAALVM_VERSION}.tar.gz | tar -xz -C /opt/graalvm/
-RUN graalvm/bin/gu install native-image
+RUN curl -L https://github.com/graalvm/graalvm-ce-builds/releases/download/vm-${GRAALVM_VERSION}/graalvm-ce-java11-linux-amd64-${GRAALVM_VERSION}.tar.gz | tar --strip-components=1 -xz -C /opt/graalvm/
+RUN /opt/graalvm/bin/gu install native-image
 USER 1001
 ENV GRAALVM_HOME /opt/graalvm
