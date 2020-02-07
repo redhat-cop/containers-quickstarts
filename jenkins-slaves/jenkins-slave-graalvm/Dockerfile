@@ -1,7 +1,7 @@
 FROM quay.io/openshift/origin-jenkins-agent-maven:4.2
 ADD settings.xml $HOME/.m2/settings.xml
 
-ARG GRAALVM_VERSION=19.2.1
+ARG GRAALVM_VERSION=19.3.1
 
 USER root
 WORKDIR /opt
