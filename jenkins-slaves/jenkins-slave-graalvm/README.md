@@ -7,8 +7,8 @@ It also goes a little further and adds [GraalVM](https://www.graalvm.org/) and a
 ## Build in OpenShift
 ```bash
 oc process -f ../../.openshift/templates/jenkins-slave-generic-template.yml \
-    -p NAME=jenkins-slave-graal \
-    -p SOURCE_CONTEXT_DIR=jenkins-slaves/jenkins-slave-graal \
+    -p NAME=jenkins-slave-graalvm \
+    -p SOURCE_CONTEXT_DIR=jenkins-slaves/jenkins-slave-graalvm \
     -p DOCKERFILE_PATH=Dockerfile \
     | oc create -f -
 ```

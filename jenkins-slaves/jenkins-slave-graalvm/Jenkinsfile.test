@@ -1,6 +1,6 @@
 pipeline {
     agent {
-      label 'jenkins-slave-graal'
+      label 'jenkins-slave-graalvm'
     }
 
     stages {
