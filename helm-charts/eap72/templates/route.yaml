@@ -1,0 +1,21 @@
+{{- if .Values.createRoute }}
+apiVersion: route.openshift.io/v1
+kind: Route
+metadata:
+  name: {{ .Release.Name }}
+spec:
+  host: "{{ .Values.routeHostname }}"
+  tls:
+    insecureEdgeTerminationPolicy: Redirect
+{{- if .Values.enableTls }}
+    termination: passthrough
+{{- else }}
+    termination: edge
+{{- end }}
+  to:
+    kind: Service
+    name: {{ .Release.Name }}
+    weight: 100
+status:
+  ingress: []
+{{- end }}

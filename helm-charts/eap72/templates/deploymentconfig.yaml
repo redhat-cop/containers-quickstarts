@@ -1,0 +1,106 @@
+apiVersion: apps.openshift.io/v1
+kind: DeploymentConfig
+metadata:
+  name: {{ .Release.Name }}
+  annotations:
+    checksum/config: {{ include (print $.Template.BasePath "/secret.yaml") . | sha256sum }}
+spec:
+  replicas: {{ .Values.replicas }}
+  selector:
+    deploymentConfig: {{ .Release.Name }}
+  strategy:
+    type: {{ .Values.updateStrategy }}
+  template:
+    metadata:
+      labels:
+        application: {{ .Release.Name }}
+        deploymentConfig: {{ .Release.Name }}
+      name: {{ .Release.Name }}
+    spec:
+      containers:
+        - name: {{ .Release.Name }}
+          env:
+{{- if .Values.enableTls }}
+            - name: HTTPS_NAME
+              value: {{ .Values.httpsName }}
+            - name: HTTPS_PASSWORD
+              value: {{ .Values.httpsPassword }}
+            - name: HTTPS_KEYSTORE
+              value: {{ .Values.httpsKeystore }}
+            - name: HTTPS_KEYSTORE_DIR
+              value: /etc/eap-secret-volume
+            - name: JGROUPS_ENCRYPT_SECRET
+              value: {{ .Values.jgroupsEncryptSecret }}
+            - name: JGROUPS_ENCRYPT_KEYSTORE_DIR
+              value: /etc/jgroups-encrypt-secret-volume
+            - name: JGROUPS_ENCRYPT_KEYSTORE
+              value: {{ .Values.jgroupsEncryptKeystore }}
+            - name: JGROUPS_ENCRYPT_NAME
+              value: {{ .Values.jgroupsEncryptName }}
+            - name: JGROUPS_ENCRYPT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  key: jgroups-encrypt-password
+                  name: {{ .Release.Name }}
+{{- end }}
+            - name: JGROUPS_PING_PROTOCOL
+              value: dns.DNS_PING
+            - name: JGROUPS_CLUSTER_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  key: jgroups-cluster-password
+                  name: {{ .Release.Name }}
+            - name: OPENSHIFT_DNS_PING_SERVICE_NAME
+              value: {{ .Release.Name }}-ping
+            - name: OPENSHIFT_DNS_PING_SERVICE_PORT
+              value: "8888"
+            - name: AUTO_DEPLOY_EXPLODED
+              value: "false"
+          image: {{ .Release.Name }}
+          imagePullPolicy: Always
+          livenessProbe:
+            exec:
+              command:
+                - /bin/bash
+                - -c
+                - /opt/eap/bin/livenessProbe.sh
+            initialDelaySeconds: 90
+            timeoutSeconds: 10
+          name: {{ .Release.Name }}
+          readinessProbe:
+            exec:
+              command:
+                - /bin/bash
+                - -c
+                - /opt/eap/bin/readinessProbe.sh
+            initialDelaySeconds: 90
+            timeoutSeconds: 10
+          resources:
+{{ .Values.resources | toYaml | indent 12 }}
+{{- if .Values.enableTls }}
+          volumeMounts:
+            - mountPath: /etc/jgroups-encrypt-secret-volume
+              name: eap-jgroups-keystore-volume
+              readOnly: true
+            - mountPath: /etc/eap-secret-volume
+              name: eap-https-keystore-volume
+              readOnly: true
+      volumes:
+        - name: eap-jgroups-keystore-volume
+          secret:
+            secretName: {{ .Values.jgroupsEncryptSecret }}
+        - name: eap-https-keystore-volume
+          secret:
+            secretName: https-keystore
+{{- end }}
+      terminationGracePeriodSeconds: 75
+  triggers:
+    - imageChangeParams:
+        automatic: true
+        containerNames:
+          - {{ .Release.Name }}
+        from:
+          kind: ImageStreamTag
+          name: {{ .Release.Name }}:{{ .Values.imageTag }}
+      type: ImageChange
+    - type: ConfigChange
