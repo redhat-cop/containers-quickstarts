@@ -1,0 +1,32 @@
+apiVersion: build.openshift.io/v1
+kind: BuildConfig
+metadata:
+  name: {{ .Release.Name }}
+spec:
+  nodeSelector: {}
+  output:
+    to:
+      kind: ImageStreamTag
+      name: {{ .Release.Name }}:{{ .Values.imageTag }}
+  source:
+    contextDir: {{ .Values.sourceContextDir }}
+    git:
+      ref: {{ .Values.sourceRef }}
+      uri: {{ required "value 'sourceUri' required" .Values.sourceUri }}
+    type: Git
+  strategy:
+    sourceStrategy:
+      env:
+        - name: MAVEN_ARGS_APPEND
+          value: -Dcom.redhat.xpaas.repo.jbossorg
+      forcePull: true
+      from:
+        kind: ImageStreamTag
+        name: jboss-eap72-openshift:1.0
+        namespace: openshift
+      incremental: true
+    type: Source
+  triggers:
+    - type: ConfigChange
+status:
+  lastVersion: 0

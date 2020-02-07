@@ -1,0 +1,17 @@
+pipeline {
+    agent {
+        label 'jenkins-slave-argocd'
+    }
+
+    stages {
+        stage ('Run Test') {
+            steps {
+              sh """
+                  argocd help
+              """
+            }
+        }
+
+    }
+
+}
