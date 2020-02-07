@@ -18,6 +18,7 @@ jenkins_slaves:
     golang: {}
     gradle: {}
     mongodb: {}
+    graalvm: {}
     mvn:
       BUILDER_IMAGE_NAME: quay.io/openshift/origin-jenkins-agent-maven:4.2
     npm:
@@ -43,6 +44,12 @@ test_pipelines:
     mvn:
       NAME: jenkins-slave-mvn
       PIPELINE_CONTEXT_DIR: jenkins-slaves/jenkins-slave-mvn
+      PIPELINE_FILENAME: Jenkinsfile.test
+      PIPELINE_SOURCE_REPOSITORY_REF: "{{ slave_repo_ref }}"
+      PIPELINE_SOURCE_REPOSITORY_URL: "{{ repository_url }}"
+    graal:
+      NAME: jenkins-slave-graal
+      PIPELINE_CONTEXT_DIR: jenkins-slaves/jenkins-slave-graal
       PIPELINE_FILENAME: Jenkinsfile.test
       PIPELINE_SOURCE_REPOSITORY_REF: "{{ slave_repo_ref }}"
       PIPELINE_SOURCE_REPOSITORY_URL: "{{ repository_url }}"
@@ -103,6 +110,13 @@ openshift_cluster_content:
     tags:
       - test-pipelines
       - mvn-slave-pipeline
+  - name: Deploy graal-slave test pipelines
+    template: "https://raw.githubusercontent.com/redhat-cop/openshift-templates/{{ templates_repo_ref }}/jenkins-pipelines/jenkins-pipeline-template-no-ocp-triggers.yml"
+    params_from_vars: "{{ test_pipelines.deploy.graal }}"
+    namespace: "{{ namespace }}"
+    tags:
+      - test-pipelines
+      - graal-slave-pipeline
   - name: Deploy ruby-slave test pipelines
     template: "https://raw.githubusercontent.com/redhat-cop/openshift-templates/{{ templates_repo_ref }}/jenkins-pipelines/jenkins-pipeline-template-no-ocp-triggers.yml"
     params_from_vars: "{{ test_pipelines.deploy.ruby }}"
