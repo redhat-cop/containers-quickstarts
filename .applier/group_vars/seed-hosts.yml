@@ -14,18 +14,19 @@ jenkins_slaves:
       SOURCE_REPOSITORY_REF: "{{ slave_repo_ref }}"
       SOURCE_REPOSITORY_URL: "{{ repository_url }}"
     arachni: {}
+    argocd: {}
     erlang: {}
     golang: {}
     gradle: {}
-    mongodb: {}
-    argocd: {}
     helm: {}
+    mongodb: {}
     mvn:
       BUILDER_IMAGE_NAME: quay.io/openshift/origin-jenkins-agent-maven:4.2
     npm:
       BUILDER_IMAGE_NAME: openshift/jenkins-slave-base-centos7:v3.11
     python: {}
     ruby: {}
+    rust: {}
     zap:
       BUILDER_IMAGE_NAME: centos:centos7
 
@@ -34,6 +35,12 @@ test_pipelines:
     ansible:
       NAME: jenkins-slave-ansible
       PIPELINE_CONTEXT_DIR: jenkins-slaves/jenkins-slave-ansible
+      PIPELINE_FILENAME: Jenkinsfile.test
+      PIPELINE_SOURCE_REPOSITORY_REF: "{{ slave_repo_ref }}"
+      PIPELINE_SOURCE_REPOSITORY_URL: "{{ repository_url }}"
+    argocd:
+      NAME: jenkins-slave-argocd
+      PIPELINE_CONTEXT_DIR: jenkins-slaves/jenkins-slave-argocd
       PIPELINE_FILENAME: Jenkinsfile.test
       PIPELINE_SOURCE_REPOSITORY_REF: "{{ slave_repo_ref }}"
       PIPELINE_SOURCE_REPOSITORY_URL: "{{ repository_url }}"
@@ -49,6 +56,12 @@ test_pipelines:
       PIPELINE_FILENAME: Jenkinsfile.test
       PIPELINE_SOURCE_REPOSITORY_REF: "{{ slave_repo_ref }}"
       PIPELINE_SOURCE_REPOSITORY_URL: "{{ repository_url }}"
+    helm:
+      NAME: jenkins-slave-helm
+      PIPELINE_CONTEXT_DIR: jenkins-slaves/jenkins-slave-helm
+      PIPELINE_FILENAME: Jenkinsfile.test
+      PIPELINE_SOURCE_REPOSITORY_REF: "{{ slave_repo_ref }}"
+      PIPELINE_SOURCE_REPOSITORY_URL: "{{ repository_url }}"
     mvn:
       NAME: jenkins-slave-mvn
       PIPELINE_CONTEXT_DIR: jenkins-slaves/jenkins-slave-mvn
@@ -61,18 +74,12 @@ test_pipelines:
       PIPELINE_FILENAME: Jenkinsfile.test
       PIPELINE_SOURCE_REPOSITORY_REF: "{{ slave_repo_ref }}"
       PIPELINE_SOURCE_REPOSITORY_URL: "{{ repository_url }}"
-    argocd:
-      NAME: jenkins-slave-argocd
-      PIPELINE_CONTEXT_DIR: jenkins-slaves/jenkins-slave-argocd
+    rust:
+      NAME: jenkins-slave-rust
+      PIPELINE_CONTEXT_DIR: jenkins-slaves/jenkins-slave-rust
       PIPELINE_FILENAME: Jenkinsfile.test
       PIPELINE_SOURCE_REPOSITORY_REF: "{{ slave_repo_ref }}"
-      PIPELINE_SOURCE_REPOSITORY_URL: "{{ repository_url }}"      
-    helm:
-      NAME: jenkins-slave-helm
-      PIPELINE_CONTEXT_DIR: jenkins-slaves/jenkins-slave-helm
-      PIPELINE_FILENAME: Jenkinsfile.test
-      PIPELINE_SOURCE_REPOSITORY_REF: "{{ slave_repo_ref }}"
-      PIPELINE_SOURCE_REPOSITORY_URL: "{{ repository_url }}"      
+      PIPELINE_SOURCE_REPOSITORY_URL: "{{ repository_url }}"
 
 openshift_cluster_content:
 - object: Environment Setup
@@ -110,6 +117,13 @@ openshift_cluster_content:
     tags:
       - test-pipelines
       - ansible-slave-pipeline
+  - name: Deploy argocd-slave test pipelines
+    template: "https://raw.githubusercontent.com/redhat-cop/openshift-templates/{{ templates_repo_ref }}/jenkins-pipelines/jenkins-pipeline-template-no-ocp-triggers.yml"
+    params_from_vars: "{{ test_pipelines.deploy.argocd }}"
+    namespace: "{{ namespace }}"
+    tags:
+      - test-pipelines
+      - argocd-slave-pipeline
   - name: Deploy erlang-slave test pipelines
     template: "https://raw.githubusercontent.com/redhat-cop/openshift-templates/{{ templates_repo_ref }}/jenkins-pipelines/jenkins-pipeline-template-no-ocp-triggers.yml"
     params_from_vars: "{{ test_pipelines.deploy.erlang }}"
@@ -124,6 +138,13 @@ openshift_cluster_content:
     tags:
       - test-pipelines
       - golang-slave-pipeline
+  - name: Deploy helm-slave test pipelines
+    template: "https://raw.githubusercontent.com/redhat-cop/openshift-templates/{{ templates_repo_ref }}/jenkins-pipelines/jenkins-pipeline-template-no-ocp-triggers.yml"
+    params_from_vars: "{{ test_pipelines.deploy.helm }}"
+    namespace: "{{ namespace }}"
+    tags:
+      - test-pipelines
+      - helm-slave-pipeline
   - name: Deploy mvn-slave test pipelines
     template: "https://raw.githubusercontent.com/redhat-cop/openshift-templates/{{ templates_repo_ref }}/jenkins-pipelines/jenkins-pipeline-template-no-ocp-triggers.yml"
     params_from_vars: "{{ test_pipelines.deploy.mvn }}"
@@ -138,17 +159,10 @@ openshift_cluster_content:
     tags:
       - test-pipelines
       - ruby-slave-pipeline
-  - name: Deploy argocd-slave test pipelines
+  - name: Deploy rust-slave test pipelines
     template: "https://raw.githubusercontent.com/redhat-cop/openshift-templates/{{ templates_repo_ref }}/jenkins-pipelines/jenkins-pipeline-template-no-ocp-triggers.yml"
-    params_from_vars: "{{ test_pipelines.deploy.argocd }}"
+    params_from_vars: "{{ test_pipelines.deploy.rust }}"
     namespace: "{{ namespace }}"
     tags:
       - test-pipelines
-      - argocd-slave-pipeline
-  - name: Deploy helm-slave test pipelines
-    template: "https://raw.githubusercontent.com/redhat-cop/openshift-templates/{{ templates_repo_ref }}/jenkins-pipelines/jenkins-pipeline-template-no-ocp-triggers.yml"
-    params_from_vars: "{{ test_pipelines.deploy.helm }}"
-    namespace: "{{ namespace }}"
-    tags:
-      - test-pipelines
-      - helm-slave-pipeline
+      - rust-slave-pipeline
