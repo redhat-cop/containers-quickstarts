@@ -1,2 +1,2 @@
-FROM quay.io/openshift/origin-jenkins-agent-maven:4.2
+FROM quay.io/openshift/origin-jenkins-agent-maven:4.5.0
 ADD settings.xml $HOME/.m2/settings.xml
