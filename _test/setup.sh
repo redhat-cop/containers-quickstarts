@@ -36,50 +36,56 @@ applier() {
 }
 
 test() {
+  build_type=$1
+
   # Make sure we're logged in, and we've found at least one build to test.
   oc status > /dev/null || echo "Please log in before running tests." || exit 1
-  if [ $(oc get builds -n ${NAMESPACE} --no-headers | grep -c .) -lt 1 ]; then
+  if [ $(oc get builds -n ${NAMESPACE} --no-headers -o jsonpath="{.items[?(@.spec.strategy.type==\"${build_type}\")].metadata.name}" | wc -w) -lt 1 ]; then
     echo "Did not find any builds, make sure you've passed the proper arguments."
     exit 1
   fi
 
-  echo "Ensure all Builds are executed..."
-  for pipeline in $(oc get bc -n ${NAMESPACE} -o jsonpath='{.items[*].metadata.name}'); do
+  echo "Ensure all ${build_type} Builds are executed..."
+  for buildConfig in $(oc get buildconfig -n ${NAMESPACE} --no-headers -o jsonpath="{.items[?(@.spec.strategy.type==\"${build_type}\")].metadata.name}"); do
     # Only start BuildConfigs which currently have 0 builds
-    if [ "$(oc get build -n ${NAMESPACE} -o jsonpath="{.items[?(@.metadata.annotations.openshift\.io/build-config\.name==\"${pipeline}\")].metadata.name}")" == "" ]; then
-      oc start-build ${pipeline} -n ${NAMESPACE}
+    if [ "$(oc get build -n ${NAMESPACE} -o jsonpath="{.items[?(@.metadata.annotations.openshift\.io/build-config\.name==\"${buildConfig}\")].metadata.name}")" == "" ]; then
+      oc start-build ${buildConfig} -n ${NAMESPACE}
     fi
   done
 
   echo "Waiting for all builds to start..."
-  while [[ "$(get_build_phases "New")" -ne 0 || $(get_build_phases "Pending") -ne 0 ]]; do
+  builds=$(oc get build -n ${NAMESPACE} --no-headers -o jsonpath="{.items[?(@.spec.strategy.type==\"${build_type}\")].metadata.name}")
+  while [[ "$(get_build_phases "New" ${builds})" -ne 0 || $(get_build_phases "Pending") -ne 0 ]]; do
     echo -ne "New Builds: $(get_build_phases "New"), Pending Builds: $(get_build_phases "Pending")$([ "$TRAVIS" != "true" ] && echo "\r" || echo "\n")"
     sleep 1
   done
 
   echo "Waiting for all builds to complete..."
-  while [ $(get_build_phases "Running") -ne 0 ]; do
+  while [ $(get_build_phases "Running" ${builds}) -ne 0 ]; do
     echo -ne "Running Builds: $(get_build_phases "Running")$([ "$TRAVIS" != "true" ] && echo "\r" || echo "\n")"
     sleep 1
   done
 
   echo "Check to see how many builds Failed"
-  if [ $(get_build_phases "Failed") -ne 0 ]; then
+  if [ $(get_build_phases "Failed" ${builds}) -ne 0 ]; then
     echo "Some builds failed. Printing Report"
     retry 5 oc get builds -n $NAMESPACE -o custom-columns=NAME:.metadata.name,TYPE:.spec.strategy.type,FROM:.spec.source.type,STATUS:.status.phase,REASON:.status.reason
 
     failed_jobs=$(retry 5 oc get builds -o jsonpath="{.items[?(@.status.phase=='Failed')].metadata.annotations.openshift\.io/build-config\.name}" -n $NAMESPACE) || kill -s TERM $TOP_PID
     download_jenkins_logs_for_failed ${failed_jobs} "Complete"
+    download_build_logs_for_failed ${failed_jobs} "Complete"
 
     exit 1
   fi
 
-  echo "Tests Completed Successfully!"
+  echo "${build_type} build tests completed successfully!"
 }
 
 get_build_phases() {
   phase=$1
-  result=$(retry 5 oc get builds -o jsonpath="{.items[?(@.status.phase==\"${phase}\")].metadata.name}" -n $NAMESPACE) || kill -s TERM $TOP_PID
+  shift
+  targetted_builds=$@
+  result=$(retry 5 oc get builds ${targetted_builds} -o jsonpath="{.items[?(@.status.phase==\"${phase}\")].metadata.name}" -n $NAMESPACE) || kill -s TERM $TOP_PID
   echo ${result} | wc -w
 }
 
@@ -112,7 +118,8 @@ case $1 in
     applier
     ;;
   test)
-    test
+    test Docker || exit 1
+    test JenkinsPipeline
     ;;
   *)
     echo "Not an option"
