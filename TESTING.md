@@ -44,3 +44,13 @@ oc login ... && \
   ./_test/setup.sh applier etsauer-feature123 etsauer/containers-quickstarts feature123 && \
   ./_test/setup.sh test etsauer-feature123 etsauer/containers-quickstarts feature123
 ```
+
+Or, to test against the branch you are currently working on:
+
+```
+oc login ... && \
+  FORK=$(git remote get-url origin | sed -e 's/^.*:\(.*\)\/.*.git$/\1/')
+  BRANCH=$(git rev-parse --abbrev-ref HEAD)
+  ./_test/setup.sh applier ${FORK}-${BRANCH} ${FORK}/containers-quickstarts ${BRANCH} && \
+  ./_test/setup.sh test ${FORK}-${BRANCH} ${FORK}/containers-quickstarts ${BRANCH}
+```
