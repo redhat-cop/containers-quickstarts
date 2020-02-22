@@ -40,13 +40,13 @@ test() {
 
   # Make sure we're logged in, and we've found at least one build to test.
   oc status > /dev/null || echo "Please log in before running tests." || exit 1
-  if [ $(oc get builds -n ${NAMESPACE} --no-headers -o jsonpath="{.items[?(@.spec.strategy.type==\"${build_type}\")].metadata.name}" | wc -w) -lt 1 ]; then
+  if [ $(oc get buildconfigs -n ${NAMESPACE} -o jsonpath="{.items[?(@.spec.strategy.type==\"${build_type}\")].metadata.name}" | wc -w) -lt 1 ]; then
     echo "Did not find any builds, make sure you've passed the proper arguments."
     exit 1
   fi
 
   echo "Ensure all ${build_type} Builds are executed..."
-  for buildConfig in $(oc get buildconfig -n ${NAMESPACE} --no-headers -o jsonpath="{.items[?(@.spec.strategy.type==\"${build_type}\")].metadata.name}"); do
+  for buildConfig in $(oc get buildconfig -n ${NAMESPACE} -o jsonpath="{.items[?(@.spec.strategy.type==\"${build_type}\")].metadata.name}"); do
     # Only start BuildConfigs which currently have 0 builds
     if [ "$(oc get build -n ${NAMESPACE} -o jsonpath="{.items[?(@.metadata.annotations.openshift\.io/build-config\.name==\"${buildConfig}\")].metadata.name}")" == "" ]; then
       oc start-build ${buildConfig} -n ${NAMESPACE}
@@ -54,7 +54,7 @@ test() {
   done
 
   echo "Waiting for all builds to start..."
-  builds=$(oc get build -n ${NAMESPACE} --no-headers -o jsonpath="{.items[?(@.spec.strategy.type==\"${build_type}\")].metadata.name}")
+  builds=$(oc get build -n ${NAMESPACE} -o jsonpath="{.items[?(@.spec.strategy.type==\"${build_type}\")].metadata.name}")
   while [[ "$(get_build_phases "New" ${builds})" -ne 0 || $(get_build_phases "Pending") -ne 0 ]]; do
     echo -ne "New Builds: $(get_build_phases "New"), Pending Builds: $(get_build_phases "Pending")$([ "$TRAVIS" != "true" ] && echo "\r" || echo "\n")"
     sleep 1
