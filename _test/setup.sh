@@ -72,8 +72,11 @@ test() {
     retry 5 oc get builds -n $NAMESPACE -o custom-columns=NAME:.metadata.name,TYPE:.spec.strategy.type,FROM:.spec.source.type,STATUS:.status.phase,REASON:.status.reason
 
     failed_jobs=$(retry 5 oc get builds -o jsonpath="{.items[?(@.status.phase=='Failed')].metadata.annotations.openshift\.io/build-config\.name}" -n $NAMESPACE) || kill -s TERM $TOP_PID
-    download_jenkins_logs_for_failed ${failed_jobs} "Complete"
-    download_build_logs_for_failed ${failed_jobs} "Complete"
+    if [ $build_type == "JenkinsPipeline" ]; then
+      download_jenkins_logs_for_failed ${failed_jobs} "Complete"
+    else
+      download_build_logs_for_failed ${failed_jobs} "Complete"
+    fi
 
     exit 1
   fi
