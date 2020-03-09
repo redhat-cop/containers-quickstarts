@@ -19,8 +19,7 @@ RUN mkdir -m 775 $HOME && \
     pip3 install git+https://github.com/ansible/ansible.git@stable-2.8
 
 RUN curl -s https://get.helm.sh/helm-v3.1.1-linux-amd64.tar.gz | tar -xvz && \
-    chmod u+x linux-amd64/helm && mv linux-amd64/helm /usr/local/bin/ && rm -rf linux-amd64 && \
-    helm init --client-only
+    chmod u+x linux-amd64/helm && mv linux-amd64/helm /usr/local/bin/ && rm -rf linux-amd64 
 
 RUN curl -sL https://github.com/tektoncd/cli/releases/download/v0.3.1/tkn_0.3.1_Linux_x86_64.tar.gz | tar --no-same-owner -xvz -C /usr/local/bin/ tkn
 
