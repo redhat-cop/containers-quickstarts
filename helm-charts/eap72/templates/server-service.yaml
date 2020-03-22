@@ -4,7 +4,7 @@ metadata:
   name: {{ .Release.Name }}
 spec:
   ports:
-{{- if .Values.enableTls }}
+{{- if .Values.tls.enabled }}
     - port: 8443
       targetPort: 8443
 {{- else }}
