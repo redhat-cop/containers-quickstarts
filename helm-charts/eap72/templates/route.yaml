@@ -7,7 +7,7 @@ spec:
   host: "{{ .Values.routeHostname }}"
   tls:
     insecureEdgeTerminationPolicy: Redirect
-{{- if .Values.enableTls }}
+{{- if .Values.tls.enabled }}
     termination: passthrough
 {{- else }}
     termination: edge

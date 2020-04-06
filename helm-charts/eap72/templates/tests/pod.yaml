@@ -11,7 +11,7 @@ spec:
       imagePullPolicy: IfNotPresent
       command:
         - curl
-{{- if .Values.enableTls }}
+{{- if .Values.tls.enabled }}
         - {{ .Release.Name }}:8443
 {{- else }}
         - {{ .Release.Name }}:8080
