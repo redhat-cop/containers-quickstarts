@@ -1,6 +1,8 @@
 # ubi8-asciidoctor
 
-A utility image that is the UBI8 image + asciidoctor. 
+A utility image for the UBI8 image + asciidoctor. 
+
+Contains the primary used asciidoctor-pdf for generating reports.
 
 It's base is from https://github.com/asciidoctor/docker-asciidoctor but now ubi based.
 
