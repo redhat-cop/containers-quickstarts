@@ -1,9 +1,0 @@
-version: 1
-update_configs:
-  - package_manager: "docker"
-    directory: "/jenkins-slaves/jenkins-slave-mvn"
-    update_schedule: "daily"
-    ignored_updates:
-      - match:
-          dependency_name: "quay.io/openshift/origin-jenkins-agent-maven"
-          version_requirement: ">= 4.4"
