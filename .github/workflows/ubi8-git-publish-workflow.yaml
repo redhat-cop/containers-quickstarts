@@ -1,0 +1,29 @@
+name: ubi8-git-publish-workflow
+on:
+  push:
+    paths:
+      - ubi8-git/version.yaml
+jobs:
+  build:
+    # Only build on redhat-cop repo, do not attempt to build on forks
+    if: github.repository == 'pabrahamsson/containers-quickstarts'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@master
+      - name: Get image tags
+        id: image_tags
+        run: |
+          curl -Lo /usr/local/bin/yq https://github.com/mikefarah/yq/releases/download/3.2.1/yq_linux_amd64
+          chmod +x /usr/local/bin/yq
+          echo -n ::set-output name=IMAGE_TAG::
+          echo $(yq r ubi8-git/version.yaml 'version')
+      - name: Build and publish image to Quay
+        uses: elgohr/Publish-Docker-Github-Action@master
+        with:
+          name: pabrahamsson/ubi8-git
+          username: ${{ secrets.QUAY_USERNAME }}
+          password: ${{ secrets.QUAY_PASSWORD }}
+          registry: quay.io
+          tags: "latest,${{ steps.image_tags.outputs.IMAGE_TAG }}"
+          dockerfile: ubi8-git/Dockerfile
+          context: ubi8-git
