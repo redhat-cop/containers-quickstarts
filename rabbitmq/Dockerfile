@@ -1,4 +1,4 @@
-FROM registry.access.redhat.com/ubi7/ubi:7.7
+FROM registry.access.redhat.com/ubi7/ubi:7.8
 
 ARG ERLANG_VERSION=22.1.4
 ARG RABBITMQ_AUTOCLUSTER_VERSION=0.10.0
@@ -13,7 +13,10 @@ ENV GPG_KEY="0A9AF2115F4687BD29803A206B73A36E6026DFCA" \
     HOME=/var/lib/rabbitmq \
     RABBITMQ_HOME=/opt/rabbitmq \
     RABBITMQ_LOGS=- \
-    RABBITMQ_SASL_LOGS=-
+    RABBITMQ_SASL_LOGS=- \
+    LANG=en_US.UTF-8 \
+    LANGUAGE=en_US.:en \
+    LC_ALL=en_US.UTF-8
 
 RUN set -xe && \
     curl -LO https://github.com/rabbitmq/erlang-rpm/releases/download/v${ERLANG_VERSION}/erlang-${ERLANG_VERSION}-1.el7.x86_64.rpm && \
@@ -43,7 +46,10 @@ RUN set -xe && \
     chown -R 1001:0 /var/lib/rabbitmq /etc/rabbitmq ${RABBITMQ_HOME}/plugins && \
     chmod -R g=u /var/lib/rabbitmq /etc/rabbitmq && \
     rm -rf /var/lib/rabbitmq/.erlang.cookie && \
-    ln -sf "$RABBITMQ_HOME/plugins" /plugins
+    ln -sf "$RABBITMQ_HOME/plugins" /plugins && \
+    INSTALL_PKGS="hostname" && \
+    yum install -y $INSTALL_PKGS && \
+    rm -rf /var/cache/yum
 
 COPY docker-entrypoint.sh /usr/local/bin/
 USER 1001
