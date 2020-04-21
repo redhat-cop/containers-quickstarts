@@ -49,6 +49,26 @@ test() {
   echo "Waiting for for all pods to start..."
   try_until 60 15 true "oc get sts/rabbitmq -n $NAMESPACE --template '{{ if .status.readyReplicas }}{{ eq .spec.replicas .status.readyReplicas }}{{ else }}false{{ end }}'" || kill -s TERM $TOP_PID
 
+  # Tests for issue #311
+  echo "Ensure 'hostname' package is installed"
+  hostname_rpm=$(oc -n $NAMESPACE rsh rabbitmq-0 rpm -q hostname)
+  if [ $? -eq 0 ]; then
+    echo "OK: RPM package 'hostname' installed"
+  else
+    echo "NOK: RPM package 'hostname' not installed"
+    exit 1
+  fi
+
+  echo "Ensure locale is set to UTF-8"
+  lang_var=$(oc -n $NAMESPACE rsh rabbitmq-0 printenv LANG)
+  if [[ "$lang_var" =~ "en_US.UTF-8" ]]; then
+    echo "OK: Locale is set to 'en_US.UTF-8'"
+  else
+    echo "LANG: ===$lang_var==="
+    echo "NOK: Locale is set to ${lang_var}, should be 'en_US.UTF-8'"
+    exit 1
+  fi
+
   echo "Check RabbitMQ cluster status..."
   sts_json=$(oc get sts/rabbitmq -n $NAMESPACE -o json)
   replicas=$(jq '.spec.replicas' <<< $(echo $sts_json))
