@@ -2,22 +2,25 @@
 apiVersion: v1
 kind: Template
 labels:
-  template: ubi8-git
+  template: ubi8-asciidoctor
 metadata:
+  labels:
+    app.kubernetes.io/name: ubi8-asciidoctor
+    app.kubernetes.io/version: "1.2.0"
   annotations:
-    description: Git utility image
-    tags: git, ubi8
-  name: ubi8-git
+    description: asciidoctor utility image
+    tags: asciidoctor, ubi8
+  name: ubi8-asciidoctor
 objects:
 - apiVersion: "v1"
   kind: "BuildConfig"
   metadata:
-    name: "ubi8-git"
+    name: "ubi8-asciidoctor"
   spec:
     output:
       to:
         kind: "ImageStreamTag"
-        name: "ubi8-git:latest"
+        name: "ubi8-asciidoctor:latest"
     source:
       contextDir: "${CONTEXT_DIR}"
       git:
@@ -36,14 +39,14 @@ objects:
 - apiVersion: v1
   kind: ImageStream
   metadata:
-    name: ubi8-git
+    name: ubi8-asciidoctor
   spec:
     lookupPolicy:
       local: true
 parameters:
 - description: Path within Git repository to build; empty for root of repository
   name: CONTEXT_DIR
-  value: ubi8-git
+  value: gitlab-runners/ubi8-asciidoctor
 - description: Git branch/tag reference
   name: SOURCE_REPOSITORY_REF
   value: master
@@ -51,3 +54,4 @@ parameters:
   name: SOURCE_REPOSITORY_URL
   required: true
   value: https://github.com/redhat-cop/containers-quickstarts
+
