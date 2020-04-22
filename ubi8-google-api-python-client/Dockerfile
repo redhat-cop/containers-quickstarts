@@ -1,4 +1,4 @@
-FROM ubi8
+FROM registry.access.redhat.com/ubi8
 
 LABEL maintainer="Red Hat Services"
 
