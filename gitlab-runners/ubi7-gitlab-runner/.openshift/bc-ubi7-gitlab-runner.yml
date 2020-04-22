@@ -1,0 +1,53 @@
+---
+apiVersion: v1
+kind: Template
+labels:
+  template: ubi7-gitlab-runner
+metadata:
+  annotations:
+    description: GitLab Runner built on UBI7 designed to run on OpenShift.
+    tags: git, ubi7
+  name: ubi7-gitlab-runner
+objects:
+- apiVersion: "v1"
+  kind: "BuildConfig"
+  metadata:
+    name: "ubi7-gitlab-runner"
+  spec:
+    output:
+      to:
+        kind: "ImageStreamTag"
+        name: "ubi7-gitlab-runner:latest"
+    source:
+      contextDir: "${CONTEXT_DIR}"
+      git:
+        uri: "${SOURCE_REPOSITORY_URL}"
+        ref: "${SOURCE_REPOSITORY_REF}"
+    strategy:
+      dockerStrategy:
+        dockerfilePath: Dockerfile
+    resources:
+      requests: 
+        cpu: 1
+        memory: "512Mi"
+      limits:
+        cpu: 2
+        memory: "1Gi"
+- apiVersion: v1
+  kind: ImageStream
+  metadata:
+    name: ubi7-gitlab-runner
+  spec:
+    lookupPolicy:
+      local: true
+parameters:
+- description: Path within Git repository to build; empty for root of repository
+  name: CONTEXT_DIR
+  value: gitlab-runners/ubi7-gitlab-runner
+- description: Git branch/tag reference
+  name: SOURCE_REPOSITORY_REF
+  value: master
+- description: Git source URL for application
+  name: SOURCE_REPOSITORY_URL
+  required: true
+  value: https://github.com/redhat-cop/containers-quickstarts
