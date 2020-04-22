@@ -55,6 +55,7 @@ A set of buildConfigs for building custom Jenkins images for OpenShift.
 ### Developer Tools
 
 * [Tool Box](./tool-box) - An OpenShift deployable container image that provides some necessary developer tools
+* [motepair](./motepair) - Remote pair programming server and plugin for [Atom](https://atom.io/)
 
 ## Related Content
 
