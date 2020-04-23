@@ -1,0 +1,15 @@
+pipeline {
+    agent {
+        label 'jenkins-slave-arachni'
+    }
+
+    stages {
+        stage ('Run Test') {
+            steps {
+                sh """
+                    /arachni/bin/arachni --version
+                """
+            }
+        }
+    }
+}
