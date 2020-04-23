@@ -46,6 +46,26 @@ download_jenkins_logs_for_failed() {
   done
 }
 
+download_build_logs_for_failed() {
+  buildConfigs=$1
+  expectedphase=$2
+
+  echo
+  echo "Checking jobs which should have an expected phase of ${expectedphase}..."
+
+  for bc in ${buildConfigs}; do
+    build_number=$(get_buildnumber_for ${bc})
+    build="${bc}-${build_number}"
+
+    phase=$(get_build_phase_for ${build})
+    if [[ "${expectedphase}" != "${phase}" ]]; then
+      echo "## START LOGS: ${build}"
+      oc logs build/${build} -n ${NAMESPACE}
+      echo "## END LOGS: ${build}"
+    fi
+  done
+}
+
 function retry {
   local retries=$1
   shift

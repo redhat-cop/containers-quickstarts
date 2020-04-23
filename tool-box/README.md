@@ -13,7 +13,7 @@ This container exists to help folks that can't install ansible, git or other nec
 - `unzip`
 - `jq` v1.6
 - `odo`
-- `helm` Client v2.14.3
+- `helm` Client v3.1.1
 - `tkn` Client v0.3.1
 
 If you need something not here, let us know in an issue or submit a PR.

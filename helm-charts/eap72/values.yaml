@@ -1,14 +1,12 @@
-## Directory containing your source code
-sourceContextDir: "."
 ## URI to a git repository (REQUIRED)
 sourceUri:
 ## Ref to use from git repository
 sourceRef: master
+## Directory containing your source code
+sourceContextDir: "."
 ## Tag to give the built image, and tag of the image to deploy
 imageTag: latest
 
-## Should JGroups and client communication be encrypted?
-enableTls: false
 ## Create a route so the application can be access from outside the OCP cluster?
 createRoute: true
 ## Hostname of the OpenShift route. If left blank, a hostname will be automatically generated in the form <release-name>-<namespace>.<suffix>
@@ -29,18 +27,26 @@ replicas: 1
 
 ## Password for node-to-node EAP cluster authentication
 jgroupsClusterPassword: testpass
-## Symmetric key for encrypting node-to-node communication
-jgroupsEncryptPassword: testpass
-## Name of the jgroups keystore
-jgroupsEncryptName: jgroups
-## Name of the jgroups keystore file
-jgroupsEncryptKeystore: jgroups.jceks
-## Name of the secret that contains the jgroups keystore
-jgroupsEncryptSecret: jgroups-keystore
 
-## Name of the https keystore
-httpsName: https
-## Password to the https keystore
-httpsPassword: testpass
-## Name of the https keystore file
-httpsKeystore: keystore.jks
+tls:
+  ## Should JGroups and end-to-end client communication be encrypted?
+  ## If "true", requires a keystore for JGroups and a keystore for HTTPS
+  ## If "true", creates a passthrough route. If "false", creates an edge-terminated route.
+  enabled: false
+
+  ## Name of the secret that contains the jgroups keystore
+  jgroupsEncryptSecret: jgroups-keystore
+  ## Name of the jgroups keystore file
+  jgroupsEncryptKeystore: jgroups.jceks
+  ## Name of the jgroups keystore
+  jgroupsEncryptName: jgroups
+  ## Password to the jgroups keystore
+  jgroupsEncryptPassword: changeit
+
+  httpsSecret: https-keystore
+  ## Name of the https keystore file
+  httpsKeystore: keystore.jks
+  ## Name of the https keystore
+  httpsName: https
+  ## Password to the https keystore
+  httpsPassword: changeit

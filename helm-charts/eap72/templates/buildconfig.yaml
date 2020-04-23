@@ -26,7 +26,6 @@ spec:
         namespace: openshift
       incremental: true
     type: Source
-  triggers:
-    - type: ConfigChange
+  triggers: []
 status:
   lastVersion: 0
