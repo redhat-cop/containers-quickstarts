@@ -1,0 +1,30 @@
+{%- if test_pipelines is defined %}
+{%- for agent, params in test_pipelines.deploy.items() %}
+---
+apiVersion: v1
+kind: BuildConfig
+metadata:
+  labels:
+    build: {{ params.NAME | d('jenkins-slave-' + agent) }}
+    name: {{ params.NAME ~ '-pipeline' | d('jenkins-slave-' + agent + '-pipeline') }}
+    type: pipeline
+  name: {{ params.NAME ~ '-pipeline' | d('jenkins-slave-' + agent + '-pipeline') }}
+spec:
+  runPolicy: {{ params.RUN_POLICY | d('Serial') }}
+  source:
+    contextDir: {{ params.PIPELINE_CONTEXT_DIR }}
+    git:
+      ref: {{ params.PIPELINE_SOURCE_REPOSITORY_REF | d('master') }}
+      uri: {{ params.PIPELINE_SOURCE_REPOSITORY_URL }}
+    type: Git
+  strategy:
+    jenkinsPipelineStrategy:
+      env:
+      - name: GIT_COMMITTER_EMAIL
+        value: cop@redhat.com
+      - name: GIT_COMMITTER_NAME
+        value: Redhat CoP
+      jenkinsfilePath: {{ params.PIPELINE_FILENAME | d('Jenkinsfile') }}
+    type: JenkinsPipeline
+{% endfor %}
+{%- endif %}

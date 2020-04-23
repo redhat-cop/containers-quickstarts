@@ -20,23 +20,26 @@ spec:
       containers:
         - name: {{ .Release.Name }}
           env:
-{{- if .Values.enableTls }}
+{{- if .Values.tls.enabled }}
             - name: HTTPS_NAME
-              value: {{ .Values.httpsName }}
+              value: {{ .Values.tls.httpsName }}
             - name: HTTPS_PASSWORD
-              value: {{ .Values.httpsPassword }}
+              valueFrom:
+                secretKeyRef:
+                  key: https-encrypt-password
+                  name: {{ .Release.Name }}
             - name: HTTPS_KEYSTORE
-              value: {{ .Values.httpsKeystore }}
+              value: {{ .Values.tls.httpsKeystore }}
             - name: HTTPS_KEYSTORE_DIR
               value: /etc/eap-secret-volume
             - name: JGROUPS_ENCRYPT_SECRET
-              value: {{ .Values.jgroupsEncryptSecret }}
+              value: {{ .Values.tls.jgroupsEncryptSecret }}
             - name: JGROUPS_ENCRYPT_KEYSTORE_DIR
               value: /etc/jgroups-encrypt-secret-volume
             - name: JGROUPS_ENCRYPT_KEYSTORE
-              value: {{ .Values.jgroupsEncryptKeystore }}
+              value: {{ .Values.tls.jgroupsEncryptKeystore }}
             - name: JGROUPS_ENCRYPT_NAME
-              value: {{ .Values.jgroupsEncryptName }}
+              value: {{ .Values.tls.jgroupsEncryptName }}
             - name: JGROUPS_ENCRYPT_PASSWORD
               valueFrom:
                 secretKeyRef:
@@ -77,7 +80,7 @@ spec:
             timeoutSeconds: 10
           resources:
 {{ .Values.resources | toYaml | indent 12 }}
-{{- if .Values.enableTls }}
+{{- if .Values.tls.enabled }}
           volumeMounts:
             - mountPath: /etc/jgroups-encrypt-secret-volume
               name: eap-jgroups-keystore-volume
@@ -88,10 +91,10 @@ spec:
       volumes:
         - name: eap-jgroups-keystore-volume
           secret:
-            secretName: {{ .Values.jgroupsEncryptSecret }}
+            secretName: {{ .Values.tls.jgroupsEncryptSecret }}
         - name: eap-https-keystore-volume
           secret:
-            secretName: https-keystore
+            secretName: {{ .Values.tls.httpsSecret }}
 {{- end }}
       terminationGracePeriodSeconds: 75
   triggers:
