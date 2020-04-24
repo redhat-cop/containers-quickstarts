@@ -76,7 +76,7 @@ parameters:
 - description: RabbitMQ version to build
   name: RABBITMQ_VERSION
   required: true
-  value: 3.8.0
+  value: 3.8.3
 - description: Git branch/tag reference
   name: SOURCE_REPOSITORY_REF
   value: master
