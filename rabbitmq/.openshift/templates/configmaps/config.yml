@@ -70,4 +70,6 @@ data:
       loopback_users.guest = false
       ## Update to HA-ALL policy
       ## Learn more at https://www.rabbitmq.com/ha.html
+      ## This is just an example
+      ## Please update userid and password in policy.json
       management.load_definitions = /etc/rabbitmq/policy.json
