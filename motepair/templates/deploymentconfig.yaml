@@ -1,0 +1,54 @@
+apiVersion: apps.openshift.io/v1
+kind: DeploymentConfig
+metadata:
+  labels:
+    app: motepair-server
+  name: motepair-server
+spec:
+  replicas: 1
+  revisionHistoryLimit: 10
+  selector:
+    app: motepair-server
+  strategy:
+    activeDeadlineSeconds: 21600
+    resources: {}
+    rollingParams:
+      intervalSeconds: 1
+      maxSurge: 25%
+      maxUnavailable: 25%
+      timeoutSeconds: 600
+      updatePeriodSeconds: 1
+    type: Rolling
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: motepair-server
+    spec:
+      containers:
+      - image: "image-registry.openshift-image-registry.svc:5000/{{ .Release.Namespace }}/motepair-server:latest"
+        imagePullPolicy: Always
+        name: motepair-server
+        ports:
+        - containerPort: 3000
+          protocol: TCP
+        resources: {}
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext: {}
+      terminationGracePeriodSeconds: 30
+  test: false
+  triggers:
+  - type: ConfigChange
+  - type: ImageChange
+    imageChangeParams:
+      automatic: true
+      containerNames:
+      - motepair-server
+      from:
+        kind: ImageStreamTag
+        namespace: "{{ .Release.Namespace }}"
+        name: 'motepair-server:latest'

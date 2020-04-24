@@ -1,0 +1,19 @@
+apiVersion: route.openshift.io/v1
+kind: Route
+metadata:
+  name: motepair-server
+spec:
+  host: ""
+  port:
+    targetPort: 3000
+  subdomain: ""
+  tls:
+    insecureEdgeTerminationPolicy: Redirect
+    termination: edge
+  to:
+    kind: Service
+    name: motepair-server
+    weight: 100
+  wildcardPolicy: None
+status:
+  ingress: []
