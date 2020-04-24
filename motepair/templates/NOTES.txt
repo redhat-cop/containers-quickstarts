@@ -1,0 +1,5 @@
+1. Get the application URL by running these commands:
+
+   oc get route motepair-server -ocustom-columns=URL:.spec.host
+
+2. Connect to motepair using the instructions: https://github.com/motepair/motepair
