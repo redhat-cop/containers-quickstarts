@@ -115,13 +115,13 @@ objects:
             initialDelaySeconds: 20
             periodSeconds: 60
             timeoutSeconds: 10
-            resources:
-              limits:
-                cpu: '1'
-                memory: 2Gi
-              requests:
-                cpu: 300m
-                memory: 1Gi
+          resources:
+            limits:
+              cpu: '1'
+              memory: 2Gi
+            requests:
+              cpu: 300m
+              memory: 1Gi
           terminationMessagePath: /dev/termination-log
           terminationMessagePolicy: File
           volumeMounts:
