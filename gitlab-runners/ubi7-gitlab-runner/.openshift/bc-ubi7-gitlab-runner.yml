@@ -2,22 +2,22 @@
 apiVersion: v1
 kind: Template
 labels:
-  template: ubi8-git
+  template: ubi7-gitlab-runner
 metadata:
   annotations:
-    description: Git utility image
-    tags: git, ubi8
-  name: ubi8-git
+    description: GitLab Runner built on UBI7 designed to run on OpenShift.
+    tags: git, ubi7
+  name: ubi7-gitlab-runner
 objects:
 - apiVersion: "v1"
   kind: "BuildConfig"
   metadata:
-    name: "ubi8-git"
+    name: "ubi7-gitlab-runner"
   spec:
     output:
       to:
         kind: "ImageStreamTag"
-        name: "ubi8-git:latest"
+        name: "ubi7-gitlab-runner:latest"
     source:
       contextDir: "${CONTEXT_DIR}"
       git:
@@ -36,14 +36,14 @@ objects:
 - apiVersion: v1
   kind: ImageStream
   metadata:
-    name: ubi8-git
+    name: ubi7-gitlab-runner
   spec:
     lookupPolicy:
       local: true
 parameters:
 - description: Path within Git repository to build; empty for root of repository
   name: CONTEXT_DIR
-  value: ubi8-git
+  value: gitlab-runners/ubi7-gitlab-runner
 - description: Git branch/tag reference
   name: SOURCE_REPOSITORY_REF
   value: master
