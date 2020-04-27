@@ -1,5 +1,5 @@
 # jenkins-slave-npm
-Provides a docker image of the nodejs v8 runtime with npm for use as a Jenkins slave.
+Provides a docker image of the nodejs v10 runtime with npm for use as a Jenkins slave.
 
 ## Build local
 `docker build -t jenkins-slave-npm .`
