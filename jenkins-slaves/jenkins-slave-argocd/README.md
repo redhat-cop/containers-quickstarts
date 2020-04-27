@@ -2,6 +2,15 @@
 
 This slave extends the base jenkins slave image and adds the argocd binary. We can use this slave image in a Jenkins pipeline to perform gitops actions and scaffold argocd projects.
 
+Slave also includes `yq` for [yaml manipulation](https://github.com/mikefarah/yq). Ex use
+```bash
+cat << EOF | yq w - 'my_app.version' newest
+---
+my_app:
+  version: latest
+EOF
+```
+
 ## Build in OpenShift
 ```bash
 oc process -f ../../.openshift/templates/jenkins-slave-generic-template.yml \
