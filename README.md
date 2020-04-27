@@ -60,7 +60,8 @@ A set of buildConfigs for building custom Jenkins images for OpenShift.
 ## Related Content
 
 * [Container Pipelines](https://github.com/redhat-cop/container-pipelines) - A set of Jenkins piplines for OpenShift
-* [Labs Ubiquitous Journey](https://github.com/rht-labs/ubiquitous-journey) - A collection of ArgoCD apps for:
+* [Labs CI/CD](https://github.com/rht-labs/labs-ci-cd) - A comprehensive end to end pipeline using many modern testing and quality tools. Suitable for OpenShift v3.x
+* [Labs Ubiquitous Journey](https://github.com/rht-labs/ubiquitous-journey) - (The New and Improved _Labs CI/CD_ using GitOps for OpenShift v4.x) A collection of ArgoCD apps for:
   *  Boostrapping a cluster with some projects, roles, bindings and creating an ArgoCD instance using the Operator
   *  Deployments for an end to end pipeline using many modern testing and quality tools such as Jenkins, Nexus, Sonarqube etc
   *  Project management tooling such as Wekan and Mattermost Chat
