@@ -6,9 +6,8 @@ ENV NODEJS_VERSION=10 \
     PATH=$HOME/node_modules/.bin/:$HOME/.npm-global/bin/:$PATH \
     CHROME_BIN=/bin/google-chrome
 
-ADD https://dl.google.com/linux/direct/google-chrome-stable_current_x86_64.rpm google-chrome-stable_current_x86_64.rpm
-
-RUN curl --silent --location https://rpm.nodesource.com/setup_${NODEJS_VERSION}.x | bash -
+RUN curl --silent https://dl.google.com/linux/direct/google-chrome-stable_current_x86_64.rpm --output google-chrome-stable_current_x86_64.rpm && \
+    curl --silent --location https://rpm.nodesource.com/setup_${NODEJS_VERSION}.x | bash -
 
 RUN INSTALL_PKGS="nodejs redhat-lsb libXScrnSaver xdg-utils liberation-fonts" && \
     yum install -y --setopt=tsflags=nodocs \
