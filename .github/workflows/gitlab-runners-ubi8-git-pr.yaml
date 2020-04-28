@@ -8,8 +8,6 @@ jobs:
     env:
       context: gitlab-runners/ubi8-git
       image_name: gitlab-runners-ubi8-git
-    # Only build on redhat-cop repo, do not attempt to build on forks
-    if: github.repository == 'redhat-cop/containers-quickstarts'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v1

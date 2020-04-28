@@ -10,8 +10,7 @@ jobs:
     env:
       context: gitlab-runners/ubi8-git
       image_name: gitlab-runners-ubi8-git
-    # Only build on redhat-cop repo, do not attempt to build on forks
-    if: github.repository == 'redhat-cop/containers-quickstarts'
+      quay_org: redhat-cop
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@master
@@ -30,7 +29,7 @@ jobs:
         with:
           path: ${{ env.context }}
           registry: quay.io
-          repository: redhat-cop/${{ env.image_name }}
+          repository: ${{ env.quay_org }}/${{ env.image_name }}
           username: ${{ secrets.QUAY_USERNAME }}
           password: ${{ secrets.QUAY_PASSWORD }}
           tags: "${{ steps.image_tags.outputs.IMAGE_TAGS }}"
