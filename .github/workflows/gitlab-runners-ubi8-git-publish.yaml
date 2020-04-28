@@ -10,7 +10,6 @@ jobs:
     env:
       context: gitlab-runners/ubi8-git
       image_name: gitlab-runners-ubi8-git
-      quay_org: redhat-cop
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@master
@@ -28,8 +27,8 @@ jobs:
         uses: docker/build-push-action@v1
         with:
           path: ${{ env.context }}
-          registry: quay.io
-          repository: ${{ env.quay_org }}/${{ env.image_name }}
-          username: ${{ secrets.QUAY_USERNAME }}
-          password: ${{ secrets.QUAY_PASSWORD }}
+          registry: ${{ secrets.REGISTRY_URI }}
+          repository: ${{ secrets.REGISTRY_REPOSITORY }}/${{ env.image_name }}
+          username: ${{ secrets.REGISTRY_USERNAME }}
+          password: ${{ secrets.REGISTRY_PASSWORD }}
           tags: "${{ steps.image_tags.outputs.IMAGE_TAGS }}"
