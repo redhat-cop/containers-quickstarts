@@ -52,10 +52,35 @@ A set of buildConfigs for building custom Jenkins images for OpenShift.
 
 * [Jenkins Master with the Hygieia Plugin](./jenkins-masters/hygieia-plugin)
 
+### Gitlab Runners
+
+A set of [Gitlab Runners](./gitlab-runners/README.md) for your [Gitlab CI/CD](https://docs.gitlab.com/runner/).
+
+* [UBI 7](./gitlab-runners/ubi7-gitlab-runner)
+* [UBI 8 Asciidoctor](./gitlab-runners/ubi8-asciidoctor)
+* [UBI 8 Git](./gitlab-runners/ubi8-git)
+* [UBI 8 Google API Pyton Client](./gitlab-runners/ubi8-google-api-python-client)
+
 ### Developer Tools
 
 * [Tool Box](./tool-box) - An OpenShift deployable container image that provides some necessary developer tools
 * [motepair](./motepair) - Remote pair programming server and plugin for [Atom](https://atom.io/)
+
+## Github Actions
+
+To enable actions in your fork:
+1. Fork this repository
+2. Actions -> Click the button to enable
+3. Settings -> Secrets
+
+| Secret              | Description                                          |
+|---------------------| -----------------------------------------------------|
+| REGISTRY_URI        | Registry to push images to, ex: `quay.io`            |
+| REGISTRY_REPOSITORY | Repository to push images to, ex: your quay username |
+| REGISTRY_USERNAME   | Username used to push to registry                    |
+| REGISTRY_PASSWORD   | Password used to push to registry                    |
+
+>**NOTE:** It is recommended to use a service account for registry credentials, for example quay.io can create a robot account associated with your personal account.
 
 ## Related Content
 
