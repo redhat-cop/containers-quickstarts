@@ -18,7 +18,7 @@ jobs:
         run: |
           echo -n ::set-output name=IMAGE_TAGS::
           VERSION=$(jq -r '.version' ${context}/version.json)
-          if [ "${VERSION}" == "latest"]; then
+          if [ "${VERSION}" == "latest" ]; then
             echo latest
           else
             echo "latest,${VERSION}"
