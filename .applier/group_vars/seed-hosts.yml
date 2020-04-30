@@ -14,12 +14,12 @@ jenkins_slaves:
       SOURCE_REPOSITORY_REF: "{{ slave_repo_ref }}"
       SOURCE_REPOSITORY_URL: "{{ repository_url }}"
     arachni: {}
+    argocd: {}
     erlang: {}
     golang: {}
     gradle: {}
-    mongodb: {}
-    argocd: {}
     helm: {}
+    mongodb: {}
     mvn:
       BUILDER_IMAGE_NAME: quay.io/openshift/origin-jenkins-agent-maven:4.2
     npm:
@@ -43,9 +43,21 @@ test_pipelines:
       PIPELINE_FILENAME: Jenkinsfile.test
       PIPELINE_SOURCE_REPOSITORY_REF: "{{ slave_repo_ref }}"
       PIPELINE_SOURCE_REPOSITORY_URL: "{{ repository_url }}"
+    argocd:
+      NAME: jenkins-slave-argocd
+      PIPELINE_CONTEXT_DIR: jenkins-slaves/jenkins-slave-argocd
+      PIPELINE_FILENAME: Jenkinsfile.test
+      PIPELINE_SOURCE_REPOSITORY_REF: "{{ slave_repo_ref }}"
+      PIPELINE_SOURCE_REPOSITORY_URL: "{{ repository_url }}"
     erlang:
       NAME: jenkins-slave-erlang
       PIPELINE_CONTEXT_DIR: jenkins-slaves/jenkins-slave-erlang
+      PIPELINE_FILENAME: Jenkinsfile.test
+      PIPELINE_SOURCE_REPOSITORY_REF: "{{ slave_repo_ref }}"
+      PIPELINE_SOURCE_REPOSITORY_URL: "{{ repository_url }}"
+    helm:
+      NAME: jenkins-slave-helm
+      PIPELINE_CONTEXT_DIR: jenkins-slaves/jenkins-slave-helm
       PIPELINE_FILENAME: Jenkinsfile.test
       PIPELINE_SOURCE_REPOSITORY_REF: "{{ slave_repo_ref }}"
       PIPELINE_SOURCE_REPOSITORY_URL: "{{ repository_url }}"
@@ -55,27 +67,39 @@ test_pipelines:
       PIPELINE_FILENAME: Jenkinsfile.test
       PIPELINE_SOURCE_REPOSITORY_REF: "{{ slave_repo_ref }}"
       PIPELINE_SOURCE_REPOSITORY_URL: "{{ repository_url }}"
+    gradle:
+      NAME: jenkins-slave-gradle
+      PIPELINE_CONTEXT_DIR: jenkins-slaves/jenkins-slave-gradle
+      PIPELINE_FILENAME: Jenkinsfile.test
+      PIPELINE_SOURCE_REPOSITORY_REF: "{{ slave_repo_ref }}"
+      PIPELINE_SOURCE_REPOSITORY_URL: "{{ repository_url }}"
+    mongodb:
+      NAME: jenkins-slave-mongodb
+      PIPELINE_CONTEXT_DIR: jenkins-slaves/jenkins-slave-mongodb
+      PIPELINE_FILENAME: Jenkinsfile.test
+      PIPELINE_SOURCE_REPOSITORY_REF: "{{ slave_repo_ref }}"
+      PIPELINE_SOURCE_REPOSITORY_URL: "{{ repository_url }}"
     mvn:
       NAME: jenkins-slave-mvn
       PIPELINE_CONTEXT_DIR: jenkins-slaves/jenkins-slave-mvn
       PIPELINE_FILENAME: Jenkinsfile.test
       PIPELINE_SOURCE_REPOSITORY_REF: "{{ slave_repo_ref }}"
       PIPELINE_SOURCE_REPOSITORY_URL: "{{ repository_url }}"
+    npm:
+      NAME: jenkins-slave-npm
+      PIPELINE_CONTEXT_DIR: jenkins-slaves/jenkins-slave-npm
+      PIPELINE_FILENAME: Jenkinsfile.test
+      PIPELINE_SOURCE_REPOSITORY_REF: "{{ slave_repo_ref }}"
+      PIPELINE_SOURCE_REPOSITORY_URL: "{{ repository_url }}"
+    python:
+      NAME: jenkins-slave-python
+      PIPELINE_CONTEXT_DIR: jenkins-slaves/jenkins-slave-python
+      PIPELINE_FILENAME: Jenkinsfile.test
+      PIPELINE_SOURCE_REPOSITORY_REF: "{{ slave_repo_ref }}"
+      PIPELINE_SOURCE_REPOSITORY_URL: "{{ repository_url }}"
     ruby:
       NAME: jenkins-slave-ruby
       PIPELINE_CONTEXT_DIR: jenkins-slaves/jenkins-slave-ruby
-      PIPELINE_FILENAME: Jenkinsfile.test
-      PIPELINE_SOURCE_REPOSITORY_REF: "{{ slave_repo_ref }}"
-      PIPELINE_SOURCE_REPOSITORY_URL: "{{ repository_url }}"
-    argocd:
-      NAME: jenkins-slave-argocd
-      PIPELINE_CONTEXT_DIR: jenkins-slaves/jenkins-slave-argocd
-      PIPELINE_FILENAME: Jenkinsfile.test
-      PIPELINE_SOURCE_REPOSITORY_REF: "{{ slave_repo_ref }}"
-      PIPELINE_SOURCE_REPOSITORY_URL: "{{ repository_url }}"
-    helm:
-      NAME: jenkins-slave-helm
-      PIPELINE_CONTEXT_DIR: jenkins-slaves/jenkins-slave-helm
       PIPELINE_FILENAME: Jenkinsfile.test
       PIPELINE_SOURCE_REPOSITORY_REF: "{{ slave_repo_ref }}"
       PIPELINE_SOURCE_REPOSITORY_URL: "{{ repository_url }}"

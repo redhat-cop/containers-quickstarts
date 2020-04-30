@@ -1,0 +1,18 @@
+pipeline {
+    agent {
+      label 'jenkins-slave-npm'
+    }
+
+    stages {
+        stage ('Run Test') {
+            steps {
+              sh """
+                  npm -v
+                  node -v
+              """
+            }
+        }
+
+    }
+
+}
