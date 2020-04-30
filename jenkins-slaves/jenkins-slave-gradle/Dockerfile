@@ -1,6 +1,9 @@
-FROM quay.io/openshift/origin-jenkins-agent-base:4.2
+FROM quay.io/openshift/origin-jenkins-agent-base:4.3
 
-ENV GRADLE_VERSION=4.8
+ENV GRADLE_VERSION=6.3
+ENV GRADLE_USER_HOME=/home/jenkins/.gradle
+
+ADD ubi.repo /etc/yum.repos.d/ubi.repo
 
 RUN curl -skL -o /tmp/gradle-bin.zip https://services.gradle.org/distributions/gradle-$GRADLE_VERSION-bin.zip && \
     mkdir -p /opt/gradle && \
@@ -8,6 +11,9 @@ RUN curl -skL -o /tmp/gradle-bin.zip https://services.gradle.org/distributions/g
     ln -sf /opt/gradle/gradle-$GRADLE_VERSION/bin/gradle /usr/local/bin/gradle && \
     rm -f /tmp/gradle-bin.zip && \
     chown -R 1001:0 /opt/gradle && \
-    chmod -R g+rw /opt/gradle
+    chmod -R g+rw /opt/gradle && \
+    mkdir /home/jenkins/.gradle && \
+    chmod 775 /home/jenkins/.gradle && \
+    alternatives --auto java
 
 USER 1001

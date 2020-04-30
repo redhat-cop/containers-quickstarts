@@ -1,0 +1,18 @@
+pipeline {
+    agent {
+      label 'jenkins-slave-gradle'
+    }
+
+    stages {
+        stage ('Run Test') {
+            steps {
+              sh """
+                  java -version
+                  gradle --version
+              """
+            }
+        }
+
+    }
+
+}
