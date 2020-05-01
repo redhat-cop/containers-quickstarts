@@ -25,7 +25,7 @@ ENV ASCIIDOCTOR_VERSION=${asciidoctor_version} \
 
 USER root
 
-RUN microdnf install tar gzip git make cmake python3 python3-setuptools ruby-devel gcc redhat-rpm-config zlib-devel patch git gcc-c++ glib2-devel
+RUN microdnf install tar gzip make cmake python3 python3-setuptools ruby-devel gcc redhat-rpm-config zlib-devel patch git gcc-c++ glib2-devel
 
 # Installing Ruby Gems needed in the image
 # including asciidoctor itself

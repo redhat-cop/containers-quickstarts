@@ -1,0 +1,34 @@
+name: gitlab-runners-ubi8-asciidoctor-publish
+on:
+  push:
+    branches:
+      - master
+    paths:
+      - gitlab-runners/ubi8-asciidoctor/version.json
+jobs:
+  build:
+    env:
+      context: gitlab-runners/ubi8-asciidoctor
+      image_name: gitlab-runners-ubi8-asciidoctor
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@master
+      - name: Get image tags
+        id: image_tags
+        run: |
+          echo -n ::set-output name=IMAGE_TAGS::
+          VERSION=$(jq -r '.version' ${context}/version.json)
+          if [ "${VERSION}" == "latest" ]; then
+            echo latest
+          else
+            echo "latest,${VERSION}"
+          fi
+      - name: Build and publish image to Quay
+        uses: docker/build-push-action@v1
+        with:
+          path: ${{ env.context }}
+          registry: ${{ secrets.REGISTRY_URI }}
+          repository: ${{ secrets.REGISTRY_REPOSITORY }}/${{ env.image_name }}
+          username: ${{ secrets.REGISTRY_USERNAME }}
+          password: ${{ secrets.REGISTRY_PASSWORD }}
+          tags: "${{ steps.image_tags.outputs.IMAGE_TAGS }}"
