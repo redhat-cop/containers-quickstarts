@@ -1,15 +1,15 @@
-name: gitlab-runners-ubi8-git-publish
+name: gitlab-runners-ubi7-gitlab-runner-publish
 on:
   push:
     branches:
       - master
     paths:
-      - gitlab-runners/ubi8-git/version.json
+      - gitlab-runners/ubi7-gitlab-runner/version.json
 jobs:
   build:
     env:
-      context: gitlab-runners/ubi8-git
-      image_name: gitlab-runners-ubi8-git
+      context: gitlab-runners/ubi7-gitlab-runner
+      image_name: gitlab-runners-ubi7-gitlab-runner
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@master

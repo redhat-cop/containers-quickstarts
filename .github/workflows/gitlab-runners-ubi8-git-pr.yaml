@@ -1,4 +1,4 @@
-name: ubi8-git-pr-ci
+name: gitlab-runners-ubi8-git-pr
 on:
   pull_request:
     paths:
