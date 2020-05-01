@@ -1,13 +1,13 @@
-name: gitlab-runners-ubi8-git-pr
+name: ubi8-asciidoctor-pr
 on:
   pull_request:
     paths:
-      - gitlab-runners/ubi8-git/**
+      - utilities/ubi8-asciidoctor/**
 jobs:
   build:
     env:
-      context: gitlab-runners/ubi8-git
-      image_name: gitlab-runners-ubi8-git
+      context: utilities/ubi8-asciidoctor
+      image_name: ubi8-asciidoctor
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v1
@@ -27,3 +27,7 @@ jobs:
         run: |
           echo "Running: docker run ${image_name}:${{ steps.check_version.outputs.IMAGE_TAGS }} git --version"
           docker run ${image_name}:${{ steps.check_version.outputs.IMAGE_TAGS }} git --version
+          echo "Running: docker run ${image_name}:${{ steps.check_version.outputs.IMAGE_TAGS }} asciidoctor --version"
+          docker run ${image_name}:${{ steps.check_version.outputs.IMAGE_TAGS }} asciidoctor --version
+          echo "Running: docker run ${image_name}:${{ steps.check_version.outputs.IMAGE_TAGS }} asciidoctor-pdf --version"
+          docker run ${image_name}:${{ steps.check_version.outputs.IMAGE_TAGS }} asciidoctor-pdf --version

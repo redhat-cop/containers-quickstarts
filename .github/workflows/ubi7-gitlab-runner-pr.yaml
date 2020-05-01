@@ -1,13 +1,13 @@
-name: gitlab-runners-ubi7-gitlab-runner-pr
+name: ubi7-gitlab-runner-pr
 on:
   pull_request:
     paths:
-      - gitlab-runners/ubi7-gitlab-runner/**
+      - ubi7-gitlab-runner/**
 jobs:
   build:
     env:
-      context: gitlab-runners/ubi7-gitlab-runner
-      image_name: gitlab-runners-ubi7-gitlab-runner
+      context: ubi7-gitlab-runner
+      image_name: ubi7-gitlab-runner
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v1
