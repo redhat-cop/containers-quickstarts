@@ -1,15 +1,15 @@
-name: gitlab-runners-ubi7-gitlab-runner-publish
+name: ubi8-asciidoctor-publish
 on:
   push:
     branches:
       - master
     paths:
-      - gitlab-runners/ubi7-gitlab-runner/version.json
+      - utilities/ubi8-asciidoctor/version.json
 jobs:
   build:
     env:
-      context: gitlab-runners/ubi7-gitlab-runner
-      image_name: gitlab-runners-ubi7-gitlab-runner
+      context: utilities/ubi8-asciidoctor
+      image_name: ubi8-asciidoctor
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@master
