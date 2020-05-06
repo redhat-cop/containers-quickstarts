@@ -52,14 +52,45 @@ A set of buildConfigs for building custom Jenkins images for OpenShift.
 
 * [Jenkins Master with the Hygieia Plugin](./jenkins-masters/hygieia-plugin)
 
+### Gitlab Runners
+
+A set of [Gitlab Runners](./gitlab-runners/README.md) for your [Gitlab CI/CD](https://docs.gitlab.com/runner/).
+
+* [UBI 7](./gitlab-runners/ubi7-gitlab-runner)
+* [UBI 8 Asciidoctor](./gitlab-runners/ubi8-asciidoctor)
+* [UBI 8 Git](./gitlab-runners/ubi8-git)
+* [UBI 8 Google API Pyton Client](./gitlab-runners/ubi8-google-api-python-client)
+
 ### Developer Tools
 
 * [Tool Box](./tool-box) - An OpenShift deployable container image that provides some necessary developer tools
+* [motepair](./motepair) - Remote pair programming server and plugin for [Atom](https://atom.io/)
+
+## Github Actions
+
+To enable actions in your fork:
+1. Fork this repository
+2. Actions -> Click the button to enable
+3. Settings -> Secrets
+
+| Secret              | Description                                          |
+|---------------------| -----------------------------------------------------|
+| REGISTRY_URI        | Registry to push images to, ex: `quay.io`            |
+| REGISTRY_REPOSITORY | Repository to push images to, ex: your quay username |
+| REGISTRY_USERNAME   | Username used to push to registry                    |
+| REGISTRY_PASSWORD   | Password used to push to registry                    |
+
+>**NOTE:** It is recommended to use a service account for registry credentials, for example quay.io can create a robot account associated with your personal account.
 
 ## Related Content
 
 * [Container Pipelines](https://github.com/redhat-cop/container-pipelines) - A set of Jenkins piplines for OpenShift
-* [Labs CI/CD](https://github.com/rht-labs/labs-ci-cd) - A comprehensive end to end pipeline using many modern testing and quality tools
+* [Labs CI/CD](https://github.com/rht-labs/labs-ci-cd) - A comprehensive end to end pipeline using many modern testing and quality tools. Suitable for OpenShift v3.x
+* [Labs Ubiquitous Journey](https://github.com/rht-labs/ubiquitous-journey) - (The New and Improved _Labs CI/CD_ using GitOps for OpenShift v4.x) A collection of ArgoCD apps for:
+  *  Boostrapping a cluster with some projects, roles, bindings and creating an ArgoCD instance using the Operator
+  *  Deployments for an end to end pipeline using many modern testing and quality tools such as Jenkins, Nexus, Sonarqube etc
+  *  Project management tooling such as Wekan and Mattermost Chat
+* [Labs Helm Charts](https://github.com/rht-labs/helm-charts) - A library of OpenShift ready Helm3 Charts
 * [OpenShift Templates](https://github.com/rht-labs/openshift-templates) - A library of OpenShift template examples & references
 * [OpenShift Applier](https://github.com/redhat-cop/openshift-applier) - An automation framework for keeping manifests and templates applied to a cluster
 

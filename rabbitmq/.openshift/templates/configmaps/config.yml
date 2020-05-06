@@ -5,7 +5,43 @@ metadata:
 data: 
   enabled_plugins: |
       [rabbitmq_management,rabbitmq_peer_discovery_k8s].
-
+  policy.json: | 
+      {
+        "vhosts":[
+          {
+            "name": "/"
+          }
+        ],
+        "users": [
+            {
+              "name": "guest",
+              "password": "guest",
+              "hashing_algorithm": "rabbit_password_hashing_sha256",
+              "tags": "administrator"
+            }
+        ],
+        "permissions": [
+          {
+            "user": "guest",
+            "vhost": "\/",
+            "configure": ".*",
+            "write": ".*",
+            "read": ".*"
+          }
+        ],
+        "policies":[
+          {
+            "vhost": "/",
+            "name": "ha-all",
+            "pattern": "", 
+            "definition": {
+              "ha-mode": "all",
+              "ha-sync-mode": "automatic",
+              "ha-sync-batch-size": 5
+            }
+          }
+        ]
+      }
   rabbitmq.conf: |
       ## Cluster formation. See https://www.rabbitmq.com/cluster-formation.html to learn more.
       cluster_formation.peer_discovery_backend  = rabbit_peer_discovery_k8s
@@ -32,3 +68,8 @@ data:
       ## credentials instead.
       ## Learn more at https://www.rabbitmq.com/access-control.html#loopback-users
       loopback_users.guest = false
+      ## Update to HA-ALL policy
+      ## Learn more at https://www.rabbitmq.com/ha.html
+      ## This is just an example
+      ## Please update userid and password in policy.json
+      management.load_definitions = /etc/rabbitmq/policy.json
