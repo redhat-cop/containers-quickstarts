@@ -10,6 +10,7 @@ ARG asciidoctor_epub3_version=1.5.0.alpha.12
 ARG asciidoctor_mathematical_version=0.3.1
 ARG asciidoctor_revealjs_version=2.0.0
 ARG kramdown_asciidoc_version=1.0.1
+ARG pandoc_version=2.9.2.1
 
 
 ENV ASCIIDOCTOR_VERSION=${asciidoctor_version} \
@@ -19,13 +20,30 @@ ENV ASCIIDOCTOR_VERSION=${asciidoctor_version} \
   ASCIIDOCTOR_EPUB3_VERSION=${asciidoctor_epub3_version} \
   ASCIIDOCTOR_MATHEMATICAL_VERSION=${asciidoctor_mathematical_version} \
   ASCIIDOCTOR_REVEALJS_VERSION=${asciidoctor_revealjs_version} \
-  KRAMDOWN_ASCIIDOC_VERSION=${kramdown_asciidoc_version}
-
+  KRAMDOWN_ASCIIDOC_VERSION=${kramdown_asciidoc_version} \
+  PANDOC_VERSION=${pandoc_version}
 
 
 USER root
 
-RUN microdnf install tar gzip make cmake python3 python3-setuptools ruby-devel gcc redhat-rpm-config zlib-devel patch git gcc-c++ glib2-devel
+RUN microdnf install \
+  tar \
+  gzip \
+  make \
+  cmake \
+  python3 \
+  python3-setuptools \
+  ruby-devel \
+  gcc redhat-rpm-config \
+  zlib-devel \
+  patch \
+  git \
+  gcc-c++ \
+  glib2-devel
+
+# install pandoc
+RUN curl -L https://github.com/jgm/pandoc/releases/download/${PANDOC_VERSION}/pandoc-${PANDOC_VERSION}-linux-amd64.tar.gz -o pandoc-${PANDOC_VERSION}-linux-amd64.tar.gz
+RUN tar xvzf pandoc-${PANDOC_VERSION}-linux-amd64.tar.gz --strip-components 1 -C /usr/local/
 
 # Installing Ruby Gems needed in the image
 # including asciidoctor itself
