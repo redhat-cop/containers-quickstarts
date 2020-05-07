@@ -1,0 +1,33 @@
+name: ubi8-asciidoctor-pr
+on:
+  pull_request:
+    paths:
+      - utilities/ubi8-asciidoctor/**
+jobs:
+  build:
+    env:
+      context: utilities/ubi8-asciidoctor
+      image_name: ubi8-asciidoctor
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+      - name: Check and verify version.json
+        id: check_version
+        run: |
+          echo -n ::set-output name=IMAGE_TAGS::
+          echo $(jq -r '.version' ${context}/version.json)
+      - name: Build image
+        uses: docker/build-push-action@v1
+        with:
+          path: ${{ env.context }}
+          push: false
+          repository: ${{ env.image_name }}
+          tags: ${{ steps.check_version.outputs.IMAGE_TAGS }}
+      - name: Test image
+        run: |
+          echo "Running: docker run ${image_name}:${{ steps.check_version.outputs.IMAGE_TAGS }} git --version"
+          docker run ${image_name}:${{ steps.check_version.outputs.IMAGE_TAGS }} git --version
+          echo "Running: docker run ${image_name}:${{ steps.check_version.outputs.IMAGE_TAGS }} asciidoctor --version"
+          docker run ${image_name}:${{ steps.check_version.outputs.IMAGE_TAGS }} asciidoctor --version
+          echo "Running: docker run ${image_name}:${{ steps.check_version.outputs.IMAGE_TAGS }} asciidoctor-pdf --version"
+          docker run ${image_name}:${{ steps.check_version.outputs.IMAGE_TAGS }} asciidoctor-pdf --version

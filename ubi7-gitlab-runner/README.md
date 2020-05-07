@@ -2,9 +2,13 @@
 
 GitLab Runner based on ubi7 that does not require privilaged SSC (does not run as root) to run.
 
-# Use
+## Purpose
 
-## OpenShift with Helm Chart
+To be regestered as a [GitLab Runner](https://docs.gitlab.com/runner/) for a GitLab server.
+
+## Use
+
+### OpenShift with Helm Chart
 
 1. Setup
 
@@ -40,6 +44,10 @@ helm install --namespace ${GITLAB_RUNNER_PROJECT_NAME} gitlab-runner -f helm-kmo
 oc patch deployment/gitlab-runner-gitlab-runner --type json --patch '[{ "op": "remove", "path": "/spec/template/spec/securityContext" }]'
 ```
 
-# Tested With
+## Tested With
 * OpenShift Container Platform 3.11
 * OpenShift Container Platform 4.2
+
+## Published
+
+[https://quay.io/repository/redhat-cop/ubi7-gitlab-runner](https://quay.io/repository/redhat-cop/ubi7-gitlab-runner) via [GitHub Workflows](.github/workflows/ubi7-gitlab-runner-publish.yaml).
