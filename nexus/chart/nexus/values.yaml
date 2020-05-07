@@ -11,7 +11,7 @@ sonatype-nexus:
     enabled: true
     name: nexus
     portName: nexus-service
-    path: "" 
+    path: '""' 
 
   nexusProxy:
     enabled: false
