@@ -1,7 +1,7 @@
 sonatype-nexus:
   nexus:
     imageName: sonatype/nexus3
-    imageTag: 3.19.1
+    imageTag: 3.22.1
     service:
       type: ClusterIP
       podAnnotations: {}

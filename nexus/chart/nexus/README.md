@@ -4,7 +4,7 @@ This is an extension of the upstream Sonatype Nexus chart maintained at https://
 
 The values file contained in this repository allows us to deploy the following:
 
-- Nexus at a given version  (currently default of 3.19.1)
+- Nexus at a given version  (currently default of 3.22.1)
 - Deploys the Nexus Kubernetes plugin which allows us to configure Nexus with a series of ConfigMaps
 - By default, configures Nexus with the Red Hat and JBoss Maven repositories
 
