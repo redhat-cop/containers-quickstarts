@@ -1,0 +1,17 @@
+pipeline {
+    agent {
+      label 'jenkins-slave-rust'
+    }
+
+    stages {
+        stage ('Run Test') {
+            steps {
+              sh """
+                  rustc -V
+              """
+            }
+        }
+
+    }
+
+}
