@@ -26,4 +26,4 @@ jobs:
       - name: Test image
         run: |
           echo "Running: docker run --entrypoint 'rabbitmqctl' ${image_name}:${{ steps.check_version.outputs.IMAGE_TAGS }} 'version'"
-          docker run --entrypoint 'rabbitmqctl' ${image_name}:${{ steps.check_version.outputs.IMAGE_TAGS }} -c 'version'
+          docker run --entrypoint 'rabbitmqctl' ${image_name}:${{ steps.check_version.outputs.IMAGE_TAGS }} 'version'
