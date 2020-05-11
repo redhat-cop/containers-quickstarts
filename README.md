@@ -29,6 +29,7 @@ A collection of custom built S2I base images
 * [Jekyll](./build-s2i-jekyll)
 * [WebSphere Liberty](./build-s2i-liberty)
 * [Play Framework](./build-s2i-play)
+* [Python Kopf Operator Framework](./build-s2i-python-kopf)
 
 ### Jenkins Slave Images
 

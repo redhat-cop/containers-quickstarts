@@ -1,0 +1,12 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: test
+  labels:
+    app.example.com/config: ''
+data:
+  config: |
+    template:
+      name: httpd-example
+      namespace: openshift

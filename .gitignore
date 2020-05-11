@@ -4,3 +4,4 @@
 **/galaxy/
 roles
 *.swp
+__pycache__

@@ -1,0 +1,107 @@
+---
+apiVersion: template.openshift.io/v1
+kind: Template
+metadata:
+  annotations:
+    description: Python Kopf s2i Example
+  name: python-kopf-s2i-example
+
+parameters:
+  - name: NAME
+    required: true
+    value: python-kopf-s2i-example
+  - name: IMAGE
+    required: true
+  - name: IMAGE_PULL_POLICY
+    required: true
+    value: Always
+  - name: CPU_REQUEST
+    required: true
+    value: 100m
+  - name: CPU_LIMIT
+    required: true
+    value: 500m
+  - name: MEMORY_REQUEST
+    required: true
+    value: 512Mi
+  - name: MEMORY_LIMIT
+    required: true
+    value: 512Mi
+
+objects:
+  - apiVersion: v1
+    kind: ServiceAccount
+    metadata:
+      name: ${NAME}
+
+  - apiVersion: rbac.authorization.k8s.io/v1
+    kind: Role
+    metadata:
+      name: ${NAME}
+    rules:
+      - apiGroups:
+          - apps
+        resources:
+          - deployments
+        verbs:
+          - get
+          - list
+          - watch
+      - apiGroups:
+          - ""
+        resources:
+          - events
+        verbs:
+          - create
+
+  - apiVersion: rbac.authorization.k8s.io/v1
+    kind: RoleBinding
+    metadata:
+      name: ${NAME}
+    roleRef:
+      apiGroup: rbac.authorization.k8s.io
+      kind: Role
+      name: ${NAME}
+    subjects:
+      - kind: ServiceAccount
+        name: ${NAME}
+
+  - apiVersion: extensions/v1beta1
+    kind: Deployment
+    metadata:
+      labels:
+        name: ${NAME}
+      name: ${NAME}
+    spec:
+      replicas: 1
+      selector:
+        matchLabels:
+          name: ${NAME}
+      strategy:
+        type: Recreate
+      template:
+        metadata:
+          labels:
+            name: ${NAME}
+        spec:
+          containers:
+            - name: operator
+              image: ${IMAGE}
+              imagePullPolicy: ${IMAGE_PULL_POLICY}
+              livenessProbe:
+                initialDelaySeconds: 30
+                tcpSocket:
+                  port: 8080
+                timeoutSeconds: 1
+              ports:
+                - containerPort: 8080
+                  protocol: TCP
+              resources:
+                requests:
+                  cpu: ${CPU_REQUEST}
+                  memory: ${MEMORY_REQUEST}
+                limits:
+                  cpu: ${CPU_LIMIT}
+                  memory: ${MEMORY_LIMIT}
+          restartPolicy: Always
+          serviceAccountName: ${NAME}

@@ -1,0 +1,17 @@
+= Python Kopf Operator Source-to-Image (s2i)
+
+Source-to-Image for python https://kopf.readthedocs.io/en/latest/[kopf] based operators.
+
+== Building
+
+. Create events console build configuration
++
+------------------------------------------------------------
+oc process --local -f build-template.yaml | oc apply -f -
+------------------------------------------------------------
+ 
+. Build events operator image
++
+------------------------------------------------------------
+oc start-build python-kopf-s2i --from-dir=. -F
+------------------------------------------------------------

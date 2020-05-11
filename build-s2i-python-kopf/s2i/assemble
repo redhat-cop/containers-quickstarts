@@ -1,0 +1,29 @@
+#!/bin/bash
+
+set -x
+
+set -eo pipefail
+
+# Copy files to target directories.
+
+shopt -s dotglob
+
+
+mkdir /opt/app-root/src -p
+cp --preserve=mode --recursive /tmp/src/operator /opt/app-root/
+rm -rf /tmp/src/operator
+cp --preserve=mode --recursive /tmp/src/* /opt/app-root/src/
+rm -rf /tmp/src
+
+if [[ -s /opt/app-root/src/requirements.txt ]]; then
+    pip3 install --upgrade --cache-dir /tmp/.pip-cache -r /opt/app-root/src/requirements.txt
+    rm -rf /tmp/.pip-cache
+fi
+
+if [[ -s /opt/app-root/src/kopf-opt.sh ]]; then
+    mv /opt/app-root/src/kopf-opt.sh /opt/app-root/kopf-opt.sh
+fi
+
+# Fix up permissions.
+
+fix-permissions /opt/app-root
