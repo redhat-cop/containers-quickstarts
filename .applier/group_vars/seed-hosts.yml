@@ -26,6 +26,7 @@ jenkins_slaves:
       BUILDER_IMAGE_NAME: openshift/jenkins-slave-base-centos7:v3.11
     python: {}
     ruby: {}
+    rust: {}
     zap:
       BUILDER_IMAGE_NAME: centos:centos7
 
@@ -100,6 +101,12 @@ test_pipelines:
     ruby:
       NAME: jenkins-slave-ruby
       PIPELINE_CONTEXT_DIR: jenkins-slaves/jenkins-slave-ruby
+      PIPELINE_FILENAME: Jenkinsfile.test
+      PIPELINE_SOURCE_REPOSITORY_REF: "{{ slave_repo_ref }}"
+      PIPELINE_SOURCE_REPOSITORY_URL: "{{ repository_url }}"
+    rust:
+      NAME: jenkins-slave-rust
+      PIPELINE_CONTEXT_DIR: jenkins-slaves/jenkins-slave-rust
       PIPELINE_FILENAME: Jenkinsfile.test
       PIPELINE_SOURCE_REPOSITORY_REF: "{{ slave_repo_ref }}"
       PIPELINE_SOURCE_REPOSITORY_URL: "{{ repository_url }}"

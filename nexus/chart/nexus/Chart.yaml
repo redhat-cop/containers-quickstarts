@@ -1,0 +1,10 @@
+apiVersion: v2
+name: nexus
+description: A Helm chart for deploying Sonatype Nexus 
+type: application
+version: 0.1.0
+appVersion: 3.21.2
+dependencies:
+- name: sonatype-nexus
+  version: 2.1.0
+  repository: "https://oteemo.github.io/charts/"
