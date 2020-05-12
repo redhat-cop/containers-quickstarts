@@ -2,7 +2,7 @@ FROM registry.access.redhat.com/ubi7/ubi:7.8
 
 ARG ERLANG_VERSION=22.1.4
 ARG RABBITMQ_AUTOCLUSTER_VERSION=0.10.0
-ARG RABBITMQ_VERSION=3.8.0
+ARG RABBITMQ_VERSION=3.8.3
 
 LABEL io.k8s.description="Lightweight open source message broker" \
     io.k8s.display-name="RabbitMQ" \
