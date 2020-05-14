@@ -43,6 +43,8 @@ This is the equivivalent of docker build --build-arg ERLANG_VERSION=19.3.6` to a
 3. `oc new-project rabbitmq`
 4. `helm install rabbitmq chart`
 
+**_NOTE:_** This image is currently not compatible with https://github.com/bitnami/charts/tree/master/bitnami/rabbitmq but this might change in the future.
+
 ### Build and deploy using Openshift Applier
 1. Clone this repository:
    `git clone https://github.com/redhat-cop/containers-quickstarts`
