@@ -34,7 +34,18 @@ The openshift-applier will create the following OpenShift objects:
 `ERLANG_VERSION`& `RABBITMQ_VERSION` are passed on to the buildconfig thus these versions can be controlled in the build.
 This is the equivivalent of docker build --build-arg ERLANG_VERSION=19.3.6` to a docker build.
 
-## Start build and deploy
+## Deploying
+
+### Helm chart
+1. Clone this repository:
+   `git clone https://github.com/redhat-cop/containers-quickstarts`
+2. `cd containers-quickstarts/rabbitmq`
+3. `oc new-project rabbitmq`
+4. `helm install rabbitmq chart`
+
+**_NOTE:_** This image is currently not compatible with https://github.com/bitnami/charts/tree/master/bitnami/rabbitmq but this might change in the future.
+
+### Build and deploy using Openshift Applier
 1. Clone this repository:
    `git clone https://github.com/redhat-cop/containers-quickstarts`
 2. `cd containers-quickstarts/rabbitmq`
@@ -80,4 +91,6 @@ $ oc rsh rabbitmq-1 rabbitmqctl cluster_status --formatter json | tail -1 | jq '
 ```
 
 ## Tear everything down
+`helm uninstall rabbitmq`
+or
 `oc delete project rabbitmq`
