@@ -1,4 +1,4 @@
-name: jenkins-worker-python-pr
+name: jenkins-agent-python-pr
 on:
   pull_request:
     paths:
@@ -7,7 +7,7 @@ jobs:
   build:
     env:
       context: jenkins-slaves/jenkins-slave-python
-      image_name: jenkins-worker-python
+      image_name: jenkins-agent-python
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v1

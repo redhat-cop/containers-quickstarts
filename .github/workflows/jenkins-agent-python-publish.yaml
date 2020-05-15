@@ -1,4 +1,4 @@
-name: jenkins-worker-python-publish
+name: jenkins-agent-python-publish
 on:
   push:
     branches:
@@ -11,7 +11,7 @@ jobs:
   build:
     env:
       context: jenkins-slaves/jenkins-slave-python
-      image_name: jenkins-worker-python
+      image_name: jenkins-agent-python
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@master
