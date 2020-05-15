@@ -1,4 +1,4 @@
-apiVersion: v1
+apiVersion: template.openshift.io/v1
 kind: Template
 labels:
   template: jenkins2-s2i
@@ -11,14 +11,14 @@ metadata:
   name: jenkins2-s2i
 objects:
 # Jenkins2
-- apiVersion: v1
+- apiVersion: image.openshift.io/v1
   kind: ImageStream
   metadata:
     labels:
       app: jenkins2-s2i
       template: jenkins2-s2i
     name: jenkins2-s2i
-- apiVersion: v1
+- apiVersion: build.openshift.io/v1
   kind: BuildConfig
   metadata:
     labels:

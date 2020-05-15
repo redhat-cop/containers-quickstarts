@@ -1,4 +1,4 @@
-apiVersion: v1
+apiVersion: template.openshift.io/v1
 kind: Template
 labels:
   template: play-framework-quickstart-rhel
@@ -28,7 +28,7 @@ objects:
       deploymentconfig: ${PLAY_APPLICATION_NAME}
     sessionAffinity: None
     type: ClusterIP
-- apiVersion: v1
+- apiVersion: route.openshift.io/v1
   kind: Route
   metadata:
     annotations:
@@ -43,7 +43,7 @@ objects:
     to:
       kind: Service
       name: ${PLAY_APPLICATION_NAME}
-- apiVersion: v1
+- apiVersion: apps.openshift.io/v1
   kind: DeploymentConfig
   metadata:
     labels:

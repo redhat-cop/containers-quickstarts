@@ -1,4 +1,4 @@
-apiVersion: v1
+apiVersion: template.openshift.io/v1
 kind: Template
 labels:
   template: jenkins-slave-ansible-stacks
@@ -10,13 +10,13 @@ metadata:
   name: jenkins-slave-ansible-stacks
   namespace: myproject
 objects:
-- apiVersion: v1
+- apiVersion: image.openshift.io/v1
   kind: ImageStream
   metadata:
     name: jenkins-slave-base-rhel7
   spec:
     dockerImageRepository: registry.access.redhat.com/openshift3/jenkins-slave-base-rhel7
-- apiVersion: v1
+- apiVersion: image.openshift.io/v1
   kind: ImageStream
   metadata:
     annotations:
@@ -24,7 +24,7 @@ objects:
     labels:
       role: jenkins-slave
     name: ${JENKINS_SLAVE_NAME}
-- apiVersion: v1
+- apiVersion: build.openshift.io/v1
   kind: BuildConfig
   metadata:
     labels:

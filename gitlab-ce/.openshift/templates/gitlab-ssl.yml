@@ -1,6 +1,6 @@
 ---
+apiVersion: template.openshift.io/v1
 kind: Template
-apiVersion: v1
 metadata:
   name: gitlab-ce
   annotations:
@@ -60,8 +60,8 @@ objects:
   metadata:
     name: gitlab-certs
   type: Opaque
-- kind: ImageStream
-  apiVersion: v1
+- apiVersion: image.openshift.io/v1
+  kind: ImageStream
   metadata:
     name: "${APPLICATION_NAME}"
     labels:
@@ -72,8 +72,8 @@ objects:
       from:
         kind: DockerImage
         name: gitlab/gitlab-ce:11.9.1-ce.0
-- kind: ImageStream
-  apiVersion: v1
+- apiVersion: image.openshift.io/v1
+  kind: ImageStream
   metadata:
     name: "${APPLICATION_NAME}-redis"
     labels:
@@ -88,8 +88,8 @@ objects:
   apiVersion: v1
   metadata:
     name: "${APPLICATION_NAME}-user"
-- kind: DeploymentConfig
-  apiVersion: v1
+- apiVersion: apps.openshift.io/v1
+  kind: DeploymentConfig
   metadata:
     name: "${APPLICATION_NAME}"
     labels:
@@ -212,8 +212,8 @@ objects:
         terminationGracePeriodSeconds: 30
         dnsPolicy: ClusterFirst
         serviceAccount: "${APPLICATION_NAME}-user"
-- kind: DeploymentConfig
-  apiVersion: v1
+- apiVersion: apps.openshift.io/v1
+  kind: DeploymentConfig
   metadata:
     name: "${APPLICATION_NAME}-redis"
     labels:
@@ -274,8 +274,8 @@ objects:
         restartPolicy: Always
         terminationGracePeriodSeconds: 30
         dnsPolicy: ClusterFirst
-- kind: DeploymentConfig
-  apiVersion: v1
+- apiVersion: apps.openshift.io/v1
+  kind: DeploymentConfig
   metadata:
     name: "${APPLICATION_NAME}-postgresql"
     labels:
@@ -469,8 +469,8 @@ objects:
     resources:
       requests:
         storage: "${POSTGRESQL_VOL_SIZE}"
-- kind: Route
-  apiVersion: v1
+- apiVersion: route.openshift.io/v1
+  kind: Route
   metadata:
     name: "${APPLICATION_NAME}"
     labels:

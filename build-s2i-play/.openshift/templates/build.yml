@@ -1,4 +1,4 @@
-apiVersion: v1
+apiVersion: template.openshift.io/v1
 kind: Template
 labels:
   template: play-framework-quickstart-rhel
@@ -9,7 +9,7 @@ metadata:
     tags: play,java
   name: play-framework-quickstart-rhel
 objects:
-- apiVersion: v1
+- apiVersion: image.openshift.io/v1
   kind: ImageStream
   metadata:
     labels:
@@ -17,19 +17,19 @@ objects:
     name: rhel7-atomic
   spec:
     dockerImageRepository: registry.access.redhat.com/rhel7/rhel-atomic
-- apiVersion: v1
+- apiVersion: image.openshift.io/v1
   kind: ImageStream
   metadata:
     labels:
       build: ${PLAY_BUILDER_NAME}
     name: ${PLAY_BUILDER_NAME}
-- apiVersion: v1
+- apiVersion: image.openshift.io/v1
   kind: ImageStream
   metadata:
     labels:
       application: ${PLAY_APPLICATION_NAME}
     name: ${PLAY_APPLICATION_NAME}
-- apiVersion: v1
+- apiVersion: build.openshift.io/v1
   kind: BuildConfig
   metadata:
     labels:
@@ -57,7 +57,7 @@ objects:
     - type: ConfigChange
     - imageChange: {}
       type: ImageChange
-- apiVersion: v1
+- apiVersion: build.openshift.io/v1
   kind: BuildConfig
   metadata:
     labels:
