@@ -30,6 +30,14 @@ fi
 
 if [[ "${KOPF_PRIORITY}" ]]; then
     KOPF_OPTIONS="${KOPF_OPTIONS} --priority=${KOPF_PRIORITY}"
+else
+    IP=$(sed -n "s/ *$HOSTNAME$//p" /etc/hosts)
+    if [[ -n "$IP" ]]; then
+        IFS='.' read -r -a IPN <<<$IP
+        KOPF_OPTIONS="${KOPF_OPTIONS} --priority=$(( ${IPN[0]} * 16777216 + ${IPN[1]} *  65536 + ${IPN[2]} * 256 + ${IPN[3]} ))"
+    else
+        KOPF_OPTIONS="${KOPF_OPTIONS} --priority=${RANDOM}"
+    fi
 fi
 
 if [[ "${KOPF_PEERING}" ]]; then

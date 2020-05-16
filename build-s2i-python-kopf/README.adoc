@@ -2,16 +2,90 @@
 
 Source-to-Image for python https://kopf.readthedocs.io/en/latest/[kopf] based operators.
 
-== Building
+== Usage
+
+TBD
+
+=== Building a Python Kopf Operator
+
+TBD
+
+=== Kopf Options
+
+Kopf command line options are configured using environment variables.
+The file `kopf-opt.sh` may be used to set options at compile time.
+These are used to build up the command line for `kopf run`.
+The following environment variables are supported:
+
+[options="header",cols="2,1,6"]
+|=======================
+|Option
+|Default
+|Description
+
+|`KOPF_NAMESPACED`
+|`false`
+|Set to "true" to run kopf with `--namespace` option to restrict watch to specific namespace.
+
+|`KOPF_NAMESPACE`
+|none
+|Namespace for kopf watch.
+When run in cluster this defaults to the operator pod namespace.
+
+|`KOPF_STANDALONE`
+|`false`
+|Set to "true" to run kopf with `--standalone` option.
+This prevents kopf from peering and talking to other kopf operators.
+
+|`KOPF_PRIORITY`
+|dynamic
+|Operator priority in relation to other kopf operators.
+The default when running containerized is to base the priority on the pod IP or otherwise `${RANDOM}` if the IP address cannot be determined.
+
+|`KOPF_PEERING`
+|none
+|Kopf custom peering using `--peering` option.
+
+|`KOPF_OPTIONS`
+|none
+|Command line options for `kopf run` to support features not covered by other configuration variables.
+|=======================
+
+=== Python Requirements
+
+Python requirements can be specified in the `requirements.txt` file.
+These will be processed and installed to the container image during source-to-image build using Python3 `pip`.
+
+=== Deploying
+
+Liveness probe on TCP port 8080.
+
+== Development
+
+TBD
+
+=== Building this Source-to-Image Base Image
+
+==== OpenShift
+
+An OpenShift build template is provided for building this container image.
 
 . Create events console build configuration
 +
 ------------------------------------------------------------
 oc process --local -f build-template.yaml | oc apply -f -
 ------------------------------------------------------------
- 
+
 . Build events operator image
 +
 ------------------------------------------------------------
-oc start-build python-kopf-s2i --from-dir=. -F
+oc start-build python-kopf-s2i --from-dir=../ -F
 ------------------------------------------------------------
+
+==== Dockerfile
+
+This image may also be built with the provided `Dockerfile`
+
+=== Testing s2i build with the Provided Example
+
+TBD
