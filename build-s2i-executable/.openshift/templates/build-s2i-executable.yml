@@ -1,4 +1,4 @@
-apiVersion: v1
+apiVersion: template.openshift.io/v1
 kind: Template
 labels:
   template: build-s2i-executable
@@ -7,17 +7,17 @@ metadata:
     description: S2I Executable Image Template.
   name: build-s2i-executable
 objects:
-- apiVersion: v1
+- apiVersion: image.openshift.io/v1
   kind: ImageStream
   metadata:
     name: ubi-minimal
   spec:
     dockerImageRepository: ${BASE_IMAGE_REGISTRY}
-- apiVersion: v1
+- apiVersion: image.openshift.io/v1
   kind: ImageStream
   metadata:
     name: ${NAME}
-- apiVersion: v1
+- apiVersion: build.openshift.io/v1
   kind: BuildConfig
   metadata:
     name: ${NAME}

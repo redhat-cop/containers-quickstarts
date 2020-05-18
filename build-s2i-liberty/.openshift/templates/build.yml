@@ -1,11 +1,11 @@
-apiVersion: v1
+apiVersion: template.openshift.io/v1
 kind: Template
 labels:
   template: liberty-builder
 metadata:
   name: liberty
 objects:
-- apiVersion: v1
+- apiVersion: image.openshift.io/v1
   kind: ImageStream
   metadata:
     labels:
@@ -14,7 +14,7 @@ objects:
   spec:
     lookupPolicy:
       local: false
-- apiVersion: v1
+- apiVersion: image.openshift.io/v1
   kind: ImageStream
   metadata:
     labels:
@@ -31,7 +31,7 @@ objects:
         name: websphere-liberty:webProfile8
       importPolicy: {}
       name: webProfile8
-- apiVersion: v1
+- apiVersion: image.openshift.io/v1
   kind: ImageStream
   metadata:
     labels:
@@ -40,7 +40,7 @@ objects:
   spec:
     lookupPolicy:
       local: false
-- apiVersion: v1
+- apiVersion: image.openshift.io/v1
   kind: ImageStream
   metadata:
     labels:
@@ -49,7 +49,7 @@ objects:
   spec:
     lookupPolicy:
       local: false
-- apiVersion: v1
+- apiVersion: build.openshift.io/v1
   kind: BuildConfig
   metadata:
     labels:
@@ -80,7 +80,7 @@ objects:
           kind: ImageStreamTag
           name: websphere-liberty:webProfile8
       type: ImageChange
-- apiVersion: v1
+- apiVersion: build.openshift.io/v1
   kind: BuildConfig
   metadata:
     labels:
@@ -112,7 +112,7 @@ objects:
           name: jboss-eap70-openshift:1.6
           namespace: openshift
       type: ImageChange
-- apiVersion: v1
+- apiVersion: build.openshift.io/v1
   kind: BuildConfig
   metadata:
     labels:

@@ -1,11 +1,11 @@
-apiVersion: v1
+apiVersion: template.openshift.io/v1
 kind: Template
 labels:
   template: gows-builder
 metadata:
   name: gows
 objects:
-- apiVersion: v1
+- apiVersion: image.openshift.io/v1
   kind: ImageStream
   metadata:
     labels:
@@ -16,7 +16,7 @@ objects:
       local: false
   status:
     dockerImageRepository: ""
-- apiVersion: v1
+- apiVersion: build.openshift.io/v1
   kind: BuildConfig
   metadata:
     labels:
@@ -50,7 +50,7 @@ objects:
           kind: ImageStreamTag
           name: golang:1.9.2
       type: ImageChange
-- apiVersion: v1
+- apiVersion: build.openshift.io/v1
   kind: BuildConfig
   metadata:
     labels:
@@ -92,7 +92,7 @@ objects:
           kind: ImageStreamTag
           name: gows:build
       type: ImageChange
-- apiVersion: v1
+- apiVersion: build.openshift.io/v1
   kind: BuildConfig
   metadata:
     labels:
@@ -122,7 +122,7 @@ objects:
           kind: ImageStreamTag
           name: gows:busybox
       type: ImageChange
-- apiVersion: v1
+- apiVersion: build.openshift.io/v1
   kind: BuildConfig
   metadata:
     labels:

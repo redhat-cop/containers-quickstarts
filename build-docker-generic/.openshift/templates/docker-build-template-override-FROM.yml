@@ -1,20 +1,20 @@
 ---
+apiVersion: template.openshift.io/v1
 kind: Template
-apiVersion: v1
 metadata:
   name: "${NAME}"
   annotations:
     openshift.io/display-name: Generic Dockerfile Build
 objects:
-- apiVersion: v1
+- apiVersion: image.openshift.io/v1
   kind: ImageStream
   metadata:
     labels:
       build: "${NAME}"
       app: "${NAME}"
     name: "${NAME}"
-- kind: ImageStream
-  apiVersion: image.openshift.io/v1
+- apiVersion: image.openshift.io/v1
+  kind: ImageStream
   metadata:
     name: ${FROM_DOCKER_IMAGE}
   spec:
@@ -25,7 +25,7 @@ objects:
         name: ${FROM_DOCKER_IMAGE_REGISTRY_URL}:${FROM_DOCKER_TAG}
       importPolicy: {}
       name: ${FROM_DOCKER_TAG}
-- apiVersion: v1
+- apiVersion: build.openshift.io/v1
   kind: BuildConfig
   metadata:
     labels:

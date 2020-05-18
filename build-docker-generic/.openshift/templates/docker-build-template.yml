@@ -1,19 +1,19 @@
 ---
+apiVersion: template.openshift.io/v1
 kind: Template
-apiVersion: v1
 metadata:
   name: "${NAME}"
   annotations:
     openshift.io/display-name: Generic Dockerfile Build
 objects:
-- apiVersion: v1
+- apiVersion: image.openshift.io/v1
   kind: ImageStream
   metadata:
     labels:
       build: "${NAME}"
       app: "${NAME}"
     name: "${NAME}"
-- apiVersion: v1
+- apiVersion: build.openshift.io/v1
   kind: BuildConfig
   metadata:
     labels:

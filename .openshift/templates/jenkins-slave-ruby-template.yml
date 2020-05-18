@@ -1,4 +1,4 @@
-apiVersion: v1
+apiVersion: template.openshift.io/v1
 kind: Template
 labels:
   template: jenkins-slave-ruby
@@ -10,7 +10,7 @@ metadata:
     version: 1.0.0
   name: jenkins-slave-ruby
 objects:
-- apiVersion: v1
+- apiVersion: image.openshift.io/v1
   kind: BuildConfig
   metadata:
     creationTimestamp: null
@@ -41,7 +41,7 @@ objects:
     triggers:
     - imageChange: {}
       type: ImageChange
-- apiVersion: v1
+- apiVersion: image.openshift.io/v1
   kind: ImageStream
   metadata:
     creationTimestamp: null
@@ -51,7 +51,7 @@ objects:
     name: jenkins-slave-base-centos7
   spec:
     dockerImageRepository: docker.io/openshift/jenkins-slave-base-centos7
-- apiVersion: v1
+- apiVersion: image.openshift.io/v1
   kind: ImageStream
   metadata:
     creationTimestamp: null
