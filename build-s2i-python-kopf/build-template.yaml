@@ -39,7 +39,7 @@ objects:
       git:
         uri: ${GIT_REPO}
         ref: master
-      contextdir: build-s2i-python-kopf
+      contextDir: build-s2i-python-kopf
     strategy:
       type: Docker
       dockerStrategy:
