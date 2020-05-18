@@ -113,8 +113,15 @@ bats test/unit
 The acceptance tests will deploy the RabbitMQ cluster using the Helm chart and assumes you have access to an OpenShift cluster (v3.11+) with at least self-provisioner access (it will create a new namespace).
 You will also need to install [jq](https://github.com/stedolan/jq) and at the moment you will need to use Bats from the master branch as the test require features added after the latest Bats' release.
 ```
-bats test/unit
+bats test/acceptance
+ ✓ rabbitmq/ha: should have 'hostname' package installed
+ ✓ rabbitmq/ha: should have $LANG set to 'en_US.UTF-8'
+ ✓ rabbitmq/ha: should not have any alarms
+ ✓ rabbitmq/ha: fail if number of replicas aren't ready
+ ✓ rabbitmq/ha: should run on different cluster nodes
+ ✓ rabbitmq/ha: should have a three node cluster
 
+6 tests, 0 failures
 ```
 
 ## Tear everything down
