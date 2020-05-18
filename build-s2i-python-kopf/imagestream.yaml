@@ -16,7 +16,7 @@ spec:
         https://kopf.readthedocs.io/
       iconClass: icon-python
       openshift.io/display-name: Python Kopf
-      sampleRepo: https://github.com/jkupferer/python-kopf-s2i-example.git
+      sampleRepo: https://github.com/redhat-cop/build-s2i-python-kopf/example.git
       supports: kopf:0.28,kopf,python:3.8,python
       tags: builder,python,kopf
       version: "0.28"
@@ -35,7 +35,7 @@ spec:
         WARNING: By selecting this tag, your application will automatically update to use the latest version of Python Kopf available, including major version updates.
       iconClass: icon-python
       openshift.io/display-name: Python Kopf
-      sampleRepo: https://github.com/jkupferer/python-kopf-s2i-example.git
+      sampleRepo: https://github.com/redhat-cop/build-s2i-python-kopf/example.git
       supports: kopf,python
       tags: builder,python,kopf
     from:

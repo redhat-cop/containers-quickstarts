@@ -14,7 +14,7 @@ parameters:
     required: true
   - name: IMAGE_PULL_POLICY
     required: true
-    value: Always
+    value: IfNotPresent
   - name: CPU_REQUEST
     required: true
     value: 100m
@@ -35,33 +35,13 @@ objects:
       name: ${NAME}
 
   - apiVersion: rbac.authorization.k8s.io/v1
-    kind: Role
-    metadata:
-      name: ${NAME}
-    rules:
-      - apiGroups:
-          - apps
-        resources:
-          - deployments
-        verbs:
-          - get
-          - list
-          - watch
-      - apiGroups:
-          - ""
-        resources:
-          - events
-        verbs:
-          - create
-
-  - apiVersion: rbac.authorization.k8s.io/v1
     kind: RoleBinding
     metadata:
       name: ${NAME}
     roleRef:
       apiGroup: rbac.authorization.k8s.io
-      kind: Role
-      name: ${NAME}
+      kind: ClusterRole
+      name: edit
     subjects:
       - kind: ServiceAccount
         name: ${NAME}

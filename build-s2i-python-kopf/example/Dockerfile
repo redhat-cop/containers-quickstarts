@@ -1,4 +1,4 @@
-FROM quay.io/jkupferer/python-kopf-s2i:latest
+FROM quay.io/redhat-cop/python-kopf-s2i:latest
 
 USER root
 

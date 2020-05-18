@@ -70,13 +70,19 @@ TBD
 
 An OpenShift build template is provided for building this container image.
 
-. Create events console build configuration
+Create events console build configuration:
 +
 ------------------------------------------------------------
 oc process --local -f build-template.yaml | oc apply -f -
 ------------------------------------------------------------
 
-. Build events operator image
+Then either build the python-kopf-s2i image from git source:
++
+------------------------------------------------------------
+oc start-build python-kopf-s2i
+------------------------------------------------------------
+
+Or build the python-kopf-s2i image from local source:
 +
 ------------------------------------------------------------
 oc start-build python-kopf-s2i --from-dir=../ -F
@@ -84,8 +90,75 @@ oc start-build python-kopf-s2i --from-dir=../ -F
 
 ==== Dockerfile
 
-This image may also be built with the provided `Dockerfile`
+This image may also be built with the provided `Dockerfile`.
+
+Using `podman`:
+
+--------------------------------------------------------------
+sudo podman build --tag python-kopf-s2i:latest -f ./Dockerfile
+--------------------------------------------------------------
+
+Using `docker`:
+
+---------------------------------------------
+sudo docker build -t python-kopf-s2i:latest .
+---------------------------------------------
 
 === Testing s2i build with the Provided Example
 
-TBD
+To verify the source-to-image base image is functional you will want to build an operator image to verify functionality.
+A simple operator example is provided in the `example/` directory.
+
+==== OpenShift
+
+If testing the source-to-image build in an OpenShift cluster then you may use the example build template provided:
+
+Create events console build configuration:
+
+--------------------------------------------------------------------------------
+oc process --local -f example/build-template.yaml \
+-p FROM_IMAGE=$(oc get is python-kopf-s2i -o jsonpath="{.status.tags[?(@.tag=='latest')].items[0].dockerImageReference}") \
+| oc apply -f -
+--------------------------------------------------------------------------------
+
+Then either build the example operator from git source:
+
+------------------------------------------------------------
+oc start-build python-kopf-s2i-example
+------------------------------------------------------------
+
+Or build the example from local source:
+
+------------------------------------------------------------
+oc start-build python-kopf-s2i-example --from-dir=../ -F
+------------------------------------------------------------
+
+Testing in OpenShift
+
+--------------------------------------------------------------------------------
+oc process --local -f example/deploy-template.yaml \
+-p IMAGE=$(oc get is python-kopf-s2i-example -o jsonpath="{.status.tags[?(@.tag=='latest')].items[0].dockerImageReference}") \
+| oc apply -f -
+--------------------------------------------------------------------------------
+
+==== Dockerfile
+
+This example image may also be built with the provided `Dockerfile`.
+The provided configuration builds from the base image `quay.io/redhat-cop/python-kopf-s2i:latest`.
+In order to test your build of the s2i image you will need a modified version of the `Dockerfile`:
+
+--------------------------------------------------------------------------------
+sed 's/^FROM .*/FROM python-kopf-s2i:latest/' example/Dockerfile >example/Dockerfile.custom
+--------------------------------------------------------------------------------
+
+Build using `podman`:
+
+--------------------------------------------------------------------------------
+sudo podman build --tag python-kopf-s2i-example:latest -f ./example/Dockerfile.custom
+--------------------------------------------------------------------------------
+
+Using `docker`:
+
+--------------------------------------------------------------------------------
+sudo docker build -t python-kopf-s2i-example:latest -f ./example/Dockerfile.custom example/
+--------------------------------------------------------------------------------
