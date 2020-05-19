@@ -54,7 +54,7 @@ A set of buildConfigs for building custom Jenkins images for OpenShift.
 
 ### Gitlab Runners
 
-Gitlab Runners for yoru [Gitlab CI/CD](https://docs.gitlab.com/runner/).
+Gitlab Runners for your [Gitlab CI/CD](https://docs.gitlab.com/runner/).
 
 * [UBI 7](./ubi7-gitlab-runner)
 
