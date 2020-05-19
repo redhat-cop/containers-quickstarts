@@ -50,4 +50,4 @@ oc patch deployment/gitlab-runner-gitlab-runner --type json --patch '[{ "op": "r
 
 ## Published
 
-[https://quay.io/repository/redhat-cop/ubi7-gitlab-runner](https://quay.io/repository/redhat-cop/ubi7-gitlab-runner) via [GitHub Workflows](.github/workflows/ubi7-gitlab-runner-publish.yaml).
+[https://quay.io/repository/redhat-cop/ubi7-gitlab-runner](https://quay.io/repository/redhat-cop/ubi7-gitlab-runner) via [GitHub Workflows](../.github/workflows/ubi7-gitlab-runner-publish.yaml).

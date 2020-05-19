@@ -6,4 +6,4 @@ This directory contains utility images with specific tolling in them. Useful for
 
 ## Published Images
 
-The images are also [published to Quay](https://quay.io/organization/redhat-cop) through the use of [Github Workflows](/.github/workflows).
+The images are also [published to Quay](https://quay.io/organization/redhat-cop) through the use of [Github Workflows](../.github/workflows).

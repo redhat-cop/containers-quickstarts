@@ -14,4 +14,4 @@ Useful for environments where these libraries/tools are needed such as:
 
 ## Published
 
-[https://quay.io/repository/redhat-cop/ubi8-asciidoctor](https://quay.io/repository/redhat-cop/ubi8-asciidoctor) via [GitHub Workflows](.github/workflows/ubi8-asciidoctor-publish.yaml).
+[https://quay.io/repository/redhat-cop/ubi8-asciidoctor](https://quay.io/repository/redhat-cop/ubi8-asciidoctor) via [GitHub Workflows](../../.github/workflows/ubi8-asciidoctor-publish.yaml).

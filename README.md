@@ -54,12 +54,15 @@ A set of buildConfigs for building custom Jenkins images for OpenShift.
 
 ### Gitlab Runners
 
-A set of [Gitlab Runners](./gitlab-runners/README.md) for your [Gitlab CI/CD](https://docs.gitlab.com/runner/).
+Gitlab Runners for your [Gitlab CI/CD](https://docs.gitlab.com/runner/).
 
-* [UBI 7](./gitlab-runners/ubi7-gitlab-runner)
-* [UBI 8 Asciidoctor](./gitlab-runners/ubi8-asciidoctor)
-* [UBI 8 Git](./gitlab-runners/ubi8-git)
-* [UBI 8 Google API Pyton Client](./gitlab-runners/ubi8-google-api-python-client)
+* [UBI 7](./ubi7-gitlab-runner)
+
+### Utilities
+
+* [UBI 8 Asciidoctor](./utilities/ubi8-asciidoctor)
+* [UBI 8 Git](./utilities/ubi8-git)
+* [UBI 8 Google API Pyton Client](./utilities/ubi8-google-api-python-client)
 
 ### Developer Tools
 
