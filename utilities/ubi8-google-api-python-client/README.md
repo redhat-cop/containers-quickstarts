@@ -10,4 +10,4 @@ Useful for environments where these libraries/tools are needed such as:
 
 ## Published
 
-[https://quay.io/repository/redhat-cop/ubi8-google-api-python-client](https://quay.io/repository/redhat-cop/ubi8-google-api-python-client) via [GitHub Workflows](.github/workflows/ubi8-google-api-python-client-publish.yaml).
+[https://quay.io/repository/redhat-cop/ubi8-google-api-python-client](https://quay.io/repository/redhat-cop/ubi8-google-api-python-client) via [GitHub Workflows](../../.github/workflows/ubi8-google-api-python-client-publish.yaml).
