@@ -1,0 +1,55 @@
+---
+name: build-s2i-python-kopf-pr
+on:
+  pull_request:
+    paths:
+      - build-s2i-python-kopf/**
+jobs:
+  test:
+    env:
+      CONTEXT_DIR: build-s2i-python-kopf
+      IMAGE_NAME: python-kopf-s2i
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@master
+      - name: Check and verify version.json
+        id: check_version
+        run: |
+          # version.json must have semantic version: vMAJOR.MINOR.PATCH
+          VERSION=$(jq -r '.version' ${CONTEXT_DIR}/version.json)
+          if [[ ! $VERSION =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+              echo "${CONTEXT_DIR}/version.json does not contain semantic version, vMAJOR.MINOR.PATCH"
+              exit 1
+          fi
+          echo ::set-output name=VERSION::$VERSION
+          echo ::set-output name=MINOR_VERSION::${VERSION%.*}
+          sed -i -e "s/^FROM .*/FROM ${IMAGE_NAME}:${VERSION}/" ${CONTEXT_DIR}/example/Dockerfile
+      - name: Build s2i image
+        uses: docker/build-push-action@v1
+        with:
+          path: ${{ env.CONTEXT_DIR }}
+          push: false
+          repository: ${{ env.IMAGE_NAME }}
+          tags: ${{ steps.check_version.outputs.VERSION }}
+      - name: Build example from s2i image
+        uses: docker/build-push-action@v1
+        with:
+          path: ${{ env.CONTEXT_DIR }}/example
+          push: false
+          repository: ${{ env.IMAGE_NAME }}-example
+          tags: ${{ steps.check_version.outputs.VERSION }}
+      - name: Test image
+        run: |
+          EXAMPLE_IMAGE="${IMAGE_NAME}-example:${{ steps.check_version.outputs.VERSION }}"
+
+          echo "Checking kopf version..."
+          KOPF_VERSION="$(docker run --entrypoint '/bin/sh' $EXAMPLE_IMAGE -c 'kopf --version')"
+          if [[ "$KOPF_VERSION" != 'kopf, version ${{ steps.check_version.outputs.MINOR_VERSION }}' ]]; then
+            echo "$KOPF_VERSION not expected ${{ steps.check_version.outputs.MINOR_VERSION }}"
+          fi
+
+          echo "Checking example operator.py..."
+          docker run --entrypoint '/bin/sh' $EXAMPLE_IMAGE -c 'python3 -m py_compile /opt/app-root/operator/operator.py'
+
+          echo "Check example requirements were installed..."
+          docker run --entrypoint '/bin/sh' $EXAMPLE_IMAGE -c 'python3 -c "import yaml"'

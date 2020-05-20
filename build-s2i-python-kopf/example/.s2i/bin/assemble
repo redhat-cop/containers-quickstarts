@@ -1,0 +1,9 @@
+#!/bin/bash
+
+. /usr/libexec/s2i/assemble
+
+OCP_VERSION="${OCP_VERSION:-4.3.1}"
+
+mkdir -p /opt/app-root/bin
+curl -s https://mirror.openshift.com/pub/openshift-v4/clients/ocp/${OCP_VERSION}/openshift-client-linux-${OCP_VERSION}.tar.gz \
+  | tar zxvf - -C /opt/app-root/bin kubectl oc

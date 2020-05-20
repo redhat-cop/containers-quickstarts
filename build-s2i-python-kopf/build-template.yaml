@@ -1,0 +1,49 @@
+---
+apiVersion: template.openshift.io/v1
+kind: Template
+metadata:
+  annotations:
+    description: Build resources for the openshift-deployment-operator
+  name: python-kopf-s2i-build
+
+parameters:
+- name: FROM_IMAGE
+  value: registry.access.redhat.com/ubi8/s2i-core:latest
+- name: GIT_REPO
+  value: https://github.com/redhat-cop/containers-quickstarts.git
+- name: NAME
+  value: python-kopf-s2i
+
+objects:
+- apiVersion: image.openshift.io/v1
+  kind: ImageStream
+  metadata:
+    name: ${NAME}
+  spec:
+    lookupPolicy:
+      local: false
+
+- apiVersion: v1
+  kind: BuildConfig
+  metadata:
+    name: ${NAME}
+  spec:
+    output:
+      to:
+        kind: ImageStreamTag
+        name: ${NAME}:latest
+    postCommit: {}
+    resources: {}
+    runPolicy: Serial
+    source:
+      git:
+        uri: ${GIT_REPO}
+        ref: master
+      contextDir: build-s2i-python-kopf
+    strategy:
+      type: Docker
+      dockerStrategy:
+        from:
+          kind: DockerImage
+          name: ${FROM_IMAGE}
+    triggers: []

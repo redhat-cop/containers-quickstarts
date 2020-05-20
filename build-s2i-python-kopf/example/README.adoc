@@ -1,0 +1,68 @@
+= Python Kopf Source-to-Image Example
+
+This is a simple Python Kopf operator for testing the functionality of the Kopf source-to-image.
+This example is designed to run in an OpenShift cluster and to deploy applications based on data in config maps.
+This is a useful design pattern for developers writing operators without cluster-admin privileges.
+
+The config map is located by label, the default label used by the operator is `app.example.com/config` with any value.
+
+Creating the config map below will cause the operator to process the standard `httpd-example` template in the `openshift`
+namespace, which will trigger a build then deployment of this example into the current namespace.
+
+--------------------------------------------------------------------------------
+oc apply -f - <<EOF
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  labels:
+    app.example.com/config: ''
+  name: httpd-example
+data:
+  config: |
+    template:
+      name: httpd-example
+      namespace: openshift
+      parameters: {}
+EOF
+--------------------------------------------------------------------------------
+
+This example template should create a number of resources on success:
+
+--------------------------------------------------------------------------------
+$ oc get buildconfig,deploymentconfig,service,route httpd-example
+NAME                                           TYPE     FROM   LATEST
+buildconfig.build.openshift.io/httpd-example   Source   Git    1
+
+NAME                                               REVISION   DESIRED   CURRENT   TRIGGERED BY
+deploymentconfig.apps.openshift.io/httpd-example   1          1         1         config,image(httpd-example:latest)
+
+NAME                    TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)    AGE
+service/httpd-example   ClusterIP   172.30.112.35   <none>        8080/TCP   6m3s
+
+NAME                                     HOST/PORT                                                                     PATH   SERVICES        PORT    TERMINATION   WILDCARD
+route.route.openshift.io/httpd-example   httpd-example-python-kopf-s2i.apps.cluster-4004.4004.sandbox782.opentlc.com          httpd-example   <all>                 None
+--------------------------------------------------------------------------------
+
+== Building
+
+An OpenShift template is provided with configuration to build this image:
+
+Create image stream and build config:
+
+------------------------------------------------------------
+oc process --local -f build-template.yaml | oc apply -f -
+------------------------------------------------------------
+
+Build python-kopf-s2i-example from local source:
+
+------------------------------------------------------------
+oc start-build python-kopf-s2i-example --from-dir=../.. -F
+------------------------------------------------------------
+
+Deploy the operator from your local build:
+
+--------------------------------------------------------------------------------
+oc process --local -f example/deploy-template.yaml \
+-p IMAGE=$(oc get is python-kopf-s2i-example -o jsonpath="{.status.tags[?(@.tag=='latest')].items[0].dockerImageReference}") \
+| oc apply -f -
+--------------------------------------------------------------------------------
