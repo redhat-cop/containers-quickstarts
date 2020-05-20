@@ -71,19 +71,19 @@ TBD
 An OpenShift build template is provided for building this container image.
 
 Create events console build configuration:
-+
+
 ------------------------------------------------------------
 oc process --local -f build-template.yaml | oc apply -f -
 ------------------------------------------------------------
 
 Then either build the python-kopf-s2i image from git source:
-+
+
 ------------------------------------------------------------
 oc start-build python-kopf-s2i
 ------------------------------------------------------------
 
 Or build the python-kopf-s2i image from local source:
-+
+
 ------------------------------------------------------------
 oc start-build python-kopf-s2i --from-dir=../ -F
 ------------------------------------------------------------
