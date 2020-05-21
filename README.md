@@ -62,6 +62,7 @@ Gitlab Runners for your [Gitlab CI/CD](https://docs.gitlab.com/runner/).
 ### Utilities
 
 * [UBI 8 Asciidoctor](./utilities/ubi8-asciidoctor)
+* [UBI 8 Bats](./utilities/ubi8-bats)
 * [UBI 8 Git](./utilities/ubi8-git)
 * [UBI 8 Google API Pyton Client](./utilities/ubi8-google-api-python-client)
 
