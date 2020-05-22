@@ -1,0 +1,21 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kopf-simple
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: kopf-simple
+  template:
+    metadata:
+      labels:
+        name: kopf-simple
+    spec:
+      serviceAccountName: kopf-simple
+      containers:
+      - name: operator
+        # Replace this with the built image name
+        image: "{{ REPLACE_IMAGE }}"
+        imagePullPolicy: IfNotPresent

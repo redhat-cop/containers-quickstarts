@@ -1,0 +1,118 @@
+= Python Kopf Source-to-Image Simple Example
+
+This is a simple Python Kopf operator for testing the functionality of the Kopf source-to-image.
+This example is designed to run in an OpenShift cluster watching config maps rather than custom resource definitions.
+This is a useful design pattern for developers writing operators without cluster-admin privileges.
+
+The config map is located by label, the default label used by the operator is `kopf-simple.example.com/config`.
+
+This operator creates secrets dynamically based on configuration in the configmap.
+
+This example has been tested with `odo` as well as OpenShift build configs.
+
+== Using this Example with `odo`
+
+Ensure that the `python-kopf` image stream is available in the `openshift` namespace.
+
+----------------------------------
+oc apply -f ../../imagestream.yaml
+----------------------------------
+
+Create service, role, and role binding for `kopf-simple`:
+
+--------------------------
+oc apply -k kustomize/rbac
+--------------------------
+
+Setup `odo`:
+
+----------------------------------
+odo create python-kopf kopf-simple
+----------------------------------
+
+Push code with `odo`:
+
+--------
+odo push
+--------
+
+Patch the DeploymentConfig created by `odo` to use the `kopf-simple` service account:
+
+-----------------------------------------------------------------------------
+oc patch dc/kopf-simple-app \
+--patch '{"spec":{"template":{"spec":{"serviceAccountName":"kopf-simple"}}}}'
+-----------------------------------------------------------------------------
+
+Create a test config map:
+
+------------------------------------------------------------
+oc create -f test/configmap.yaml
+------------------------------------------------------------
+
+Get config name in `CONFIG_NAME` shell variable:
+
+---------------------------------------------------------------------------------------------------------
+CONFIG_NAME=$(oc get configmap -l kopf-simple.example.com/config -o jsonpath='{.items[0].metadata.name}')
+---------------------------------------------------------------------------------------------------------
+
+Verify secret creation:
+
+-------------------------------
+oc describe secret $CONFIG_NAME
+-------------------------------
+
+Check the operator logs:
+
+--------------------------
+oc logs dc/kopf-simple-app
+--------------------------
+
+Next try editing the config map to add another item to the `secretNames` list:
+
+------------------------------
+oc edit configmap $CONFIG_NAME
+------------------------------
+
+Confirm that the secret was updated:
+
+-------------------------------
+oc describe secret $CONFIG_NAME
+-------------------------------
+
+As an exercise, edit the provided example `operator/operator.py` to enable the configuration to specify the desired random string length.
+After each code change, use `odo push` to push changes into the deployment.
+
+When done, remove `odo` components with:
+
+----------------------
+odo delete kopf-simple
+----------------------
+
+== Building
+
+A Kustomize configuration for building this example in OpenShift is provided.
+
+Create image stream and build config:
+
+---------------------------
+oc apply -k kustomize/build
+---------------------------
+
+Build python-kopf-s2i-example from git source:
+
+------------------------------------------------------------
+oc start-build kopf-simple -F
+------------------------------------------------------------
+
+Or build python-kopf-s2i-example from local source:
+
+------------------------------------------------------------
+oc start-build kopf-simple --from-dir=../../.. -F
+------------------------------------------------------------
+
+Deploy the operator from your local build:
+
+--------------------------------------------------------------------------------
+sed -i "s|image: .*|image: '$(oc get is kopf-simple -o jsonpath="{.status.tags[?(@.tag=='latest')].items[0].dockerImageReference}")'|" kustomize/deploy/deployment.yaml
+oc apply -k kustomize/deploy
+--------------------------------------------------------------------------------

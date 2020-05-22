@@ -1,0 +1,25 @@
+---
+apiVersion: v1
+kind: BuildConfig
+metadata:
+  name: kopf-simple
+spec:
+  output:
+    to:
+      kind: ImageStreamTag
+      name: kopf-simple:latest
+  postCommit: {}
+  resources: {}
+  runPolicy: Serial
+  source:
+    git:
+      uri: https://github.com/redhat-cop/containers-quickstarts.git
+      ref: master
+    contextDir: build-s2i-python-kopf/examples/simple
+  strategy:
+    sourceStrategy:
+      from:
+        kind: DockerImage
+        name: quay.io/redhat-cop/python-kopf-s2i:latest
+      forcePull: true
+  triggers: []

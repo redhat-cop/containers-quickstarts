@@ -4,11 +4,8 @@ Source-to-Image for python https://kopf.readthedocs.io/en/latest/[kopf] based op
 
 == Usage
 
-TBD
-
-=== Building a Python Kopf Operator
-
-TBD
+This Python Kopf operator source-to-image can be used to build python-base operators using OpenShift source-to-image or Dockerfile based builds.
+This s2i image may also be used with `odo` to do in-cluster operator development.
 
 === Kopf Options
 
@@ -56,13 +53,28 @@ The default when running containerized is to base the priority on the pod IP or 
 Python requirements can be specified in the `requirements.txt` file.
 These will be processed and installed to the container image during source-to-image build using Python3 `pip`.
 
+=== Developing with `odo`
+
+This source-to-image project supports `odo` for in-cluster operator development.
+
+https://docs.openshift.com/container-platform/latest/cli_reference/developer_cli_odo/installing-odo.html[Installing odo]
+
+To use this image with `odo` you can create an image stream in the `openshift` namespace.
+This will make `python-kopf` appear as a valid project type for `odo create`.
+
+-----------------------------
+oc create -f imagestream.yaml
+-----------------------------
+
+=== Python Kopf Operator Examples
+
+xref:examples/simple/README.adoc[Simple Example]
+
+xref:examples/openshift-template-deployer/README.adoc[OpenShift Template Deployer]
+
 === Deploying
 
-Liveness probe on TCP port 8080.
-
-== Development
-
-TBD
+The source-to-image run will configure Kopf to present TCP port 8080 for liveness probes.
 
 === Building this Source-to-Image Base Image
 
@@ -107,39 +119,38 @@ sudo docker build -t python-kopf-s2i:latest .
 === Testing s2i build with the Provided Example
 
 To verify the source-to-image base image is functional you will want to build an operator image to verify functionality.
-A simple operator example is provided in the `example/` directory.
+A simple operator example is provided in the `examples/` directory.
 
 ==== OpenShift
 
-If testing the source-to-image build in an OpenShift cluster then you may use the example build template provided:
+If testing the source-to-image build in an OpenShift cluster then you may use the example build configuration provided.
 
-Create events console build configuration:
+First update the build config souce image name in `simple/kustomize/build-custom/build_config.yaml`:
 
 --------------------------------------------------------------------------------
-oc process --local -f example/build-template.yaml \
--p FROM_IMAGE=$(oc get is python-kopf-s2i -o jsonpath="{.status.tags[?(@.tag=='latest')].items[0].dockerImageReference}") \
-| oc apply -f -
+sed -i "s|^        name: .*|        name: '$(oc get is kopf-simple -o jsonpath="{.status.tags[?(@.tag=='latest')].items[0].dockerImageReference}")'|" examples/simple/kustomize/build-custom/build_config.yaml
 --------------------------------------------------------------------------------
+
+Then apply the kustomized build configuration:
+
+--------------------------------------------------
+oc apply -k examples/simple/kustomize/build-custom
+--------------------------------------------------
 
 Then either build the example operator from git source:
 
-------------------------------------------------------------
-oc start-build python-kopf-s2i-example
-------------------------------------------------------------
+-----------------------------
+oc start-build kopf-simple -F
+-----------------------------
 
 Or build the example from local source:
 
-------------------------------------------------------------
-oc start-build python-kopf-s2i-example --from-dir=../ -F
-------------------------------------------------------------
+--------------------------------------------
+oc start-build kopf-simple --from-dir=../ -F
+--------------------------------------------
 
-Testing in OpenShift
-
---------------------------------------------------------------------------------
-oc process --local -f example/deploy-template.yaml \
--p IMAGE=$(oc get is python-kopf-s2i-example -o jsonpath="{.status.tags[?(@.tag=='latest')].items[0].dockerImageReference}") \
-| oc apply -f -
---------------------------------------------------------------------------------
+Description for how to test this example can be found in
+xref:examples/simple/README.adoc[Simple Example].
 
 ==== Dockerfile
 
