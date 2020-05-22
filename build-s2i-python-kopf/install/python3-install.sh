@@ -1,6 +1,6 @@
 #!/bin/sh
 
-PYTHON_VERSION=${PYTHON_VERSION:-3.8.2}
+PYTHON_VERSION=${PYTHON_VERSION:-3.8.3}
 PYTHON_MINOR_VERSION=$(echo ${PYTHON_VERSION} | sed 's/\.[0-9]*$//')
 
 #Exit on error

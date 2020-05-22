@@ -2,7 +2,9 @@ FROM registry.access.redhat.com/ubi8/s2i-core:latest
   
 MAINTAINER Johnathan Kupferer <jkupfere@redhat.com>
 
-ENV PYTHON_VERSION=3.8.2
+ENV PYTHON_VERSION=3.8.3 \
+    OPENSHIFT_CLIENT_VERSION=4.4.5 \
+    HELM_VERSION=3.2.1
 
 LABEL io.k8s.description="Python Kopf - Kubernetes Operator Framework" \
       io.k8s.display-name="Kopf Operator" \
@@ -28,6 +30,10 @@ RUN yum install -y \
     && \
     /opt/app-root/install/python3-install.sh && \
     pip3 install --upgrade -r /opt/app-root/install/requirements.txt && \
+    curl -s https://mirror.openshift.com/pub/openshift-v4/clients/ocp/${OPENSHIFT_CLIENT_VERSION}/openshift-client-linux-${OPENSHIFT_CLIENT_VERSION}.tar.gz \
+    | tar zxf - -C /usr/local/bin oc kubectl && \
+    curl -s https://get.helm.sh/helm-v${HELM_VERSION}-linux-amd64.tar.gz \
+    | tar zxf - -C /usr/local/bin --strip-components=1 linux-amd64/helm && \
     chmod --recursive g+w /usr/local && \
     chown --recursive 1001:0 /usr/local && \
     mkdir -p /opt/app-root/nss && \
