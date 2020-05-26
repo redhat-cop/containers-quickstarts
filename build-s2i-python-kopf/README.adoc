@@ -84,21 +84,21 @@ An OpenShift build template is provided for building this container image.
 
 Create events console build configuration:
 
-------------------------------------------------------------
+----------------------------------------------------------
 oc process --local -f build-template.yaml | oc apply -f -
-------------------------------------------------------------
+----------------------------------------------------------
 
 Then either build the python-kopf-s2i image from git source:
 
-------------------------------------------------------------
+------------------------------
 oc start-build python-kopf-s2i
-------------------------------------------------------------
+------------------------------
 
 Or build the python-kopf-s2i image from local source:
 
-------------------------------------------------------------
+------------------------------------------------
 oc start-build python-kopf-s2i --from-dir=../ -F
-------------------------------------------------------------
+------------------------------------------------
 
 ==== Dockerfile
 
@@ -123,18 +123,12 @@ A simple operator example is provided in the `examples/` directory.
 
 ==== OpenShift
 
-If testing the source-to-image build in an OpenShift cluster then you may use the example build configuration provided.
-
-First update the build config souce image name in `simple/kustomize/build-custom/build_config.yaml`:
-
---------------------------------------------------------------------------------
-sed -i "s|^        name: .*|        name: '$(oc get is kopf-simple -o jsonpath="{.status.tags[?(@.tag=='latest')].items[0].dockerImageReference}")'|" examples/simple/kustomize/build-custom/build_config.yaml
---------------------------------------------------------------------------------
-
-Then apply the kustomized build configuration:
+If testing the source-to-image build in an OpenShift cluster then you may use the example build template provided.
 
 --------------------------------------------------
-oc apply -k examples/simple/kustomize/build-custom
+oc process --local -f examples/simple/build-template.yaml \
+-p FROM_IMAGE=$(oc get is python-kopf-s2i -o jsonpath="{.status.tags[?(@.tag=='latest')].items[0].dockerImageReference}") \
+| oc apply -f -
 --------------------------------------------------
 
 Then either build the example operator from git source:
@@ -149,7 +143,7 @@ Or build the example from local source:
 oc start-build kopf-simple --from-dir=../ -F
 --------------------------------------------
 
-Description for how to test this example can be found in
+Description for how to deploy and test this example can be found in
 xref:examples/simple/README.adoc[Simple Example].
 
 ==== Dockerfile

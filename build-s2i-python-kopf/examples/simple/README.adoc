@@ -20,9 +20,9 @@ oc apply -f ../../imagestream.yaml
 
 Create service, role, and role binding for `kopf-simple`:
 
---------------------------
-oc apply -k kustomize/rbac
---------------------------
+--------------------------------------------------------------------------------
+oc apply -f rbac/role_binding.yaml -f rbac/role.yaml -f rbac/service_account.yaml
+--------------------------------------------------------------------------------
 
 Setup `odo`:
 
@@ -45,9 +45,9 @@ oc patch dc/kopf-simple-app \
 
 Create a test config map:
 
-------------------------------------------------------------
+--------------------------------
 oc create -f test/configmap.yaml
-------------------------------------------------------------
+--------------------------------
 
 Get config name in `CONFIG_NAME` shell variable:
 
@@ -94,25 +94,26 @@ A Kustomize configuration for building this example in OpenShift is provided.
 
 Create image stream and build config:
 
----------------------------
-oc apply -k kustomize/build
----------------------------
+----------------------------------------------------------
+oc process --local -f build-template.yaml | oc apply -f -
+----------------------------------------------------------
 
 Build python-kopf-s2i-example from git source:
 
-------------------------------------------------------------
+-----------------------------
 oc start-build kopf-simple -F
-------------------------------------------------------------
+-----------------------------
 
 Or build python-kopf-s2i-example from local source:
 
-------------------------------------------------------------
+-------------------------------------------------
 oc start-build kopf-simple --from-dir=../../.. -F
-------------------------------------------------------------
+-------------------------------------------------
 
 Deploy the operator from your local build:
 
 --------------------------------------------------------------------------------
-sed -i "s|image: .*|image: '$(oc get is kopf-simple -o jsonpath="{.status.tags[?(@.tag=='latest')].items[0].dockerImageReference}")'|" kustomize/deploy/deployment.yaml
-oc apply -k kustomize/deploy
+oc process --local -f deploy-template.yaml \
+-p IMAGE=$(oc get is kopf-simple -o jsonpath="{.status.tags[?(@.tag=='latest')].items[0].dockerImageReference}") \
+| oc apply -f -
 --------------------------------------------------------------------------------

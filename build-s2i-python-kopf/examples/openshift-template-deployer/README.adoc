@@ -1,6 +1,6 @@
 = Python Kopf openshift-template-deployer Example
 
-This is a simple Python Kopf operator for testing the functionality of the Kopf source-to-image.
+This is an example Python Kopf operator for testing the functionality of the Kopf source-to-image.
 This example is designed to run in an OpenShift cluster and to deploy applications based on data in config maps.
 This is a useful design pattern for developers writing operators without cluster-admin privileges.
 
@@ -53,9 +53,9 @@ oc apply -f ../../imagestream.yaml
 
 Create service and role binding for `openshift-template-deployer`:
 
---------------------------
-oc apply -k kustomize/rbac
---------------------------
+---------------------------------------------------------------
+oc apply -f rbac/role_binding.yaml -f rbac/service_account.yaml
+---------------------------------------------------------------
 
 Setup `odo`:
 
@@ -96,9 +96,9 @@ An OpenShift template is provided with configuration to build this image:
 
 Create image stream and build config:
 
----------------------------
-oc apply -k kustomize/build
----------------------------
+---------------------------------------------------------
+oc process --local -f build-template.yaml | oc apply -f -
+---------------------------------------------------------
 
 Build python-kopf-s2i-example from local source:
 
@@ -109,6 +109,7 @@ oc start-build openshift-template-deployer --from-dir=../../.. -F
 Deploy the operator from your local build:
 
 --------------------------------------------------------------------------------
-sed -i "s|image: .*|image: '$(oc get is openshift-template-deployer -o jsonpath="{.status.tags[?(@.tag=='latest')].items[0].dockerImageReference}")'|" kustomize/deploy/deployment.yaml
-oc apply -k kustomize/deploy
+oc process --local -f deploy-template.yaml \
+-p IMAGE=$(oc get is openshift-template-deployer -o jsonpath="{.status.tags[?(@.tag=='latest')].items[0].dockerImageReference}") \
+| oc apply -f -
 --------------------------------------------------------------------------------
