@@ -13,8 +13,8 @@ metadata:
 labels:
   createdBy: gitlab-ce-template
 objects:
-- kind: SecurityContextConstraints
-  apiVersion: security.openshift.io/v1
+- apiVersion: security.openshift.io/v1
+  kind: SecurityContextConstraints
   allowHostDirVolumePlugin: false
   allowHostIPC: false
   allowHostNetwork: false
