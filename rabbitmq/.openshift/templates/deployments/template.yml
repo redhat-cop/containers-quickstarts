@@ -43,7 +43,7 @@ objects:
       application: "${APPLICATION_NAME}"
     sessionAffinity: None
     type: ClusterIP
-- apiVersion: apps/v1beta1
+- apiVersion: apps/v1
   kind: StatefulSet
   metadata:
     labels:
