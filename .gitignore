@@ -5,3 +5,4 @@
 roles
 *.swp
 __pycache__
+.odo

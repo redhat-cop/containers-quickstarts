@@ -4,7 +4,7 @@ kind: Template
 metadata:
   annotations:
     description: Example python-kopf-s2i build
-  name: python-kopf-s2i-example-build
+  name: openshift-template-deployer-build
 
 parameters:
 - name: FROM_IMAGE
@@ -12,7 +12,7 @@ parameters:
 - name: GIT_REPO
   value: https://github.com/redhat-cop/containers-quickstarts.git
 - name: NAME
-  value: python-kopf-s2i-example
+  value: openshift-template-deployer
 
 objects:
 - apiVersion: image.openshift.io/v1
@@ -39,7 +39,7 @@ objects:
       git:
         uri: ${GIT_REPO}
         ref: master
-      contextDir: build-s2i-python-kopf/example
+      contextDir: build-s2i-python-kopf/examples/openshift-template-deployer
     strategy:
       sourceStrategy:
         from:

@@ -23,7 +23,7 @@ jobs:
           fi
           echo ::set-output name=VERSION::$VERSION
           echo ::set-output name=MINOR_VERSION::${VERSION%.*}
-          sed -i -e "s/^FROM .*/FROM ${IMAGE_NAME}:${VERSION}/" ${CONTEXT_DIR}/example/Dockerfile
+          sed -i -e "s/^FROM .*/FROM ${IMAGE_NAME}:${VERSION}/" ${CONTEXT_DIR}/examples/simple/Dockerfile
       - name: Build s2i image
         uses: docker/build-push-action@v1
         with:
@@ -31,10 +31,10 @@ jobs:
           push: false
           repository: ${{ env.IMAGE_NAME }}
           tags: ${{ steps.check_version.outputs.VERSION }}
-      - name: Build example from s2i image
+      - name: Build simple example from s2i image
         uses: docker/build-push-action@v1
         with:
-          path: ${{ env.CONTEXT_DIR }}/example
+          path: ${{ env.CONTEXT_DIR }}/examples/simple
           push: false
           repository: ${{ env.IMAGE_NAME }}-example
           tags: ${{ steps.check_version.outputs.VERSION }}

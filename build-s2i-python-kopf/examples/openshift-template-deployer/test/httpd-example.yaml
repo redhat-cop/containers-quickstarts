@@ -2,7 +2,7 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: test
+  name: httpd-example
   labels:
     app.example.com/config: ''
 data:

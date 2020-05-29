@@ -21,9 +21,10 @@ COPY s2i /usr/libexec/s2i
 EXPOSE 8080
 
 RUN yum install -y \
-      gcc \
-      openssl-devel \
       bzip2-devel \
+      gcc \
+      git \
+      openssl-devel \
       libffi-devel \
       make \
       nss_wrapper \

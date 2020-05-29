@@ -1,10 +1,10 @@
-= Python Kopf Source-to-Image Example
+= Python Kopf openshift-template-deployer Example
 
-This is a simple Python Kopf operator for testing the functionality of the Kopf source-to-image.
+This is an example Python Kopf operator for testing the functionality of the Kopf source-to-image.
 This example is designed to run in an OpenShift cluster and to deploy applications based on data in config maps.
 This is a useful design pattern for developers writing operators without cluster-admin privileges.
 
-The config map is located by label, the default label used by the operator is `app.example.com/config` with any value.
+The config map is located by label, the default label used by the operator is `app.example.com/config`.
 
 Creating the config map below will cause the operator to process the standard `httpd-example` template in the `openshift`
 namespace, which will trigger a build then deployment of this example into the current namespace.
@@ -43,26 +43,73 @@ NAME                                     HOST/PORT                              
 route.route.openshift.io/httpd-example   httpd-example-python-kopf-s2i.apps.cluster-4004.4004.sandbox782.opentlc.com          httpd-example   <all>                 None
 --------------------------------------------------------------------------------
 
+== Using this Example with `odo`
+
+Ensure that the `python-kopf` image stream is available in the `openshift` namespace.
+
+----------------------------------
+oc apply -f ../../imagestream.yaml
+----------------------------------
+
+Create service and role binding for `openshift-template-deployer`:
+
+---------------------------------------------------------------
+oc apply -f rbac/role_binding.yaml -f rbac/service_account.yaml
+---------------------------------------------------------------
+
+Setup `odo`:
+
+--------------------------------------------------
+odo create python-kopf openshift-template-deployer
+--------------------------------------------------
+
+Push code with `odo`:
+
+--------
+odo push
+--------
+
+Patch the DeploymentConfig created by `odo` to use the `o` service account:
+
+-----------------------------------------------------------------------------
+oc patch dc/openshift-template-deployer-app \
+--patch '{"spec":{"template":{"spec":{"serviceAccountName":"openshift-template-deployer"}}}}'
+-----------------------------------------------------------------------------
+
+Create a test config map:
+
+------------------------------------
+oc create -f test/httpd-example.yaml
+------------------------------------
+
+Check the operator logs:
+
+------------------------------------------
+oc logs dc/openshift-template-deployer-app
+------------------------------------------
+
+Next play around with the code in `operator/operator.py` and use `odo push` to push changes and then retest.
+
 == Building
 
 An OpenShift template is provided with configuration to build this image:
 
 Create image stream and build config:
 
-------------------------------------------------------------
+---------------------------------------------------------
 oc process --local -f build-template.yaml | oc apply -f -
-------------------------------------------------------------
+---------------------------------------------------------
 
 Build python-kopf-s2i-example from local source:
 
-------------------------------------------------------------
-oc start-build python-kopf-s2i-example --from-dir=../.. -F
-------------------------------------------------------------
+-----------------------------------------------------------------
+oc start-build openshift-template-deployer --from-dir=../../.. -F
+-----------------------------------------------------------------
 
 Deploy the operator from your local build:
 
 --------------------------------------------------------------------------------
-oc process --local -f example/deploy-template.yaml \
--p IMAGE=$(oc get is python-kopf-s2i-example -o jsonpath="{.status.tags[?(@.tag=='latest')].items[0].dockerImageReference}") \
+oc process --local -f deploy-template.yaml \
+-p IMAGE=$(oc get is openshift-template-deployer -o jsonpath="{.status.tags[?(@.tag=='latest')].items[0].dockerImageReference}") \
 | oc apply -f -
 --------------------------------------------------------------------------------

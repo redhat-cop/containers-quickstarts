@@ -1,0 +1,11 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  generateName: kopf-simple-
+  labels:
+    kopf-simple.example.com/config: ''
+data:
+  config: |
+    secretNames:
+    - password

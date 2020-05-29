@@ -21,6 +21,15 @@ else:
 core_v1_api = kubernetes.client.CoreV1Api()
 custom_objects_api = kubernetes.client.CustomObjectsApi()
 
+def owner_reference_from_resource(resource):
+    return dict(
+        apiVersion = resource['apiVersion'],
+        controller = True,
+        blockOwnerDeletion = False,
+        kind = resource['kind'],
+        name = resource['metadata']['name'],
+        uid = resource['metadata']['uid']
+    )
 
 def process_template(owner_reference, template_name, template_namespace, template_parameters):
     '''
@@ -39,6 +48,9 @@ def process_template(owner_reference, template_name, template_namespace, templat
     return resource_list
 
 def add_owner_reference(resource_list, owner_reference):
+    '''
+    Add owner references to resource definition metadata.
+    '''
     for item in resource_list['items']:
         metadata = item['metadata']
         if 'ownerReferences' in metadata:
@@ -63,14 +75,7 @@ def deploy_app_from_config_map(config_map, logger):
         config = yaml.safe_load(config_map['data']['config'])
     except yaml.parser.ParserError as e:
         raise kopf.PermanentError('Unable to load config YAML: {0}'.format(str(e)))
-    owner_reference = dict(
-        apiVersion = config_map['apiVersion'],
-        controller = True,
-        blockOwnerDeletion = False,
-        kind = config_map['kind'],
-        name = config_map['metadata']['name'],
-        uid = config_map['metadata']['uid']
-    )
+    owner_reference = owner_reference_from_resource(config_map)
     deploy_app(owner_reference, config, logger)
 
 def deploy_app(owner_reference, config, logger):
