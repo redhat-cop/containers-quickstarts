@@ -90,6 +90,40 @@ $ oc rsh rabbitmq-1 rabbitmqctl cluster_status --formatter json | tail -1 | jq '
 }
 ```
 
+## Testing
+This quickstart is using [bats](/bats-core/bats-core) for unit and acceptance testing of the included Helm chart.
+
+### Unit testing
+The unit tests will test features of the Helm chart and also requires [yq](https://github.com/mikefarah/yq).
+```
+bats test/unit
+ ✓ configmap: three config files defined
+ ✓ rolebinding: default serviceaccount
+ ✓ rolebinding: custom serviceaccount
+ ✓ service: enabled by default
+ ✓ service: name match release name
+...
+ ✓ statefulset: default tolerations
+ ✓ statefulset: custom tolerations
+
+41 tests, 0 failures
+```
+
+### Acceptance testing
+The acceptance tests will deploy the RabbitMQ cluster using the Helm chart and assumes you have access to an OpenShift cluster (v3.11+) with at least self-provisioner access (it will create a new namespace).
+You will also need to install [jq](https://github.com/stedolan/jq) and at the moment you will need to use Bats from the master branch as the test require features added after the latest Bats' release.
+```
+bats test/acceptance
+ ✓ rabbitmq/ha: should have 'hostname' package installed
+ ✓ rabbitmq/ha: should have $LANG set to 'en_US.UTF-8'
+ ✓ rabbitmq/ha: should not have any alarms
+ ✓ rabbitmq/ha: fail if number of replicas aren't ready
+ ✓ rabbitmq/ha: should run on different cluster nodes
+ ✓ rabbitmq/ha: should have a three node cluster
+
+6 tests, 0 failures
+```
+
 ## Tear everything down
 `helm uninstall rabbitmq`
 or
