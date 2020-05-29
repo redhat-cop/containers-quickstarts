@@ -16,7 +16,6 @@ objects:
   allowPrivilegedContainer: false
   allowedCapabilities: null
   allowedFlexVolumes: null
-  apiVersion: v1
   defaultAddCapabilities: null
   fsGroup:
     type: RunAsAny
