@@ -5,8 +5,6 @@ labels:
 message: A Hoverfly service has been created in your project.
 metadata:
   annotations:
-    description: |-
-      Hoverfly service
     iconClass: icon-openshift
     description: Hoverfly. A lightweight, opensource API simulation tool.
     tags: instant-app
