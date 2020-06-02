@@ -23,3 +23,7 @@ RUN pip3 install --upgrade \
   google-auth-httplib2 \
   google-auth-oauthlib \
   oauth2client
+
+# Copy in custom helper scripts
+add ./root /
+RUN chmod u+x /usr/local/bin/upload-file-to-google-drive
