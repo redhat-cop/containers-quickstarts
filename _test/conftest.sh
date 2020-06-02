@@ -46,7 +46,6 @@ load _helpers
 }
 
 @test "eap/chart" {
-  skip
   helm_template "eap/chart" "--set sourceUri=conftest"
 
   run conftest test /tmp/eap/chart/eap72/templates --output tap
@@ -97,7 +96,6 @@ load _helpers
 }
 
 @test "motepair" {
-  skip
   helm_template "motepair"
 
   run conftest test /tmp/motepair/motepair/templates --output tap
@@ -106,7 +104,6 @@ load _helpers
 }
 
 @test "nexus/chart/nexus" {
-  skip
   helm_template "nexus/chart/nexus" "--dependency-update"
 
   run conftest test /tmp/nexus/chart/nexus/nexus/charts/sonatype-nexus --output tap
@@ -127,7 +124,6 @@ load _helpers
 }
 
 @test "rabbitmq/chart" {
-  skip
   helm_template "rabbitmq/chart"
 
   run conftest test /tmp/rabbitmq/chart/RabbitMQ/templates --output tap
