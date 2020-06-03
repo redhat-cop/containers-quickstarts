@@ -1,5 +1,5 @@
 ---
-apiVersion: v1
+apiVersion: template.openshift.io/v1
 kind: Template
 labels:
   template: ubi8-asciidoctor
@@ -12,8 +12,8 @@ metadata:
     tags: asciidoctor, ubi8
   name: ubi8-asciidoctor
 objects:
-- apiVersion: "v1"
-  kind: "BuildConfig"
+- apiVersion: build.openshift.io/v1
+  kind: BuildConfig
   metadata:
     name: "ubi8-asciidoctor"
   spec:
@@ -36,7 +36,7 @@ objects:
       limits:
         cpu: 2
         memory: "1Gi"
-- apiVersion: v1
+- apiVersion: image.openshift.io/v1
   kind: ImageStream
   metadata:
     name: ubi8-asciidoctor

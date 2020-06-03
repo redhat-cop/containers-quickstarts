@@ -1,0 +1,52 @@
+#!/bin/bash
+
+set -eo pipefail
+
+export NSS_WRAPPER_PASSWD=/opt/app-root/nss/passwd
+export NSS_WRAPPER_GROUP=/opt/app-root/nss/group
+
+cp /etc/passwd $NSS_WRAPPER_PASSWD
+cp /etc/group $NSS_WRAPPER_GROUP
+echo operator:x:$(id -u):$(id -g):operator:/opt/app-root/operator:/bin/sh >> $NSS_WRAPPER_PASSWD
+
+export LD_PRELOAD=libnss_wrapper.so
+export OPERATOR_NAMESPACE="$(cat /run/secrets/kubernetes.io/serviceaccount/namespace)"
+
+if [[ -s /opt/app-root/kopf-opt.sh ]]; then
+    . /opt/app-root/kopf-opt.sh
+fi
+
+KOPF_OPTIONS=${KOPF_OPTIONS:-}
+
+if [[ "${KOPF_STANDALONE:-false}" == "true" ]]; then
+    KOPF_OPTIONS="${KOPF_OPTIONS} --standalone"
+fi
+
+if [[ "${KOPF_NAMESPACE}" ]]; then
+    KOPF_OPTIONS="${KOPF_OPTIONS} --namespace=${KOPF_NAMESPACE}"
+elif [[ "${KOPF_NAMESPACED:-false}" == "true" ]]; then
+    KOPF_OPTIONS="${KOPF_OPTIONS} --namespace=${OPERATOR_NAMESPACE}"
+fi
+
+if [[ "${KOPF_PRIORITY}" ]]; then
+    KOPF_OPTIONS="${KOPF_OPTIONS} --priority=${KOPF_PRIORITY}"
+else
+    IP=$(sed -n "s/ *$HOSTNAME$//p" /etc/hosts)
+    if [[ -n "$IP" ]]; then
+        IFS='.' read -r -a IPN <<<$IP
+        KOPF_OPTIONS="${KOPF_OPTIONS} --priority=$(( ${IPN[0]} * 16777216 + ${IPN[1]} *  65536 + ${IPN[2]} * 256 + ${IPN[3]} ))"
+    else
+        KOPF_OPTIONS="${KOPF_OPTIONS} --priority=${RANDOM}"
+    fi
+fi
+
+if [[ "${KOPF_PEERING}" ]]; then
+    KOPF_OPTIONS="${KOPF_PEERING} --peering=${KOPF_PEERING}"
+fi
+
+cd /opt/app-root/operator
+
+# Unset KOPF_VERSION to prevent it from being interpreted by kopf command
+unset KOPF_VERSION
+
+exec kopf run --liveness=http://0.0.0.0:8080/healthz ${KOPF_OPTIONS} ${KOPF_OPERATORS:-operator.py}

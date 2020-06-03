@@ -1,0 +1,11 @@
+---
+apiVersion: v1
+kind: BuildConfig
+metadata:
+  name: openshift-template-deployer
+spec:
+  strategy:
+    sourceStrategy:
+      from:
+        # Replace this with the built image name
+        name: "{{ REPLACE_IMAGE }}"

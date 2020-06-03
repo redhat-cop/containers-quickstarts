@@ -1,0 +1,21 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: openshift-template-deployer
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: openshift-template-deployer
+  template:
+    metadata:
+      labels:
+        name: openshift-template-deployer
+    spec:
+      serviceAccountName: openshift-template-deployer
+      containers:
+      - name: operator
+        # Replace this with the built image name
+        image: 'image-registry.openshift-image-registry.svc:5000/python-kopf-s2i/kopf-simple@sha256:c515fff0b6e79a147ad5980075f2dca94d6936a459fa76b8e1ccfe423bd0e399'
+        imagePullPolicy: IfNotPresent

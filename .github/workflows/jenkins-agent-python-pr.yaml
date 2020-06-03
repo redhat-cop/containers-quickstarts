@@ -1,0 +1,31 @@
+name: jenkins-agent-python-pr
+on:
+  pull_request:
+    paths:
+      - jenkins-slaves/jenkins-slave-python/**
+jobs:
+  build:
+    env:
+      context: jenkins-slaves/jenkins-slave-python
+      image_name: jenkins-agent-python
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+      - name: Check and verify version.json
+        id: check_version
+        run: |
+          echo -n ::set-output name=IMAGE_TAGS::
+          echo $(jq -r '.version' ${context}/version.json)
+      - name: Build image
+        uses: docker/build-push-action@v1
+        with:
+          path: ${{ env.context }}
+          push: false
+          repository: ${{ env.image_name }}
+          tags: ${{ steps.check_version.outputs.IMAGE_TAGS }}
+      - name: Test image
+        run: |
+          echo "Running: docker run ${image_name}:${{ steps.check_version.outputs.IMAGE_TAGS }} python --version"
+          docker run ${image_name}:${{ steps.check_version.outputs.IMAGE_TAGS }} python --version
+          echo "Running: docker run ${image_name}:${{ steps.check_version.outputs.IMAGE_TAGS }} pip --version"
+          docker run ${image_name}:${{ steps.check_version.outputs.IMAGE_TAGS }} pip --version

@@ -1,0 +1,265 @@
+#!/usr/bin/env python3
+
+from __future__ import print_function
+import sys, getopt
+import os.path
+from apiclient import errors
+from googleapiclient.discovery import build
+from google_auth_oauthlib.flow import InstalledAppFlow
+from google.auth.transport.requests import Request
+from googleapiclient.http import MediaFileUpload
+from oauth2client.service_account import ServiceAccountCredentials
+
+SCOPES = ['https://www.googleapis.com/auth/drive']
+
+def get_service(api_name, api_version, scopes, key_file_location):
+  """Get a service that communicates to a Google API.
+
+  Args:
+    api_name: The name of the api to connect to.
+    api_version: The api version to connect to.
+    scopes: A list auth scopes to authorize for the application.
+    key_file_location: The path to a valid service account JSON key file.
+
+  Returns:
+    A service that is connected to the specified API.
+  """
+
+  credentials = ServiceAccountCredentials.from_json_keyfile_name(
+                  key_file_location,
+                  scopes=scopes)
+
+  # Build the service object.
+  service = build(api_name, api_version, credentials=credentials)
+
+  return service
+
+def create_folder(drive_service, parent_folder_id, folder_name, drive_id=''):
+  try:
+    file_metadata = {
+      'name': folder_name,
+      'parents': [parent_folder_id],
+      'driveId': drive_id,
+      'mimeType': 'application/vnd.google-apps.folder'
+    }
+    folder_metata = drive_service.files().create(
+                      body=file_metadata,
+                      supportsAllDrives=True,
+                      fields='id'
+                    ).execute()
+
+    return folder_metata
+  except errors.HttpError as error:
+    print('create_folder: An error occurred: %s' % error)
+    return None
+
+
+def upload_file(drive_service, local_file_path, parent_folder_id, dest_file_name, source_mime_type, dest_mime_type, drive_id=''):
+  """Uploads a given PDF to a given folder in google drive.
+  """
+
+  try:
+    file_metadata = {
+      'name': dest_file_name,
+      'parents': [parent_folder_id],
+      'driveId': drive_id,
+      'mimeType': dest_mime_type
+    }
+    media_body = MediaFileUpload(
+                   local_file_path,
+                   mimetype=source_mime_type)
+
+    new_file_metadata = drive_service.files().create(
+                          body=file_metadata,
+                          media_body=media_body,
+                          supportsAllDrives=True,
+                          fields='id'
+                        ).execute()
+
+    return new_file_metadata
+  except errors.HttpError as error:
+    print('upload_file: An error occurred: %s' % error)
+    return None
+
+
+def update_file(drive_service, local_file_path, file_id, drive_id=''):
+  """Update an existing file's metadata and content.
+
+  Args:
+    drive_service: Drive API service instance.
+    local_file_path: Filename of the new content to upload.
+    file_id: ID of the file to update.
+  Returns:
+    Updated file metadata if successful, None otherwise.
+  """
+  try:
+    # First retrieve the file from the API.
+    file_metadata = drive_service.files().get(
+                      supportsAllDrives=True,
+                      fileId=file_id
+                    ).execute()
+  
+    # File's new content.
+    media_body = MediaFileUpload(
+                     local_file_path,
+                     mimetype=file_metadata.get('mimeType'))
+  
+    # Send the request to the API.
+    file_metadata.pop('id', None) # this field isn't writeable so need to remove it from the metadata
+    updated_file_metadata = drive_service.files().update(
+                              fileId=file_id,
+                              body=file_metadata,
+                              media_body=media_body,
+                              supportsAllDrives=True,
+                            ).execute()
+    return updated_file_metadata
+
+  except errors.HttpError as error:
+    print('update_file: An error occurred: %s' % error)
+    return None
+
+
+def find_file(drive_service, parent_folder_id, file_name):
+  page_token = None
+  while True:
+    response = drive_service.files().list(
+                 q=f"('{parent_folder_id}' in parents) and (name = '{file_name}')",
+                 spaces='drive',
+                 fields='nextPageToken, files(id, name)',
+                 supportsAllDrives=True,
+                 includeItemsFromAllDrives=True,
+                 pageToken=page_token
+               ).execute()
+
+    files = response.get('files', [])
+
+    if len(files) == 1:
+      file_metadata = files[0]
+    elif len(files) > 1:
+      file_metadata = files[0]
+      print(f"WARNING: found more then one file in parent folder ({parent_folder_id}) with name ({file_name}), using first one ({file_metadata})")
+    else:
+      file_metadata = None
+
+    return file_metadata
+  
+
+def main(argv):
+  local_file_path  = ''
+  dest_file_name   = ''
+  parent_folder_id = ''
+  sub_folder_name  = ''
+  dest_mime_type   = ''
+  source_mime_type = ''
+  drive_id         = ''
+  credentials_file = ''
+  help_txt = """upload-cer-to-google-drive.py
+  --file=<inputfile>
+  --parent-drive-folder-id=<parent-drive-folder-id>
+  --destination=<destination-file-name>
+  --dest-mime-type=<destination-mime-type>
+  --source-mime-type=<source-mime-type>
+  --credentials=<crednetials-file>"""
+    
+  try:
+    opts, args = getopt.getopt(
+                   argv,
+                   "hf:p:d:c:",
+                   [
+                     "help",
+                     "file=",
+                     "parent-drive-folder-id=",
+                     "sub-folder-name=",
+                     "destination=",
+                     "dest-mime-type=",
+                     "source-mime-type=",
+                     "drive-id=",
+                     "credentials="
+                   ]
+                 )
+  except getopt.GetoptError:
+    print(f"{help_txt}")
+    sys.exit(2)
+  for opt, arg in opts:
+    if opt in ('-h', '--help'):
+      print(f"{help_txt}")
+      sys.exit()
+    elif opt in ("-f", "--file"):
+      local_file_path = arg
+    elif opt in ("-d", "--destination"):
+      dest_file_name = arg
+    elif opt in ("-p", "--parent-drive-folder-id"):
+      parent_folder_id = arg
+    elif opt in ("--sub-folder-name"):
+      sub_folder_name = arg
+    elif opt in ("--dest-mime-type"):
+      dest_mime_type = arg
+    elif opt in ("--source-mime-type"):
+      source_mime_type = arg
+    elif opt in ("--drive-id"):
+      drive_id = arg
+    elif opt in ("-c", "--credentials"):
+      credentials_file = arg
+
+  if not local_file_path:
+    print("-f/--file paraemter must be specified")
+    sys.exit(2)
+
+  if not parent_folder_id:
+    print("-p/--parent-drive-folder-id must be specified")
+    sys.exit(2)
+
+  if not credentials_file:
+    print("-c/--credentials must be specified")
+    sys.exit(2)
+
+  if not dest_file_name:
+    dest_file_name = os.path.basename(local_file_path)
+
+  if not dest_mime_type:
+    dest_mime_type = 'application/vnd.google-apps.document'
+
+  if not source_mime_type:
+    source_mime_type = 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+
+  # Authenticate and construct service.
+  service = get_service(
+              api_name='drive',
+              api_version='v3',
+              scopes=SCOPES,
+              key_file_location=credentials_file)
+
+  # get the sub folder
+  if sub_folder_name:
+    sub_folder_metadata = find_file(service, parent_folder_id, sub_folder_name)
+    if not sub_folder_metadata:
+      sub_folder_metadata = create_folder(service, parent_folder_id, sub_folder_name, drive_id)
+    folder_id = sub_folder_metadata.get('id')
+  else:
+    folder_id = parent_folder_id
+
+  # determine if file already exists
+  existing_file_metadata = find_file(service, folder_id, dest_file_name)
+
+  # if file already exists, update it
+  # else upload a new file
+  if existing_file_metadata:
+    new_file_metadata = update_file(service, local_file_path, existing_file_metadata.get('id'), drive_id)
+
+    if new_file_metadata:
+      file_id = new_file_metadata.get('id')
+      print(f"Updated existing file: https://docs.google.com/document/d/{file_id}")
+    else:
+      print("ERROR: updating existing file ({existing_file_metadata}) failed")
+      sys.exit(1)
+  else:
+    new_file_metadata = upload_file(service, local_file_path, folder_id, dest_file_name, source_mime_type, dest_mime_type, drive_id)
+    if new_file_metadata:
+      file_id = new_file_metadata.get('id')
+      print(f"Uploaded new file: https://docs.google.com/document/d/{file_id}")
+    else:
+      print("ERROR: uploading new file failed")
+      sys.exit(1)
+
+if __name__ == '__main__':
+  main(sys.argv[1:])

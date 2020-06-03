@@ -1,4 +1,4 @@
-apiVersion: v1
+apiVersion: template.openshift.io/v1
 kind: Template
 labels:
   template: zalenium
@@ -50,7 +50,7 @@ objects:
       app: zalenium
       role: grid
     type: ClusterIP
-- apiVersion: v1
+- apiVersion: apps.openshift.io/v1
   kind: DeploymentConfig
   metadata:
     name: zalenium

@@ -10,4 +10,4 @@ Useful for environments where these libraries/tools are needed such as:
 
 ## Published
 
-[https://quay.io/repository/redhat-cop/ubi8-git](https://quay.io/repository/redhat-cop/ubi8-git) via [GitHub Workflows](.github/workflows/ubi8-git-publish.yaml).
+[https://quay.io/repository/redhat-cop/ubi8-git](https://quay.io/repository/redhat-cop/ubi8-git) via [GitHub Workflows](../../.github/workflows/ubi8-git-publish.yaml).

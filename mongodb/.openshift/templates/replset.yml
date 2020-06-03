@@ -1,5 +1,5 @@
+apiVersion: template.openshift.io/v1
 kind: Template
-apiVersion: v1
 metadata:
   name: mongodb-replset-on-openshift
   annotations:
@@ -104,8 +104,8 @@ objects:
       selector:
         name: "${APP_NAME}replset${REPLSET_SEED}"
 
-  - kind: StatefulSet
-    apiVersion: apps/v1beta1
+  - apiVersion: apps/v1
+    kind: StatefulSet
     metadata:
       app: "${APP_NAME}"
       name: "${APP_NAME}replset${REPLSET_SEED}"

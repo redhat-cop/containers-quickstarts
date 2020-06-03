@@ -1,0 +1,87 @@
+---
+apiVersion: template.openshift.io/v1
+kind: Template
+metadata:
+  annotations:
+    description: Python Kopf s2i Example
+  name: openshift-template-deployer
+
+parameters:
+- name: NAME
+  required: true
+  value: openshift-template-deployer
+- name: IMAGE
+  required: true
+- name: IMAGE_PULL_POLICY
+  required: true
+  value: IfNotPresent
+- name: CPU_REQUEST
+  required: true
+  value: 100m
+- name: CPU_LIMIT
+  required: true
+  value: 500m
+- name: MEMORY_REQUEST
+  required: true
+  value: 512Mi
+- name: MEMORY_LIMIT
+  required: true
+  value: 512Mi
+
+objects:
+- apiVersion: v1
+  kind: ServiceAccount
+  metadata:
+    name: ${NAME}
+
+- apiVersion: rbac.authorization.k8s.io/v1
+  kind: RoleBinding
+  metadata:
+    name: ${NAME}
+  subjects:
+  - kind: ServiceAccount
+    name: ${NAME}
+  roleRef:
+    kind: ClusterRole
+    name: admin
+    apiGroup: rbac.authorization.k8s.io
+
+- apiVersion: apps/v1
+  kind: Deployment
+  metadata:
+    labels:
+      name: ${NAME}
+    name: ${NAME}
+  spec:
+    replicas: 1
+    selector:
+      matchLabels:
+        name: ${NAME}
+    strategy:
+      type: Recreate
+    template:
+      metadata:
+        labels:
+          name: ${NAME}
+      spec:
+        containers:
+        - name: operator
+          image: ${IMAGE}
+          imagePullPolicy: ${IMAGE_PULL_POLICY}
+          livenessProbe:
+            initialDelaySeconds: 30
+            tcpSocket:
+              port: 8080
+            timeoutSeconds: 1
+          ports:
+          - containerPort: 8080
+            protocol: TCP
+          resources:
+            requests:
+              cpu: ${CPU_REQUEST}
+              memory: ${MEMORY_REQUEST}
+            limits:
+              cpu: ${CPU_LIMIT}
+              memory: ${MEMORY_LIMIT}
+        restartPolicy: Always
+        serviceAccountName: ${NAME}

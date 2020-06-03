@@ -1,0 +1,169 @@
+= Python Kopf Operator Source-to-Image (s2i)
+
+Source-to-Image for python https://kopf.readthedocs.io/en/latest/[kopf] based operators.
+
+== Usage
+
+This Python Kopf operator source-to-image can be used to build python-base operators using OpenShift source-to-image or Dockerfile based builds.
+This s2i image may also be used with `odo` to do in-cluster operator development.
+
+=== Kopf Options
+
+Kopf command line options are configured using environment variables.
+The file `kopf-opt.sh` may be used to set options at compile time.
+These are used to build up the command line for `kopf run`.
+The following environment variables are supported:
+
+[options="header",cols="2,1,6"]
+|=======================
+|Option
+|Default
+|Description
+
+|`KOPF_NAMESPACED`
+|`false`
+|Set to "true" to run kopf with `--namespace` option to restrict watch to specific namespace.
+
+|`KOPF_NAMESPACE`
+|none
+|Namespace for kopf watch.
+When run in cluster this defaults to the operator pod namespace.
+
+|`KOPF_STANDALONE`
+|`false`
+|Set to "true" to run kopf with `--standalone` option.
+This prevents kopf from peering and talking to other kopf operators.
+
+|`KOPF_PRIORITY`
+|dynamic
+|Operator priority in relation to other kopf operators.
+The default when running containerized is to base the priority on the pod IP or otherwise `${RANDOM}` if the IP address cannot be determined.
+
+|`KOPF_PEERING`
+|none
+|Kopf custom peering using `--peering` option.
+
+|`KOPF_OPTIONS`
+|none
+|Command line options for `kopf run` to support features not covered by other configuration variables.
+|=======================
+
+=== Python Requirements
+
+Python requirements can be specified in the `requirements.txt` file.
+These will be processed and installed to the container image during source-to-image build using Python3 `pip`.
+
+=== Developing with `odo`
+
+This source-to-image project supports `odo` for in-cluster operator development.
+
+https://docs.openshift.com/container-platform/latest/cli_reference/developer_cli_odo/installing-odo.html[Installing odo]
+
+To use this image with `odo` you can create an image stream in the `openshift` namespace.
+This will make `python-kopf` appear as a valid project type for `odo create`.
+
+-----------------------------
+oc create -f imagestream.yaml
+-----------------------------
+
+=== Python Kopf Operator Examples
+
+xref:examples/simple/README.adoc[Simple Example]
+
+xref:examples/openshift-template-deployer/README.adoc[OpenShift Template Deployer]
+
+=== Deploying
+
+The source-to-image run will configure Kopf to present TCP port 8080 for liveness probes.
+
+=== Building this Source-to-Image Base Image
+
+==== OpenShift
+
+An OpenShift build template is provided for building this container image.
+
+Create events console build configuration:
+
+----------------------------------------------------------
+oc process --local -f build-template.yaml | oc apply -f -
+----------------------------------------------------------
+
+Then either build the python-kopf-s2i image from git source:
+
+------------------------------
+oc start-build python-kopf-s2i
+------------------------------
+
+Or build the python-kopf-s2i image from local source:
+
+------------------------------------------------
+oc start-build python-kopf-s2i --from-dir=../ -F
+------------------------------------------------
+
+==== Dockerfile
+
+This image may also be built with the provided `Dockerfile`.
+
+Using `podman`:
+
+--------------------------------------------------------------
+sudo podman build --tag python-kopf-s2i:latest -f ./Dockerfile
+--------------------------------------------------------------
+
+Using `docker`:
+
+---------------------------------------------
+sudo docker build -t python-kopf-s2i:latest .
+---------------------------------------------
+
+=== Testing s2i build with the Provided Example
+
+To verify the source-to-image base image is functional you will want to build an operator image to verify functionality.
+A simple operator example is provided in the `examples/` directory.
+
+==== OpenShift
+
+If testing the source-to-image build in an OpenShift cluster then you may use the example build template provided.
+
+--------------------------------------------------
+oc process --local -f examples/simple/build-template.yaml \
+-p FROM_IMAGE=$(oc get is python-kopf-s2i -o jsonpath="{.status.tags[?(@.tag=='latest')].items[0].dockerImageReference}") \
+| oc apply -f -
+--------------------------------------------------
+
+Then either build the example operator from git source:
+
+-----------------------------
+oc start-build kopf-simple -F
+-----------------------------
+
+Or build the example from local source:
+
+--------------------------------------------
+oc start-build kopf-simple --from-dir=../ -F
+--------------------------------------------
+
+Description for how to deploy and test this example can be found in
+xref:examples/simple/README.adoc[Simple Example].
+
+==== Dockerfile
+
+This example image may also be built with the provided `Dockerfile`.
+The provided configuration builds from the base image `quay.io/redhat-cop/python-kopf-s2i:latest`.
+In order to test your build of the s2i image you will need a modified version of the `Dockerfile`:
+
+--------------------------------------------------------------------------------
+sed 's/^FROM .*/FROM python-kopf-s2i:latest/' example/Dockerfile >example/Dockerfile.custom
+--------------------------------------------------------------------------------
+
+Build using `podman`:
+
+--------------------------------------------------------------------------------
+sudo podman build --tag python-kopf-s2i-example:latest -f ./example/Dockerfile.custom
+--------------------------------------------------------------------------------
+
+Using `docker`:
+
+--------------------------------------------------------------------------------
+sudo docker build -t python-kopf-s2i-example:latest -f ./example/Dockerfile.custom example/
+--------------------------------------------------------------------------------

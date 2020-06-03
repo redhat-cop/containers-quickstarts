@@ -1,4 +1,4 @@
-apiVersion: v1
+apiVersion: template.openshift.io/v1
 kind: Template
 labels:
   app: jenkins-ephemeral
@@ -25,7 +25,7 @@ metadata:
   creationTimestamp: null
   name: jenkins-ephemeral
 objects:
-- apiVersion: v1
+- apiVersion: route.openshift.io/v1
   kind: Route
   metadata:
     annotations:
@@ -39,7 +39,7 @@ objects:
     to:
       kind: Service
       name: ${JENKINS_SERVICE_NAME}
-- apiVersion: v1
+- apiVersion: apps.openshift.io/v1
   kind: DeploymentConfig
   metadata:
     annotations:
@@ -132,12 +132,14 @@ objects:
     annotations:
       serviceaccounts.openshift.io/oauth-redirectreference.jenkins: '{"kind":"OAuthRedirectReference","apiVersion":"v1","reference":{"kind":"Route","name":"${JENKINS_SERVICE_NAME}"}}'
     name: ${JENKINS_SERVICE_NAME}
-- apiVersion: v1
+- apiVersion: rbac.authorization.k8s.io/v1
   groupNames: null
   kind: RoleBinding
   metadata:
     name: ${JENKINS_SERVICE_NAME}_edit
   roleRef:
+    apiGroup: rbac.authorization.k8s.io
+    kind: ClusterRole
     name: edit
   subjects:
   - kind: ServiceAccount

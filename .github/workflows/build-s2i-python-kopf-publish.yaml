@@ -1,0 +1,34 @@
+---
+name: build-s2i-python-kopf-publish
+on:
+  push:
+    branches:
+      - master
+    paths:
+      - build-s2i-python-kopf/version.json
+jobs:
+  publish:
+    env:
+      CONTEXT_DIR: build-s2i-python-kopf
+      IMAGE_NAME: python-kopf-s2i
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@master
+      - name: Get image tags
+        id: image_tags
+        run: |
+          # version.json should have semantic version: vMAJOR.MINOR.PATCH
+          VERSION=$(jq -r '.version' ${CONTEXT_DIR}/version.json)
+          # Publish to latest, minor, and patch tags
+          TAGS=('latest' "${VERSION}" "${VERSION%.*}")
+          # Set IMAGE_TAGS output for use in next step
+          ( IFS=$','; echo "::set-output name=IMAGE_TAGS::${TAGS[*]}" )
+      - name: Build and publish image to Quay
+        uses: docker/build-push-action@v1
+        with:
+          path: ${{ env.CONTEXT_DIR }}
+          registry: ${{ secrets.REGISTRY_URI }}
+          repository: ${{ secrets.REGISTRY_REPOSITORY }}/${{ env.IMAGE_NAME }}
+          username: ${{ secrets.REGISTRY_USERNAME }}
+          password: ${{ secrets.REGISTRY_PASSWORD }}
+          tags: "${{ steps.image_tags.outputs.IMAGE_TAGS }}"

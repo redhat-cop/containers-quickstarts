@@ -29,6 +29,7 @@ A collection of custom built S2I base images
 * [Jekyll](./build-s2i-jekyll)
 * [WebSphere Liberty](./build-s2i-liberty)
 * [Play Framework](./build-s2i-play)
+* [Python Kopf Operator Framework](./build-s2i-python-kopf)
 
 ### Jenkins Slave Images
 
@@ -54,12 +55,16 @@ A set of buildConfigs for building custom Jenkins images for OpenShift.
 
 ### Gitlab Runners
 
-A set of [Gitlab Runners](./gitlab-runners/README.md) for your [Gitlab CI/CD](https://docs.gitlab.com/runner/).
+Gitlab Runners for your [Gitlab CI/CD](https://docs.gitlab.com/runner/).
 
-* [UBI 7](./gitlab-runners/ubi7-gitlab-runner)
-* [UBI 8 Asciidoctor](./gitlab-runners/ubi8-asciidoctor)
-* [UBI 8 Git](./gitlab-runners/ubi8-git)
-* [UBI 8 Google API Pyton Client](./gitlab-runners/ubi8-google-api-python-client)
+* [UBI 7](./ubi7-gitlab-runner)
+
+### Utilities
+
+* [UBI 8 Asciidoctor](./utilities/ubi8-asciidoctor)
+* [UBI 8 Bats](./utilities/ubi8-bats)
+* [UBI 8 Git](./utilities/ubi8-git)
+* [UBI 8 Google API Pyton Client](./utilities/ubi8-google-api-python-client)
 
 ### Developer Tools
 

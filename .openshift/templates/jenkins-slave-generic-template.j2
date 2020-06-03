@@ -1,6 +1,6 @@
 ---
+apiVersion: template.openshift.io/v1
 kind: Template
-apiVersion: v1
 metadata:
   name: Generic Jenkins Agent Template
   annotations:
@@ -10,14 +10,14 @@ metadata:
 objects:
 {% if jenkins_slaves is defined %}
 {% for agent, params in jenkins_slaves.build.items() %}
-- apiVersion: v1
+- apiVersion: image.openshift.io/v1
   kind: ImageStream
   metadata:
     labels:
       build: {{ params.NAME | d('jenkins-slave-' + agent) }}
       role: jenkins-slave
     name: {{ params.NAME | d('jenkins-slave-' + agent) }}
-- apiVersion: v1
+- apiVersion: build.openshift.io/v1
   kind: BuildConfig
   metadata:
     labels:

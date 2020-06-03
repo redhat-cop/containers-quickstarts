@@ -1,6 +1,6 @@
 ---
+apiVersion: template.openshift.io/v1
 kind: Template
-apiVersion: v1
 metadata:
   name: "${NAME}"
   annotations:
@@ -8,14 +8,14 @@ metadata:
     description: "${NAME} build pod template pre-configured to use a jenkins slave in the
       same project/namespace"
 objects:
-- apiVersion: v1
+- apiVersion: image.openshift.io/v1
   kind: ImageStream
   metadata:
     labels:
       build: "${NAME}"
       role: jenkins-slave
     name: "${NAME}"
-- apiVersion: v1
+- apiVersion: build.openshift.io/v1
   kind: BuildConfig
   metadata:
     labels:

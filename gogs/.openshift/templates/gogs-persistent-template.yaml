@@ -1,13 +1,13 @@
+apiVersion: template.openshift.io/v1
 kind: Template
-apiVersion: v1
 metadata:
   annotations:
     description: The Gogs git server (https://gogs.io/)
     tags: instant-app,gogs,go,golang
   name: gogs
 objects:
-- kind: SecurityContextConstraints
-  apiVersion: v1
+- apiVersion: security.openshift.io/v1
+  kind: SecurityContextConstraints
   allowHostDirVolumePlugin: false
   allowHostIPC: false
   allowHostNetwork: false
@@ -16,7 +16,6 @@ objects:
   allowPrivilegedContainer: false
   allowedCapabilities: null
   allowedFlexVolumes: null
-  apiVersion: v1
   defaultAddCapabilities: null
   fsGroup:
     type: RunAsAny
@@ -46,8 +45,8 @@ objects:
   - persistentVolumeClaim
   - projected
   - secret
-- kind: ImageStream
-  apiVersion: v1
+- apiVersion: image.openshift.io/v1
+  kind: ImageStream
   metadata:
     labels:
       app: ${APPLICATION_NAME}
@@ -82,8 +81,8 @@ objects:
       targetPort: 5432
     selector:
       name: ${APPLICATION_NAME}-postgresql
-- kind: DeploymentConfig
-  apiVersion: v1
+- apiVersion: apps.openshift.io/v1
+  kind: DeploymentConfig
   metadata:
     annotations:
       description: Defines how to deploy the database
@@ -175,8 +174,8 @@ objects:
     type: ClusterIP
   status:
     loadBalancer: {}
-- kind: Route
-  apiVersion: v1
+- apiVersion: route.openshift.io/v1
+  kind: Route
   id: ${APPLICATION_NAME}-https
   metadata:
     annotations:
@@ -196,8 +195,8 @@ objects:
       name: ${APPLICATION_NAME}
       weight: 100
     wildcardPolicy: None
-- kind: DeploymentConfig
-  apiVersion: v1
+- apiVersion: apps.openshift.io/v1
+  kind: DeploymentConfig
   metadata:
     labels:
       app: ${APPLICATION_NAME}
