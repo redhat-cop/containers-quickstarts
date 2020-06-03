@@ -5,38 +5,34 @@ Jenkins [Slave](https://wiki.jenkins-ci.org/display/JENKINS/Distributed+builds) 
 
 ## Primary Components
 
-[Skopeo](https://github.com/projectatomic/skopeo/) - A command utility for various operations on container images and image repositories.
+[Skopeo](https://github.com/containers/skopeo/) - A command utility for various operations on container images and image repositories.
 
+>**NOTE:** Skopeo is built with DISABLE_CGO=1 and thus lack support for devicemapper, btrfs and gpgme. See [skopeo documentation](https://github.com/containers/skopeo/blob/master/install.md#building-in-a-container) for more information.
 
-## Instantiate Template
+## Build local
+`docker build -t jenkins-slave-image-mgmt .`
 
-A [template](../../.openshift/templates/jenkins-slave-image-mgmt-template.yml) is available providing the necessary OpenShift components to build and make the slave image available to be referenced by Jenkins.
+## Run local
+For local running and experimentation run `docker run -it --entrypoint=bash jenkins-slave-image-mgmt` and have a play once inside the container.
 
-Execute the following command to instantiate the template:
+## Build in OpenShift
+```bash
+oc process -f ../../.openshift/templates/jenkins-slave-generic-template.yml \
+  -p NAME=jenkins-slave-image-mgmt \
+  -p SOURCE_CONTEXT_DIR=jenkins-slaves/jenkins-slave-image-mgmt \
+  | oc create -f -
+```
+For all params see the list in the `../../.openshift/templates/jenkins-slave-generic-template.yml` or run `oc process --parameters -f ../../.openshift/templates/jenkins-slave-generic-template.yml`.
+
+## Jenkins
+Add a new Kubernetes Container template called `jenkins-slave-image-mgmt` (if you've build and pushed the container image locally) and specify this as the node when running builds. If you're using the template attached; the `role: jenkins-slave` is attached and Jenkins should automatically discover the slave for you. Further instructions can be found [here](https://docs.openshift.com/container-platform/4.4/openshift_images/using_images/images-other-jenkins.html#images-other-jenkins-kubernetes-plugin_images-other-jenkins). 
 
 ```
-oc process -f ../../.openshift/templates/jenkins-slave-image-mgmt-template.yml | oc apply -f-
+$ oc run jenkins-slave-image-mgmt -i -t --image=docker-registry.default.svc:5000/jenkins-slave-image-mgmt/jenkins-slave-image-mgmt --command -- skopeo --version
+If you don't see a command prompt, try pressing enter.
+skopeo version 1.0.0
+Session ended, resume using 'oc attach jenkins-slave-image-mgmt-1-wcbxv -c jenkins-slave-image-mgmt -i -t' command when the pod is running
 ```
-
-A new image build will be started automatically
-
-## Use within Jenkins
-
-The template contains an *ImageStream* that has been configured with the appropriate labels that will be picked up by newly deployed Jenkins instances. 
-
-For existing Jenkins servers, the slave can be added by using the following steps.
-
-1. Login to Jenkins
-2. Click on **Manage Jenkins** and then **Configure System**
-3. Under the *Cloud* section, locate the *Kubernetes* Plugin. Click the *Add Pod Template* dropdown and select **
-4. Enter the following details
-	1. Name: jenkins-slave-image-mgmt
-	2. Labels: jenkins-slave-image-mgmt 
-	3. Docker image
-		1. Using the `oc` command line, run `oc get is jenkins-slave-image-mgmt --template='{{ .status.dockerImageRepository }}'`. A value similar to *172.30.186.87:5000/jenkins/jenkins-slave-image-mgmt* should be used
-	4. Jenkins slave root directory: `/tmp`
-5. Click **Save** to apply the changes
-	
 
 ## Use within Jenkins Pipeline Script
 
