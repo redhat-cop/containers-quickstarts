@@ -2,7 +2,7 @@ FROM registry.access.redhat.com/ubi8
 
 MAINTAINER Aly Ibrahim<aly@redhat.com>
 
-ENV OC_VERSION=4.4.0 \
+ENV OC_VERSION=4.4.7 \
     ODO_VERSION=v1.2.1 \
     ANSIBLE_VERSION=2.9 \
     JQ_VERSION=1.6 \
