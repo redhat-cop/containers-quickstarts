@@ -2,30 +2,36 @@ FROM registry.access.redhat.com/ubi8
 
 MAINTAINER Aly Ibrahim<aly@redhat.com>
 
-ENV OC_CLIENT_MIRROR https://mirror.openshift.com/pub/openshift-v4/clients/ocp/4.3.0/openshift-client-linux-4.3.0.tar.gz
-ENV HOME /home/tool-box
+ENV OC_VERSION=4.3.0 \
+    ODO_VERSION=v1.2.1 \
+    ANSIBLE_VERSION=2.8 \
+    JQ_VERSION=1.6 \
+    HELM_VERSION=v3.2.1 \
+    TEKTON_VERSION=0.9.0 \
+    HOME=/home/tool-box
 
 RUN yum -y update && \
     INSTALL_PKGS="git vim unzip python36" && \
     yum -y install $INSTALL_PKGS && \
     yum clean all
 
-RUN curl -o jq -sL https://github.com/stedolan/jq/releases/download/jq-1.6/jq-linux64 && \
+RUN curl -o jq --fail -sL https://github.com/stedolan/jq/releases/download/jq-${JQ_VERSION}/jq-linux64 && \
     chmod +x jq && \
     mv jq /usr/local/bin
 
 RUN mkdir -m 775 $HOME && \
     chmod 775 /etc/passwd && \
-    pip3 install git+https://github.com/ansible/ansible.git@stable-2.8
+    pip3 install git+https://github.com/ansible/ansible.git@stable-${ANSIBLE_VERSION}
 
-RUN curl -s https://get.helm.sh/helm-v3.1.1-linux-amd64.tar.gz | tar -xvz && \
+RUN curl --fail -s https://get.helm.sh/helm-${HELM_VERSION}-linux-amd64.tar.gz | tar -xvz && \
     chmod u+x linux-amd64/helm && mv linux-amd64/helm /usr/local/bin/ && rm -rf linux-amd64 
 
-RUN curl -sL https://github.com/tektoncd/cli/releases/download/v0.3.1/tkn_0.3.1_Linux_x86_64.tar.gz | tar --no-same-owner -xvz -C /usr/local/bin/ tkn
+RUN curl --fail -sL https://github.com/tektoncd/cli/releases/download/v${TEKTON_VERSION}/tkn_${TEKTON_VERSION}_Linux_x86_64.tar.gz | tar --no-same-owner -xvz -C /usr/local/bin/ tkn
 
-RUN curl $OC_CLIENT_MIRROR | tar -C /usr/local/bin/ -xzf -
+RUN curl --fail https://mirror.openshift.com/pub/openshift-v4/clients/ocp/${OC_VERSION}/openshift-client-linux-${OC_VERSION}.tar.gz | tar -C /usr/local/bin/ -xzf -
 
-RUN curl -sL https://github.com/openshift/odo/releases/latest/download/odo-linux-amd64 -o /usr/local/bin/odo && chmod +x /usr/local/bin/odo
+RUN curl --fail -sL https://mirror.openshift.com/pub/openshift-v4/clients/odo/${ODO_VERSION}/odo-linux-amd64 -o /usr/local/bin/odo && \
+    chmod +x /usr/local/bin/odo
 
 WORKDIR $HOME
 

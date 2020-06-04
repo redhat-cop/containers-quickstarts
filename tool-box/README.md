@@ -1,20 +1,20 @@
 [![Docker Repository on Quay](https://quay.io/repository/redhat-cop/tool-box/status "Docker Repository on Quay")](https://quay.io/repository/redhat-cop/tool-box)
 
-# Tool Box
+# Tool Box 🧰
 
-This container exists to help folks that can't install ansible, git or other necessary tools. It is not to be used in any time of production setting and is not suppportable under an OpenShift subscription.
+This container exists to help people that can't install ansible, git or other necessary tools locally. It is not to be used in any type of production setting and is not suppportable under an OpenShift subscription.
 
-## What's in the box?
+## What's in the box? 👱‍♂
 
-- `oc` version 3.11.0-0.32.0
+- `oc` version 4.3.0
 - `ansible` v2.8 (stable from `pip`)
 - `python` v3.6
-- `git`
-- `unzip`
+- `git` 2.18.4
+- `unzip` 6.0-43
 - `jq` v1.6
-- `odo`
-- `helm` Client v3.1.1
-- `tkn` Client v0.3.1
+- `odo` 1.2.1
+- `helm` Client v3.2.1
+- `tkn` Client v0.9.0
 
 If you need something not here, let us know in an issue or submit a PR.
 
