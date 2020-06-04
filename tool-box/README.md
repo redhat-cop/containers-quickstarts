@@ -6,8 +6,8 @@ This container exists to help people that can't install ansible, git or other ne
 
 ## What's in the box? 👱‍♂
 
-- `oc` version 4.3.0
-- `ansible` v2.8 (stable from `pip`)
+- `oc` version 4.4.0
+- `ansible` v2.9 (stable from `pip`)
 - `python` v3.6
 - `git` 2.18.4
 - `unzip` 6.0-43
