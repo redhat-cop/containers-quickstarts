@@ -1,4 +1,4 @@
-FROM quay.io/openshift/origin-jenkins-agent-base:4.3
+FROM quay.io/openshift/origin-jenkins-agent-base:4.4
 
 USER root
 
