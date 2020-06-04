@@ -4,7 +4,7 @@ The following prerequisites must be met prior to beginning to deploy [Zalenium](
 
 * 1 [Persistent Volumes](https://docs.openshift.com/container-platform/3.11/architecture/additional_concepts/storage.html) or a cluster that supports [dynamic provisioning with a default StorageClass](https://docs.openshift.com/container-platform/3.11/install_config/storage_examples/storage_classes_dynamic_provisioning.html)
 * OpenShift Command Line Tool
-* [Openshift Applier](https://github.com/redhat-cop/openshift-applier/) to deploy GitLab CE. As a result you'll need to have [ansible installed](http://docs.ansible.com/ansible/latest/intro_installation.html)
+* [Openshift Applier](https://github.com/redhat-cop/openshift-applier/) to deploy Zalenium. As a result you'll need to have [ansible installed](http://docs.ansible.com/ansible/latest/intro_installation.html)
 
 
 ### Environment Setup
@@ -29,9 +29,9 @@ http://zalenium-zalenium.apps.example.com/grid/admin/live?refresh=20
 * Recordings of previous tests:
 http://zalenium-zalenium.apps.example.com/dashboard/#
 
-Run simple test from your local machine:
+Run simple test from your local machine (requires [NodeJS](https://nodejs.org/) installed):
 1. Setup [Protractor](https://www.protractortest.org/#/tutorial#setup): `npm install -g protractor`
 2. Get into test directory `cd example-tests/protractor`
-3. Edit the `conf.js` -file to point to your own Zalenium instance
-4. Inspect the `simple-test.js` -file. It will just quickly access Angular.Js -website and make a post to their TODO example.
+3. Edit the `conf.js` file to point to your own Zalenium instance
+4. Inspect the `simple-test.js` file. It will just quickly access AngularJS website and make a post to their TODO example.
 5. Run the tests with: `protractor conf.js`
