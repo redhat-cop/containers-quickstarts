@@ -7,6 +7,11 @@ Provides a docker image of the nodejs v12 runtime with npm for use as a Jenkins 
 ## Run local
 For local running and experimentation run `docker run -i -t jenkins-slave-npm /bin/bash` and have a play once inside the container.
 
+## Note
+It was decided to remove Chrome browser from this Jenkins Agent. This is to keep this one in line with the other agents being based of the most recent version of the `quay.io/openshift/origin-jenkins-agent-base` base which is now built using Universal Base Image. For those looking to do do browser testing, there are a few alternatives available
+1. Use the `v1.25` tag of this repository which still contains Chrome in the image
+2. Use the [Zalenium](https://github.com/redhat-cop/containers-quickstarts/tree/master/zalenium) deployment to execute browser tests against a Selenium grid built for Kubernetes including Chrome and Firefox
+
 ## Build in OpenShift
 ```bash
 oc process -f ../../.openshift/templates/jenkins-slave-generic-template.yml \
