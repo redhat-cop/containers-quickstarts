@@ -1,4 +1,4 @@
-FROM quay.io/openshift/origin-jenkins-agent-base:4.2
+FROM quay.io/openshift/origin-jenkins-agent-base:4.4
 
 ENV RUBY_VERSION=2.5 \
   RUBY_SHORT_VERSION=25

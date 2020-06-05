@@ -5,7 +5,7 @@ objects:
   kind: ProjectRequest
   metadata:
     name: ${NAMESPACE}
-    creationTimestam: null
+    creationTimestamp: null
   displayName: ${DISPLAY_NAME}
 parameters:
   - name: NAMESPACE

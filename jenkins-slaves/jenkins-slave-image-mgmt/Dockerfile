@@ -1,4 +1,15 @@
-FROM registry.access.redhat.com/openshift3/jenkins-slave-base-rhel7:v3.11
+FROM registry.access.redhat.com/ubi8/go-toolset:latest as builder
+
+ARG SKOPEO_VERSION=1.0.0
+
+USER root
+
+RUN curl -L https://github.com/containers/skopeo/archive/v${SKOPEO_VERSION}.tar.gz | tar -C /tmp -zxf - && \
+    mv /tmp/skopeo-${SKOPEO_VERSION} /tmp/skopeo && \
+    cd /tmp/skopeo && \
+    make binary-local DISABLE_CGO=1
+
+FROM quay.io/openshift/origin-jenkins-agent-base:4.4
 
 MAINTAINER Andrew Block <ablock@redhat.com>
 
@@ -8,16 +19,12 @@ LABEL com.redhat.component="jenkins-slave-image-mgmt" \
       io.k8s.display-name="Jenkins Slave Image Management" \
       io.k8s.description="Image management tools on top of the jenkins slave base image" \
       io.openshift.tags="openshift,jenkins,slave,copy"
+
 USER root
 
-RUN INSTALL_PKGS="skopeo" && \
-    if [ -z $RHEL_RELEASEVER ] ; then RHEL_RELEASEVER=7Server ; fi && \
-    yum install -y --setopt=tsflags=nodocs \
-      --enablerepo=rhel-7-server-rpms \
-      --enablerepo=rhel-7-server-extras-rpms \
-      --releasever=${RHEL_RELEASEVER} \
-      $INSTALL_PKGS && \
-    rpm -V $INSTALL_PKGS && \
-    yum clean all
+RUN mkdir -p /etc/containers
+
+COPY --from=builder /tmp/skopeo/default-policy.json /etc/containers/policy.json
+COPY --from=builder /tmp/skopeo/skopeo /usr/bin/
 
 USER 1001
