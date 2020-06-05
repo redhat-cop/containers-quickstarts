@@ -5,6 +5,7 @@ NAMESPACE="${2:-containers-quickstarts-tests}"
 TRAVIS_REPO_SLUG="${3:-redhat-cop/containers-quickstarts}"
 TRAVIS_BRANCH="${4:-master}"
 
+CHAINED_BUILDS=("jenkins-slave-image-mgmt")
 TEST_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 . ${TEST_DIR}/common.sh
 
@@ -49,7 +50,7 @@ test() {
   for buildConfig in $(oc get buildconfig -n ${NAMESPACE} -o jsonpath="{.items[?(@.spec.strategy.type==\"${build_type}\")].metadata.name}"); do
     # Only start BuildConfigs which currently have 0 builds
     if [ "$(oc get build -n ${NAMESPACE} -o jsonpath="{.items[?(@.metadata.annotations.openshift\.io/build-config\.name==\"${buildConfig}\")].metadata.name}")" == "" ]; then
-      oc start-build ${buildConfig} -n ${NAMESPACE}
+      [[ ! "${CHAINED_BUILDS[@]}" =~ "${buildConfig}" ]] && oc start-build ${buildConfig} -n ${NAMESPACE}
     fi
   done
 
