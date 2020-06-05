@@ -1,4 +1,4 @@
-FROM quay.io/openshift/origin-jenkins-agent-base:4.3
+FROM quay.io/openshift/origin-jenkins-agent-base:4.4
 
 ENV ARGOCD_VERSION=1.5.4 \
     YQ_VERSION=3.3.0
