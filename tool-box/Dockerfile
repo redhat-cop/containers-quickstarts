@@ -24,7 +24,7 @@ RUN mkdir -m 775 $HOME && \
     pip3 install git+https://github.com/ansible/ansible.git@stable-${ANSIBLE_VERSION}
 
 RUN curl --fail -s https://get.helm.sh/helm-${HELM_VERSION}-linux-amd64.tar.gz | tar -xvz && \
-    chmod u+x linux-amd64/helm && mv linux-amd64/helm /usr/local/bin/ && rm -rf linux-amd64 && chown -R 1001:1001 $HOME
+    chmod u+x linux-amd64/helm && mv linux-amd64/helm /usr/local/bin/ && rm -rf linux-amd64
 
 RUN curl --fail -sL https://github.com/tektoncd/cli/releases/download/v${TEKTON_VERSION}/tkn_${TEKTON_VERSION}_Linux_x86_64.tar.gz | tar --no-same-owner -xvz -C /usr/local/bin/ tkn
 
@@ -37,7 +37,8 @@ WORKDIR $HOME
 
 ADD ./root /
 
-RUN chmod u+x /usr/local/bin/run
+RUN chmod u+x /usr/local/bin/run && \
+    chown -R 1001:1001 $HOME
 
 USER 1001
 
