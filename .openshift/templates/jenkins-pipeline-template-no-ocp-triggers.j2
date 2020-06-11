@@ -1,7 +1,7 @@
 {%- if test_pipelines is defined %}
 {%- for agent, params in test_pipelines.deploy.items() %}
 ---
-apiVersion: v1
+apiVersion: build.openshift.io/v1
 kind: BuildConfig
 metadata:
   labels:
