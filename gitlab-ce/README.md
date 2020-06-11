@@ -19,7 +19,7 @@ The following prerequisites must be met prior to beginning to deploy GitLab CE
 
 ### Deploy Gitlab CE
 
-Adecuate `.applier/group_vars/seed-hosts.yml` to match your environment requirements.
+Adequate `.applier/group_vars/seed-hosts.yml` to match your environment requirements.
 
 #### Custom SSL Certificates:
 
