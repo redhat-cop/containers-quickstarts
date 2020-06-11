@@ -1,6 +1,6 @@
-# Hoverfly
+# 🦟 Hoverfly
 
-A simple container to run [hoverfly](https://hoverfly.readthedocs.io/en/latest/pages/reference/api/api.html). 
+A simple container to run [hoverfly](https://hoverfly.readthedocs.io/en/latest/pages/reference/api/api.html).
 
 ## Usage
 
