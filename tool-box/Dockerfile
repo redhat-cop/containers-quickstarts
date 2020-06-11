@@ -6,7 +6,7 @@ ENV OC_VERSION=4.4.7 \
     ODO_VERSION=v1.2.1 \
     ANSIBLE_VERSION=2.9 \
     JQ_VERSION=1.6 \
-    HELM_VERSION=v3.2.1 \
+    HELM_VERSION=v3.2.3 \
     TEKTON_VERSION=0.9.0 \
     HOME=/home/tool-box
 
@@ -38,7 +38,7 @@ WORKDIR $HOME
 ADD ./root /
 
 RUN chmod u+x /usr/local/bin/run && \
-    chown -R 1001:1001 $HOME
+    rm -rf $HOME/.cache
 
 USER 1001
 
