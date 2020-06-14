@@ -13,7 +13,7 @@ Unless Kopf standalone mode is used, peering between Kopf operators should be en
 The Kopf peering custom resource definitions are required for peering and can be installed with:
 
 --------------------------------------------------------------------------------
-oc create -f https://raw.githubusercontent.com/redhat-cop/containers-quickstarts/master/build-s2i-python-kopf/peering-crds.yaml
+oc apply -f https://raw.githubusercontent.com/redhat-cop/containers-quickstarts/master/build-s2i-python-kopf/peering-crds.yaml
 --------------------------------------------------------------------------------
 
 === Kopf Options
