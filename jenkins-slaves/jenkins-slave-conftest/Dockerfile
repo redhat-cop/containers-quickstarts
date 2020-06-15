@@ -1,5 +1,5 @@
-# needed to install the python yq library
 FROM quay.io/redhat-cop/jenkins-agent-python:v1.0
+# ^ needed to install the python yq library 🐍
 
 ENV BATS_VERSION=1.2.0 \
     YQ_VERSION=3.3.2 \
