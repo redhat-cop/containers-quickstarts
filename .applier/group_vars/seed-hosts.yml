@@ -15,6 +15,7 @@ jenkins_slaves:
       SOURCE_REPOSITORY_URL: "{{ repository_url }}"
     arachni: {}
     argocd: {}
+    conftest: {}
     erlang: {}
     golang: {}
     gradle: {}
@@ -47,6 +48,12 @@ test_pipelines:
     argocd:
       NAME: jenkins-slave-argocd
       PIPELINE_CONTEXT_DIR: jenkins-slaves/jenkins-slave-argocd
+      PIPELINE_FILENAME: Jenkinsfile.test
+      PIPELINE_SOURCE_REPOSITORY_REF: "{{ slave_repo_ref }}"
+      PIPELINE_SOURCE_REPOSITORY_URL: "{{ repository_url }}"
+    conftest:
+      NAME: jenkins-slave-conftest
+      PIPELINE_CONTEXT_DIR: jenkins-slaves/jenkins-slave-conftest
       PIPELINE_FILENAME: Jenkinsfile.test
       PIPELINE_SOURCE_REPOSITORY_REF: "{{ slave_repo_ref }}"
       PIPELINE_SOURCE_REPOSITORY_URL: "{{ repository_url }}"
