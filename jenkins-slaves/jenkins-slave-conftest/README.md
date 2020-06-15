@@ -1,8 +1,8 @@
-# Jenkins Reqo Slave 🦇
+# Jenkins Conftest Agent 🦇
 
 This slave extends the base jenkins slave image and adds the following binaries to be able to execute [Open Policy Agent](https://openpolicyagent.org) conftests in a pipeline:
  - [conftest](https://conftest.dev/) 
- - [yq](https://github.com/mikefarah/yq)
+ - [yq](https://pypi.org/project/yq/)
  - [bats](https://github.com/bats-core/bats-core)
 
 ## Build in OpenShift

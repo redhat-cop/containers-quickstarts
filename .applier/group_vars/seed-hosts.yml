@@ -15,7 +15,8 @@ jenkins_slaves:
       SOURCE_REPOSITORY_URL: "{{ repository_url }}"
     arachni: {}
     argocd: {}
-    conftest: {}
+    conftest:
+      BUILDER_IMAGE_NAME: quay.io/redhat-cop/jenkins-agent-python:v1.0
     erlang: {}
     golang: {}
     gradle: {}
