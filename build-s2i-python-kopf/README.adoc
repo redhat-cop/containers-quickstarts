@@ -7,6 +7,15 @@ Source-to-Image for python https://kopf.readthedocs.io/en/latest/[kopf] based op
 This Python Kopf operator source-to-image can be used to build python-base operators using OpenShift source-to-image or Dockerfile based builds.
 This s2i image may also be used with `odo` to do in-cluster operator development.
 
+=== Kopf Peering CustomResourceDefinitions
+
+Unless Kopf standalone mode is used, peering between Kopf operators should be enabled.
+The Kopf peering custom resource definitions are required for peering and can be installed with:
+
+--------------------------------------------------------------------------------
+oc apply -f https://raw.githubusercontent.com/redhat-cop/containers-quickstarts/master/build-s2i-python-kopf/peering-crds.yaml
+--------------------------------------------------------------------------------
+
 === Kopf Options
 
 Kopf command line options are configured using environment variables.

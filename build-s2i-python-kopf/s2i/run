@@ -41,7 +41,23 @@ else
 fi
 
 if [[ "${KOPF_PEERING}" ]]; then
-    KOPF_OPTIONS="${KOPF_PEERING} --peering=${KOPF_PEERING}"
+    KOPF_OPTIONS="${KOPF_OPTIONS} --peering=${KOPF_PEERING}"
+    if [[ "${KOPF_NAMESPACE}" ]]; then
+        oc get kopfpeering anarchy ||  oc create -f - <<EOF
+apiVersion: zalando.org/v1
+kind: KopfPeering
+metadata:
+  namespace: $KOPF_NAMESPACE
+  name: $KOPF_PEERING
+EOF
+    else
+        oc get kopfpeering anarchy ||  oc create -f - <<EOF
+apiVersion: zalando.org/v1
+kind: ClusterKopfPeering
+metadata:
+  name: $KOPF_PEERING
+EOF
+    fi
 fi
 
 cd /opt/app-root/operator
