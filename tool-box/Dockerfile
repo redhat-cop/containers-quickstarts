@@ -6,7 +6,7 @@ ENV OC_VERSION=4.4.7 \
     ODO_VERSION=v1.2.1 \
     ANSIBLE_VERSION=2.9 \
     JQ_VERSION=1.6 \
-    HELM_VERSION=v3.2.1 \
+    HELM_VERSION=v3.2.3 \
     TEKTON_VERSION=0.9.0 \
     HOME=/home/tool-box
 
@@ -24,11 +24,11 @@ RUN mkdir -m 775 $HOME && \
     pip3 install git+https://github.com/ansible/ansible.git@stable-${ANSIBLE_VERSION}
 
 RUN curl --fail -s https://get.helm.sh/helm-${HELM_VERSION}-linux-amd64.tar.gz | tar -xvz && \
-    chmod u+x linux-amd64/helm && mv linux-amd64/helm /usr/local/bin/ && rm -rf linux-amd64 
+    chmod u+x linux-amd64/helm && mv linux-amd64/helm /usr/local/bin/ && rm -rf linux-amd64
 
 RUN curl --fail -sL https://github.com/tektoncd/cli/releases/download/v${TEKTON_VERSION}/tkn_${TEKTON_VERSION}_Linux_x86_64.tar.gz | tar --no-same-owner -xvz -C /usr/local/bin/ tkn
 
-RUN curl --fail https://mirror.openshift.com/pub/openshift-v4/clients/ocp/${OC_VERSION}/openshift-client-linux-${OC_VERSION}.tar.gz | tar -C /usr/local/bin/ -xzf -
+RUN curl --fail -sL https://mirror.openshift.com/pub/openshift-v4/clients/ocp/${OC_VERSION}/openshift-client-linux-${OC_VERSION}.tar.gz | tar -C /usr/local/bin/ -xzf -
 
 RUN curl --fail -sL https://mirror.openshift.com/pub/openshift-v4/clients/odo/${ODO_VERSION}/odo-linux-amd64 -o /usr/local/bin/odo && \
     chmod +x /usr/local/bin/odo
@@ -37,7 +37,8 @@ WORKDIR $HOME
 
 ADD ./root /
 
-RUN chmod u+x /usr/local/bin/run
+RUN chmod u+x /usr/local/bin/run && \
+    rm -rf $HOME/.cache
 
 USER 1001
 
