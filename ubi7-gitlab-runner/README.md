@@ -1,10 +1,10 @@
 # ubi7-gitlab-runner
 
-GitLab Runner based on ubi7 that does not require privilaged SSC (does not run as root) to run.
+GitLab Runner based on ubi7 that does not require priviliged SCC (does not run as root) to run.
 
 ## Purpose
 
-To be regestered as a [GitLab Runner](https://docs.gitlab.com/runner/) for a GitLab server.
+To be registered as a [GitLab Runner](https://docs.gitlab.com/runner/) for a GitLab server.
 
 ## Use
 
@@ -16,7 +16,7 @@ Follow [GitLab Runner Helm Chart](https://docs.gitlab.com/runner/install/kuberne
 
 2. Update values.yaml to specify image
 
-Add the following to the op of your values.yaml
+Add the following to the top of your values.yaml
 
 ```
 ## GitLab Runner Image
@@ -34,13 +34,18 @@ image: quay.io/redhat-cop/ubi7-gitlab-runner:latest
 3. Deploy the GitLab Runner
 
 ```bash
-GITLAB_RUNNER_PROJECT_NAME=gitlab-runners-kmo-cer
+# add the gitlab helm repo if not already done
+helm repo add gitlab https://charts.gitlab.io
+
+
+# deploy the gitlab runner
+GITLAB_RUNNER_PROJECT_NAME=gitlab-runners
 
 oc new-project ${GITLAB_RUNNER_PROJECT_NAME}
 oc project ${GITLAB_RUNNER_PROJECT_NAME}
 oc create serviceaccount gitlab-runner
 oc policy add-role-to-user edit system:serviceaccount:${GITLAB_RUNNER_PROJECT_NAME}:gitlab-runner
-helm install --namespace ${GITLAB_RUNNER_PROJECT_NAME} gitlab-runner -f helm-kmo-cer-values.yml gitlab/gitlab-runner
+helm install --namespace ${GITLAB_RUNNER_PROJECT_NAME} gitlab-runner -f values.yaml gitlab/gitlab-runner
 oc patch deployment/gitlab-runner-gitlab-runner --type json --patch '[{ "op": "remove", "path": "/spec/template/spec/securityContext" }]'
 ```
 
