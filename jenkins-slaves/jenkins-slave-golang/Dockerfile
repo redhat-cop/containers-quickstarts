@@ -1,6 +1,6 @@
 FROM quay.io/openshift/origin-jenkins-agent-base:4.4
 
-ENV GO_VERSION_DEFAULT=1.10.2 \
+ENV GO_VERSION_DEFAULT=1.14.4 \
     GOROOT=/usr/local/go \
     GOPATH=/usr/src/go
 ENV PATH=$GOPATH/bin:$GOROOT/bin:$PATH
@@ -16,10 +16,9 @@ RUN if [ -z $GO_VERSION ] ; then GO_VERSION=${GO_VERSION_DEFAULT} ; fi && \
     mkdir -p /usr/src/go/src/redhat && \
     tar -xzf /usr/go${GO_VERSION}.linux-amd64.tar.gz && \
     mv $(pwd)/go /usr/local/ && \
-    go get -u github.com/golang/dep/cmd/dep && \
     chown -R 1001 /usr/src/go && \
     chown -R 1001 /usr/local/go && \
-    chown -R 1001 ${HOME}/.cache/go-build && \
+    chmod g+w /usr/src/go && \
     rm -f /usr/go${GO_VERSION}.linux-amd64.tar.gz
 
 USER 1001

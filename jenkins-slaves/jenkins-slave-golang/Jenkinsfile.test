@@ -11,7 +11,24 @@ pipeline {
               """
             }
         }
-
+        stage ('Build Application') {
+          steps {
+            dir('jenkins-slaves/jenkins-slave-golang') {
+              sh """
+                  go build
+              """
+            }
+          }
+        }
+        stage ('Ensure Build was Successful') {
+          steps {
+            dir('jenkins-slaves/jenkins-slave-golang') {
+              sh """
+                  ./hello
+              """
+            }
+          }
+        }
     }
 
 }
