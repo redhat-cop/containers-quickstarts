@@ -114,6 +114,11 @@ objects:
       serviceName: "${APP_NAME}-replset-internal-${REPLSET_SEED}"
       replicas: 4
       # describes the pod that will be created if insufficient replicas are detected
+      selector:
+        matchLabels:
+          name: "${APP_NAME}replset${REPLSET_SEED}"
+          replset_seed: "${REPLSET_SEED}"
+          app: "${APP_NAME}"
       template:
         metadata:
           labels:
