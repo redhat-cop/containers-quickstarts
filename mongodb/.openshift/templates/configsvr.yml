@@ -88,6 +88,10 @@ objects:
       serviceName: "${APP_NAME}-configsvr-internal"
       replicas: 3
       # describes the pod that will be created if insufficient replicas are detected
+      selector:
+        matchLabels:
+          name: "${APP_NAME}configsvr"
+          app: "${APP_NAME}"
       template:
         metadata:
           labels:
