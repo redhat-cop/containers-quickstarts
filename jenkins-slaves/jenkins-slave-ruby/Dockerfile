@@ -14,7 +14,7 @@ It is simple, straight-forward, and extensible." \
   PATH=$PATH:/home/jenkins/bin \
   PROMPT_COMMAND=". /opt/app-root/etc/scl_enable" \
   HOME=/home/jenkins \
-  ORIGIN_CLIENT=https://mirror.openshift.com/pub/openshift-v3/clients/3.11.50/linux/oc.tar.gz
+  OC_VERSION=4.4
 
 
 LABEL summary="$SUMMARY" \
@@ -39,7 +39,7 @@ RUN INSTALL_PKGS="rh-ruby$RUBY_SHORT_VERSION rh-ruby$RUBY_SHORT_VERSION-ruby-dev
 
     rm -rf /var/cache/yum
 
-RUN curl $ORIGIN_CLIENT | tar -C /usr/local/bin/ -xzf - && \
+RUN curl -L https://mirror.openshift.com/pub/openshift-v4/clients/oc/${OC_VERSION}/linux/oc.tar.gz | tar -C /usr/local/bin -xzf - && \
     chmod +x /usr/local/bin/oc
 
 # Copy extra files to the image.
