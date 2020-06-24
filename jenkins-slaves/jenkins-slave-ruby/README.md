@@ -5,8 +5,8 @@ Jenkins [Slave](https://wiki.jenkins-ci.org/display/JENKINS/Distributed+builds) 
 ## Primary Components
 
 * Ruby 2.6.2 runtime, including:
-  ** Bundler
-  ** RubyGems
+  - Bundler
+  - RubyGems
 * Nodejs 8
 
 ## Instantiate Template
