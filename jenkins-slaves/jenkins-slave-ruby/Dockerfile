@@ -1,7 +1,9 @@
 FROM quay.io/openshift/origin-jenkins-agent-base:4.4
 
 ENV RUBY_VERSION=2.6 \
-  RUBY_SHORT_VERSION=26
+  RUBY_SHORT_VERSION=26 \
+  NODEJS_VERSION=12 \
+  OC_VERSION=4.4
 
 ENV SUMMARY="Platform for building and running Ruby $RUBY_VERSION applications" \
     DESCRIPTION="Ruby $RUBY_VERSION available as docker container is a base platform for \
@@ -13,8 +15,7 @@ It is simple, straight-forward, and extensible." \
   ENV=/opt/app-root/etc/scl_enable \
   PATH=$PATH:/home/jenkins/bin \
   PROMPT_COMMAND=". /opt/app-root/etc/scl_enable" \
-  HOME=/home/jenkins \
-  OC_VERSION=4.4
+  HOME=/home/jenkins
 
 
 LABEL summary="$SUMMARY" \
@@ -31,7 +32,7 @@ LABEL summary="$SUMMARY" \
 
 ADD ubi.repo /etc/yum.repos.d/ubi.repo
 
-RUN INSTALL_PKGS="rh-ruby$RUBY_SHORT_VERSION rh-ruby$RUBY_SHORT_VERSION-ruby-devel rh-ruby$RUBY_SHORT_VERSION-rubygem-rake rh-ruby$RUBY_SHORT_VERSION-rubygem-bundler rh-nodejs8 autoconf automake" && \
+RUN INSTALL_PKGS="rh-ruby$RUBY_SHORT_VERSION rh-ruby$RUBY_SHORT_VERSION-ruby-devel rh-ruby$RUBY_SHORT_VERSION-rubygem-rake rh-ruby$RUBY_SHORT_VERSION-rubygem-bundler rh-nodejs$NODEJS_VERSION autoconf automake" && \
     DISABLE_REPOS=--disablerepo='rhel-*' && \
     yum $DISABLE_REPOS install -y --setopt=tsflags=nodocs $INSTALL_PKGS && rpm -V $INSTALL_PKGS && \
     yum remove -y origin-clients && \

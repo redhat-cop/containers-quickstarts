@@ -7,7 +7,7 @@ Jenkins [Slave](https://wiki.jenkins-ci.org/display/JENKINS/Distributed+builds) 
 * Ruby 2.6.2 runtime, including:
   - Bundler
   - RubyGems
-* Nodejs 8
+* Nodejs 12
 
 ## Instantiate Template
 
