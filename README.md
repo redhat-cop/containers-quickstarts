@@ -31,21 +31,21 @@ A collection of custom built S2I base images
 * [Play Framework](./build-s2i-play)
 * [Python Kopf Operator Framework](./build-s2i-python-kopf)
 
-### Jenkins Slave Images
+### Jenkins Agent Images
 
-A set of images we've developed for running as slave pods in a Jenkins Pipeline on OpenShift
+A set of images we've developed for running as agent pods in a Jenkins Pipeline on OpenShift
 
-* [Ansible Slave](./jenkins-slaves/jenkins-slave-ansible)
-* [GoLang](./jenkins-slaves/jenkins-slave-golang)
-* [Image Promotion](./jenkins-slaves/jenkins-slave-image-mgmt)
-* [Extended Maven Slave](./jenkins-slaves/jenkins-slave-mvn)
-* [Ruby](./jenkins-slaves/jenkins-slave-ruby)
-* [Arachni](./jenkins-slaves/jenkins-slave-arachni)
-* [Gradle](./jenkins-slaves/jenkins-slave-gradle)
-* [MongoDB](./jenkins-slaves/jenkins-slave-mongodb)
-* [Node](./jenkins-slaves/jenkins-slave-npm)
-* [Python](./jenkins-slaves/jenkins-slave-python)
-* [ZAP](./jenkins-slaves/jenkins-slave-zap)
+* [Ansible Agent](./jenkins-agents/jenkins-agent-ansible)
+* [GoLang](./jenkins-agents/jenkins-agent-golang)
+* [Image Promotion](./jenkins-agents/jenkins-agent-image-mgmt)
+* [Extended Maven Agent](./jenkins-agents/jenkins-agent-mvn)
+* [Ruby](./jenkins-agents/jenkins-agent-ruby)
+* [Arachni](./jenkins-agents/jenkins-agent-arachni)
+* [Gradle](./jenkins-agents/jenkins-agent-gradle)
+* [MongoDB](./jenkins-agents/jenkins-agent-mongodb)
+* [Node](./jenkins-agents/jenkins-agent-npm)
+* [Python](./jenkins-agents/jenkins-agent-python)
+* [ZAP](./jenkins-agents/jenkins-agent-zap)
 
 ### Customized Jenkins Masters
 

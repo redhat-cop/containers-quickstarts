@@ -1,0 +1,20 @@
+pipeline {
+    agent {
+        label 'jenkins-agent-conftest'
+    }
+
+    stages {
+        stage ('Run Test') {
+            steps {
+              sh """
+                  conftest --version
+                  bats --version
+                  yq --version
+                  echo "🦇"
+              """
+            }
+        }
+
+    }
+
+}

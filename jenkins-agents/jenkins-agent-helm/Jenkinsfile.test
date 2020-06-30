@@ -1,0 +1,23 @@
+pipeline {
+    agent {
+        label 'jenkins-agent-helm'
+    }
+
+    stages {
+        stage ('Run Test') {
+            steps {
+              sh """
+                  helm help
+                  ct version
+                  ls -l ${HOME}/.ct
+                  git version
+                  python --version
+                  oc version
+                  kubectl version
+              """
+            }
+        }
+
+    }
+
+}

@@ -1,0 +1,15 @@
+pipeline {
+    agent {
+        label 'jenkins-agent-ansible'
+    }
+
+    stages {
+        stage ('Run Test') {
+            steps {
+                sh """
+                    ansible --version
+                """
+            }
+        }
+    }
+}

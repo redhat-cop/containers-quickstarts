@@ -1,0 +1,18 @@
+pipeline {
+    agent {
+      label 'jenkins-agent-erlang'
+    }
+
+    stages {
+        stage ('Run Test') {
+            steps {
+              sh """
+                  erl -version
+                  rebar3 version
+              """
+            }
+        }
+
+    }
+
+}
