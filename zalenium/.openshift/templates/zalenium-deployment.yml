@@ -73,13 +73,13 @@ objects:
               - start
             env:
               - name: ZALENIUM_KUBERNETES_CPU_REQUEST
-                value: ${SLAVE_CPU_REQUEST}
+                value: ${AGENT_CPU_REQUEST}
               - name: ZALENIUM_KUBERNETES_CPU_LIMIT
-                value: ${SLAVE_CPU_LIMIT}
+                value: ${AGENT_CPU_LIMIT}
               - name: ZALENIUM_KUBERNETES_MEMORY_REQUEST
-                value: ${SLAVE_MEMORY_REQUEST}
+                value: ${AGENT_MEMORY_REQUEST}
               - name: ZALENIUM_KUBERNETES_MEMORY_LIMIT
-                value: ${SLAVE_MEMORY_LIMIT}
+                value: ${AGENT_MEMORY_LIMIT}
               - name: DESIRED_CONTAINERS
                 value: ${DESIRED_CONTAINERS}
               - name: MAX_DOCKER_SELENIUM_CONTAINERS
@@ -168,24 +168,24 @@ parameters:
   description: Max CPU for Zalenium (Selenium Grid) master
   required: true
   value: "1000m"
-- name: SLAVE_CPU_REQUEST
-  description: Minium CPU for Zalenium slaves
+- name: AGENT_CPU_REQUEST
+  description: Minium CPU for Zalenium agents
   required: true
   value: "100m"
-- name: SLAVE_CPU_LIMIT
-  description: Max CPU for Zalenium slaves
+- name: AGENT_CPU_LIMIT
+  description: Max CPU for Zalenium agents
   required: true
   value: "1000m"
-- name: SLAVE_MEMORY_REQUEST
-  description: Minimum Memory for Zalenium slaves
+- name: AGENT_MEMORY_REQUEST
+  description: Minimum Memory for Zalenium agents
   required: true
   value: "1Gi"
-- name: SLAVE_MEMORY_LIMIT
-  description: Max Memory for Zalenium slaves
+- name: AGENT_MEMORY_LIMIT
+  description: Max Memory for Zalenium agents
   required: true
   value: "2Gi"
 - name: VIDEOS_STORAGE_SIZE
-  description: Max Memory for Zalenium slaves
+  description: Max Memory for Zalenium agents
   required: true
   value: "10G"
 - name: IMAGE

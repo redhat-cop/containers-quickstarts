@@ -60,7 +60,7 @@ println "out> $sout2 err> $serr2"
 def jlc = jenkins.model.JenkinsLocationConfiguration.get()
 jlc.setUrl("https://" + sout2.toString().trim())
 
-println("Configuring container cap for k8s, so pipelines won't hang when booting up slaves")
+println("Configuring container cap for k8s, so pipelines won't hang when booting up agents")
 
 try{
     def kc = Jenkins.instance.clouds.get(0)

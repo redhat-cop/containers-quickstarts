@@ -1,0 +1,15 @@
+pipeline {
+    agent {
+        label 'jenkins-agent-image-mgmt'
+    }
+
+    stages {
+        stage ('Run Test') {
+            steps {
+                sh """
+                    skopeo inspect docker://quay.io/openshift/origin-jenkins-agent-base
+                """
+            }
+        }
+    }
+}
