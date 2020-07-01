@@ -1,0 +1,44 @@
+{{- if .Values.cluster.apiServer.enabled }}
+{{- if .Values.cluster.ingressController.enabled }}
+---
+kind: APIServer
+apiVersion: config.openshift.io/v1
+metadata:
+  name: cluster
+spec:
+  servingCerts:
+    namedCertificates:
+    - names:
+      - {{ .Values.cluster.apiServer.name }}
+      servingCertificate:
+        name: {{ .Values.cluster.apiServer.tlsSecret }}
+
+---
+apiVersion: operator.openshift.io/v1
+kind: IngressController
+metadata:
+  name: default
+  namespace: openshift-ingress-operator
+spec:
+  defaultCertificate:
+    name: ingress-letsencrypt-cert
+
+---
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: letsencrypt-ca
+  namespace: openshift-config
+data:
+  ca-bundle.crt: {{ .Values.cluster.caBundle | toYaml | indent 2 }}
+
+---
+apiVersion: config.openshift.io/v1
+kind: Proxy
+metadata:
+  name: cluster
+spec:
+  trustedCA:
+    name: letsencrypt-ca
+{{- end }}
+{{- end }}

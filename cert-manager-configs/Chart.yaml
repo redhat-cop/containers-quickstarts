@@ -1,0 +1,10 @@
+apiVersion: v1
+name: cert-manager-configs
+version: v0.1.0
+appVersion: v0.1.0
+description: A Helm chart for installing customizations to the cert-manager deployment
+home: https://github.com/rht-labs/helm-charts
+icon: https://raw.githubusercontent.com/jetstack/cert-manager/master/logo/logo.png
+maintainers:
+- name: paulbarfuss
+  email: pbarfuss@redhat.com
