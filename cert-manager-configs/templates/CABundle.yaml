@@ -1,0 +1,10 @@
+{{- if .Values.cluster.caBundle }}
+---
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: letsencrypt-ca
+  namespace: openshift-config
+data:
+  ca-bundle.crt: {{ .Values.cluster.caBundle | toYaml | indent 2 }}
+{{- end }}

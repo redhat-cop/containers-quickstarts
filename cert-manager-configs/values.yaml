@@ -12,7 +12,7 @@ issuer:
     emailAddress: admin@example.com
     selectorZones:
       - subdomain.example.com
-    env: production
+    env: staging
     issuerKind: ClusterIssuer
 
 # AWS credentials scoped to route53 only
@@ -23,45 +23,45 @@ aws:
   region: us-east-1
 
 # rfc2136 credentials for named nsupdate ClusterIssuer
-rfc2136:
-  dnsNameServer: ''
-  tsigKeyAlgorithm: ''
-  tsigKeyName: ''
+# rfc2136:
+#   dnsNameServer: ''
+#   tsigKeyAlgorithm: ''
+#   tsigKeyName: ''
 
 # Add multiple certificates, including APIServer and IngressController and custom certificates
 certificates:
-  custom:
-    name: custom
-    namespace: custom
-    issuerRef: letsencrypt-production
-    issuerKind: ClusterIssuer
-    dnsNames:
-      - custom.example.com
   apiServer:
     name: api-letsencrypt-cert
     namespace: openshift-config
-    issuerRef: letsencrypt-production
+    issuerRef: letsencrypt-staging
     issuerKind: ClusterIssuer
     dnsNames:
       - api.example.com
   ingressController:
     name: ingress-letsencrypt-cert
     namespace: openshift-ingress
-    issuerRef: letsencrypt-production
+    issuerRef: letsencrypt-staging
     issuerKind: ClusterIssuer
     dnsNames:
       - '*.apps.example.com'
+  # custom:
+  #   name: custom
+  #   namespace: custom
+  #   issuerRef: letsencrypt-staging
+  #   issuerKind: ClusterIssuer
+  #   dnsNames:
+  #     - custom.example.com
 
 # Enable along with apiServer and ingressController certificates for automated Openshift SSL certificates
 # The Let's Encrypt CA is available at https://letsencrypt.org/certs/lets-encrypt-x3-cross-signed.pem.txt
 cluster:
   apiServer:
-    enabled: true
+    enabled: false
     name: api.example.com
     tlsSecret: api-letsencrypt-cert
 
   ingressController:
-    enabled: true
+    enabled: false
   caBundle: |
     -----BEGIN CERTIFICATE-----
     <data>
