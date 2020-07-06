@@ -1,0 +1,68 @@
+---
+
+# Default values for cert-manager configs for Openshift APIServer, IngressController and custom routes
+namespace: cert-manager
+
+# Setup Issuer and ClusterIssuer custom resources for route53 and rfc2136 resources
+issuer:
+  dns:
+    enabled: true
+  provider: route53
+  acme:
+    emailAddress: admin@example.com
+    selectorZones:
+      - subdomain.example.com
+    env: staging
+    issuerKind: ClusterIssuer
+
+# AWS credentials scoped to route53 only
+# See https://cert-manager.io/docs/configuration/acme/dns01/route53/#set-up-an-iam-role
+aws:
+  accessKeyId: ''
+  secretAccessKey: ''
+  region: us-east-1
+
+# rfc2136 credentials for named nsupdate ClusterIssuer
+# rfc2136:
+#   dnsNameServer: ''
+#   tsigKeyAlgorithm: ''
+#   tsigKeyName: ''
+
+# Add multiple certificates, including APIServer and IngressController and custom certificates
+certificates:
+  apiServer:
+    name: api-letsencrypt-cert
+    namespace: openshift-config
+    issuerRef: letsencrypt-staging
+    issuerKind: ClusterIssuer
+    dnsNames:
+      - api.example.com
+  ingressController:
+    name: ingress-letsencrypt-cert
+    namespace: openshift-ingress
+    issuerRef: letsencrypt-staging
+    issuerKind: ClusterIssuer
+    dnsNames:
+      - '*.apps.example.com'
+  # custom:
+  #   name: custom
+  #   namespace: custom
+  #   issuerRef: letsencrypt-staging
+  #   issuerKind: ClusterIssuer
+  #   dnsNames:
+  #     - custom.example.com
+
+# Enable along with apiServer and ingressController certificates for automated Openshift SSL certificates
+# The Let's Encrypt CA is available at https://letsencrypt.org/certs/lets-encrypt-x3-cross-signed.pem.txt
+cluster:
+  apiServer:
+    enabled: false
+    name: api.example.com
+    tlsSecret: api-letsencrypt-cert
+
+  ingressController:
+    enabled: false
+  caBundle: |
+    -----BEGIN CERTIFICATE-----
+    <data>
+    -----END CERTIFICATE-----
