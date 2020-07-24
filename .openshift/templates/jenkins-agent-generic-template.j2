@@ -8,35 +8,35 @@ metadata:
     description: "Generic build pod template pre-configured to use a jenkins agent in the
       same project/namespace"
 objects:
-{% if jenkins_slaves is defined %}
-{% for agent, params in jenkins_slaves.build.items() %}
+{% if jenkins_agents is defined %}
+{% for agent, params in jenkins_agents.build.items() %}
 - apiVersion: image.openshift.io/v1
   kind: ImageStream
   metadata:
     labels:
-      build: {{ params.NAME | d('jenkins-slave-' + agent) }}
+      build: {{ params.NAME | d('jenkins-agent-' + agent) }}
       role: jenkins-slave
-    name: {{ params.NAME | d('jenkins-slave-' + agent) }}
+    name: {{ params.NAME | d('jenkins-agent-' + agent) }}
 - apiVersion: build.openshift.io/v1
   kind: BuildConfig
   metadata:
     labels:
-      build: {{ params.NAME | d('jenkins-slave-' + agent) }}
+      build: {{ params.NAME | d('jenkins-agent-' + agent) }}
       type: image
-    name: {{ params.NAME | d('jenkins-slave-' + agent) }}
+    name: {{ params.NAME | d('jenkins-agent-' + agent) }}
   spec:
     nodeSelector:
     output:
       to:
         kind: ImageStreamTag
-        name: {{ params.NAME | d('jenkins-slave-' + agent) }}:{{ params.SLAVE_IMAGE_TAG | d('latest') }}
+        name: {{ params.NAME | d('jenkins-agent-' + agent) }}:{{ params.SLAVE_IMAGE_TAG | d('latest') }}
     postCommit: {}
     resources: {}
     runPolicy: Serial
     source:
-      contextDir: {{ params.SOURCE_CONTEXT_DIR | d('jenkins-slaves/jenkins-slave-' + agent) }}
+      contextDir: {{ params.SOURCE_CONTEXT_DIR | d('jenkins-agents/jenkins-agent-' + agent) }}
       git:
-        ref: {{ params.SOURCE_REPOSITORY_REF | d(slave_repo_ref) | d('master') }}
+        ref: {{ params.SOURCE_REPOSITORY_REF | d(agent_repo_ref) | d('master') }}
         uri: {{ params.SOURCE_REPOSITORY_URL | d(repository_url) | d('https://github.com/redhat-cop/containers-quickstarts') }}
       type: Git
     strategy:
