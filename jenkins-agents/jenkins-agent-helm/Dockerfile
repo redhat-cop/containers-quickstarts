@@ -33,19 +33,11 @@ RUN curl -sL -o /tmp/chart-testing.tar.gz https://github.com/helm/chart-testing/
 
 ## Install python 3.6, yamale, and yamllint
 RUN INSTALL_PKGS="rh-python36 rh-python36-python-pip" && \
-    yum -y --setopt=tsflags=nodocs install $INSTALL_PKGS && \
-    yum -y clean all --enablerepo='*' && \
+    yum -y --setopt=tsflags=nodocs --disablerepo='rhel-*' install $INSTALL_PKGS && \
+    yum -y clean all && \
     source scl_source enable rh-python36 && \
     python3 -m pip install yamale==3.0.1 && \
     python3 -m pip install yamllint==1.24.1
-
-## Persistently enable software collections
-RUN mkdir /usr/share/container-scripts
-COPY scl_enable /usr/share/container-scripts
-RUN chmod 555 /usr/share/container-scripts/scl_enable
-ENV BASH_ENV=/usr/share/container-scripts/scl_enable \
-    ENV=/usr/share/container-scripts/scl_enable \
-    PROMPT_COMMAND=". /usr/share/container-scripts/scl_enable"
 
 ## Install git > 2.17 (ubi repos don't provide this)
 RUN yum -y remove git* && \
