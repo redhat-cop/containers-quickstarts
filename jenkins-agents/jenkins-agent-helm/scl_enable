@@ -1,0 +1,2 @@
+unset BASH_ENV PROMPT_COMMAND ENV
+source scl_source enable rh-python36 rh-git218

@@ -1,0 +1,47 @@
+{{- if .Values.issuer.dns.enabled }}
+---
+apiVersion: cert-manager.io/v1alpha2
+kind: {{ .Values.issuer.acme.issuerKind }}
+metadata:
+  name: "letsencrypt-{{ .Values.issuer.acme.env }}"
+spec:
+  acme:
+    email: {{ .Values.issuer.acme.emailAddress }}
+    {{- if eq .Values.issuer.acme.env "production" }}
+    server: https://acme-v02.api.letsencrypt.org/directory
+    {{- else }}
+    server: https://acme-staging-v02.api.letsencrypt.org/directory
+    {{- end }}
+    privateKeySecretRef:
+      name: letsencrypt-account-private-key
+    solvers:
+      {{- if .Values.issuer.acme.selectorZones }}
+      - selector:
+          {{- with .Values.issuer.acme.selectorZones }}
+          dnsZones:
+          {{ toYaml . | indent 2 }}
+          {{- end }}
+      {{- end }}
+
+      {{- if eq .Values.issuer.provider "route53" }}
+        dns01:
+          route53:
+            region: {{ .Values.aws.region }}
+            accessKeyID: {{ .Values.aws.accessKeyId }}
+            secretAccessKeySecretRef:
+              name: "aws-secret-access-key-secret"
+              key: "aws-secret-access-key"
+      {{- end }}
+
+      {{- if eq .Values.issuer.provider "rfc2136" }}
+        dns01:
+          rfc2136:
+            nameserver: {{ .Values.rfc2136.dnsNameServer }}
+            tsigAlgorithm: {{ .Values.rfc2136.tsigKeyAlgorithm }}
+            tsigKeyName: {{ .Values.rfc2136.tsigKeyName }}
+            tsigSecretSecretRef:
+              name: "tsig-key-secret"
+              key: "tsig-key"
+      {{- end }}
+
+{{- end }}
