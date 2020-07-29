@@ -43,8 +43,7 @@ RUN INSTALL_PKGS="rh-python36 rh-python36-python-pip" && \
 RUN yum -y remove git* && \
     yum -y --disablerepo='rhel-*' install --setopt=tsflags=nodocs centos-release-scl && \
     yum -y --disablerepo='rhel-*' install --setopt=tsflags=nodocs rh-git218 && \
-    yum -y clean all && \
-    ln -s /opt/rh/rh-git218/root/usr/bin/git /usr/bin/git
+    yum -y clean all
 
 ## Install oc and kubectl
 RUN curl -s https://mirror.openshift.com/pub/openshift-v4/clients/ocp/${OPENSHIFT_CLIENT_VERSION}/openshift-client-linux-${OPENSHIFT_CLIENT_VERSION}.tar.gz \
