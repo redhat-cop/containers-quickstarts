@@ -1,0 +1,21 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: jenkins
+  labels:
+    app: jenkins
+spec:
+  type: ClusterIP
+  sessionAffinity: None
+  {{- if .Release.IsUpgrade }}
+  clusterIP: {{ (lookup "v1" "Service" .Release.Namespace "jenkins").spec.clusterIP }}
+  {{- else }}
+  clusterIP: ""
+  {{- end }}
+  ports:
+    - port: {{ .Values.jenkins.port | default 8080 }}
+      targetPort: http
+      protocol: TCP
+      name: http
+  selector:
+    deploymentconfig: jenkins

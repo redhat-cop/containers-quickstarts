@@ -1,0 +1,15 @@
+{{- if .Values.jenkins.persistent }}
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: jenkins
+  labels:
+    app: jenkins
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: {{ .Values.jenkins.persistent | default "4Gi" | quote }}
+  volumeMode: Filesystem
+{{- end }}

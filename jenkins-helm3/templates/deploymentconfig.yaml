@@ -1,0 +1,85 @@
+apiVersion: apps.openshift.io/v1
+kind: DeploymentConfig
+metadata:
+  name: jenkins
+  labels:
+    app: jenkins
+spec:
+  replicas: 1
+  selector:
+    name: jenkins
+  triggers:
+  - type: ConfigChange 
+  - type: ImageChange
+    imageChangeParams:
+      automatic: true
+      containerNames:
+      - jenkins
+      from:
+        kind: ImageStreamTag
+        name: {{ .Values.jenkins.imagestreamtag | default "jenkins:latest" | quote }}
+        {{- if .Values.jenkins.s2i_repository }}
+        namespace: {{ .Release.Namespace | quote }}
+        {{- else }}
+        namespace: openshift
+        {{- end }}
+  template:
+    metadata:
+      labels:
+        name: jenkins
+    spec:
+      serviceAccountName: {{ .Values.jenkins.service_account_name | default "jenkins" | quote }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      containers:
+        - name: jenkins
+          securityContext: 
+            capabilities: {}
+            privileged: false
+          image: "no-value-needed---will-be-provided-by-image-change-trigger"
+          imagePullPolicy: {{ .Values.jenkins.pull_policy | default "Always" | quote }}
+          env:
+            - name: OPENSHIFT_ENABLE_OAUTH
+              value: {{ .Values.jenkins.openshift_oauth | default "true" | quote }}
+            - name: OPENSHIFT_ENABLE_REDIRECT_PROMPT
+              value: {{ .Values.jenkins.auth_redirect_prompt | default "true" | quote }}
+            - name: DISABLE_ADMINISTRATIVE_MONITORS
+              value: {{ .Values.jenkins.admin_monitors | default "true" | quote }}
+            - name: KUBERNETES_MASTER
+              value: {{ .Values.jenkins.kube_master | default "https://kubernetes.default:443" | quote }}
+            - name: KUBERNETES_TRUST_CERTIFICATES
+              value: {{ .Values.jenkins.trust_certificates | default "true" | quote }}
+            - name: JENKINS_SERVICE_NAME
+              value: {{ .Values.jenkins.service_name | default "jenkins" | quote }}
+            - name: JNLP_SERVICE_NAME
+              value: {{ .Values.jenkins.jnlp_service_name | default "jenkins-jnlp" | quote }}
+            - name: ENABLE_FATAL_ERROR_LOG_FILE
+              value: {{ .Values.jenkins.fatal_error_log_file | default "false" | quote }}
+            - name: JENKINS_UC_INSECURE
+              value: {{ .Values.jenkins.uc_insecure | default "false" | quote }}
+          ports:
+            - name: http
+              containerPort: 8080
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /login
+              port: http
+          readinessProbe:
+            httpGet:
+              path: /login
+              port: http
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+          {{- if .Values.jenkins.persistent }}
+          volumeMounts:
+            - name: jenkins-data
+              mountPath: /var/lib/jenkins
+          {{- end }}
+      {{- if .Values.jenkins.persistent }}
+      volumes:
+        - name: jenkins-data
+          persistentVolumeClaim:
+            claimName: jenkins
+      {{- end }}
+      dnsPolicy: ClusterFirst

@@ -1,0 +1,30 @@
+{{- if .Values.jenkins.s2i_repository }}
+apiVersion: build.openshift.io/v1
+kind: BuildConfig
+metadata:
+  name: custom-jenkins-build
+spec:
+  triggers:
+  - imageChange:
+      from:
+        kind: ImageStreamTag
+        namespace: openshift
+        name: jenkins:latest
+    type: ImageChange
+  - type: ConfigChange
+  source:                       
+    git:
+      uri: {{ .Values.jenkins.s2i_repository }}
+    type: Git
+  strategy:                     
+    sourceStrategy:
+      from:
+        kind: ImageStreamTag
+        name: jenkins:2
+        namespace: openshift
+    type: Source
+  output:                       
+    to:
+      kind: ImageStreamTag
+      name: jenkins:latest
+{{- end }}

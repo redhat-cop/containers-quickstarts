@@ -1,0 +1,59 @@
+jenkins: {}
+
+####################################################################################
+##                                                                                ##
+## All of the following options *MUST* best nested under the `jenkins` key above  ##
+##                                                                                ##
+##                       THERE ARE NO REQUIRED PARAMETERS                         ##
+##                                                                                ##
+####################################################################################
+
+## Should we have persistent storage for Jenkins? Setting this to a size (e.g. 4Gi) 
+## will create/use a persistent volume using the default storage class.
+#   persistent: false
+
+## Do you want to build a customized Jenkins instance with your own plugins/versions?
+#   s2i_repository: null
+
+## Override the default Jenkins service account name:
+#   service_account_name: jenkins
+
+## Configure resource limits on the Jenkins control server
+# resources:
+#   limits:
+#     cpu: <unlimited>
+#     memory: <unlimited>
+#   requests:
+#     cpu: <unlimited>
+#     memory: <unlimited>
+
+## Override default Jenkins environment variables
+#   openshift_oauth: true
+#   auth_redirect_prompt: true
+#   admin_monitors: true
+#   kube_master: https://kubernetes.default:443
+#   trust_certificates: true
+#   service_name: jenkins
+#   jnlp_service_name: jenkins-jnlp
+#   fatal_error_log_file: false
+#   uc_insecure: false
+
+## Set up a custom pod security context.
+## **WARNING**: Many of these options require elevated privileges to use
+#   podSecurityContext:
+#     fsGroup: <integer>
+#     runAsGroup:	<integer>
+#     runAsNonRoot:	<boolean>
+#     runAsUser:	<integer>
+#     seLinuxOptions:	<Object>
+#       level:	<string>
+#       role:	<string>
+#       type:	<string>
+#       user:	<string>
+#     supplementalGroups:	<[]integer>
+#     sysctls:	<[]Object>
+#       name:	<string>
+#       value:	<string>
+#     windowsOptions:	<Object>
+#       gmsaCredentialSpec:	<string>
+#       gmsaCredentialSpecName:	<string>

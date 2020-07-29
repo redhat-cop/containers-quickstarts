@@ -1,0 +1,15 @@
+kind: Route
+apiVersion: route.openshift.io/v1
+metadata:
+  name: jenkins
+  labels:
+    app: jenkins
+spec:
+  host: {{ .Values.jenkins.custom_hostname | default "" | quote }}
+  to:
+    kind: Service
+    name: jenkins
+    weight: 100
+  tls:
+    {{- toYaml .Values.jenkins.tls | nindent 4 }}
+  wildcardPolicy: {{ .Values.jenkins.wildcard_policy | default "None" | quote }}
