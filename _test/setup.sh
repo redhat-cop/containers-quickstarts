@@ -5,7 +5,7 @@ NAMESPACE="${2:-containers-quickstarts-tests}"
 TRAVIS_REPO_SLUG="${3:-redhat-cop/containers-quickstarts}"
 TRAVIS_BRANCH="${4:-master}"
 
-CHAINED_BUILDS=("jenkins-slave-image-mgmt")
+CHAINED_BUILDS=("jenkins-agent-image-mgmt")
 TEST_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 . ${TEST_DIR}/common.sh
 
@@ -33,7 +33,7 @@ applier() {
   echo "${TRAVIS_BRANCH}"
   echo "${TRAVIS_REPO_SLUG}"
   ansible-galaxy install -r requirements.yml -p galaxy --force
-  ansible-playbook -i .applier/ galaxy/openshift-applier/playbooks/openshift-cluster-seed.yml -e namespace=${NAMESPACE} -e slave_repo_ref=${TRAVIS_BRANCH} -e repository_url=https://github.com/${TRAVIS_REPO_SLUG}.git
+  ansible-playbook -i .applier/ galaxy/openshift-applier/playbooks/openshift-cluster-seed.yml -e namespace=${NAMESPACE} -e agent_repo_ref=${TRAVIS_BRANCH} -e repository_url=https://github.com/${TRAVIS_REPO_SLUG}.git
 }
 
 test() {

@@ -198,7 +198,7 @@ parameters:
   displayName: Jenkins Service Name
   name: JENKINS_SERVICE_NAME
   value: jenkins
-- description: The name of the service used for master/slave communication.
+- description: The name of the service used for master/agent communication.
   displayName: Jenkins JNLP Service Name
   name: JNLP_SERVICE_NAME
   value: jenkins-jnlp

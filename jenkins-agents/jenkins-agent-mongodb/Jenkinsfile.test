@@ -1,0 +1,17 @@
+pipeline {
+    agent {
+      label 'jenkins-agent-mongodb'
+    }
+
+    stages {
+        stage ('Run Test') {
+            steps {
+              sh """
+                  mongo --version
+              """
+            }
+        }
+
+    }
+
+}
