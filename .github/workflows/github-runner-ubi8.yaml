@@ -34,8 +34,8 @@ jobs:
         uses: docker/build-push-action@v1
         with:
           path: ${{ env.CONTEXT_DIR }}
-          registry: ${{ secrets.REGISTRY_URI }}
-          repository: ${{ secrets.REGISTRY_REPOSITORY }}${{ env.IMAGE_NAME }}
+          registry: quay.io
+          repository: redhat-cop/${{ env.IMAGE_NAME }}
           username: ${{ secrets.REGISTRY_USERNAME }}
           password: ${{ secrets.REGISTRY_PASSWORD }}
           push: ${{ github.ref == 'refs/heads/master' && github.event_name != 'pull_request' }}
