@@ -1,0 +1,82 @@
+apiVersion: template.openshift.io/v1
+kind: Template
+metadata:
+  name: "github-runner-ubi8"
+objects:
+- apiVersion: image.openshift.io/v1
+  kind: ImageStream
+  metadata:
+    name: "${APPLICATION_NAME}"
+    labels:
+      app: ${APPLICATION_NAME}
+  spec:
+    lookupPolicy:
+      local: false
+- apiVersion: image.openshift.io/v1
+  kind: ImageStream
+  metadata:
+    name: "${APPLICATION_NAME}-base"
+    labels:
+      app: ${APPLICATION_NAME}
+  spec:
+    lookupPolicy:
+      local: false
+    tags:
+    - from:
+        kind: DockerImage
+        name: "${BASE_IMAGE_LOCATION}:${BASE_IMAGE_TAG}"
+      name: "${BASE_IMAGE_TAG}"
+- apiVersion: build.openshift.io/v1
+  kind: BuildConfig
+  metadata:
+    name: "${APPLICATION_NAME}"
+    labels:
+      app: ${APPLICATION_NAME}
+  spec:
+    output:
+      to:
+        kind: ImageStreamTag
+        name: "${APPLICATION_NAME}:latest"
+    source:
+      contextDir: "${CONTEXT_DIR}"
+      git:
+        uri: "${SOURCE_REPOSITORY_URL}"
+        ref: "${SOURCE_REPOSITORY_REF}"
+      type: Git
+    strategy:
+      dockerStrategy:
+        from:
+          kind: ImageStreamTag
+          name: ${APPLICATION_NAME}-base:${BASE_IMAGE_TAG}
+      type: Docker
+    triggers:
+      - type: ImageChange
+      - type: ConfigChange
+parameters:
+- description: The name for the application.
+  displayName: Application name
+  name: APPLICATION_NAME
+  required: true
+  value: github-runner-ubi8
+- description: Path within Git repository to build; empty for root of repository
+  displayName: Git context directory
+  name: CONTEXT_DIR
+  value: "github-runner-ubi8"
+- description: Git branch/tag reference
+  name: SOURCE_REPOSITORY_REF
+  value: master
+  required: true
+- description: Git source URL for application
+  name: SOURCE_REPOSITORY_URL
+  required: true
+  value: https://github.com/redhat-cop/containers-quickstarts
+- description: Location of the source base image.
+  displayName: Base Image
+  name: BASE_IMAGE_LOCATION
+  required: true
+  value: registry.access.redhat.com/ubi8/ubi
+- description: Tag of the base image.
+  displayName: Base Image Tag
+  name: BASE_IMAGE_TAG
+  required: true
+  value: latest
