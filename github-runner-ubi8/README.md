@@ -44,6 +44,12 @@ First, create a new project
 $ oc new-project github-runner-ubi8
 ```
 
+Change into the runner directory:
+
+```
+$ cd github-runner-ubi8
+```
+
 Execute the following command to instantiate the templates using the OpenShift CLI:
 
 Instantiate the build template:
