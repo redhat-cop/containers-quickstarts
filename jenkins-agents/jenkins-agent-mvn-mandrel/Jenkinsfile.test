@@ -1,0 +1,23 @@
+pipeline {
+    agent {
+      label 'jenkins-agent-mvn-mandrel'
+    }
+
+    stages {
+        stage ('Run Test') {
+            steps {
+              sh """
+                  mvn --version
+                  export JAVA_HOME=/usr/lib/jvm/java-11-openjdk
+                  mvn --version
+                  oc version --client
+                  helm version
+                  jq --version
+                  yq --version
+              """
+            }
+        }
+
+    }
+
+}
