@@ -1,0 +1,100 @@
+apiVersion: template.openshift.io/v1
+kind: Template
+metadata:
+  name: "github-runner-ubi8"
+objects:
+- apiVersion: v1
+  kind: Secret
+  metadata:
+    name: ${APPLICATION_NAME}
+    labels:
+      app: ${APPLICATION_NAME}
+  stringData:
+    token: "${GITHUB_PAT}"
+- apiVersion: v1
+  kind: ServiceAccount
+  metadata:
+    name: "${APPLICATION_NAME}"
+    labels:
+      app: ${APPLICATION_NAME}
+- apiVersion: apps.openshift.io/v1
+  kind: DeploymentConfig
+  metadata:
+    labels:
+      app: ${APPLICATION_NAME}
+      app.kubernetes.io/component: ${APPLICATION_NAME}
+      app.kubernetes.io/instance: ${APPLICATION_NAME}
+    name: ${APPLICATION_NAME}
+  spec:
+    replicas: 1
+    selector:
+      deploymentconfig: "${APPLICATION_NAME}"
+    strategy:
+      activeDeadlineSeconds: 21600
+      rollingParams:
+        intervalSeconds: 1
+        maxSurge: 25%
+        maxUnavailable: 25%
+        timeoutSeconds: 600
+        updatePeriodSeconds: 1
+      type: Rolling
+    template:
+      metadata:
+        labels:
+          deploymentconfig: "${APPLICATION_NAME}"
+          app: ${APPLICATION_NAME}
+      spec:
+        containers:
+        - env:
+          - name: GITHUB_PAT
+            valueFrom:
+              secretKeyRef:
+                key: token
+                name: "${APPLICATION_NAME}"
+          - name: RUNNER_NAME
+            valueFrom:
+              fieldRef:
+                apiVersion: v1
+                fieldPath: metadata.name
+          - name: GITHUB_OWNER
+            value: "${GITHUB_OWNER}"
+          - name: GITHUB_REPOSITORY
+            value: "${GITHUB_REPOSITORY}"
+          - name: RUNNER_LABELS
+            value: "${RUNNER_LABELS}"
+          image: ${APPLICATION_NAME}:latest
+          imagePullPolicy: Always
+          name: "${APPLICATION_NAME}"
+        restartPolicy: Always
+    triggers:
+    - type: ConfigChange
+    - imageChangeParams:
+        automatic: true
+        containerNames:
+        - "${APPLICATION_NAME}"
+        from:
+          kind: ImageStreamTag
+          name: ${APPLICATION_NAME}:latest
+      type: ImageChange
+parameters:
+- description: The name for the application.
+  displayName: Application name
+  name: APPLICATION_NAME
+  required: true
+  value: github-runner-ubi8
+- description: GitHub Personal Access Token
+  displayName: GitHub Personal Access Token
+  name: GITHUB_PAT
+  required: true
+- description: Comma separated list of labels to apply to the builder.
+  displayName: GitHub runner labels
+  name: RUNNER_LABELS
+  required: true
+  value: "self-hosted,Linux,X64"
+- description: Owner of the repository
+  displayName: GitHub repository owner
+  name: GITHUB_OWNER
+  required: true
+- description: Name of the GitHub repository (optional). If not provided, runner will be available to all repositories for the user or organization
+  displayName: GitHub repository
+  name: GITHUB_REPOSITORY
