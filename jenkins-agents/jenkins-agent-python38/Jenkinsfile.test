@@ -1,6 +1,6 @@
 pipeline {
     agent {
-      label 'jenkins-agent-python'
+      label 'jenkins-agent-python38'
     }
 
     stages {
