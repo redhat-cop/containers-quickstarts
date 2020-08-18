@@ -6,3 +6,9 @@ roles
 *.swp
 __pycache__
 .odo
+
+# Rego
+policy/
+
+# BATS
+_test/test_helper/
