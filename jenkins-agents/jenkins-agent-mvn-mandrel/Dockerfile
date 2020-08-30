@@ -27,7 +27,7 @@ ENV MAVEN_OPTS="-XX:+TieredCompilation -XX:TieredStopAtLevel=1 -Duser.home=$USER
 
 ARG MAVEN_VERSION=3.6.3
 ARG MAVEN_URL=https://archive.apache.org/dist/maven/maven-3/$MAVEN_VERSION/binaries/apache-maven-$MAVEN_VERSION-bin.tar.gz
-ARG GRAAL_VERSION=20.1.0.1.Alpha2
+ARG GRAAL_VERSION=20.1.0.1.Final
 ENV GRAALVM_HOME /opt/mandrelJDK
 ENV GRAAL_CE_URL=https://github.com/graalvm/mandrel/releases/download/mandrel-${GRAAL_VERSION}/mandrel-java11-linux-amd64-${GRAAL_VERSION}.tar.gz
 ARG HELM_VERSION=3.2.3
