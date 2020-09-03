@@ -1,0 +1,65 @@
+---
+kind: Template
+apiVersion: v1
+metadata:
+  annotations:
+    description: OCP v4 Certificate and Configuration to load the certs
+  name: "${NAME}-certs"
+labels:
+  template: "${NAME}-certs"
+objects:
+  - kind: Certificate
+    apiVersion: cert-manager.io/v1alpha2
+    metadata:
+      name: "api-${NAME}-cert"
+    spec:
+      secretName: "api-${NAME}-cert"
+      issuerRef:
+        name: letsencrypt-production
+        kind: ClusterIssuer
+      dnsNames: 
+        - "api.${DNS_DOMAIN}"
+  - kind: Certificate
+    apiVersion: cert-manager.io/v1alpha2
+    metadata:
+      name: ingress-${NAME}-cert
+    spec:
+      secretName: "ingress-${NAME}-cert"
+      issuerRef:
+        name: letsencrypt-production
+        kind: ClusterIssuer
+      dnsNames: 
+        - "*.apps.${DNS_DOMAIN}"
+  - kind: APIServer
+    apiVersion: config.openshift.io/v1
+    metadata:
+      name: cluster
+    spec:
+      servingCerts:
+        namedCertificates:
+          - names:
+              - "api.${DNS_DOMAIN}"
+            servingCertificate:
+              name: "api-${NAME}-cert"
+  - kind: IngressController
+    apiVersion: operator.openshift.io/v1
+    metadata:
+      name: default
+      namespace: openshift-ingress-operator
+    spec:
+      defaultCertificate:
+        name: "ingress-${NAME}-cert"
+  - kind: Proxy
+    apiVersion: config.openshift.io/v1
+    metadata:
+      name: cluster
+    spec:
+      trustedCA:
+        name: letsencrypt-ca
+parameters:
+  - name: NAME
+    description: Name of the Deployment
+    value: letsencrypt
+  - name: DNS_DOMAIN
+    description: The DNS domain to use for the certificate
+    required: true

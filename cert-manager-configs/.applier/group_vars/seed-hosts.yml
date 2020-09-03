@@ -1,0 +1,32 @@
+---
+
+openshift_domain: "my.cluster.example.com"
+cert_manager_namespace: "cert-manager"
+
+cert_manager_params:
+  DNS_DOMAIN: "{{ openshift_domain }}"
+  AWS_ACCESS_KEY_UD: "ASDF321ADF63"
+  AWS_SECRET_ACCESS_KEY: "$#%DASFSRT@#$DFFSVSDFG@#$@#$"
+  ACME_EMAIL: "my-email@example.com"
+
+openshift_cert_params:
+  DNS_DOMAIN: "{{ openshift_domain }}"
+
+openshift_cluster_content:
+- object: CertManager
+  content:
+  - name: CertManager
+    template: "{{ inventory_dir }}/../.openshift/cert-manager.yml"
+    params_from_vars: "{{ cert_manager_params }}"
+    namespace: "{{ cert_manager_namespace }}"
+    tags:
+      - cert-manager
+- object: OpenShiftCerts
+  content:
+  - name: OCPv4-Certs
+    template: "{{ inventory_dir }}/../.openshift/ocpv4-certs.yml"
+    params_from_vars: "{{ openshift_cert_params }}"
+    namespace: "{{ cert_manager_namespace }}"
+    tags:
+      - ocpv4-certs
+
