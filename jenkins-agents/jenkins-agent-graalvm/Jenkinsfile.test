@@ -1,0 +1,18 @@
+pipeline {
+    agent {
+      label 'jenkins-agent-graalvm'
+    }
+
+    stages {
+        stage ('Run Test') {
+            steps {
+              sh """
+                  mvn --version
+                  native-image --version
+              """
+            }
+        }
+
+    }
+
+}

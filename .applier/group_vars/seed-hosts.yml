@@ -19,7 +19,9 @@ jenkins_agents:
       BUILDER_IMAGE_NAME: quay.io/redhat-cop/jenkins-agent-python:v1.0
     erlang: {}
     golang: {}
-    gradle: {}
+    graalvm: {}
+    gradle:
+      BUILDER_IMAGE_NAME: quay.io/openshift/origin-jenkins-agent-maven:4.5
     helm: {}
     mongodb: {}
     mvn:
@@ -72,6 +74,12 @@ test_pipelines:
     golang:
       NAME: jenkins-agent-golang
       PIPELINE_CONTEXT_DIR: jenkins-agents/jenkins-agent-golang
+      PIPELINE_FILENAME: Jenkinsfile.test
+      PIPELINE_SOURCE_REPOSITORY_REF: "{{ agent_repo_ref }}"
+      PIPELINE_SOURCE_REPOSITORY_URL: "{{ repository_url }}"
+    graalvm:
+      NAME: jenkins-agent-graalvm
+      PIPELINE_CONTEXT_DIR: jenkins-agents/jenkins-agent-graalvm
       PIPELINE_FILENAME: Jenkinsfile.test
       PIPELINE_SOURCE_REPOSITORY_REF: "{{ agent_repo_ref }}"
       PIPELINE_SOURCE_REPOSITORY_URL: "{{ repository_url }}"
