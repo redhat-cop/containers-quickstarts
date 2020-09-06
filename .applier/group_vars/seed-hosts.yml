@@ -19,9 +19,9 @@ jenkins_agents:
       BUILDER_IMAGE_NAME: quay.io/redhat-cop/jenkins-agent-python:v1.0
     erlang: {}
     golang: {}
-    graalvm: {}
-    gradle:
+    graalvm:
       BUILDER_IMAGE_NAME: quay.io/openshift/origin-jenkins-agent-maven:4.5
+    gradle: {}
     helm: {}
     mongodb: {}
     mvn:
