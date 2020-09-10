@@ -6,7 +6,7 @@ openshift_templates_version: "master"
 openshift_domain: "my.cluster.example.com"
 cert_mgmt_namespace: "cert-mgmt"
 
-cert_namespace:
+cert_mgmt_namespace_params:
   NAMESPACE: "{{ cert_mgmt_namespace }}"
   NAMESPACE_DISPLAY_NAME: "Certificate Management Namespace"
   NAMESPACE_DESCRIPTION: "Where a cluster certificate management is hosted"
@@ -29,7 +29,7 @@ openshift_cluster_content:
   content:
   - name: CertMgmtNamespace
     template: "{{ openshift_templates_url }}/{{ openshift_templates_version }}/project-requests/create-project.yml"
-    params_from_vars: "{{ cert_namespace }}"
+    params_from_vars: "{{ cert_mgmt_namespace_params }}"
     action: create
 - object: CertificateManagement
   content:
