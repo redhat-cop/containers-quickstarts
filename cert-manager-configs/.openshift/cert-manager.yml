@@ -8,56 +8,6 @@ metadata:
 labels:
   template: cert-manager-template
 objects:
-  - kind: ProjectRequest
-    apiVersion: v1
-    metadata:
-      name: ${NAMESPACE}
-    displayName: Cert-Manager Project
-  - kind: OperatorGroup
-    apiVersion: operators.coreos.com/v1
-    metadata:
-      name: cert-utils
-    spec:
-      targetNamespaces:
-        - ${NAMESPACE}
-  - kind: Subscription
-    apiVersion: operators.coreos.com/v1alpha1
-    metadata:
-      name: cert-utils-operator
-    spec:
-      channel: alpha
-      installPlanApproval: Automatic
-      name: cert-utils-operator
-      source: community-operators
-      sourceNamespace: openshift-marketplace
-  - kind: Secret
-    apiVersion: v1
-    data:
-      aws-secret-access-key: ${AWS_SECRET_ACCESS_KEY}
-    metadata:
-      name: aws-secret-access-key-secret
-    type: Opaque
-  - kind: ClusterIssuer
-    apiVersion: cert-manager.io/v1alpha2
-    metadata:
-      name: "${NAME}-production"
-    spec:
-      acme:
-        email: "${ACME_EMAIL}"
-        server: https://acme-v02.api.letsencrypt.org/directory
-        privateKeySecretRef:
-          name: letsencrypt-account-private-key
-        solvers:
-          - selector:
-              dnsZones:
-                - "${DNS_DOMAIN}"
-            dns01:
-              route53:
-                region: ${AWS_REGION}
-                accessKeyID: ${AWS_ACCESS_KEY_ID}
-                secretAccessKeySecretRef:
-                  name: "aws-secret-access-key-secret"
-                  key: "aws-secret-access-key"
   - kind: ConfigMap
     apiVersion: v1
     data:
@@ -91,12 +41,40 @@ objects:
         -----END CERTIFICATE-----
     metadata:
       name: letsencrypt-ca
+  - kind: Secret
+    apiVersion: v1
+    data:
+      aws-secret-access-key: ${AWS_SECRET_ACCESS_KEY}
+    metadata:
+      name: aws-secret-access-key-secret
+    type: Opaque
+  - kind: ClusterIssuer
+    apiVersion: cert-manager.io/v1alpha2
+    metadata:
+      name: "${NAME}-production"
+    spec:
+      acme:
+        email: "${ACME_EMAIL}"
+        server: https://acme-v02.api.letsencrypt.org/directory
+        privateKeySecretRef:
+          name: letsencrypt-account-private-key
+        solvers:
+          - selector:
+              dnsZones:
+                - "${DNS_DOMAIN}"
+            dns01:
+              route53:
+                region: ${AWS_REGION}
+                accessKeyID: ${AWS_ACCESS_KEY_ID}
+                secretAccessKeySecretRef:
+                  name: "aws-secret-access-key-secret"
+                  key: "aws-secret-access-key"
 parameters:
   - name: NAME
     description: Name of the Deployment
     value: letsencrypt
   - name: NAMESPACE
-    value: cert-manager
+    value: cert-mgmt
   - name: DNS_DOMAIN
     description: The DNS domain whereas the certificates are to be created
     required: true
