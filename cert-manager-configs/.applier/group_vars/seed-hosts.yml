@@ -48,6 +48,6 @@ openshift_cluster_content:
   - name: OCPv4-Certs
     template: "{{ inventory_dir }}/../.openshift/ocpv4-certs.yml"
     params_from_vars: "{{ openshift_cert_params }}"
-    namespace: "{{ cert_mgmt_namespace }}"
+    # namespace: ... No namespace here - it will break the implementation
     tags:
       - ocpv4-certs
