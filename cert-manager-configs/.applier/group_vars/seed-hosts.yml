@@ -27,11 +27,11 @@ openshift_cert_params:
 openshift_cluster_content:
 - object: namespace
   content:
-  - name: CertNamespace
+  - name: CertMgmtNamespace
     template: "{{ openshift_templates_url }}/{{ openshift_templates_version }}/project-requests/create-project.yml"
     params_from_vars: "{{ cert_namespace }}"
     action: create
-- object: CertManager
+- object: CertificateManagement
   content:
   - name: CertManager
     template: "{{ inventory_dir }}/../.openshift/cert-manager.yml"
@@ -39,16 +39,12 @@ openshift_cluster_content:
     namespace: "{{ cert_mgmt_namespace }}"
     tags:
       - cert-manager
-- object: CertUtilsOperator
-  content:
   - name: CertUtilsOperator
     template: "{{ inventory_dir }}/../.openshift/cert-utils-operator.yml"
     params_from_vars: "{{ cert_utils_operator_params }}"
     namespace: "{{ cert_mgmt_namespace }}"
     tags:
-      - cert-manager
-- object: OpenShiftCerts
-  content:
+      - cert-utils-operator
   - name: OCPv4-Certs
     template: "{{ inventory_dir }}/../.openshift/ocpv4-certs.yml"
     params_from_vars: "{{ openshift_cert_params }}"
