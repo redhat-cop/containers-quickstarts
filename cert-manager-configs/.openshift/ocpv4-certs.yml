@@ -12,7 +12,7 @@ objects:
     apiVersion: v1
     metadata:
       name: letsencrypt-ca
-      namespace: openshift-config
+      namespace: ${LE_CA_NAMESPACE}
     data:
       ca-bundle.crt: |
         -----BEGIN CERTIFICATE-----
@@ -46,7 +46,7 @@ objects:
     apiVersion: cert-manager.io/v1alpha2
     metadata:
       name: "api-${NAME}-cert"
-      namespace: openshift-config
+      namespace: ${API_CERT_NAMESPACE}
     spec:
       secretName: "api-${NAME}-cert"
       issuerRef:
@@ -58,7 +58,7 @@ objects:
     apiVersion: cert-manager.io/v1alpha2
     metadata:
       name: ingress-${NAME}-cert
-      namespace: openshift-ingress
+      namespace: ${INGRESS_CERT_NAMESPACE}
     spec:
       secretName: "ingress-${NAME}-cert"
       issuerRef:
@@ -81,7 +81,7 @@ objects:
     apiVersion: operator.openshift.io/v1
     metadata:
       name: default
-      namespace: openshift-ingress-operator
+      namespace: ${INGRESS_OPERATOR_NAMESPACE}
     spec:
       defaultCertificate:
         name: "ingress-${NAME}-cert"
@@ -99,3 +99,18 @@ parameters:
   - name: DNS_DOMAIN
     description: The DNS domain to use for the certificate
     required: true
+  - name: LE_CA_NAMESPACE
+    description: The namespace used for LE CA
+    value: openshift-config
+  - name: LE_CA_NAMESPACE
+    description: The namespace used for LE CA
+    value: openshift-config
+  - name: API_CERT_NAMESPACE
+    description: The namespace used for the API Cert
+    value: openshift-config
+  - name: INGRESS_CERT_NAMESPACE
+    description: The namespace used for the Ingress Cert
+    value: openshift-ingress
+  - name: INGRESS_OPERATOR_NAMESPACE
+    description: The namespace used for the Ingress Operator
+    value: openshift-ingress-operator
