@@ -15,7 +15,7 @@ cert_manager_params:
   NAMESPACE: "{{ cert_mgmt_namespace }}"
   DNS_DOMAIN: "{{ openshift_domain }}"
   AWS_ACCESS_KEY_ID: "ASDF321ADF63"
-  AWS_SECRET_ACCESS_KEY: "$#%DASFSRT@#$DFFSVSDFG@#$@#$"
+  AWS_SECRET_ACCESS_KEY: "$#%DASFSDF#24SRT@#$DFFSVSDFG@#$@#$=="
   ACME_EMAIL: "my-email@example.com"
 
 cert_utils_operator_params:
