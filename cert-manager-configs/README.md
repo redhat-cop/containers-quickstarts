@@ -105,7 +105,7 @@ Note the dns01-recursive-nameservers option above is required in most cases for 
 
 ### Installing Environment Specific Configuration 
 
-This is done by running the `openshift-applier` playbook. Make sure to update the [inventory](.applier/inventory/group_vars/seed-hosts.yml) with the proper values (see `Configuration` below) and then run the following command:
+This is done by running the `openshift-applier` playbook. Make sure to update the [inventory](.applier/group_vars/seed-hosts.yml) with the proper values (see `Configuration` below) and then run the following command:
 
 ```
 cd <this repo>
@@ -116,8 +116,6 @@ ansible-playbook -i ../.applier/inventory playbooks/openshift-cluster-seed.yml
 
 
 ### Configuration
-
-See comments in [values.yaml](./values.yaml) for more details on configuration
 
 | Parameter                                        | Description                                                  | Default                               |
 | ------------------------------------------------ | -------------------------------------------------------------| ------------------------------------- |
