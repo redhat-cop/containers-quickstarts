@@ -1,6 +1,6 @@
 FROM registry.access.redhat.com/ubi8/go-toolset:latest as builder
 
-ARG SKOPEO_VERSION=1.0.0
+ARG SKOPEO_VERSION=1.1.1
 
 USER root
 

@@ -69,6 +69,12 @@ test_pipelines:
       PIPELINE_FILENAME: Jenkinsfile.test
       PIPELINE_SOURCE_REPOSITORY_REF: "{{ agent_repo_ref }}"
       PIPELINE_SOURCE_REPOSITORY_URL: "{{ repository_url }}"
+    image-mgmt:
+      NAME: jenkins-agent-image-mgmt
+      PIPELINE_CONTEXT_DIR: jenkins-agents/jenkins-agent-image-mgmt
+      PIPELINE_FILENAME: Jenkinsfile.test
+      PIPELINE_SOURCE_REPOSITORY_REF: "{{ agent_repo_ref }}"
+      PIPELINE_SOURCE_REPOSITORY_URL: "{{ repository_url }}"
     golang:
       NAME: jenkins-agent-golang
       PIPELINE_CONTEXT_DIR: jenkins-agents/jenkins-agent-golang
