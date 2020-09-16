@@ -1,17 +1,15 @@
 FROM registry.access.redhat.com/ubi8
 
-MAINTAINER Aly Ibrahim<aly@redhat.com>
-
-ENV OC_VERSION=4.4.7 \
-    ODO_VERSION=v1.2.1 \
+ENV OC_VERSION=4.5.10 \
+    ODO_VERSION=v1.2.6 \
     ANSIBLE_VERSION=2.9 \
     JQ_VERSION=1.6 \
     HELM_VERSION=v3.2.3 \
-    TEKTON_VERSION=0.9.0 \
-    HOME=/home/tool-box
+    TEKTON_VERSION=0.12.1 \
+    HOME=/home/tool-box \
+    INSTALL_PKGS="git vim unzip python36"
 
 RUN yum -y update && \
-    INSTALL_PKGS="git vim unzip python36" && \
     yum -y install $INSTALL_PKGS && \
     yum clean all
 
