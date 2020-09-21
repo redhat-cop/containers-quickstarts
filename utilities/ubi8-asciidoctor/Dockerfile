@@ -6,6 +6,7 @@ ARG ARCH=amd64
 ARG RUBY_VERSION=3.1
 ARG asciidoctor_version=2.0.20
 ARG asciidoctor_confluence_version=0.0.2
+<<<<<<< HEAD
 ARG asciidoctor_pdf_version=2.3.9
 ARG asciidoctor_diagram_version=2.2.14
 ARG asciidoctor_epub3_version=1.5.1
@@ -16,7 +17,6 @@ ARG asciidoctor_bibtex_version=0.8.0
 ARG pandoc_version=3.1.8
 ARG asciidoctor_reducer_version=1.0.2
 ARG epubcheck_ruby_version=4.2.6.0
-
 
 ENV ASCIIDOCTOR_VERSION=${asciidoctor_version} \
     ASCIIDOCTOR_CONFLUENCE_VERSION=${asciidoctor_confluence_version} \
@@ -94,3 +94,4 @@ RUN pip3 install --no-cache-dir \
 USER 1001
 
 CMD ["/bin/bash"]
+
