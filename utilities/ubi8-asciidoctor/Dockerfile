@@ -59,7 +59,6 @@ RUN gem install --no-document \
     coderay \
     epubcheck-ruby:4.2.2.0 \
     haml \
-    kindlegen:3.0.5 \
     "kramdown-asciidoc:${KRAMDOWN_ASCIIDOC_VERSION}" \
     rouge \
     slim \
