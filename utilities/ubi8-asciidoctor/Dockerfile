@@ -43,8 +43,8 @@ RUN microdnf install \
   && microdnf clean all
 
 # install pandoc
-RUN curl -L https://github.com/jgm/pandoc/releases/download/${PANDOC_VERSION}/pandoc-${PANDOC_VERSION}-linux-amd64.tar.gz -o pandoc-${PANDOC_VERSION}-linux-amd64.tar.gz 
-RUN  tar xvzf pandoc-${PANDOC_VERSION}-linux-amd64.tar.gz --strip-components 1 -C /usr/local/ 
+RUN curl -L https://github.com/jgm/pandoc/releases/download/${PANDOC_VERSION}/pandoc-${PANDOC_VERSION}-linux-amd64.tar.gz -o pandoc-${PANDOC_VERSION}-linux-amd64.tar.gz
+RUN tar xvzf pandoc-${PANDOC_VERSION}-linux-amd64.tar.gz --strip-components 1 -C /usr/local/ 
 
 # Installing Ruby Gems needed in the image
 # including asciidoctor itself
