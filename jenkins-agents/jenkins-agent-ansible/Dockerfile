@@ -9,7 +9,7 @@ LABEL com.redhat.component="jenkins-agent-ansible-ubi7-docker" \
       io.k8s.description="The jenkins agent ansible image has ansible on top of the jenkins agent base image." \
       io.openshift.tags="openshift,jenkins,agent,ansible"
 
-ENV ANSIBLE_VERSION=2.8.2
+ENV ANSIBLE_VERSION=2.9.13
 
 ADD ubi.repo /etc/yum.repos.d/ubi.repo
 
