@@ -17,6 +17,8 @@ ARG YUM_FLAGS="${DISABLE_REPOS} -y -q"
 ARG PIP_PKGS="\
         molecule \
         paramiko \
+        openshift \
+        kubernetes \
         ansible==${ANSIBLE_VERSION} \
 "
 ARG YUM_PKGS="\
