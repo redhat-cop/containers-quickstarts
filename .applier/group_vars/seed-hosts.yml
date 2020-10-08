@@ -7,7 +7,7 @@ templates_repo_ref: v1.4.16
 jenkins_agents:
   build:
     ansible:
-      BUILDER_IMAGE_NAME: quay.io/openshift/origin-jenkins-agent-base:4.4
+      BUILDER_IMAGE_NAME: quay.io/openshift/origin-jenkins-agent-base:4.5
       DOCKERFILE_PATH: Dockerfile
       NAME: jenkins-agent-ansible
       SOURCE_CONTEXT_DIR: jenkins-agents/jenkins-agent-ansible
@@ -25,7 +25,7 @@ jenkins_agents:
     helm: {}
     mongodb: {}
     mvn:
-      BUILDER_IMAGE_NAME: quay.io/openshift/origin-jenkins-agent-maven:4.4
+      BUILDER_IMAGE_NAME: quay.io/openshift/origin-jenkins-agent-maven:4.5
     npm: {}
     python: {}
     ruby: {}
