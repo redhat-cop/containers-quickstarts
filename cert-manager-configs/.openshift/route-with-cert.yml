@@ -1,0 +1,56 @@
+---
+kind: Template
+apiVersion: v1
+metadata:
+  annotations:
+    description: Vanity Certificate and Configuration to manage a vanity route with a valid cert
+  name: "vanity-certificate"
+labels:
+  template: "vanity-certificate"
+objects:
+  - kind: Certificate
+    apiVersion: cert-manager.io/v1alpha2
+    metadata:
+      name: "${NAME}-certificate"
+      namespace: ${NAMESPACE}
+    spec:
+      secretName: "${NAME}-certificate"
+      issuerRef:
+        name: letsencrypt-production
+        kind: ClusterIssuer
+      dnsNames:
+        - "${FQDN}"
+  - kind: Route
+    apiVersion: route.openshift.io/v1
+    metadata:
+      annotations:
+        cert-utils-operator.redhat-cop.io/certs-from-secret: "${NAME}-certificate"
+      labels:
+        app: "${NAME}"
+      name: "${NAME}"
+      namespace: "${NAMESPACE}"
+    spec:
+      host: "${FQDN}"
+      tls:
+        insecureEdgeTerminationPolicy: Redirect
+        termination: edge
+      port:
+        targetPort: "${TARGET_PORT}"
+      to:
+        kind: Service
+        name: "${NAME}"
+        weight: 100
+      wildcardPolicy: None
+parameters:
+  - name: NAME
+    description: Name of the Deployment/Route
+    required: true
+  - name: NAMESPACE
+    description: The namespace used for the route and certificate
+    required: true
+  - name: FQDN
+    description: The FQDN to use for the route and certificate
+    required: true
+  - name: TARGET_PORT
+    description: The target port for the route
+    value: 8080-tcp
