@@ -4,9 +4,9 @@ apiVersion: v1
 metadata:
   annotations:
     description: Vanity Certificate and Configuration to manage a vanity route with a valid cert
-  name: "vanity-certificate"
+  name: "vanity-route-certificate"
 labels:
-  template: "vanity-certificate"
+  template: "vanity-route-certificate"
 objects:
   - kind: Certificate
     apiVersion: cert-manager.io/v1alpha2
