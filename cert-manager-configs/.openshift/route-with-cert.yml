@@ -16,8 +16,8 @@ objects:
     spec:
       secretName: "${NAME}-certificate"
       issuerRef:
-        name: letsencrypt-production
-        kind: ClusterIssuer
+        name: "${ISSUER_REF_NAME}"
+        kind: "${ISSUER_REF_KIND}"
       dnsNames:
         - "${FQDN}"
   - kind: Route
@@ -54,3 +54,7 @@ parameters:
   - name: TARGET_PORT
     description: The target port for the route
     value: 8080-tcp
+  - name: ISSUER_REF_NAME
+    value: letsencrypt-production
+  - name: ISSUER_REF_KIND
+    value: ClusterIssuer
