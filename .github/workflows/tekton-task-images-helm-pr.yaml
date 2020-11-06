@@ -12,7 +12,7 @@ jobs:
     steps:
       - uses: actions/checkout@v1
       - name: Get image tags
-        id: image_tags
+        id: check_version
         run: |
           echo -n ::set-output name=IMAGE_TAGS::
            # exposes variable HELM_VERSION
