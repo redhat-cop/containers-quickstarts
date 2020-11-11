@@ -1,6 +1,6 @@
-FROM quay.io/openshift/origin-jenkins-agent-base:4.4
+FROM quay.io/openshift/origin-jenkins-agent-base:4.5
 
-ENV ARGOCD_VERSION=1.6.0 \
+ENV ARGOCD_VERSION=1.7.2 \
     YQ_VERSION=3.3.2
 
 RUN curl -sL  https://github.com/argoproj/argo-cd/releases/download/v${ARGOCD_VERSION}/argocd-linux-amd64 -o /usr/local/bin/argocd && \

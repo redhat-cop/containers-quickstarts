@@ -1,0 +1,29 @@
+name: jenkins-agent-image-mgmt-pr
+on:
+  pull_request:
+    paths:
+      - jenkins-agents/jenkins-agent-image-mgmt/**
+jobs:
+  build:
+    env:
+      context: jenkins-agents/jenkins-agent-image-mgmt
+      image_name: jenkins-agent-image-mgmt
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+      - name: Check and verify version.json
+        id: check_version
+        run: |
+          echo -n ::set-output name=IMAGE_TAGS::
+          echo $(jq -r '.version' ${context}/version.json)
+      - name: Build image
+        uses: docker/build-push-action@v1
+        with:
+          path: ${{ env.context }}
+          push: false
+          repository: ${{ env.image_name }}
+          tags: ${{ steps.check_version.outputs.IMAGE_TAGS }}
+      - name: Test image
+        run: |
+          echo "Running: docker run --entrypoint bash ${image_name}:${{ steps.check_version.outputs.IMAGE_TAGS }} -c \"skopeo --version\""
+          docker run --entrypoint bash ${image_name}:${{ steps.check_version.outputs.IMAGE_TAGS }} -c "skopeo --version"

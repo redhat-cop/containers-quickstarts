@@ -1,13 +1,14 @@
 pipeline {
     agent {
-      label 'jenkins-agent-python38'
+      label 'jenkins-agent-graalvm'
     }
 
     stages {
         stage ('Run Test') {
             steps {
               sh """
-                  python -V
+                  mvn --version
+                  native-image --version
               """
             }
         }

@@ -1,16 +1,16 @@
-FROM registry.access.redhat.com/ubi8-minimal
+FROM registry.access.redhat.com/ubi8
 
 LABEL MAINTAINERS="Red Hat Services"
 
 ARG asciidoctor_version=2.0.10
 ARG asciidoctor_confluence_version=0.0.2
 ARG asciidoctor_pdf_version=1.5.3
-ARG asciidoctor_diagram_version=1.5.19
-ARG asciidoctor_epub3_version=1.5.0.alpha.12
+ARG asciidoctor_diagram_version=2.0.1
+ARG asciidoctor_epub3_version=1.5.0.alpha.18
 ARG asciidoctor_mathematical_version=0.3.1
-ARG asciidoctor_revealjs_version=2.0.0
+ARG asciidoctor_revealjs_version=4.0.1
 ARG kramdown_asciidoc_version=1.0.1
-ARG pandoc_version=2.9.2.1
+ARG pandoc_version=2.10.1
 
 
 ENV ASCIIDOCTOR_VERSION=${asciidoctor_version} \
@@ -26,29 +26,32 @@ ENV ASCIIDOCTOR_VERSION=${asciidoctor_version} \
 
 USER root
 
-RUN microdnf install \
+RUN dnf install -y \
   tar \
   gzip \
-  make \
-  cmake \
   python3 \
   python3-setuptools \
-  ruby-devel \
-  gcc redhat-rpm-config \
-  zlib-devel \
-  patch \
   git \
-  gcc-c++ \
-  glib2-devel
+  ruby \
+  && dnf clean all && rm -rf /var/lib/dnf && rm -rf /usr/share/doc
 
 # install pandoc
-RUN curl -L https://github.com/jgm/pandoc/releases/download/${PANDOC_VERSION}/pandoc-${PANDOC_VERSION}-linux-amd64.tar.gz -o pandoc-${PANDOC_VERSION}-linux-amd64.tar.gz
-RUN tar xvzf pandoc-${PANDOC_VERSION}-linux-amd64.tar.gz --strip-components 1 -C /usr/local/
+RUN curl -L https://github.com/jgm/pandoc/releases/download/${PANDOC_VERSION}/pandoc-${PANDOC_VERSION}-linux-amd64.tar.gz | tar xvz --strip-components 1 -C /usr/local/
 
 # Installing Ruby Gems needed in the image
 # including asciidoctor itself
 # TODO: have to find Lasem dev libs     "asciidoctor-mathematical:${ASCIIDOCTOR_MATHEMATICAL_VERSION}" \
-RUN gem install --no-document \
+
+RUN dnf install -y \
+  make \
+  cmake \
+  ruby-devel \
+  gcc redhat-rpm-config \
+  zlib-devel \
+  patch \
+  gcc-c++ \
+  glib2-devel \
+  && gem install --no-document \
     "asciidoctor:${ASCIIDOCTOR_VERSION}" \
     "asciidoctor-confluence:${ASCIIDOCTOR_CONFLUENCE_VERSION}" \
     "asciidoctor-diagram:${ASCIIDOCTOR_DIAGRAM_VERSION}" \
@@ -59,19 +62,20 @@ RUN gem install --no-document \
     coderay \
     epubcheck-ruby:4.2.2.0 \
     haml \
-    kindlegen:3.0.5 \
     "kramdown-asciidoc:${KRAMDOWN_ASCIIDOC_VERSION}" \
     rouge \
     slim \
     thread_safe \
-    tilt
+    tilt \
+  && rm -rf /usr/local/share/gems/cache \
+  && dnf history undo last -y && dnf clean all && rm -rf /var/lib/dnf
 
 # Installing Python dependencies for additional
 # functionnalities as diagrams or syntax highligthing
-RUN pip3 install \
+RUN pip3 install --no-cache-dir \
     actdiag \
     'blockdiag[pdf]' \
-    nwdiag \
+    'nwdiag[pdf]' \
     seqdiag
 
 WORKDIR /documents

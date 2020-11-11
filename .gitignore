@@ -7,3 +7,9 @@ roles
 __pycache__
 .odo
 .vscode
+
+# Rego
+policy/
+
+# BATS
+_test/test_helper/
