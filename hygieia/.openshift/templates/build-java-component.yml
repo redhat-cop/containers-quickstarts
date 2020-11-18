@@ -44,7 +44,7 @@ objects:
           value: -pl ${COMPONENT} -am
         from:
           kind: ImageStreamTag
-          name: java:latest
+          name: java:8
           namespace: openshift
       type: Source
     triggers:
