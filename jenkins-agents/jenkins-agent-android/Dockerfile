@@ -2,10 +2,6 @@ FROM openjdk:8
 
 WORKDIR project/
 
-subscription-manager attach --auto
-
-# Install Build Essentials
-RUN yum install build-essential -y
 
 # Set Environment Variables
 ENV SDK_URL="https://dl.google.com/android/repository/sdk-tools-linux-3859397.zip" \
