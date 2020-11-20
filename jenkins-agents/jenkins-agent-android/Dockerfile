@@ -2,8 +2,7 @@ FROM jenkins/jnlp-slave
 
 USER root
 
-RUN yum install -y && \
-    curl && \
+RUN yum install -y curl && \
     gradle && \
     maven
 
