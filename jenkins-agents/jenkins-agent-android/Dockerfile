@@ -2,6 +2,8 @@ FROM openjdk:8
 
 WORKDIR project/
 
+ADD ubi.repo /etc/yum.repos.d/ubi.repo
+
 # Install Build Essentials
 RUN yum install build-essential -y
 
