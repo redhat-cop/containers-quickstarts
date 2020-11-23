@@ -87,11 +87,7 @@ RUN mkdir -p $HOME/.android && \
     chown -R 1001:0 $HOME && \
     chmod -R g+rw $HOME
 
-RUN mkdir -p /home/jenkins/jnlp-scripts
-
-COPY scripts/run-jnlp.sh /home/jenkins/jnlp-scripts
-
 USER 1001
 WORKDIR /tmp
 
-ENTRYPOINT ["/home/jenkins/jnlp-scripts/run-jnlp.sh"]
+CMD sh "./scripts/run-jnlp.sh"
