@@ -87,7 +87,7 @@ RUN mkdir -p $HOME/.android && \
     chown -R 1001:0 $HOME && \
     chmod -R g+rw $HOME
 
-COPY scripts/run-jnlp.sh /usr/local/bin/run-jnlp.sh
+COPY scripts/run-jnlp.sh /usr/local/bin/
 
 USER 1001
 WORKDIR /tmp
