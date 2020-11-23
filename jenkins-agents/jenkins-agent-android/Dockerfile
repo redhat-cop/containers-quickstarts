@@ -32,6 +32,7 @@ RUN yum install -y \
   bzip2-libs.i686 \
   java-1.8.0-openjdk-devel \
   java-1.8.0-openjdk \
+  bzip2 \
   nodejs \
   rubygems \
   gcc-c++ \
