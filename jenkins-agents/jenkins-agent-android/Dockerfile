@@ -15,7 +15,8 @@ ENV ANDROID_SLAVE_SDK_BUILDER=1.0.0 \
     BASH_ENV=/etc/profile \
     JAVA_HOME=/etc/alternatives/java_sdk_1.8.0 \
     RUBY_VERSION=2.4.2 \
-    ANDROID_SDK_URL="https://dl.google.com/android/repository/sdk-tools-linux-3859397.zip"
+    ANDROID_SDK_URL="https://dl.google.com/android/repository/sdk-tools-linux-3859397.zip" \
+    ANDROID_VERSION=29
 
 #update PATH env var
 ENV PATH=$PATH:$ANDROID_HOME/tools:$ANDROID_HOME/platform-tools:$NVM_DIR:/opt/gradle/gradle-$GRADLE_VERSION/bin:$JAVA_HOME/bin
@@ -89,18 +90,17 @@ RUN mkdir -p $HOME/.android && \
     chmod -R g+rw $HOME
 
 # Download Android SDK
-RUN mkdir "$ANDROID_HOME" .android \
-    && cd "$ANDROID_HOME" \
+RUN cd "$HOME" \
     && curl -o sdk.zip $ANDROID_SDK_URL \
     && unzip sdk.zip \
     && rm sdk.zip \
-    && mkdir "$ANDROID_HOME/licenses" || true \
-    && echo "24333f8a63b6825ea9c5514f83c2829b004d1fee" > "$ANDROID_HOME/licenses/android-sdk-license" \
-    && yes | $ANDROID_HOME/tools/bin/sdkmanager --licenses
+    && mkdir "$HOME/licenses" || true \
+    && echo "24333f8a63b6825ea9c5514f83c2829b004d1fee" > "$HOME/licenses/android-sdk-license" \
+    && yes | $HOME/tools/bin/sdkmanager --licenses
 
 # Install Android Build Tool and Libraries
-RUN $ANDROID_HOME/tools/bin/sdkmanager --update
-RUN $ANDROID_HOME/tools/bin/sdkmanager "build-tools;29.0.3" \
+RUN $HOME/tools/bin/sdkmanager --update
+RUN $HOME/tools/bin/sdkmanager "build-tools;29.0.3" \
     "platforms;android-${ANDROID_VERSION}" \
     "platform-tools"
 
