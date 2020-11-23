@@ -23,6 +23,8 @@ LABEL io.k8s.description="Platform for building slave android sdk image" \
       io.k8s.display-name="jenkins android sdk slave builder" \
       io.openshift.tags="jenkins-android-slave builder"
 
+ADD ubi.repo /etc/yum.repos.d/ubi.repo
+
 #system pakcages
 RUN yum install -y \
   zlib.i686 \
