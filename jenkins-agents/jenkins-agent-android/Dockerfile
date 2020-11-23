@@ -91,7 +91,7 @@ RUN mkdir -p $HOME/.android && \
 # Download Android SDK
 RUN mkdir "$ANDROID_HOME" .android \
     && cd "$ANDROID_HOME" \
-    && curl -o sdk.zip $SDK_URL \
+    && curl -o sdk.zip $ANDROID_SDK_URL \
     && unzip sdk.zip \
     && rm sdk.zip \
     && mkdir "$ANDROID_HOME/licenses" || true \
