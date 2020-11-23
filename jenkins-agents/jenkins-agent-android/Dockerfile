@@ -104,6 +104,9 @@ RUN $HOME/tools/bin/sdkmanager "build-tools;29.0.3" \
     "platforms;android-${ANDROID_VERSION}" \
     "platform-tools"
 
+# env vars
+ENV ANDROID_SDK_ROOT="$HOME"
+
 USER 1001
 WORKDIR /tmp
 
