@@ -1,6 +1,4 @@
-FROM openshift/jenkins-slave-base-centos7
-
-MAINTAINER AeroGear Team <https://aerogear.org/>
+FROM quay.io/openshift/origin-jenkins-agent-base:4.5
 
 #env vars
 ENV ANDROID_SLAVE_SDK_BUILDER=1.0.0 \
