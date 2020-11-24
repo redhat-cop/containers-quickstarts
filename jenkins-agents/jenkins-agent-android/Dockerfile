@@ -16,7 +16,7 @@ ENV ANDROID_SLAVE_SDK_BUILDER=1.0.0 \
     JAVA_HOME=/etc/alternatives/java_sdk_1.8.0 \
     RUBY_VERSION=2.4.2 \
     ANDROID_SDK_URL="https://dl.google.com/android/repository/sdk-tools-linux-3859397.zip" \
-    ANDROID_VERSION=29
+    ANDROID_VERSION=30
 
 #update PATH env var
 ENV PATH=$PATH:$ANDROID_HOME/tools:$ANDROID_HOME/platform-tools:$NVM_DIR:/opt/gradle/gradle-$GRADLE_VERSION/bin:$JAVA_HOME/bin
@@ -100,7 +100,7 @@ RUN cd "$HOME" \
 
 # Install Android Build Tool and Libraries
 RUN $HOME/tools/bin/sdkmanager --update
-RUN $HOME/tools/bin/sdkmanager "build-tools;29.0.3" \
+RUN $HOME/tools/bin/sdkmanager "build-tools;30.0.2" \
     "platforms;android-${ANDROID_VERSION}" \
     "platform-tools"
 
