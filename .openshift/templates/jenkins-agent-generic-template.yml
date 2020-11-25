@@ -62,7 +62,7 @@ parameters:
   displayName: Git Reference
   description: Set this to a branch name, tag or other ref of your repository if you
     are not using the default (master) branch.
-  value: dev/android
+  value: master
 - name: SOURCE_CONTEXT_DIR
   displayName: Git Context Directory
   description: Set this to the directory where the build information is (e.g. Dockerfile)
