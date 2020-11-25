@@ -1,0 +1,59 @@
+#!/bin/bash
+
+# This script is used to prepare yum repositories, that are given as arguments.
+# It is no-op if user also mounts the repo file(s) into the container during
+# image build.  This can be done by one of those commands:
+#
+#   docker build -v /some/repo/file:/etc/yum.repos.d/sclorg_custom.repo
+#   docker build -v /some/repo/directory:/etc/yum.repos.d
+#   make CUSTOM_REPO=/some/repo/file/or/directory
+#
+# The last one works for projects where we have Makefile with the
+# container-common-scripts support.
+
+set -ex
+
+# DEFAULT_REPOS and SKIP_REPOS_{ENABLE,DISABLE} are intentionally undocumented,
+# but might be used if we need to change this behaviour.
+# Once we realize there are real use cases for using those variables, we should
+# document them properly.
+DEFAULT_REPOS=${DEFAULT_REPOS:-"rhel-7-server-rpms rhel-7-server-optional-rpms"}
+SKIP_REPOS_ENABLE=${SKIP_REPOS_ENABLE:-false}
+SKIP_REPOS_DISABLE=${SKIP_REPOS_DISABLE:-false}
+
+function is_subscribed() {
+  for f in /run/secrets/etc-pki-entitlement/*.pem ; do
+    [ -e "$f" ] && return 0
+    break
+  done
+  return 1
+}
+
+# DEBUGGING CASE!  Mostly for 'make CUSTOM_REPO=/some/file/or/dir'.
+test ! -f /etc/yum.repos.d/sclorg_custom.repo && \
+! mountpoint /etc/yum.repos.d \
+    || exit 0
+
+# install yum-utils for yum-config-manager
+yum install -y yum-utils
+
+if [ "$SKIP_REPOS_DISABLE" = false ] && is_subscribed; then
+  # Disable only repos that might come from subscribed host, because there
+  # might be other repos provided by user or build system
+
+  disable_repos=
+  # Lines look like: "Repo-id  :  dist-tag-override/x86_64"
+  while IFS=' /' read -r _ _ repo_id _; do
+      case $repo_id in rhel-*)
+        disable_repos+=" $repo_id" ;;
+      esac
+  done <<<"$(yum repolist -v 2>/dev/null | grep Repo-id)"
+
+  if test -n "$disable_repos"; then
+    yum-config-manager --disable $disable_repos &> /dev/null
+  fi
+fi
+
+if [ ${SKIP_REPOS_ENABLE} = false ] && [ -n "${DEFAULT_REPOS}" -o $# -gt 0 ] ; then
+  yum-config-manager --enable ${DEFAULT_REPOS} "$@"
+fi

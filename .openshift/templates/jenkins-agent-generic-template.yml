@@ -57,7 +57,7 @@ parameters:
   displayName: Git Repository URL
   description: The URL of the repository with your application source code.
   required: true
-  value: https://github.com/redhat-cop/containers-quickstarts
+  value: https://github.com/WHOAcademy/containers-quickstarts
 - name: SOURCE_REPOSITORY_REF
   displayName: Git Reference
   description: Set this to a branch name, tag or other ref of your repository if you
