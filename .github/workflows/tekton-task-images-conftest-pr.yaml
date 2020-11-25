@@ -15,9 +15,9 @@ jobs:
         id: check_version
         run: |
           echo -n ::set-output name=IMAGE_TAGS::
-           # exposes variable conftest_VERSION
+           # exposes variable CONFTEST_VERSION
           source ${context}/VERSION
-          echo ${conftest_VERSION}
+          echo ${CONFTEST_VERSION}
       - name: Build image
         uses: docker/build-push-action@v1
         with:

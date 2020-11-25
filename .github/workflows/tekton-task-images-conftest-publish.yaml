@@ -19,11 +19,11 @@ jobs:
         id: image_tags
         run: |
           echo -n ::set-output name=IMAGE_TAGS::
-           # exposes variable conftest_VERSION
+           # exposes variable CONFTEST_VERSION
           source ${context}/VERSION
           TAGS=('latest')
-          if [ "${conftest_VERSION}" ] && [ "${conftest_VERSION}" != "latest" ]; then
-              TAGS+=("${conftest_VERSION}")
+          if [ "${CONFTEST_VERSION}" ] && [ "${CONFTEST_VERSION}" != "latest" ]; then
+              TAGS+=("${CONFTEST_VERSION}")
           fi
           ( IFS=$','; echo "${TAGS[*]}" )
       - name: Build and publish image to Quay
