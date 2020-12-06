@@ -47,6 +47,8 @@ RUN curl -L https://mirror.openshift.com/pub/openshift-v4/clients/oc/${OC_VERSIO
 # Copy extra files to the image.
 COPY ./root/ /
 
-RUN chown -R 1001:0 /opt/app-root && chmod -R ug+rwx /opt/app-root
+RUN chown -R 1001:0 /opt/app-root && \
+    chmod -R ug+rwx /opt/app-root && \
+    alternatives --auto java
 
 WORKDIR /opt/app-root
