@@ -1,4 +1,4 @@
-FROM quay.io/openshift/origin-jenkins-agent-base:4.5
+FROM quay.io/openshift/origin-jenkins-agent-base:4.6
 
 EXPOSE 8080
 

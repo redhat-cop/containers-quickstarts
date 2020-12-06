@@ -1,4 +1,4 @@
-FROM quay.io/openshift/origin-jenkins-agent-maven:4.5
+FROM quay.io/openshift/origin-jenkins-agent-maven:4.6
 ARG GRAALVM_VERSION=20.2.0
 
 ADD settings.xml $HOME/.m2/settings.xml
