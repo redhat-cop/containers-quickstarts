@@ -3,8 +3,6 @@ FROM quay.io/openshift/origin-jenkins-agent-base:4.6
 ENV GRADLE_VERSION=6.3
 ENV GRADLE_USER_HOME=/home/jenkins/.gradle
 
-ADD ubi.repo /etc/yum.repos.d/ubi.repo
-
 RUN curl -skL -o /tmp/gradle-bin.zip https://services.gradle.org/distributions/gradle-$GRADLE_VERSION-bin.zip && \
     mkdir -p /opt/gradle && \
     unzip -q /tmp/gradle-bin.zip -d /opt/gradle && \

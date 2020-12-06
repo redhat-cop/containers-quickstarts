@@ -11,8 +11,7 @@ LABEL \
       com.redhat.component="jenkins-agent-ansible-ubi7-docker" \
       io.k8s.description="The jenkins agent ansible image has ansible on top of the jenkins agent base image."
 
-ARG DISABLE_REPOS=--disablerepo="rhel-*"
-ARG YUM_FLAGS="${DISABLE_REPOS} -y -q"
+ARG YUM_FLAGS="-y"
 
 ARG PIP_PKGS="\
         molecule \
@@ -22,18 +21,18 @@ ARG PIP_PKGS="\
         ansible==${ANSIBLE_VERSION} \
 "
 ARG YUM_PKGS="\
-        rh-python36-python-pip \
+        python38-pip \
 "
 
-ADD ubi.repo /etc/yum.repos.d/ubi.repo
-ADD scl_enable /usr/share/container-scripts/
+ADD ubi8.repo /tmp/ubi8.repo
 
-USER root
 RUN set -x \
-     && yum install ${YUM_FLAGS} ${YUM_PKGS} \
-     && yum ${YUM_FLAGS} clean all \
-     && rm -rf /var/cache/yum \
-     && source scl_source enable rh-python36 \
+     && rm -f /etc/yum.repos.d/*.repo \
+     && mv /tmp/ubi8.repo /etc/yum.repos.d/ \
+     && dnf install ${YUM_FLAGS} ${YUM_PKGS} \
+     && dnf ${YUM_FLAGS} clean all \
+     && rm -rf /var/cache/dnf \
+     && alternatives --set python3 /usr/bin/python3.8 \
      && python3 -m pip install ${PIP_PKGS} \
     && echo
 
@@ -41,6 +40,3 @@ USER 1001
 ENV \
     LANG=en_US.UTF-8 \
     LC_ALL=en_US.UTF-8 \
-    ENV=/usr/share/container-scripts/scl_enable \
-    BASH_ENV=/usr/share/container-scripts/scl_enable \
-    PROMPT_COMMAND="./usr/share/container-scripts/scl_enable"

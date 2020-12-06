@@ -1,9 +1,7 @@
 FROM quay.io/openshift/origin-jenkins-agent-base:4.6
 
-ENV RUBY_VERSION=2.6 \
-  RUBY_SHORT_VERSION=26 \
-  NODEJS_VERSION=12 \
-  OC_VERSION=4.4
+ARG RUBY_VERSION=2.6
+ARG OC_VERSION=4.4
 
 ENV SUMMARY="Platform for building and running Ruby $RUBY_VERSION applications" \
     DESCRIPTION="Ruby $RUBY_VERSION available as docker container is a base platform for \
@@ -11,11 +9,8 @@ building and running various Ruby $RUBY_VERSION applications and frameworks. \
 Ruby is the interpreted scripting language for quick and easy object-oriented programming. \
 It has many features to process text files and to do system management tasks (as in Perl). \
 It is simple, straight-forward, and extensible." \
-  BASH_ENV=/opt/app-root/etc/scl_enable \
-  ENV=/opt/app-root/etc/scl_enable \
-  PATH=$PATH:/home/jenkins/bin \
-  PROMPT_COMMAND=". /opt/app-root/etc/scl_enable" \
-  HOME=/home/jenkins
+    PATH=$PATH:/home/jenkins/bin \
+    HOME=/home/jenkins
 
 
 LABEL summary="$SUMMARY" \
@@ -30,15 +25,21 @@ LABEL summary="$SUMMARY" \
       release="1" \
       maintainer="SoftwareCollections.org <sclorg@redhat.com>"
 
-ADD ubi.repo /etc/yum.repos.d/ubi.repo
+ADD ubi8.repo /tmp/ubi8.repo
 
-RUN INSTALL_PKGS="rh-ruby$RUBY_SHORT_VERSION rh-ruby$RUBY_SHORT_VERSION-ruby-devel rh-ruby$RUBY_SHORT_VERSION-rubygem-rake rh-ruby$RUBY_SHORT_VERSION-rubygem-bundler rh-nodejs$NODEJS_VERSION autoconf automake" && \
-    DISABLE_REPOS=--disablerepo='rhel-*' && \
-    yum $DISABLE_REPOS install -y --setopt=tsflags=nodocs $INSTALL_PKGS && rpm -V $INSTALL_PKGS && \
-    yum remove -y origin-clients && \
-    yum $DISABLE_REPOS clean all -y && \
-
-    rm -rf /var/cache/yum
+RUN rm -f /etc/yum.repos.d/*.repo && \
+    mv /tmp/ubi8.repo /etc/yum.repos.d/ubi8.repo && \
+    dnf -y -x filesystem distro-sync && \
+    dnf -y module list ruby && \
+    dnf -y module reset ruby && \
+    dnf -y module enable ruby:${RUBY_VERSION} && \
+    dnf --allowerasing -y -x filesystem distro-sync && \
+    dnf -y module install ruby:${RUBY_VERSION} && \
+    INSTALL_PKGS="ruby ruby-devel rubygem-rake rubygem-bundler autoconf automake" && \
+    dnf install -y --setopt=tsflags=nodocs $INSTALL_PKGS && rpm -V $INSTALL_PKGS && \
+    dnf remove -y origin-clients && \
+    dnf clean all -y && \
+    rm -rf /var/cache/dnf
 
 RUN curl -L https://mirror.openshift.com/pub/openshift-v4/clients/oc/${OC_VERSION}/linux/oc.tar.gz | tar -C /usr/local/bin -xzf - && \
     chmod +x /usr/local/bin/oc
