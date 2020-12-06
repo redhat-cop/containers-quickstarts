@@ -3,18 +3,18 @@ id = rhel-8-baseos-cop
 name = Red Hat Universal Base Image 8 Baseos (RPMs)
 baseurl = https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi8/8/$basearch/baseos/os
 enabled = 1
-gpgcheck = 0
+gpgcheck = 1
 
 [rhel-8-appstream]
 id = rhel-8-appstream-cop
 name = Red Hat Universal Base Image 8 Appstream (RPMs)
 baseurl = https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi8/8/$basearch/appstream/os
 enabled = 1
-gpgcheck = 0
+gpgcheck = 1
 
 [rhel-8-codeready-builder-rpms]
 id = rhel-8-codeready-builder-rpms-cop
 name = Red Hat Universal Base Image 8 Codeready Builder (RPMs)
 baseurl = https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi8/8/$basearch/codeready-builder/os
 enabled = 1
-gpgcheck = 0
+gpgcheck = 1

@@ -6,9 +6,9 @@ LABEL \
       version="4.6" \
       architecture="x86_64" \
       io.k8s.display-name="Jenkins Agent Ansible" \
-      name="openshift/origin-jenkins-agent-ansible-ubi7" \
+      name="openshift/origin-jenkins-agent-ansible-ubi8" \
       io.openshift.tags="openshift,jenkins,agent,ansible" \
-      com.redhat.component="jenkins-agent-ansible-ubi7-docker" \
+      com.redhat.component="jenkins-agent-ansible-ubi8-docker" \
       io.k8s.description="The jenkins agent ansible image has ansible on top of the jenkins agent base image."
 
 ARG YUM_FLAGS="-y"
