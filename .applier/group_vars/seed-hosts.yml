@@ -137,6 +137,12 @@ test_pipelines:
       PIPELINE_FILENAME: Jenkinsfile.test
       PIPELINE_SOURCE_REPOSITORY_REF: "{{ agent_repo_ref }}"
       PIPELINE_SOURCE_REPOSITORY_URL: "{{ repository_url }}"
+    zap:
+      NAME: jenkins-agent-zap
+      PIPELINE_CONTEXT_DIR: jenkins-agents/jenkins-agent-zap
+      PIPELINE_FILENAME: Jenkinsfile.test
+      PIPELINE_SOURCE_REPOSITORY_REF: "{{ agent_repo_ref }}"
+      PIPELINE_SOURCE_REPOSITORY_URL: "{{ repository_url }}"
 
 openshift_cluster_content:
 - object: Environment Setup

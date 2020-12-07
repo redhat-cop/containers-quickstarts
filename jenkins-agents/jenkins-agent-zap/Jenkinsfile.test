@@ -1,0 +1,17 @@
+pipeline {
+    agent {
+      label 'jenkins-agent-zap'
+    }
+
+    stages {
+        stage ('Run Test') {
+            steps {
+              sh """
+                  /zap/zap-baseline.py -t https://redhat-cop.github.io
+              """
+            }
+        }
+
+    }
+
+}
