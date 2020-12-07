@@ -7,7 +7,7 @@ pipeline {
         stage ('Run Test') {
             steps {
               sh """
-                  /zap/zap-baseline.py -t https://redhat-cop.github.io
+                  /zap/zap-baseline.py -h
               """
             }
         }
