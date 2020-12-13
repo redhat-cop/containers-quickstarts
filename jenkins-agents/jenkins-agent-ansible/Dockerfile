@@ -11,7 +11,7 @@ LABEL \
       com.redhat.component="jenkins-agent-ansible-ubi8-docker" \
       io.k8s.description="The jenkins agent ansible image has ansible on top of the jenkins agent base image."
 
-ARG YUM_FLAGS="-y"
+ARG DNF_FLAGS="-y"
 
 ARG PIP_PKGS="\
         molecule \
@@ -29,8 +29,8 @@ ADD ubi8.repo /tmp/ubi8.repo
 RUN set -x \
      && rm -f /etc/yum.repos.d/*.repo \
      && mv /tmp/ubi8.repo /etc/yum.repos.d/ \
-     && dnf install ${YUM_FLAGS} ${YUM_PKGS} \
-     && dnf ${YUM_FLAGS} clean all \
+     && dnf install ${DNF_FLAGS} ${DNF_PKGS} \
+     && dnf ${DNF_FLAGS} clean all \
      && rm -rf /var/cache/dnf \
      && alternatives --set python3 /usr/bin/python3.8 \
      && python3 -m pip install ${PIP_PKGS} \
