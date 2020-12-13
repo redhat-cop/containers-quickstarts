@@ -20,7 +20,7 @@ ARG PIP_PKGS="\
         kubernetes \
         ansible==${ANSIBLE_VERSION} \
 "
-ARG YUM_PKGS="\
+ARG DNF_PKGS="\
         python38-pip \
 "
 
