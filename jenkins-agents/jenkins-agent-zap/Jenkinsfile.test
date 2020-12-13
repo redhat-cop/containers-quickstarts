@@ -1,14 +1,13 @@
 pipeline {
     agent {
-      label 'jenkins-agent-golang'
+      label 'jenkins-agent-zap'
     }
 
     stages {
         stage ('Run Test') {
             steps {
               sh """
-                  go version
-                  JAVA_HOME=/usr/lib/jvm/jre-11 sonar-scanner -v
+                  /zap/zap-baseline.py -h
               """
             }
         }
