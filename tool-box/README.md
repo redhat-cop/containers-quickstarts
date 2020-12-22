@@ -32,11 +32,11 @@ Build the container and deploy it in OpenShift:
 
 Run the container in the background, then shell into. There are important things the container does at boot that you don't want to override. If you need sudo for docker:
 
-`$ sudo docker run -it tool-box /bin/bash`
+`$ sudo docker run -it redhat-cop/tool-box /bin/bash`
 
 If you don't need sudo:
 
-`$ docker run -it tool-box /bin/bash`
+`$ docker run -it redhat-cop/tool-box /bin/bash`
 
 ## Building the Image
 

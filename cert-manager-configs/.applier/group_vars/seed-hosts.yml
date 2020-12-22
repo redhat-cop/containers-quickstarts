@@ -1,0 +1,53 @@
+---
+
+openshift_templates_url: "https://raw.githubusercontent.com/redhat-cop/openshift-templates"
+openshift_templates_version: "master"
+
+openshift_domain: "my.cluster.example.com"
+cert_mgmt_namespace: "cert-mgmt"
+
+cert_mgmt_namespace_params:
+  NAMESPACE: "{{ cert_mgmt_namespace }}"
+  NAMESPACE_DISPLAY_NAME: "Certificate Management Namespace"
+  NAMESPACE_DESCRIPTION: "Where a cluster certificate management is hosted"
+
+cert_manager_params:
+  NAMESPACE: "{{ cert_mgmt_namespace }}"
+  DNS_DOMAIN: "{{ openshift_domain }}"
+  AWS_ACCESS_KEY_ID: "ASDF321ADF63"
+  AWS_SECRET_ACCESS_KEY: "$#%DASFSDF#24SRT@#$DFFSVSDFG@#$@#$=="
+  ACME_EMAIL: "my-email@example.com"
+
+cert_utils_operator_params:
+  NAMESPACE: "{{ cert_mgmt_namespace }}"
+
+openshift_cert_params:
+  DNS_DOMAIN: "{{ openshift_domain }}"
+
+openshift_cluster_content:
+- object: namespace
+  content:
+  - name: CertMgmtNamespace
+    template: "{{ openshift_templates_url }}/{{ openshift_templates_version }}/project-requests/create-project.yml"
+    params_from_vars: "{{ cert_mgmt_namespace_params }}"
+    action: create
+- object: CertificateManagement
+  content:
+  - name: CertManager
+    template: "{{ inventory_dir }}/../.openshift/cert-manager.yml"
+    params_from_vars: "{{ cert_manager_params }}"
+    namespace: "{{ cert_mgmt_namespace }}"
+    tags:
+      - cert-manager
+  - name: CertUtilsOperator
+    template: "{{ inventory_dir }}/../.openshift/cert-utils-operator.yml"
+    params_from_vars: "{{ cert_utils_operator_params }}"
+    namespace: "{{ cert_mgmt_namespace }}"
+    tags:
+      - cert-utils-operator
+  - name: OCPv4-Certs
+    template: "{{ inventory_dir }}/../.openshift/ocpv4-certs.yml"
+    params_from_vars: "{{ openshift_cert_params }}"
+    # namespace: ... No namespace here - it will break the implementation
+    tags:
+      - ocpv4-certs

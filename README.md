@@ -36,15 +36,21 @@ A collection of custom built S2I base images
 A set of images we've developed for running as agent pods in a Jenkins Pipeline on OpenShift
 
 * [Ansible Agent](./jenkins-agents/jenkins-agent-ansible)
-* [GoLang](./jenkins-agents/jenkins-agent-golang)
-* [Image Promotion](./jenkins-agents/jenkins-agent-image-mgmt)
-* [Extended Maven Agent](./jenkins-agents/jenkins-agent-mvn)
-* [Ruby](./jenkins-agents/jenkins-agent-ruby)
 * [Arachni](./jenkins-agents/jenkins-agent-arachni)
+* [ArgoCD](./jenkins-agents/jenkins-agent-argocd)
+* [Conftest](./jenkins-agents/jenkins-agent-conftest)
+* [Erlang](./jenkins-agents/jenkins-agent-erlang)
+* [GoLang](./jenkins-agents/jenkins-agent-golang)
+* [GraalVM](./jenkins-agents/jenkins-agent-graalvm)
 * [Gradle](./jenkins-agents/jenkins-agent-gradle)
+* [Helm](./jenkins-agents/jenkins-agent-helm)
+* [Image Promotion](./jenkins-agents/jenkins-agent-image-mgmt)
 * [MongoDB](./jenkins-agents/jenkins-agent-mongodb)
+* [Extended Maven Agent](./jenkins-agents/jenkins-agent-mvn)
 * [Node](./jenkins-agents/jenkins-agent-npm)
 * [Python](./jenkins-agents/jenkins-agent-python)
+* [Ruby](./jenkins-agents/jenkins-agent-ruby)
+* [Rust](./jenkins-agents/jenkins-agent-rust)
 * [ZAP](./jenkins-agents/jenkins-agent-zap)
 
 ### Customized Jenkins Masters

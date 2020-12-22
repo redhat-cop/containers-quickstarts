@@ -29,7 +29,7 @@ objects:
       dockerStrategy:
         from:
           kind: ImageStreamTag
-          name: java:latest
+          name: java:8
           namespace: openshift
       type: Docker
     successfulBuildsHistoryLimit: 5

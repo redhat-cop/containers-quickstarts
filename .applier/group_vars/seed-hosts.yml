@@ -7,7 +7,7 @@ templates_repo_ref: v1.4.16
 jenkins_agents:
   build:
     ansible:
-      BUILDER_IMAGE_NAME: quay.io/openshift/origin-jenkins-agent-base:4.4
+      BUILDER_IMAGE_NAME: quay.io/openshift/origin-jenkins-agent-base:4.6
       DOCKERFILE_PATH: Dockerfile
       NAME: jenkins-agent-ansible
       SOURCE_CONTEXT_DIR: jenkins-agents/jenkins-agent-ansible
@@ -19,11 +19,13 @@ jenkins_agents:
       BUILDER_IMAGE_NAME: quay.io/redhat-cop/jenkins-agent-python:v1.0
     erlang: {}
     golang: {}
+    graalvm:
+      BUILDER_IMAGE_NAME: quay.io/openshift/origin-jenkins-agent-maven:4.6
     gradle: {}
     helm: {}
     mongodb: {}
     mvn:
-      BUILDER_IMAGE_NAME: quay.io/openshift/origin-jenkins-agent-maven:4.4
+      BUILDER_IMAGE_NAME: quay.io/openshift/origin-jenkins-agent-maven:4.6
     npm: {}
     python: {}
     ruby: {}
@@ -69,9 +71,21 @@ test_pipelines:
       PIPELINE_FILENAME: Jenkinsfile.test
       PIPELINE_SOURCE_REPOSITORY_REF: "{{ agent_repo_ref }}"
       PIPELINE_SOURCE_REPOSITORY_URL: "{{ repository_url }}"
+    image-mgmt:
+      NAME: jenkins-agent-image-mgmt
+      PIPELINE_CONTEXT_DIR: jenkins-agents/jenkins-agent-image-mgmt
+      PIPELINE_FILENAME: Jenkinsfile.test
+      PIPELINE_SOURCE_REPOSITORY_REF: "{{ agent_repo_ref }}"
+      PIPELINE_SOURCE_REPOSITORY_URL: "{{ repository_url }}"
     golang:
       NAME: jenkins-agent-golang
       PIPELINE_CONTEXT_DIR: jenkins-agents/jenkins-agent-golang
+      PIPELINE_FILENAME: Jenkinsfile.test
+      PIPELINE_SOURCE_REPOSITORY_REF: "{{ agent_repo_ref }}"
+      PIPELINE_SOURCE_REPOSITORY_URL: "{{ repository_url }}"
+    graalvm:
+      NAME: jenkins-agent-graalvm
+      PIPELINE_CONTEXT_DIR: jenkins-agents/jenkins-agent-graalvm
       PIPELINE_FILENAME: Jenkinsfile.test
       PIPELINE_SOURCE_REPOSITORY_REF: "{{ agent_repo_ref }}"
       PIPELINE_SOURCE_REPOSITORY_URL: "{{ repository_url }}"
@@ -120,6 +134,12 @@ test_pipelines:
     rust:
       NAME: jenkins-agent-rust
       PIPELINE_CONTEXT_DIR: jenkins-agents/jenkins-agent-rust
+      PIPELINE_FILENAME: Jenkinsfile.test
+      PIPELINE_SOURCE_REPOSITORY_REF: "{{ agent_repo_ref }}"
+      PIPELINE_SOURCE_REPOSITORY_URL: "{{ repository_url }}"
+    zap:
+      NAME: jenkins-agent-zap
+      PIPELINE_CONTEXT_DIR: jenkins-agents/jenkins-agent-zap
       PIPELINE_FILENAME: Jenkinsfile.test
       PIPELINE_SOURCE_REPOSITORY_REF: "{{ agent_repo_ref }}"
       PIPELINE_SOURCE_REPOSITORY_URL: "{{ repository_url }}"

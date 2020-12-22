@@ -1,0 +1,42 @@
+---
+name: github-runner-ubi8
+on:
+  push:
+    branches:
+      - master
+    paths:
+      - github-runner-ubi8/**
+  pull_request:
+    paths:
+      - github-runner-ubi8/**
+jobs:
+  publish:
+    env:
+      CONTEXT_DIR: github-runner-ubi8
+      IMAGE_NAME: github-runner-ubi8
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@master
+      - name: Get image tags
+        id: image_tags
+        run: |
+          echo -n ::set-output name=IMAGE_TAGS::
+          VERSION=$(jq -r '.version' ${CONTEXT_DIR}/version.json)
+          TAGS=('latest')
+          if [ "${VERSION}" ] && [ "${VERSION}" != "latest" ]; then
+              TAGS+=("${VERSION}")
+          fi
+          if [[ "${GITHUB_REF}" =~ refs/tags/(.*) ]]; then
+              TAGS+=("git-${BASH_REMATCH[1]}")
+          fi
+          ( IFS=$','; echo "${TAGS[*]}" )
+      - name: Build and publish image to Quay
+        uses: docker/build-push-action@v1
+        with:
+          path: ${{ env.CONTEXT_DIR }}
+          registry: quay.io
+          repository: redhat-cop/${{ env.IMAGE_NAME }}
+          username: ${{ secrets.REGISTRY_USERNAME }}
+          password: ${{ secrets.REGISTRY_PASSWORD }}
+          push: ${{ github.ref == 'refs/heads/master' && github.event_name != 'pull_request' }}
+          tags: "${{ steps.image_tags.outputs.IMAGE_TAGS }}"
