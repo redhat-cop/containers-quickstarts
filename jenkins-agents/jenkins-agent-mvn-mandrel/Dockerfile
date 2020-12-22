@@ -68,7 +68,7 @@ RUN microdnf -y update && \
 # Copy the entrypoint
 ADD contrib/bin/* /usr/local/bin/
 # Copy default settings
-ADD settings.xml $HOME/.m2/settings.xml
+ADD settings.xml ${USER_HOME_DIR}/.m2/settings.xml
 
 ENV LC_ALL=en_US.UTF-8
 USER 1001
