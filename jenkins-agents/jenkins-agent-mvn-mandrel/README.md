@@ -11,3 +11,21 @@ oc process -f ../../.openshift/templates/jenkins-agent-generic-template.yml \
     | oc create -f -
 ```
 For all params see the list in the `../../.openshift/templates/jenkins-agent-generic-template.yml` or run `oc process --parameters -f ../../.openshift/templates/jenkins-agent-generic-template.yml`.
+
+## Base image files
+
+The files packaged in this image are sourced from the base agent image.
+- https://github.com/openshift/jenkins/tree/master/slave-base
+
+```bash
+.
+├── contrib
+│   └── bin
+│       ├── configure-agent
+│       └── run-jnlp-client
+├── go-init
+│   └── main.go
+```
+
+This image uses UBI and so does not extend the RHEL base image above. Ideally this image would layer in a UBI base jenkins image at some point.
+ 
