@@ -1,7 +1,7 @@
 ##############################################
 # Stage 1 : Build go-init
 ##############################################
-FROM docker.io/openshift/origin-release:golang-1.12 AS builder
+FROM docker.io/openshift/origin-release:golang-1.15 AS builder
 COPY go-init/main.go /go/src/go-init/
 RUN go install go-init
 
@@ -27,13 +27,13 @@ ENV MAVEN_OPTS="-XX:+TieredCompilation -XX:TieredStopAtLevel=1 -Duser.home=$USER
 
 ARG MAVEN_VERSION=3.6.3
 ARG MAVEN_URL=https://archive.apache.org/dist/maven/maven-3/$MAVEN_VERSION/binaries/apache-maven-$MAVEN_VERSION-bin.tar.gz
-ARG GRAAL_VERSION=20.1.0.3.Final
+ARG GRAAL_VERSION=20.3.0.0.Beta2
 ENV GRAALVM_HOME /opt/mandrelJDK
 ENV GRAAL_CE_URL=https://github.com/graalvm/mandrel/releases/download/mandrel-${GRAAL_VERSION}/mandrel-java11-linux-amd64-${GRAAL_VERSION}.tar.gz
-ARG HELM_VERSION=3.3.4
+ARG HELM_VERSION=3.4.2
 ARG JQ_VERSION=1.6
 ARG OC_VERSION=4.6
-ARG YQ_VERSION=3.4.1
+ARG YQ_VERSION=4.0.0
 
 ENV PATH=$PATH:$JAVA_HOME/bin
 
