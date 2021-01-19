@@ -1,14 +1,6 @@
 FROM registry.access.redhat.com/ubi8/ubi:latest  
 
-ARG GITHUB_RUNNER_VERSION="2.267.1"
-
-ENV GITHUB_ENDPOINT="github.com" \
-    RUNNER_NAME="" \
-    GITHUB_PAT="" \
-    GITHUB_OWNER="" \
-    GITHUB_REPOSITORY="" \
-    RUNNER_WORKDIR="_work" \
-    RUNNER_LABELS="self-hosted,Linux,X64"
+ARG GITHUB_RUNNER_VERSION="2.275.1"
 
 LABEL summary="Supports running a GitHub self-hosted runner." \
     description="Self-hosted GitHub runner" \
