@@ -2,7 +2,7 @@
 
 set -e
 
-if [ -z "${RUNNER_TOKEN}" ] && [ -z "${GITHUB_PAT}"]; then
+if [ -z "${RUNNER_TOKEN}" ] && [ -z "${GITHUB_PAT}" ]; then
     echo "RUNNER_TOKEN or GITHUB_PAT variable must be defined!"
     exit 255
 fi
