@@ -81,6 +81,8 @@ RUN pip3 install --no-cache-dir \
 WORKDIR /documents
 VOLUME /documents
 
+ENV HOME=/documents
+
 USER 1001
 
 CMD ["/bin/bash"]
