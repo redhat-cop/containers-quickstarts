@@ -20,13 +20,7 @@ objects:
       name: cert-utils-operator
     spec:
       channel: alpha
-      installPlanApproval: ${INSTALL_PLAN_APPROVAL}
+      installPlanApproval: Automatic
       name: cert-utils-operator
       source: community-operators
       sourceNamespace: openshift-marketplace
-      startingCSV: ${STARTING_CSV}
-parameters:
-  - name: STARTING_CSV
-    value: cert-utils-operator.v1.0.1
-  - name: INSTALL_PLAN_APPROVAL
-    value: Manual
