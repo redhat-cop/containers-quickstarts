@@ -7,8 +7,13 @@ pipeline {
         stage ('Run Test') {
             steps {
               sh """
+                  java --version
                   mvn --version
                   native-image --version
+                  oc version --client
+                  helm version
+                  jq --version
+                  yq --version
               """
             }
         }
