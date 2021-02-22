@@ -68,7 +68,7 @@ parameters:
 - description: Image stream tag for the image you'd like to use to build the application
   name: FROM_IMAGE
   required: true
-  value: ubi:7.7
+  value: ubi-minimal:8.3
 - description: RabbitMQ Autocluster version to use
   name: RABBITMQ_AUTOCLUSTER_VERSION
   required: true

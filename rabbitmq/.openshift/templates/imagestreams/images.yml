@@ -4,24 +4,24 @@ items:
 - apiVersion: image.openshift.io/v1
   kind: ImageStream
   metadata:
-    name: ubi
+    name: ubi-minimal
   spec:
-    dockerImageRepository: registry.access.redhat.com/ubi7/ubi
+    dockerImageRepository: registry.access.redhat.com/ubi8/ubi-minimal
     lookupPolicy:
       local: false
     tags:
     - annotations: null
       from:
         kind: DockerImage
-        name: registry.access.redhat.com/ubi7/ubi:7.8
+        name: registry.access.redhat.com/ubi8/ubi-minimal:8.3
       importPolicy: {}
-      name: "7.8"
+      name: "8.3"
       referencePolicy:
         type: Source
     - annotations: null
       from:
         kind: DockerImage
-        name: registry.access.redhat.com/ubi7/ubi:latest
+        name: registry.access.redhat.com/ubi8/ubi-minimal:latest
       importPolicy: {}
       name: latest
       referencePolicy:
