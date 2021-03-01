@@ -1,4 +1,4 @@
-kopf==0.28.3
+kopf==1.29.2
 kubernetes==11.0.0
 openshift==0.11.2
 pykube-ng==20.5.0
