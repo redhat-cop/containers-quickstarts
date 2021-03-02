@@ -12,36 +12,41 @@ This example has been tested with `odo` as well as OpenShift build configs.
 
 == Using this Example with `odo`
 
-Ensure that the `python-kopf` image stream is available in the `openshift` namespace.
-
-----------------------------------
-oc apply -f ../../imagestream.yaml
-----------------------------------
-
-Create service, role, and role binding for `kopf-simple`:
-
---------------------------------------------------------------------------------
-oc apply -f rbac/role_binding.yaml -f rbac/role.yaml -f rbac/service_account.yaml
---------------------------------------------------------------------------------
-
 Setup `odo`:
 
-----------------------------------
-odo create python-kopf kopf-simple
-----------------------------------
+---------------------------------
+odo create --devfile devfile.yaml
+---------------------------------
+
+Create role `kopf-simple`:
+
+--------------------------------------------------------------------------------
+oc apply -f rbac/role.yaml
+--------------------------------------------------------------------------------
+
+Grant `kopf-simple` role to default service account:
+
+----
+oc apply -f - <<EOF
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: kopf-simple:serviceaccount:default
+subjects:
+- kind: ServiceAccount
+  name: default
+roleRef:
+  kind: Role
+  name: kopf-simple
+  apiGroup: rbac.authorization.k8s.io
+EOF
+----
 
 Push code with `odo`:
 
 --------
 odo push
 --------
-
-Patch the DeploymentConfig created by `odo` to use the `kopf-simple` service account:
-
------------------------------------------------------------------------------
-oc patch dc/kopf-simple-app \
---patch '{"spec":{"template":{"spec":{"serviceAccountName":"kopf-simple"}}}}'
------------------------------------------------------------------------------
 
 Create a test config map:
 
