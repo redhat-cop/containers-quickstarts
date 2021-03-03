@@ -27,6 +27,8 @@ if [[ "${KOPF_NAMESPACE}" ]]; then
 elif [[ "${KOPF_NAMESPACED:-false}" == "true" ]]; then
     KOPF_NAMESPACE=${OPERATOR_NAMESPACE}
     KOPF_OPTIONS="${KOPF_OPTIONS} --namespace=${OPERATOR_NAMESPACE}"
+else
+    KOPF_OPTIONS="${KOPF_OPTIONS} --all-namespaces"
 fi
 
 if [[ "${KOPF_PRIORITY}" ]]; then
