@@ -10,6 +10,12 @@ ARG INSTALL_PKGS="\
     tar \
     xz"
 
+ARG INSTALL_PKGS="\
+    hostname \
+    systemd \
+    tar \
+    xz"
+
 LABEL io.k8s.description="Lightweight open source message broker" \
     io.k8s.display-name="RabbitMQ" \
     io.openshift.expose-services="4369:epmd, 5671:amqp, 5672:amqp, 25672:http" \
