@@ -39,6 +39,10 @@ objects:
       protocol: TCP
       port: 5672
       targetPort: 5672
+    - name: prometheus
+      protocol: TCP
+      port: 15692
+      targetPort: 15692
     selector:
       application: "${APPLICATION_NAME}"
     sessionAffinity: None
@@ -110,6 +114,9 @@ objects:
           - name: amqp
             protocol: TCP
             containerPort: 5672
+          - name: prometheus
+            protocol: TCP
+            containerPort: 15692
           readinessProbe:
             exec:
               # Learn more at https://www.rabbitmq.com/monitoring.html#health-checks.

@@ -52,6 +52,11 @@ setup_file() {
   [ "${cluster_replicas}" == "3" ]
 }
 
+@test "rabbitmq/ha: should start prometheus endpoint" {
+  local prom_status=$(oc exec "$(name_prefix)-0" -- curl -so /dev/null -w %{http_code} localhost:15692/metrics)
+  [ "${prom_status}" == "200" ]
+}
+
 # Clean up
 teardown_file() {
   if [[ ${CLEANUP:-true} == "true" ]]
