@@ -86,7 +86,7 @@ odo delete kopf-simple
 
 == Building
 
-A Kustomize configuration for building this example in OpenShift is provided.
+OpenShift templates for building and deploying this example in OpenShift are provided.
 
 Create image stream and build config:
 
