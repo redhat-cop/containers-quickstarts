@@ -110,6 +110,8 @@ spec:
   volumeClaimTemplates:
   - metadata:
       name: mnesia
+      labels:
+        {{- include "chart.selectorLabels" . | nindent 8 }}
     spec:
       accessModes: [ "ReadWriteOnce" ]
       resources:
