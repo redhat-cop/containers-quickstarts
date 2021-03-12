@@ -16,7 +16,7 @@ RUN yum install -y epel-release && \
     firefox nss_wrapper java-1.8.0-openjdk-headless \
     java-1.8.0-openjdk-devel nss_wrapper && \
     yum clean all && \
-    curl https://bootstrap.pypa.io/2.7/get-pip.py --output get-pip.py && chmod 755 get-pip.py && ./get-pip.py && \
+    curl https://bootstrap.pypa.io/pip/2.7/get-pip.py --output get-pip.py && chmod 755 get-pip.py && ./get-pip.py && \
     pip install --upgrade pip && \
     pip install zapcli && \
     pip install python-owasp-zap-v2.4 && \
