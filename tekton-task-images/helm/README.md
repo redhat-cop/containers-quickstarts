@@ -21,7 +21,7 @@ spec:
       - name: source
         type: git
   steps:
-    - image: 'quay.io/redhat-cop/helm:3.3.3'
+    - image: 'quay.io/redhat-cop/helm:v3.5.3'
       name: helm-linting
       script: |
         helm lint chart 
