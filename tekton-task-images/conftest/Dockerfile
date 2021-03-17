@@ -1,4 +1,4 @@
-FROM registry.access.redhat.com/ubi8/ubi-minimal:8.2
+FROM registry.access.redhat.com/ubi8/ubi-minimal:8.3
 
 RUN microdnf install --assumeyes --nodocs tar gzip && \
     microdnf clean all 
