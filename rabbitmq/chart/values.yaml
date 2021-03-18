@@ -69,13 +69,9 @@ nodeSelector: {}
 
 tolerations: []
 
-affinity:
-  podAntiAffinity:
-    requiredDuringSchedulingIgnoredDuringExecution:
-      - labelSelector:
-          matchExpressions:
-            - key: statefulset
-              operator: In
-              values:
-                - redhat-cop
-        topologyKey: kubernetes.io/hostname
+ha:
+  enabled: true
+  label:
+    key: app.kubernetes.io/name
+    value: rabbitmq
+  topologyKey: kubernetes.io/hostname
