@@ -59,6 +59,9 @@ spec:
         - name: amqp
           protocol: TCP
           containerPort: 5672
+        - name: prometheus
+          protocol: TCP
+          containerPort: 15692
         securityContext:
           {{- toYaml .Values.securityContext | nindent 12 }}
         readinessProbe:

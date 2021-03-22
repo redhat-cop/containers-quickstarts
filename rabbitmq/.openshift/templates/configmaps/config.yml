@@ -2,10 +2,10 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: rabbitmq-config
-data: 
+data:
   enabled_plugins: |
-      [rabbitmq_management,rabbitmq_peer_discovery_k8s].
-  policy.json: | 
+      [rabbitmq_management,rabbitmq_peer_discovery_k8s,rabbitmq_prometheus].
+  policy.json: |
       {
         "vhosts":[
           {
@@ -33,7 +33,7 @@ data:
           {
             "vhost": "/",
             "name": "ha-all",
-            "pattern": "", 
+            "pattern": "",
             "definition": {
               "ha-mode": "all",
               "ha-sync-mode": "automatic",

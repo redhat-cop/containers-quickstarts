@@ -43,6 +43,10 @@ service:
       protocol: TCP
       port: 5672
       targetPort: 5672
+    - name: prometheus
+      protocol: TCP
+      port: 15692
+      targetPort: 15692
 
 ingress:
   enabled: false

@@ -4,7 +4,7 @@ metadata:
   name: rabbitmq-config
 data:
   enabled_plugins: |
-      [rabbitmq_management,rabbitmq_peer_discovery_k8s].
+      [rabbitmq_management,rabbitmq_peer_discovery_k8s,rabbitmq_prometheus].
   policy.json: |
       {
         "vhosts":[
