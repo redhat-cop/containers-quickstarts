@@ -1,16 +1,18 @@
 namespace: sonarqube
 app_name: sonarqube
 jenkins_url: http://jenkins:80
-upstream_sq_version: 7.9.1-community
+upstream_sq_version: 7.9.6-community
 sonar_search_java_additional_opts: '-Dnode.store.allow_mmapfs=false'
+build_repo: https://github.com/redhat-cop/containers-quickstarts.git
+build_ref: master
 
 build:
   FROM_DOCKER_IMAGE: "{{ app_name }}"
   FROM_DOCKER_IMAGE_REGISTRY_URL: docker.io/sonarqube
   FROM_DOCKER_TAG: "{{ upstream_sq_version }}"
   NAME: "{{ app_name }}"
-  SOURCE_REPOSITORY_URL: https://github.com/redhat-cop/containers-quickstarts.git
-  SOURCE_REPOSITORY_REF: master
+  SOURCE_REPOSITORY_URL: "{{ build_repo }}"
+  SOURCE_REPOSITORY_REF: "{{ build_ref }}"
   SOURCE_CONTEXT_DIR: "{{ app_name }}"
 postgresql:
   DATABASE_SERVICE_NAME: sonardb
