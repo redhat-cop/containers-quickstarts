@@ -133,6 +133,11 @@ def manage_secret_for_config_map(name, namespace, config_map, logger):
         secret = create_secret(config, name, namespace, owner_reference, logger)
     update_config_map_status(name, namespace, config_map, secret)
 
+@kopf.on.startup()
+def configure(settings: kopf.OperatorSettings, **_):
+    # Disable scanning for Namespaces and CustomResourceDefinitions
+    settings.scanning.disabled = True
+
 @kopf.on.create('', 'v1', 'configmaps', labels={config_map_label: kopf.PRESENT})
 def on_create_config_map(body, name, namespace, logger, **_):
     logger.info("New app ConfigMap '%s'", name)

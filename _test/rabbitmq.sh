@@ -87,6 +87,15 @@ test() {
     exit 1
   fi
 
+  echo "Check prometheus endpoint..."
+  prom_code=$(oc -n $NAMESPACE exec rabbitmq-0 -- curl -so /dev/null -w %{http_code} localhost:15692/metrics)
+  if [ "${prom_code}" == "200" ]; then
+    echo "OK: Prometheus endpoint is up"
+  else
+    echo "NOK: Prometheus endpoint is not up"
+    exit 1
+  fi
+
   echo "Tests Completed Successfully!"
 }
 

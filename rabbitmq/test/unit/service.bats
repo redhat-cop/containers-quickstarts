@@ -18,11 +18,11 @@ load _helpers
 }
 
 # ports
-@test "service: two default ports" {
+@test "service: default ports" {
   cd $(chart_dir)
   local service_ports=$(helm template -s templates/service.yaml \
   . | yq r - --length 'spec.ports')
-  [ ${service_ports} -eq 2 ]
+  [ ${service_ports} -eq 3 ]
 }
 
 @test "service: default port names" {
@@ -35,6 +35,9 @@ load _helpers
 
   local amqp_port=$(echo "${service_ports}" | yq r - '[1].name')
   [ "${amqp_port}" == "amqp" ]
+
+  local prom_port=$(echo "${service_ports}" | yq r - '[2].name')
+  [ "${prom_port}" == "prometheus" ]
 }
 
 @test "service: custom port names" {
@@ -42,6 +45,7 @@ load _helpers
   local service_ports=$(helm template -s templates/service.yaml \
   --set 'service.ports[0].name=custom1' \
   --set 'service.ports[1].name=custom2' \
+  --set 'service.ports[2].name=custom3' \
   . | yq r - 'spec.ports')
 
   local port1=$(echo "${service_ports}" | yq r - '[0].name')
@@ -49,6 +53,9 @@ load _helpers
 
   local port2=$(echo "${service_ports}" | yq r - '[1].name')
   [ "${port2}" == "custom2" ]
+
+  local port3=$(echo "${service_ports}" | yq r - '[2].name')
+  [ "${port3}" == "custom3" ]
 }
 
 @test "service: default port numbers" {
@@ -61,6 +68,9 @@ load _helpers
 
   local amqp_port=$(echo "${service_ports}" | yq r - '[1].port')
   [ "${amqp_port}" == "5672" ]
+
+  local prom_port=$(echo "${service_ports}" | yq r - '[2].port')
+  [ "${prom_port}" == "15692" ]
 }
 
 @test "service: custom port numbers" {
@@ -68,6 +78,7 @@ load _helpers
   local service_ports=$(helm template -s templates/service.yaml \
   --set 'service.ports[0].port=1' \
   --set 'service.ports[1].port=2' \
+  --set 'service.ports[2].port=3' \
   . | yq r - 'spec.ports')
 
   local port1=$(echo "${service_ports}" | yq r - '[0].port')
@@ -75,6 +86,9 @@ load _helpers
 
   local port2=$(echo "${service_ports}" | yq r - '[1].port')
   [ "${port2}" == "2" ]
+
+  local port3=$(echo "${service_ports}" | yq r - '[2].port')
+  [ "${port3}" == "3" ]
 }
 
 # type

@@ -20,27 +20,18 @@ odo create --devfile devfile.yaml
 
 Create role `kopf-simple`:
 
---------------------------------------------------------------------------------
+--------------------------
 oc apply -f rbac/role.yaml
---------------------------------------------------------------------------------
+--------------------------
 
 Grant `kopf-simple` role to default service account:
 
-----
-oc apply -f - <<EOF
-apiVersion: rbac.authorization.k8s.io/v1
-kind: RoleBinding
-metadata:
-  name: kopf-simple:serviceaccount:default
-subjects:
-- kind: ServiceAccount
-  name: default
-roleRef:
-  kind: Role
-  name: kopf-simple
-  apiGroup: rbac.authorization.k8s.io
-EOF
-----
+----------------------------------------
+oc policy add-role-to-user \
+--rolebinding-name=kopf-simple \
+--role-namespace=$(oc project --short) \
+kopf-simple -z default
+----------------------------------------
 
 Push code with `odo`:
 
@@ -95,7 +86,7 @@ odo delete kopf-simple
 
 == Building
 
-A Kustomize configuration for building this example in OpenShift is provided.
+OpenShift templates for building and deploying this example in OpenShift are provided.
 
 Create image stream and build config:
 

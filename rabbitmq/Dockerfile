@@ -1,8 +1,14 @@
 FROM registry.access.redhat.com/ubi8/ubi-minimal:8.3
 
-ARG ERLANG_VERSION=22.1.4
+ARG ERLANG_VERSION=23.2.5
 ARG RABBITMQ_AUTOCLUSTER_VERSION=0.10.0
-ARG RABBITMQ_VERSION=3.8.3
+ARG RABBITMQ_VERSION=3.8.13
+
+ARG INSTALL_PKGS="\
+    hostname \
+    systemd \
+    tar \
+    xz"
 
 ARG INSTALL_PKGS="\
     hostname \

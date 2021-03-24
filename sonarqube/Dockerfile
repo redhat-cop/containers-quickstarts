@@ -3,7 +3,7 @@ FROM docker.io/sonarqube:latest
 USER root
 
 CMD apk update && apk add curl
-ARG sonar_plugins="pmd ldap"
+ARG sonar_plugins="java pmd ldap"
 ADD sonar.properties /opt/sonarqube/conf/sonar.properties
 ADD run.sh /opt/sonarqube/bin/run.sh
 CMD /opt/sonarqube/bin/run.sh

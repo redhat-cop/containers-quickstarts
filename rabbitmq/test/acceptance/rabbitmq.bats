@@ -4,12 +4,13 @@ JOB_ID=$(cat /dev/urandom | tr -dc 'a-z0-9' | fold -w 5 | head -1)
 
 load _helpers
 
+
 setup_file() {
+  ocp_auth
+
   cd $(chart_dir)
 
-  oc delete namespace rabbitmq-acceptance-${JOB_ID} --ignore-not-found=true
-  oc create namespace rabbitmq-acceptance-${JOB_ID}
-  oc config set-context --current --namespace rabbitmq-acceptance-${JOB_ID}
+  project_action create $JOB_ID
 
   helm install "$(name_prefix)" . --namespace rabbitmq-acceptance-${JOB_ID}
   wait_for_running $(name_prefix)-2
@@ -51,13 +52,19 @@ setup_file() {
   [ "${cluster_replicas}" == "3" ]
 }
 
+@test "rabbitmq/ha: should start prometheus endpoint" {
+  local prom_status=$(oc exec "$(name_prefix)-0" -- curl -so /dev/null -w %{http_code} localhost:15692/metrics)
+  [ "${prom_status}" == "200" ]
+}
+
 # Clean up
 teardown_file() {
   if [[ ${CLEANUP:-true} == "true" ]]
   then
     echo "helm/pvc teardown"
-    helm delete "$(name_prefix)"
-    oc delete --all pvc
-    oc delete namespace rabbitmq-acceptance-${JOB_ID} --ignore-not-found=true
+    grace=$(oc get pod/rabbitmq-0 --template '{{.spec.terminationGracePeriodSeconds}}')
+    helm uninstall "$(name_prefix)"
+    sleep $grace
+    project_action delete $JOB_ID
   fi
 }
