@@ -8,7 +8,7 @@ jobs:
     env:
       context: tekton-task-images/helm
       image_name: helm
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@v1
       - name: Get image tags
@@ -19,13 +19,15 @@ jobs:
           source ${context}/VERSION
           echo ${HELM_VERSION}
       - name: Build image
-        uses: docker/build-push-action@v1
+        uses: redhat-actions/buildah-build@v2
         with:
-          path: ${{ env.context }}
-          push: false
-          repository: ${{ env.image_name }}
+          context: ${{ env.context }}
+          dockerfiles: |
+            ./${{ env.context }}/Dockerfile
+          image: ${{ env.image_name }}
+          oci: true
           tags: ${{ steps.check_version.outputs.IMAGE_TAGS }}
       - name: Test image contains the version of the binary
         run: |
-          echo "Running: docker run ${image_name}:${{ steps.check_version.outputs.IMAGE_TAGS }} helm version"
-          docker run ${image_name}:${{ steps.check_version.outputs.IMAGE_TAGS }} helm version | grep ${{ steps.check_version.outputs.IMAGE_TAGS }}
+          echo "Running: podman run ${image_name}:${{ steps.check_version.outputs.IMAGE_TAGS }} helm version"
+          podman run ${image_name}:${{ steps.check_version.outputs.IMAGE_TAGS }} helm version | grep ${{ steps.check_version.outputs.IMAGE_TAGS }}
