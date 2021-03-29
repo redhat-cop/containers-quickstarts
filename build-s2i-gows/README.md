@@ -9,7 +9,7 @@
 2. `cd containers-quickstarts/build-s2i-gows`
 3. Run `ansible-galaxy install -r requirements.yml --roles-path=roles`
 4. Login to Openshift: `oc login -u <username> https://master.example.com:8443`
-5. Run openshift-applier: `ansible-playbook -i inventory/hosts roles/openshift-applier/playbooks/openshift-cluster-seed.yml`
+5. Run openshift-applier: `ansible-playbook -i .applier/hosts roles/openshift-applier/playbooks/openshift-cluster-seed.yml`
 
 Now we can `oc get routes` to get the hostname of the route that was just created, or click the link in the OpenShift Web Console, and test our newly published gows site.
 By default our simple [demo site](demo/index.html) will be deployed.
