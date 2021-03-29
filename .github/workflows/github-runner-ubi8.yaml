@@ -17,7 +17,7 @@ jobs:
     runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@master
-      - name: Get image tags
+        name: Get image tags
         id: image_tags
         run: |
           echo -n ::set-output name=IMAGE_TAGS::
