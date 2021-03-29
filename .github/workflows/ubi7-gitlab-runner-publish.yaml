@@ -12,7 +12,7 @@ jobs:
     env:
       context: ubi7-gitlab-runner
       image_name: ubi7-gitlab-runner
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@master
       - name: Get image tags
@@ -28,12 +28,21 @@ jobs:
               TAGS+=("git-${BASH_REMATCH[1]}")
           fi
           ( IFS=$','; echo "${TAGS[*]}" )
-      - name: Build and publish image to Quay
-        uses: docker/build-push-action@v1
+      - name: Build image
+        id: build_image
+        uses: redhat-actions/buildah-build@v2
         with:
-          path: ${{ env.context }}
-          registry: ${{ secrets.REGISTRY_URI }}
-          repository: ${{ secrets.REGISTRY_REPOSITORY }}/${{ env.image_name }}
+          context: ${{ env.context }}
+          dockerfiles: |
+            ./${{ env.context }}/Dockerfile
+          image: ${{ env.image_name }}
+          tags: "${{ steps.image_tags.outputs.IMAGE_TAGS }}"
+      - name: Push to Quay
+        id: push_to_quay
+        uses: redhat-actions/push-to-registry@v2
+        with:
+          image: ${{ steps.build_image.outputs.image }}
+          registry: ${{ secrets.REGISTRY_URI }}/${{ secrets.REGISTRY_REPOSITORY }}
           username: ${{ secrets.REGISTRY_USERNAME }}
           password: ${{ secrets.REGISTRY_PASSWORD }}
-          tags: "${{ steps.image_tags.outputs.IMAGE_TAGS }}"
+          tags: ${{ steps.build_image.outputs.tags }}

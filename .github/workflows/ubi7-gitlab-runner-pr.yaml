@@ -8,7 +8,7 @@ jobs:
     env:
       context: ubi7-gitlab-runner
       image_name: ubi7-gitlab-runner
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@v1
       - name: Check and verify version.json
@@ -17,15 +17,17 @@ jobs:
           echo -n ::set-output name=IMAGE_TAGS::
           echo $(jq -r '.version' ${context}/version.json)
       - name: Build image
-        uses: docker/build-push-action@v1
+        uses: redhat-actions/buildah-build@v2
         with:
-          path: ${{ env.context }}
-          push: false
-          repository: ${{ env.image_name }}
+          context: ${{ env.context }}
+          dockerfiles: |
+            ./${{ env.context }}/Dockerfile
+          image: ${{ env.image_name }}
+          oci: true
           tags: ${{ steps.check_version.outputs.IMAGE_TAGS }}
       - name: Test image
         run: |
-          echo "Running: docker run --entrypoint '/bin/sh' ${image_name}:${{ steps.check_version.outputs.IMAGE_TAGS }} -c 'wget --version'"
-          docker run --entrypoint '/bin/sh' ${image_name}:${{ steps.check_version.outputs.IMAGE_TAGS }} -c 'wget --version'
-          echo "Running: docker run --entrypoint '/bin/sh' ${image_name}:${{ steps.check_version.outputs.IMAGE_TAGS }} -c 'gitlab-runner --version'"
-          docker run --entrypoint '/bin/sh' ${image_name}:${{ steps.check_version.outputs.IMAGE_TAGS }} -c 'gitlab-runner --version'
+          echo "Running: podman run --entrypoint '/bin/sh' ${image_name}:${{ steps.check_version.outputs.IMAGE_TAGS }} -c 'wget --version'"
+          podman run --entrypoint '/bin/sh' ${image_name}:${{ steps.check_version.outputs.IMAGE_TAGS }} -c 'wget --version'
+          echo "Running: podman run --entrypoint '/bin/sh' ${image_name}:${{ steps.check_version.outputs.IMAGE_TAGS }} -c 'gitlab-runner --version'"
+          podman run --entrypoint '/bin/sh' ${image_name}:${{ steps.check_version.outputs.IMAGE_TAGS }} -c 'gitlab-runner --version'
