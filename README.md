@@ -28,7 +28,6 @@ A collection of custom built S2I base images
 * [GoWS](./build-s2i-gows)
 * [Jekyll](./build-s2i-jekyll)
 * [WebSphere Liberty](./build-s2i-liberty)
-* [Play Framework](./build-s2i-play)
 * [Python Kopf Operator Framework](./build-s2i-python-kopf)
 
 ### Jenkins Agent Images
