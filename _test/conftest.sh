@@ -163,17 +163,6 @@ setup_file() {
   [ "$status" -eq 0 ]
 }
 
-@test "nexus/chart/nexus" {
-  tmp=$(helm_template "nexus/chart/nexus" "--dependency-update")
-
-  namespaces=$(get_rego_namespaces "ocp\.deprecated\.*")
-  cmd="conftest test ${tmp} --output tap ${namespaces}"
-  run ${cmd}
-
-  print_info "${status}" "${output}" "${cmd}" "${tmp}"
-  [ "$status" -eq 0 ]
-}
-
 @test "ocp4-logging/.openshift" {
   tmp=$(split_files "ocp4-logging/.openshift")
 
