@@ -14,8 +14,8 @@ jobs:
       image_name: jenkins-agent-image-mgmt
     runs-on: ubuntu-20.04
     steps:
-      - uses: actions/checkout@master
       - name: Get image tags
+        uses: actions/checkout@master
         id: image_tags
         run: |
           echo -n ::set-output name=IMAGE_TAGS::
