@@ -75,7 +75,6 @@ Gitlab Runners for your [Gitlab CI/CD](https://docs.gitlab.com/runner/).
 ### Developer Tools
 
 * [Tool Box](./tool-box) - An OpenShift deployable container image that provides some necessary developer tools
-* [motepair](./motepair) - Remote pair programming server and plugin for [Atom](https://atom.io/)
 
 ## Github Actions
 
