@@ -12,7 +12,7 @@ jobs:
     env:
       CONTEXT_DIR: build-s2i-python-kopf
       IMAGE_NAME: python-kopf-s2i
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-18.04
     steps:
       - uses: actions/checkout@master
       - name: Get image tags

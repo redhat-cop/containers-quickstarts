@@ -10,7 +10,7 @@ jobs:
     env:
       CONTEXT_DIR: build-s2i-python-kopf
       IMAGE_NAME: python-kopf-s2i
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-18.04
     steps:
       - uses: actions/checkout@master
       - name: Check and verify version.json
@@ -35,7 +35,7 @@ jobs:
           oci: true
           tags: ${{ steps.check_version.outputs.VERSION }}
       - name: Build kopf-simple example from s2i image
-        uses: docker/buildah-build@v2
+        uses: redhat-actions/buildah-build@v2
         with:
           context: ${{ env.CONTEXT_DIR }}/examples/kopf-simple
           dockerfiles: |

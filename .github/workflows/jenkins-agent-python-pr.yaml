@@ -9,7 +9,7 @@ jobs:
     env:
       context: jenkins-agents/jenkins-agent-python
       image_name: jenkins-agent-python
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-18.04
     steps:
       - uses: actions/checkout@v1
       - name: Check and verify version.json

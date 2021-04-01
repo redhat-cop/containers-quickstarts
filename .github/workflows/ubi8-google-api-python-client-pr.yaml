@@ -9,7 +9,7 @@ jobs:
     env:
       context: utilities/ubi8-google-api-python-client
       image_name: ubi8-google-api-python-client
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-18.04
     steps:
       - uses: actions/checkout@v1
       - name: Check and verify version.json
