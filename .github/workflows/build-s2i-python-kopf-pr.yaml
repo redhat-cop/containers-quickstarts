@@ -48,7 +48,7 @@ jobs:
           EXAMPLE_IMAGE="${IMAGE_NAME}-example:${{ steps.check_version.outputs.VERSION }}"
 
           echo "Checking kopf version..."
-          KOPF_VERSION="$(docker run --entrypoint '/bin/sh' $EXAMPLE_IMAGE -c 'kopf --version')"
+          KOPF_VERSION="$(podman run --entrypoint '/bin/sh' $EXAMPLE_IMAGE -c 'kopf --version')"
           if [[ "$KOPF_VERSION" != 'kopf, version ${{ steps.check_version.outputs.MINOR_VERSION }}' ]]; then
             echo "$KOPF_VERSION not expected ${{ steps.check_version.outputs.MINOR_VERSION }}"
           fi
