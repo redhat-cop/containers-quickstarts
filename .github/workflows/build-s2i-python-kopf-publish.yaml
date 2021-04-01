@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - master
+  pull_request:
     paths:
       - build-s2i-python-kopf/version.json
       - .github/workflows/build-s2i-python-kopf-publish.yaml
@@ -15,15 +16,32 @@ jobs:
     runs-on: ubuntu-18.04
     steps:
       - uses: actions/checkout@master
+
+      - uses: jwalton/gh-find-current-pr@v1
+        id: pr_number
+
       - name: Get image tags
         id: image_tags
+        env:
+          PR_ID: ${{ steps.pr_number.outputs.pr }}
         run: |
-          # version.json should have semantic version: vMAJOR.MINOR.PATCH
-          VERSION=$(jq -r '.version' ${CONTEXT_DIR}/version.json)
-          # Publish to latest, minor, and patch tags
-          TAGS=('latest' "${VERSION}" "${VERSION%.*}")
-          # Set IMAGE_TAGS output for use in next step
-          echo "::set-output name=IMAGE_TAGS::${TAGS[*]}"
+          if [[ -z "${PR_ID}" ]]; then
+            # version.json should have semantic version: vMAJOR.MINOR.PATCH
+            VERSION=$(jq -r '.version' ${CONTEXT_DIR}/version.json)
+            # Publish to latest, minor, and patch tags
+            TAGS=('latest' "${VERSION}" "${VERSION%.*}")
+            # Set IMAGE_TAGS output for use in next step
+            echo "::set-output name=IMAGE_TAGS::${TAGS[*]}"
+          else
+            # Set IMAGE_TAGS output for use in next step
+            echo "::set-output name=IMAGE_TAGS::${PR_ID}"
+          fi
+
+      - name: Echo image tags
+        id: echo_image_tags
+        run: |
+          echo "Publishing tags: ${{ steps.image_tags.outputs.IMAGE_TAGS }}"
+
       - name: Build image
         id: build_image
         uses: redhat-actions/buildah-build@v2
@@ -33,6 +51,7 @@ jobs:
             ./${{ env.CONTEXT_DIR }}/Dockerfile
           image: ${{ env.IMAGE_NAME }}
           tags: "${{ steps.image_tags.outputs.IMAGE_TAGS }}"
+
       - name: Push to Quay
         id: push_to_quay
         uses: redhat-actions/push-to-registry@v2
