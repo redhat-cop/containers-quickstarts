@@ -4,6 +4,7 @@ This agent extends the base jenkins agent image and adds the following binaries 
  - [conftest](https://conftest.dev/) 
  - [yq](https://pypi.org/project/yq/)
  - [bats](https://github.com/bats-core/bats-core)
+ - [helm](https://github.com/bats-core/bats-core)
 
 ## Build in OpenShift
 ```bash
