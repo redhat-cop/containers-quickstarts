@@ -11,8 +11,8 @@ jobs:
       IMAGE_NAME: python-kopf-s2i
     runs-on: ubuntu-20.04
     steps:
+      - uses: actions/checkout@master
       - name: Check and verify version.json
-        uses: actions/checkout@master
         id: check_version
         run: |
           # version.json must have semantic version: vMAJOR.MINOR.PATCH

@@ -13,8 +13,8 @@ jobs:
       IMAGE_NAME: python-kopf-s2i
     runs-on: ubuntu-20.04
     steps:
+      - uses: actions/checkout@master
       - name: Get image tags
-        uses: actions/checkout@master
         id: image_tags
         run: |
           # version.json should have semantic version: vMAJOR.MINOR.PATCH
