@@ -7,6 +7,7 @@ on:
       - '*'
     paths:
       - utilities/ubi8-bats/version.json
+      - .github/workflows/ubi8-bats-publish.yaml
 jobs:
   build:
     env:

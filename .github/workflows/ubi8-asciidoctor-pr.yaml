@@ -3,6 +3,7 @@ on:
   pull_request:
     paths:
       - utilities/ubi8-asciidoctor/**
+      - .github/workflows/ubi8-asciidoctor-pr.yaml
 jobs:
   build:
     env:

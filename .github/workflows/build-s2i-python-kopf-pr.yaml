@@ -4,6 +4,7 @@ on:
   pull_request:
     paths:
       - build-s2i-python-kopf/**
+      - .github/workflows/build-s2i-python-kopf-pr.yaml
 jobs:
   test:
     env:

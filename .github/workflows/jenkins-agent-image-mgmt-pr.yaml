@@ -3,6 +3,7 @@ on:
   pull_request:
     paths:
       - jenkins-agents/jenkins-agent-image-mgmt/**
+      - .github/workflows/jenkins-agent-image-mgmt-pr.yaml
 jobs:
   build:
     env:
@@ -10,8 +11,8 @@ jobs:
       image_name: jenkins-agent-image-mgmt
     runs-on: ubuntu-20.04
     steps:
+      - uses: actions/checkout@v1
       - name: Check and verify version.json
-        uses: actions/checkout@v1
         id: check_version
         run: |
           echo -n ::set-output name=IMAGE_TAGS::

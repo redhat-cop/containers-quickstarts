@@ -3,6 +3,7 @@ on:
   pull_request:
     paths:
       - rabbitmq/**
+      - .github/workflows/rabbitmq-pr.yaml
 jobs:
   build:
     env:

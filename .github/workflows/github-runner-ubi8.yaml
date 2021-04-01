@@ -6,9 +6,11 @@ on:
       - master
     paths:
       - github-runner-ubi8/**
+      - .github/workflows/github-runner-ubi8.yaml
   pull_request:
     paths:
       - github-runner-ubi8/**
+      - .github/workflows/github-runner-ubi8.yaml
 jobs:
   publish:
     env:

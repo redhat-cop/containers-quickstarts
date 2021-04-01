@@ -3,6 +3,7 @@ on:
   pull_request:
     paths:
       - jenkins-agents/jenkins-agent-python/**
+      - .github/workflows/jenkins-agent-python-pr.yaml
 jobs:
   build:
     env:

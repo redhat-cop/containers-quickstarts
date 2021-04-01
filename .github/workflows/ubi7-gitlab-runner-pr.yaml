@@ -3,6 +3,7 @@ on:
   pull_request:
     paths:
       - ubi7-gitlab-runner/**
+      - .github/workflows/ubi7-gitlab-runner-pr.yaml
 jobs:
   build:
     env:

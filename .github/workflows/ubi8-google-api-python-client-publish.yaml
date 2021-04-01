@@ -7,6 +7,7 @@ on:
       - '*'
     paths:
       - utilities/ubi8-google-api-python-client/version.json
+      - .github/workflows/ubi8-google-api-python-client-publish.yaml
 jobs:
   build:
     env:

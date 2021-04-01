@@ -6,6 +6,7 @@ on:
       - master
     paths:
       - build-s2i-python-kopf/version.json
+      - .github/workflows/build-s2i-python-kopf-publish.yaml
 jobs:
   publish:
     env:

@@ -3,6 +3,7 @@ on:
   pull_request:
     paths:
       - utilities/ubi8-bats/**
+      - .github/workflows/ubi8-bats-pr.yaml
 jobs:
   build:
     env:

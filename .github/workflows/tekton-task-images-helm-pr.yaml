@@ -2,7 +2,8 @@ name: tekton-task-images-helm-pr
 on:
   pull_request:
     paths:
-      - tekton-task-images/helm/VERSION
+      - tekton-task-images/helm/**
+      - .github/workflows/tekton-task-images-helm-pr.yaml
 jobs:
   build:
     env:

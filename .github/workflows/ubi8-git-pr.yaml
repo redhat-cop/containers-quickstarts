@@ -3,6 +3,7 @@ on:
   pull_request:
     paths:
       - utilities/ubi8-git/**
+      - .github/workflows/ubi8-git-pr.yaml
 jobs:
   build:
     env:

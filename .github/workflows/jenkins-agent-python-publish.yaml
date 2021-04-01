@@ -7,6 +7,7 @@ on:
       - '*'
     paths:
       - jenkins-agents/jenkins-agent-python/version.json
+      - .github/workflows/jenkins-agent-python-publish.yaml
 jobs:
   build:
     env:

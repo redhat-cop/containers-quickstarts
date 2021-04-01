@@ -7,6 +7,7 @@ on:
       - '*'
     paths:
       - tekton-task-images/conftest/VERSION
+      - .github/workflows/tekton-task-images-conftest-publish.yaml
 jobs:
   build:
     env:

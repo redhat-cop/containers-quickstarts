@@ -2,7 +2,8 @@ name: tekton-task-images-conftest-pr
 on:
   pull_request:
     paths:
-      - tekton-task-images/conftest/VERSION
+      - tekton-task-images/conftest/**
+      - .github/workflows/tekton-task-images-conftest-pr.yaml
 jobs:
   build:
     env:
@@ -27,6 +28,7 @@ jobs:
           image: ${{ env.image_name }}
           oci: true
           tags: ${{ steps.check_version.outputs.IMAGE_TAGS }}
+      - name: Test image
         run: |
           echo "Running: podman run ${image_name}:${{ steps.check_version.outputs.IMAGE_TAGS }} conftest version"
           podman run ${image_name}:${{ steps.check_version.outputs.IMAGE_TAGS }} conftest --version | grep ${{ steps.check_version.outputs.IMAGE_TAGS }}

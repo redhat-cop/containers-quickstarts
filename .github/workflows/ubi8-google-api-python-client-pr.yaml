@@ -3,6 +3,7 @@ on:
   pull_request:
     paths:
       - utilities/ubi8-google-api-python-client/**
+      - .github/workflows/ubi8-google-api-python-client-pr.yaml
 jobs:
   build:
     env:

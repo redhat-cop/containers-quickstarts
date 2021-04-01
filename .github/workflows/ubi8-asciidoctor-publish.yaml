@@ -7,6 +7,7 @@ on:
       - '*'
     paths:
       - utilities/ubi8-asciidoctor/version.json
+      - .github/workflows/ubi8-asciidoctor-publish.yaml
 jobs:
   build:
     env:
