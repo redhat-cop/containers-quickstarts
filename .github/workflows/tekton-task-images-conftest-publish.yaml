@@ -22,11 +22,10 @@ jobs:
           echo -n ::set-output name=IMAGE_TAGS::
            # exposes variable CONFTEST_VERSION
           source ${context}/VERSION
-          TAGS=('latest')
-          if [ "${CONFTEST_VERSION}" ] && [ "${CONFTEST_VERSION}" != "latest" ]; then
+          TAGS=('latest') if [ "${CONFTEST_VERSION}" ] && [ "${CONFTEST_VERSION}" != "latest" ]; then
               TAGS+=("${CONFTEST_VERSION}")
           fi
-          ( IFS=$','; echo "${TAGS[*]}" )
+          echo "${TAGS[*]}"
       - name: Build image
         id: build_image
         uses: redhat-actions/buildah-build@v2
