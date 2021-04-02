@@ -7,15 +7,16 @@ on:
       - '*'
     paths:
       - ubi7-gitlab-runner/version.json
+      - .github/workflows/ubi7-gitlab-runner-publish.yaml
 jobs:
   build:
     env:
       context: ubi7-gitlab-runner
       image_name: ubi7-gitlab-runner
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-18.04
     steps:
+      - uses: actions/checkout@master
       - name: Get image tags
-        uses: actions/checkout@master
         id: image_tags
         run: |
           echo -n ::set-output name=IMAGE_TAGS::

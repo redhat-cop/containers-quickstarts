@@ -7,15 +7,16 @@ on:
       - '*'
     paths:
       - utilities/ubi8-asciidoctor/version.json
+      - .github/workflows/ubi8-asciidoctor-publish.yaml
 jobs:
   build:
     env:
       context: utilities/ubi8-asciidoctor
       image_name: ubi8-asciidoctor
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-18.04
     steps:
+      - uses: actions/checkout@master
       - name: Get image tags
-        uses: actions/checkout@master
         id: image_tags
         run: |
           echo -n ::set-output name=IMAGE_TAGS::

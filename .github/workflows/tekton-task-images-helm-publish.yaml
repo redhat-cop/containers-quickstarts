@@ -7,15 +7,16 @@ on:
       - '*'
     paths:
       - tekton-task-images/helm/VERSION
+      - .github/workflows/tekton-task-images-helm-publish.yaml
 jobs:
   build:
     env:
       context: tekton-task-images/helm
       image_name: helm
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-18.04
     steps:
+      - uses: actions/checkout@master
       - name: Get image tags
-        uses: actions/checkout@master
         id: image_tags
         run: |
           echo -n ::set-output name=IMAGE_TAGS::

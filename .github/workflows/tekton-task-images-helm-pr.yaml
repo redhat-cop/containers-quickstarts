@@ -2,16 +2,17 @@ name: tekton-task-images-helm-pr
 on:
   pull_request:
     paths:
-      - tekton-task-images/helm/VERSION
+      - tekton-task-images/helm/**
+      - .github/workflows/tekton-task-images-helm-pr.yaml
 jobs:
   build:
     env:
       context: tekton-task-images/helm
       image_name: helm
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-18.04
     steps:
       - uses: actions/checkout@v1
-        name: Get image tags
+      - name: Get image tags
         id: check_version
         run: |
           echo -n ::set-output name=IMAGE_TAGS::

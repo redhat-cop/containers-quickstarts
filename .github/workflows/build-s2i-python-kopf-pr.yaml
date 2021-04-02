@@ -4,15 +4,16 @@ on:
   pull_request:
     paths:
       - build-s2i-python-kopf/**
+      - .github/workflows/build-s2i-python-kopf-pr.yaml
 jobs:
   test:
     env:
       CONTEXT_DIR: build-s2i-python-kopf
       IMAGE_NAME: python-kopf-s2i
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-18.04
     steps:
+      - uses: actions/checkout@master
       - name: Check and verify version.json
-        uses: actions/checkout@master
         id: check_version
         run: |
           # version.json must have semantic version: vMAJOR.MINOR.PATCH
@@ -34,7 +35,7 @@ jobs:
           oci: true
           tags: ${{ steps.check_version.outputs.VERSION }}
       - name: Build kopf-simple example from s2i image
-        uses: docker/buildah-build@v2
+        uses: redhat-actions/buildah-build@v2
         with:
           context: ${{ env.CONTEXT_DIR }}/examples/kopf-simple
           dockerfiles: |
@@ -47,7 +48,7 @@ jobs:
           EXAMPLE_IMAGE="${IMAGE_NAME}-example:${{ steps.check_version.outputs.VERSION }}"
 
           echo "Checking kopf version..."
-          KOPF_VERSION="$(docker run --entrypoint '/bin/sh' $EXAMPLE_IMAGE -c 'kopf --version')"
+          KOPF_VERSION="$(podman run --entrypoint '/bin/sh' $EXAMPLE_IMAGE -c 'kopf --version')"
           if [[ "$KOPF_VERSION" != 'kopf, version ${{ steps.check_version.outputs.MINOR_VERSION }}' ]]; then
             echo "$KOPF_VERSION not expected ${{ steps.check_version.outputs.MINOR_VERSION }}"
           fi
