@@ -26,7 +26,7 @@ jobs:
           if [ "${HELM_VERSION}" ] && [ "${HELM_VERSION}" != "latest" ]; then
               TAGS+=("${HELM_VERSION}")
           fi
-          ( IFS=$','; echo "${TAGS[*]}" )
+          echo "${TAGS[*]}"
       - name: Build image
         id: build_image
         uses: redhat-actions/buildah-build@v2

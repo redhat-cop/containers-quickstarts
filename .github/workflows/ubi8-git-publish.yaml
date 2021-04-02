@@ -28,7 +28,7 @@ jobs:
           if [[ "${GITHUB_REF}" =~ refs/tags/(.*) ]]; then
               TAGS+=("git-${BASH_REMATCH[1]}")
           fi
-          ( IFS=$','; echo "${TAGS[*]}" )
+          echo "${TAGS[*]}"
       - name: Build image
         id: build_image
         uses: redhat-actions/buildah-build@v2

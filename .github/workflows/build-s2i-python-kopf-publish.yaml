@@ -23,7 +23,7 @@ jobs:
           # Publish to latest, minor, and patch tags
           TAGS=('latest' "${VERSION}" "${VERSION%.*}")
           # Set IMAGE_TAGS output for use in next step
-          ( IFS=$','; echo "::set-output name=IMAGE_TAGS::${TAGS[*]}" )
+          echo "::set-output name=IMAGE_TAGS::${TAGS[*]}"
       - name: Build image
         id: build_image
         uses: redhat-actions/buildah-build@v2
