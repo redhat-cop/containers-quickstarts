@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - master
+      - playing-with-ci
   pull_request:
     paths:
       - build-s2i-python-kopf/version.json
@@ -17,13 +18,10 @@ jobs:
     steps:
       - uses: actions/checkout@master
 
-      - uses: jwalton/gh-find-current-pr@v1
-        id: pr_number
-
       - name: Get image tags
         id: image_tags
         env:
-          PR_ID: ${{ steps.pr_number.outputs.pr }}
+          PR_ID: ${{ github.event.number }}
         run: |
           if [[ -z "${PR_ID}" ]]; then
             # version.json should have semantic version: vMAJOR.MINOR.PATCH
@@ -34,7 +32,7 @@ jobs:
             echo "::set-output name=IMAGE_TAGS::${TAGS[*]}"
           else
             # Set IMAGE_TAGS output for use in next step
-            echo "::set-output name=IMAGE_TAGS::${PR_ID}"
+            echo "::set-output name=IMAGE_TAGS::PR${PR_ID}"
           fi
 
       - name: Echo image tags
