@@ -2,7 +2,8 @@ FROM registry.access.redhat.com/ubi8/ubi-minimal:8.3
 
 USER root
 
-RUN microdnf install --assumeyes --nodocs openssl tar gzip && \
+RUN microdnf install --assumeyes --nodocs tar gzip && \
+    microdnf update && \
     microdnf clean all
 
 ADD VERSION /tmp/version
