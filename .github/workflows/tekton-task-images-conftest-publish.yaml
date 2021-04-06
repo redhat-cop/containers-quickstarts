@@ -12,7 +12,7 @@ jobs:
   build:
     env:
       context: tekton-task-images/conftest
-      image_name: conftest
+      image_name: tekton-task-conftest
     runs-on: ubuntu-18.04
     steps:
       - uses: actions/checkout@master
@@ -22,7 +22,8 @@ jobs:
           echo -n ::set-output name=IMAGE_TAGS::
            # exposes variable CONFTEST_VERSION
           source ${context}/VERSION
-          TAGS=('latest') if [ "${CONFTEST_VERSION}" ] && [ "${CONFTEST_VERSION}" != "latest" ]; then
+          TAGS=('latest')
+          if [ "${CONFTEST_VERSION}" ] && [ "${CONFTEST_VERSION}" != "latest" ]; then
               TAGS+=("${CONFTEST_VERSION}")
           fi
           echo "${TAGS[*]}"
