@@ -12,7 +12,7 @@ jobs:
   build:
     env:
       context: tekton-task-images/helm
-      image_name: helm
+      image_name: tekton-task-helm
     runs-on: ubuntu-18.04
     steps:
       - uses: actions/checkout@master
