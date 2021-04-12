@@ -45,7 +45,7 @@ objects:
           value: -pl collectors/build/jenkins -am
         from:
           kind: ImageStreamTag
-          name: java:latest
+          name: java:8
           namespace: openshift
       type: Source
     output: 

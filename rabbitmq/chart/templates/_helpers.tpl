@@ -61,3 +61,20 @@ Create the name of the service account to use
     {{ default "default" .Values.serviceAccount.name }}
 {{- end -}}
 {{- end -}}
+
+{{/*
+Create HA affinity rules
+*/}}
+{{- define "chart.enableHA" -}}
+{{- if .Values.ha.enabled -}}
+podAntiAffinity:
+  requiredDuringSchedulingIgnoredDuringExecution:
+    - labelSelector:
+        matchExpressions:
+          - key: {{ .Values.ha.label.key }}
+            operator: In
+            values:
+              - {{ .Values.ha.label.value }}
+      topologyKey: {{ .Values.ha.topologyKey }}
+{{- end -}}
+{{- end -}}

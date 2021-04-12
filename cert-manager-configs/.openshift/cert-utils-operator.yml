@@ -1,6 +1,6 @@
 ---
 kind: Template
-apiVersion: v1
+apiVersion: template.openshift.io/v1
 metadata:
   annotations:
     description: Cert Manager Deployment to support Acme Certificates
@@ -13,8 +13,7 @@ objects:
     metadata:
       name: cert-utils
     spec:
-      targetNamespaces:
-        - ${NAMESPACE}
+      targetNamespaces: []
   - kind: Subscription
     apiVersion: operators.coreos.com/v1alpha1
     metadata:
@@ -25,6 +24,3 @@ objects:
       name: cert-utils-operator
       source: community-operators
       sourceNamespace: openshift-marketplace
-parameters:
-  - name: NAMESPACE
-    value: cert-mgmt

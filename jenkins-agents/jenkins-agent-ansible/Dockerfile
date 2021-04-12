@@ -1,32 +1,42 @@
-FROM quay.io/openshift/origin-jenkins-agent-base:4.4
+FROM quay.io/openshift/origin-jenkins-agent-base:4.6
+ARG ANSIBLE_VERSION=2.9.13
 
-LABEL com.redhat.component="jenkins-agent-ansible-ubi7-docker" \
-      name="openshift/origin-jenkins-agent-ansible-ubi7" \
-      version="4.4" \
-      architecture="x86_64" \
+LABEL \
       release="1" \
+      version="4.6" \
+      architecture="x86_64" \
       io.k8s.display-name="Jenkins Agent Ansible" \
-      io.k8s.description="The jenkins agent ansible image has ansible on top of the jenkins agent base image." \
-      io.openshift.tags="openshift,jenkins,agent,ansible"
+      name="openshift/origin-jenkins-agent-ansible-ubi8" \
+      io.openshift.tags="openshift,jenkins,agent,ansible" \
+      com.redhat.component="jenkins-agent-ansible-ubi8-docker" \
+      io.k8s.description="The jenkins agent ansible image has ansible on top of the jenkins agent base image."
 
-ENV ANSIBLE_VERSION=2.8.2
+ARG DNF_FLAGS="-y"
 
-ADD ubi.repo /etc/yum.repos.d/ubi.repo
+ARG PIP_PKGS="\
+        molecule \
+        paramiko \
+        openshift \
+        kubernetes \
+        ansible==${ANSIBLE_VERSION} \
+"
+ARG DNF_PKGS="\
+        python38-pip \
+"
 
-RUN INSTALL_PKGS="rh-python36-python-pip" && \
-    DISABLE_REPOS=--disablerepo='rhel-*' && \
-    yum $DISABLE_REPOS install -y $INSTALL_PKGS && \
-    source scl_source enable rh-python36 && \
-    scl enable rh-python36 bash && \
-    python3 -m pip install ansible==$ANSIBLE_VERSION paramiko molecule && \
-    yum $DISABLE_REPOS clean all -y && \
-    rm -rf /var/cache/yum
+ADD ubi8.repo /tmp/ubi8.repo
 
-ADD scl_enable /usr/share/container-scripts/
-ENV BASH_ENV=/usr/share/container-scripts/scl_enable \
-    ENV=/usr/share/container-scripts/scl_enable \
-    PROMPT_COMMAND="./usr/share/container-scripts/scl_enable" \
-    LC_ALL=en_US.UTF-8 \
-    LANG=en_US.UTF-8
+RUN set -x \
+     && rm -f /etc/yum.repos.d/*.repo \
+     && mv /tmp/ubi8.repo /etc/yum.repos.d/ \
+     && dnf install ${DNF_FLAGS} ${DNF_PKGS} \
+     && dnf ${DNF_FLAGS} clean all \
+     && rm -rf /var/cache/dnf \
+     && alternatives --set python3 /usr/bin/python3.8 \
+     && python3 -m pip install ${PIP_PKGS} \
+    && echo
 
 USER 1001
+ENV \
+    LANG=en_US.UTF-8 \
+    LC_ALL=en_US.UTF-8 \

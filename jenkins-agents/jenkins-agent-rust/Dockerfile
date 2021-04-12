@@ -1,4 +1,4 @@
-FROM quay.io/openshift/origin-jenkins-agent-base:4.4
+FROM quay.io/openshift/origin-jenkins-agent-base:4.6
 
 LABEL com.redhat.component="jenkins-agent-rust-ubi7-docker" \
       name="openshift/origin-jenkins-agent-rust-ubi7" \
@@ -11,12 +11,13 @@ LABEL com.redhat.component="jenkins-agent-rust-ubi7-docker" \
 
 ENV PATH=$PATH:$HOME/.cargo/bin
 
-ADD ubi.repo /etc/yum.repos.d/ubi.repo
+ADD ubi8.repo /tmp/ubi8.repo
 
 RUN INSTALL_PKGS="gcc" && \
-    DISABLE_REPOS=--disablerepo='rhel-*' && \
-    yum $DISABLE_REPOS install -y $INSTALL_PKGS && \
-    rm -rf /var/cache/yum && \
+    rm -f /etc/yum.repos.d/*.repo && \
+    mv /tmp/ubi8.repo /etc/yum.repos.d && \
+    dnf install -y $INSTALL_PKGS && \
+    rm -rf /var/cache/dnf && \
     curl https://sh.rustup.rs -sSf | sh -s -- -y
 
 USER 1001

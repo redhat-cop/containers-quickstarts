@@ -45,36 +45,23 @@ route.route.openshift.io/httpd-example   httpd-example-python-kopf-s2i.apps.clus
 
 == Using this Example with `odo`
 
-Ensure that the `python-kopf` image stream is available in the `openshift` namespace.
-
-----------------------------------
-oc apply -f ../../imagestream.yaml
-----------------------------------
-
-Create service and role binding for `openshift-template-deployer`:
-
----------------------------------------------------------------
-oc apply -f rbac/role_binding.yaml -f rbac/service_account.yaml
----------------------------------------------------------------
-
 Setup `odo`:
 
---------------------------------------------------
-odo create python-kopf openshift-template-deployer
---------------------------------------------------
+---------------------------------
+odo create --devfile devfile.yaml
+---------------------------------
+
+Grant `admin` role to default service account:
+
+----
+oc policy add-role-to-user admin -z default --rolebinding-name=admin:serviceaccount:default
+----
 
 Push code with `odo`:
 
 --------
 odo push
 --------
-
-Patch the DeploymentConfig created by `odo` to use the `o` service account:
-
------------------------------------------------------------------------------
-oc patch dc/openshift-template-deployer-app \
---patch '{"spec":{"template":{"spec":{"serviceAccountName":"openshift-template-deployer"}}}}'
------------------------------------------------------------------------------
 
 Create a test config map:
 

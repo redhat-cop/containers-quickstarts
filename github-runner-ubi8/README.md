@@ -6,13 +6,14 @@ Self hosted [GitHub Actions](https://docs.github.com/en/actions) runner based on
 
 By default, GitHub Actions makes use of [runners](https://docs.github.com/en/actions/getting-started-with-github-actions/core-concepts-for-github-actions#runner) to execute jobs. Runners can either by managed by the GitHub hosting service of self hosted. The contents of this repository contains a [Self Hosted GitHub Actions Runner](https://docs.github.com/en/actions/hosting-your-own-runners/about-self-hosted-runners) packaged as a container instance.
 
-Self hosted runners can be scoped at a repository or account/organization level and is configured automatically based on the set of values provied to the container.
+Self hosted runners can be scoped at a repository or account/organization level and is configured automatically based on the set of values provided to the container.
 
 ## Prerequisites
 
 The following prerequisites must be met prior to using the content contained within this repository
 
-1. Personal Account Token - A GitHub [Personal Account Token (PAT)](https://docs.github.com/en/github/authenticating-to-github/creating-a-personal-access-token) must be available for the runner to connect to GitHub.
+1. Personal Account Token - A GitHub [Personal Account Token (PAT)](https://docs.github.com/en/github/authenticating-to-github/creating-a-personal-access-token) must be available for the runner to connect to GitHub. A runner token will be retrieved as the runner is started
+2. GitHub Runner Token - Token retrieved either from a GitHub [Personal Account Token (PAT)](https://docs.github.com/en/github/authenticating-to-github/creating-a-personal-access-token) or a [GitHub App](https://docs.github.com/en/developers/apps/creating-a-github-app).
 
 ## Building and Deploying on OpenShift
 
@@ -31,9 +32,11 @@ The provided templates which builds and deploys the self hosted running contains
 
 | Name | Description | Required |
 | ----- | -----------| -------- |
-| `GITHUB_PAT` | GitHub Personal Access Token | Yes |
+| `GITHUB_RUNNER_AUTH_TYPE` | Authentication method (Either `GITHUB_PAT` or `RUNNER_TOKEN`) | Yes |
+| `GITHUB_RUNNER_AUTH_VALUE` | Authentication credential | Yes |
 | `GITHUB_OWNER` | GitHub account or organization | Yes |
 | `GITHUB_REPOSITORY` | GitHub repository | No |
+| `RUNNER_LABELS` | Comma separated labels to apply to the runner | No |
 
 
 #### Using the CLI
@@ -61,7 +64,7 @@ $ oc process -f .openshift/templates/github-runner-ubi8-build.yaml -p | oc apply
 Instantiate the deployment template:
 
 ```
-$ oc process -f .openshift/templates/github-runner-ubi8-deployment.yaml -p GITHUB_OWNER=<github_owner> -p GITHUB_REPOSITORY=<github_repository> -p GITHUB_PAT=<github_pat> -p | oc apply -f-
+$ oc process -f .openshift/templates/github-runner-ubi8-deployment.yaml -p GITHUB_OWNER=<github_owner> -p GITHUB_REPOSITORY=<github_repository> -p GITHUB_RUNNER_AUTH_TYPE=<github_runner_auth_type> -p GITHUB_RUNNER_AUTH_VALUE=<github_runner_auth_value> | oc apply -f-
 ```
 
 #### Using the Web Console

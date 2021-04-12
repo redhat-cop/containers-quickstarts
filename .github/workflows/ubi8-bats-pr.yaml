@@ -3,12 +3,13 @@ on:
   pull_request:
     paths:
       - utilities/ubi8-bats/**
+      - .github/workflows/ubi8-bats-pr.yaml
 jobs:
   build:
     env:
       context: utilities/ubi8-bats
       image_name: ubi8-bats
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-18.04
     steps:
       - uses: actions/checkout@v1
       - name: Check and verify version.json
@@ -17,13 +18,15 @@ jobs:
           echo -n ::set-output name=IMAGE_TAGS::
           echo $(jq -r '.version' ${context}/version.json)
       - name: Build image
-        uses: docker/build-push-action@v1
+        uses: redhat-actions/buildah-build@v2
         with:
-          path: ${{ env.context }}
-          push: false
-          repository: ${{ env.image_name }}
+          context: ${{ env.context }}
+          dockerfiles: |
+            ./${{ env.context }}/Dockerfile
+          image: ${{ env.image_name }}
+          oci: true
           tags: ${{ steps.check_version.outputs.IMAGE_TAGS }}
       - name: Test image
         run: |
-          echo "Running: docker run -t -v $PWD:/code:z ${image_name}:${{ steps.check_version.outputs.IMAGE_TAGS }} /code/utilities/ubi8-bats/test"
-          docker run -t -v $PWD:/code:z ${image_name}:${{ steps.check_version.outputs.IMAGE_TAGS }} /code/utilities/ubi8-bats/test
+          echo "Running: podman run -t -v $PWD:/code:z ${image_name}:${{ steps.check_version.outputs.IMAGE_TAGS }} /code/utilities/ubi8-bats/test"
+          podman run -t -v $PWD:/code:z ${image_name}:${{ steps.check_version.outputs.IMAGE_TAGS }} /code/utilities/ubi8-bats/test

@@ -81,6 +81,11 @@ RUN pip3 install --no-cache-dir \
 WORKDIR /documents
 VOLUME /documents
 
+RUN mkdir /home/work \
+    && chgrp -R 0 /home/work \
+    && chmod -R g=u /home/work
+ENV HOME=/home/work
+
 USER 1001
 
 CMD ["/bin/bash"]

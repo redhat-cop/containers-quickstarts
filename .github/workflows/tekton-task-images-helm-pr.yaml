@@ -1,0 +1,34 @@
+name: tekton-task-images-helm-pr
+on:
+  pull_request:
+    paths:
+      - tekton-task-images/helm/**
+      - .github/workflows/tekton-task-images-helm-pr.yaml
+jobs:
+  build:
+    env:
+      context: tekton-task-images/helm
+      image_name: helm
+    runs-on: ubuntu-18.04
+    steps:
+      - uses: actions/checkout@v1
+      - name: Get image tags
+        id: check_version
+        run: |
+          echo -n ::set-output name=IMAGE_TAGS::
+           # exposes variable HELM_VERSION
+          source ${context}/VERSION
+          echo ${HELM_VERSION}
+      - name: Build image
+        uses: redhat-actions/buildah-build@v2
+        with:
+          context: ${{ env.context }}
+          dockerfiles: |
+            ./${{ env.context }}/Dockerfile
+          image: ${{ env.image_name }}
+          oci: true
+          tags: ${{ steps.check_version.outputs.IMAGE_TAGS }}
+      - name: Test image contains the version of the binary
+        run: |
+          echo "Running: podman run ${image_name}:${{ steps.check_version.outputs.IMAGE_TAGS }} helm version"
+          podman run ${image_name}:${{ steps.check_version.outputs.IMAGE_TAGS }} helm version | grep ${{ steps.check_version.outputs.IMAGE_TAGS }}

@@ -9,7 +9,7 @@ RUN curl -L https://github.com/containers/skopeo/archive/v${SKOPEO_VERSION}.tar.
     cd /tmp/skopeo && \
     make binary-local DISABLE_CGO=1
 
-FROM quay.io/openshift/origin-jenkins-agent-base:4.4
+FROM quay.io/openshift/origin-jenkins-agent-base:4.5
 
 MAINTAINER Andrew Block <ablock@redhat.com>
 

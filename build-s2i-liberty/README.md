@@ -67,7 +67,7 @@ The following steps are to be used to demonstrate two methods for producing the 
 2. `cd containers-quickstarts/build-s2i-liberty`
 3. Run `ansible-galaxy install -r requirements.yml --roles-path=roles`
 4. Login to OpenShift: `oc login -u <username> https://master.example.com:8443`
-5. Run openshift-applier: `ansible-playbook -i applier/inventory/ roles/openshift-applier/playbooks/openshift-cluster-seed.yml`
+5. Run openshift-applier: `ansible-playbook -i .applier/hosts roles/openshift-applier/playbooks/openshift-cluster-seed.yml`
 
 Three new image builds will be kicked off automatically. They can be tracked by running `oc logs -f bc/websphere-liberty`, `oc logs -f bc/hello-world-artifacts` and `oc logs -f bc/hello-world` respectively.
 Last the deployment will kick of which can be tracked by running `oc logs -f dc/hello-world`.

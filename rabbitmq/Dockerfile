@@ -1,8 +1,20 @@
-FROM registry.access.redhat.com/ubi7/ubi:7.8
+FROM registry.access.redhat.com/ubi8/ubi-minimal:8.3
 
-ARG ERLANG_VERSION=22.1.4
+ARG ERLANG_VERSION=23.2.5
 ARG RABBITMQ_AUTOCLUSTER_VERSION=0.10.0
-ARG RABBITMQ_VERSION=3.8.3
+ARG RABBITMQ_VERSION=3.8.13
+
+ARG INSTALL_PKGS="\
+    hostname \
+    systemd \
+    tar \
+    xz"
+
+ARG INSTALL_PKGS="\
+    hostname \
+    systemd \
+    tar \
+    xz"
 
 LABEL io.k8s.description="Lightweight open source message broker" \
     io.k8s.display-name="RabbitMQ" \
@@ -19,8 +31,9 @@ ENV GPG_KEY="0A9AF2115F4687BD29803A206B73A36E6026DFCA" \
     LC_ALL=en_US.UTF-8
 
 RUN set -xe && \
-    curl -LO https://github.com/rabbitmq/erlang-rpm/releases/download/v${ERLANG_VERSION}/erlang-${ERLANG_VERSION}-1.el7.x86_64.rpm && \
-    rpm -Uvh ./erlang-${ERLANG_VERSION}-1.el7.x86_64.rpm && \
+    microdnf install ${INSTALL_PKGS} && \
+    curl -LO https://github.com/rabbitmq/erlang-rpm/releases/download/v${ERLANG_VERSION}/erlang-${ERLANG_VERSION}-1.el8.x86_64.rpm && \
+    rpm -Uvh ./erlang-${ERLANG_VERSION}-1.el8.x86_64.rpm && \
     rm *.rpm && \
     curl -Lo rabbitmq-server.tar.xz https://github.com/rabbitmq/rabbitmq-server/releases/download/v${RABBITMQ_VERSION}/rabbitmq-server-generic-unix-${RABBITMQ_VERSION}.tar.xz && \
     curl -Lo rabbitmq-server.tar.xz.asc https://github.com/rabbitmq/rabbitmq-server/releases/download/v${RABBITMQ_VERSION}/rabbitmq-server-generic-unix-${RABBITMQ_VERSION}.tar.xz.asc && \
@@ -47,8 +60,6 @@ RUN set -xe && \
     chmod -R g=u /var/lib/rabbitmq /etc/rabbitmq && \
     rm -rf /var/lib/rabbitmq/.erlang.cookie && \
     ln -sf "$RABBITMQ_HOME/plugins" /plugins && \
-    INSTALL_PKGS="hostname" && \
-    yum install -y $INSTALL_PKGS && \
     rm -rf /var/cache/yum
 
 COPY docker-entrypoint.sh /usr/local/bin/

@@ -6,6 +6,7 @@ roles
 *.swp
 __pycache__
 .odo
+.vscode
 
 # Rego
 policy/

@@ -3,15 +3,15 @@ app_name: dockerbuild
 
 build:
   NAME: "{{ app_name }}"
-  SOURCE_REPOSITORY_URL: https://github.com/pcarney8/containers-quickstarts.git
-  SOURCE_REPOSITORY_REF: add-generic-dockerbuild
+  SOURCE_REPOSITORY_URL: https://github.com/redhat-cop/containers-quickstarts.git
+  SOURCE_REPOSITORY_REF: master
   SOURCE_CONTEXT_DIR: build-docker-generic
 
 openshift_cluster_content:
 - object: Environment Setup
   content:
   - name: Create Projects
-    template: "https://raw.githubusercontent.com/redhat-cop/openshift-templates/v1.4.12/project-requests/create-project.yml"
+    template: "https://raw.githubusercontent.com/redhat-cop/openshift-templates/v1.4.17/project-requests/create-project.yml"
     action: create
     params_from_vars:
       NAMESPACE: "{{ namespace }}"

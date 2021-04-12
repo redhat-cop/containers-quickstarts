@@ -10,7 +10,7 @@ objects:
     labels:
       app: ${APPLICATION_NAME}
   stringData:
-    token: "${GITHUB_PAT}"
+    credential: "${GITHUB_RUNNER_AUTH_VALUE}"
 - apiVersion: v1
   kind: ServiceAccount
   metadata:
@@ -46,10 +46,10 @@ objects:
       spec:
         containers:
         - env:
-          - name: GITHUB_PAT
+          - name: GITHUB_RUNNER_AUTH_TYPE
             valueFrom:
               secretKeyRef:
-                key: token
+                key: credential
                 name: "${APPLICATION_NAME}"
           - name: RUNNER_NAME
             valueFrom:
@@ -82,9 +82,13 @@ parameters:
   name: APPLICATION_NAME
   required: true
   value: github-runner-ubi8
-- description: GitHub Personal Access Token
-  displayName: GitHub Personal Access Token
-  name: GITHUB_PAT
+- description: GitHub Runner Authentication Method
+  displayName: GitHub Runner Authentication Method
+  name: GITHUB_RUNNER_AUTH_TYPE
+  required: true
+- description: GitHub Runner Authentication Credential
+  displayName: GitHub Runner Authentication Credential
+  name: GITHUB_RUNNER_AUTH_VALUE
   required: true
 - description: Comma separated list of labels to apply to the builder.
   displayName: GitHub runner labels
