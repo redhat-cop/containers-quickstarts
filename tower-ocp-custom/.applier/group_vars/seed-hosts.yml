@@ -1,5 +1,9 @@
 ---
+
 tower_ocp_namespace: 'tower-ocp'
+
+openshift_templates_raw: "https://raw.githubusercontent.com/redhat-cop/openshift-templates"
+openshift_templates_raw_version_tag: "v1.4.15"
 
 tower_ocp_namespace_params:
   NAMESPACE: '{{ tower_ocp_namespace }}'
@@ -20,6 +24,6 @@ openshift_cluster_content:
     content:
       - name: 'tower-ocp'
         namespace: '{{ tower_ocp_namespace }}'
-        template: '{{ inventory_dir }}/../files/tower-ocp/tower-ocp-custom-image.yml'
+        template: '{{ inventory_dir }}/../.openshift/templates/tower-ocp-custom-image.yml'
         tags:
           - tower-ocp

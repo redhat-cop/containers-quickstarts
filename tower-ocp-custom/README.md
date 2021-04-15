@@ -41,7 +41,7 @@ The following prerequisites must be met prior to beginning to deploy the Ansible
 Run the openshift-applier to create the `tower-ocp` project and deploy required objects
 
 ```bash
-ansible-playbook -i ./inventory galaxy/openshift-applier/playbooks/openshift-cluster-seed.yml
+ansible-playbook -i ./applier galaxy/openshift-applier/playbooks/openshift-cluster-seed.yml
 ```
 
 ### Cleaning up
