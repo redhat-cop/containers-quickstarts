@@ -1,0 +1,38 @@
+{{- if .Values.build.enabled }}
+---
+apiVersion: image.openshift.io/v1
+kind: ImageStream
+metadata:
+  labels:
+    {{- include "chart.labels" . | nindent 4 }}
+  name: {{ include "chart.fullname" . }}
+spec:
+  lookupPolicy:
+    local: true
+---
+apiVersion: build.openshift.io/v1
+kind: BuildConfig
+metadata:
+  labels:
+    {{- include "chart.labels" . | nindent 4 }}
+  name: {{ include "chart.fullname" . }}
+spec:
+  output:
+    to:
+      kind: ImageStreamTag
+      name: rabbitmq:{{ .Chart.AppVersion }}
+  source:
+    contextDir: {{ .Values.build.contextDir }}
+    git:
+      ref: {{ .Values.build.repositoryRef }}
+      uri: {{ .Values.build.repositoryUrl }}
+    type: Git
+  strategy:
+    dockerStrategy:
+      forcePull: true
+    type: Docker
+  triggers:
+  - imageChange: {}
+    type: ImageChange
+  - type: ConfigChange
+{{- end }}
