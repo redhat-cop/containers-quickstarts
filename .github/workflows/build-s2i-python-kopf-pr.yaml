@@ -26,7 +26,7 @@ jobs:
           echo ::set-output name=MINOR_VERSION::${VERSION%.*}
           sed -i -e "s/^FROM .*/FROM ${IMAGE_NAME}:${VERSION}/" ${CONTEXT_DIR}/examples/kopf-simple/Dockerfile
       - name: Build s2i image
-        uses: redhat-actions/buildah-build@v2
+        uses: redhat-actions/buildah-build@v2.5.1
         with:
           context: ${{ env.CONTEXT_DIR }}
           dockerfiles: |
@@ -35,7 +35,7 @@ jobs:
           oci: true
           tags: ${{ steps.check_version.outputs.VERSION }}
       - name: Build kopf-simple example from s2i image
-        uses: redhat-actions/buildah-build@v2
+        uses: redhat-actions/buildah-build@v2.5.1
         with:
           context: ${{ env.CONTEXT_DIR }}/examples/kopf-simple
           dockerfiles: |

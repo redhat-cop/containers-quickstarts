@@ -31,7 +31,7 @@ jobs:
           echo "${TAGS[*]}"
       - name: Build image
         id: build_image
-        uses: redhat-actions/buildah-build@v2
+        uses: redhat-actions/buildah-build@v2.5.1
         with:
           context: ${{ env.context }}
           dockerfiles: |
