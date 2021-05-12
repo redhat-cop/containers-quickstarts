@@ -1,8 +1,6 @@
-# Deploying a MongoDB Cluster Using StatefulSets
+# [Recommended] Deploying a MongoDB Cluster (replica set) using the MongoDB k8s Operator
 
- [MongoDB replication](https://docs.mongodb.com/manual/replication/) example
-that demonstrates the use of a [StatefulSet](https://kubernetes.io/docs/concepts/abstractions/controllers/statefulsets/) to deploy a sharded MongoDB cluster.
-
+The standard recommended deployment architecture is to deploy a 3 node replica set of MongoDB.  There are 2 different flavors of the MongoDB k8s Operator.  There is a MongoDB community k8s Operator will will deploy replica sets and can be found at [https://github.com/mongodb/mongodb-kubernetes-operator](https://github.com/mongodb/mongodb-kubernetes-operator).  There is also the MongoDB enterprise k8s Operator for customers who have an enterprise subscription with MongoDB.   The enterprise k8s operator can deploy MongoDB (single or multi sharded deployment), MongoDB Ops Manager and has more features and options.  It can be found at [https://github.com/mongodb/mongodb-enterprise-kubernetes](https://github.com/mongodb/mongodb-enterprise-kubernetes).
 
 ## Table of Contents
 

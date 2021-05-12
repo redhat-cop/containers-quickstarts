@@ -95,7 +95,7 @@ def deploy_app(owner_reference, config, logger):
         for line in oc_apply_result.stdout.decode('utf-8').splitlines():
             logger.info(line)
 
-@kopf.on.create('', 'v1', 'configmaps', labels={config_map_label: None})
+@kopf.on.create('', 'v1', 'configmaps', labels={config_map_label: kopf.PRESENT})
 def on_create_config_map(body, logger, **_):
     logger.info("New app ConfigMap '%s'", body['metadata']['name'])
     deploy_app_from_config_map(body, logger)

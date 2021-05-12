@@ -1,0 +1,47 @@
+name: tekton-task-images-helm-publish
+on:
+  push:
+    branches:
+      - master
+    tags:
+      - '*'
+    paths:
+      - tekton-task-images/helm/VERSION
+      - .github/workflows/tekton-task-images-helm-publish.yaml
+jobs:
+  build:
+    env:
+      context: tekton-task-images/helm
+      image_name: tekton-task-helm
+    runs-on: ubuntu-18.04
+    steps:
+      - uses: actions/checkout@master
+      - name: Get image tags
+        id: image_tags
+        run: |
+          echo -n ::set-output name=IMAGE_TAGS::
+           # exposes variable HELM_VERSION
+          source ${context}/VERSION
+          TAGS=('latest')
+          if [ "${HELM_VERSION}" ] && [ "${HELM_VERSION}" != "latest" ]; then
+              TAGS+=("${HELM_VERSION}")
+          fi
+          echo "${TAGS[*]}"
+      - name: Build image
+        id: build_image
+        uses: redhat-actions/buildah-build@v2
+        with:
+          context: ${{ env.context }}
+          dockerfiles: |
+            ./${{ env.context }}/Dockerfile
+          image: ${{ env.image_name }}
+          tags: "${{ steps.image_tags.outputs.IMAGE_TAGS }}"
+      - name: Push to Quay
+        id: push_to_quay
+        uses: redhat-actions/push-to-registry@v2
+        with:
+          image: ${{ steps.build_image.outputs.image }}
+          registry: ${{ secrets.REGISTRY_URI }}/${{ secrets.REGISTRY_REPOSITORY }}
+          username: ${{ secrets.REGISTRY_USERNAME }}
+          password: ${{ secrets.REGISTRY_PASSWORD }}
+          tags: ${{ steps.build_image.outputs.tags }}

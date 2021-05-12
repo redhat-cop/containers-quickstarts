@@ -1,0 +1,47 @@
+name: tekton-task-images-conftest-publish
+on:
+  push:
+    branches:
+      - master
+    tags:
+      - '*'
+    paths:
+      - tekton-task-images/conftest/VERSION
+      - .github/workflows/tekton-task-images-conftest-publish.yaml
+jobs:
+  build:
+    env:
+      context: tekton-task-images/conftest
+      image_name: tekton-task-conftest
+    runs-on: ubuntu-18.04
+    steps:
+      - uses: actions/checkout@master
+      - name: Get image tags
+        id: image_tags
+        run: |
+          echo -n ::set-output name=IMAGE_TAGS::
+           # exposes variable CONFTEST_VERSION
+          source ${context}/VERSION
+          TAGS=('latest')
+          if [ "${CONFTEST_VERSION}" ] && [ "${CONFTEST_VERSION}" != "latest" ]; then
+              TAGS+=("${CONFTEST_VERSION}")
+          fi
+          echo "${TAGS[*]}"
+      - name: Build image
+        id: build_image
+        uses: redhat-actions/buildah-build@v2
+        with:
+          context: ${{ env.context }}
+          dockerfiles: |
+            ./${{ env.context }}/Dockerfile
+          image: ${{ env.image_name }}
+          tags: "${{ steps.image_tags.outputs.IMAGE_TAGS }}"
+      - name: Push to Quay
+        id: push_to_quay
+        uses: redhat-actions/push-to-registry@v2
+        with:
+          image: ${{ steps.build_image.outputs.image }}
+          registry: ${{ secrets.REGISTRY_URI }}/${{ secrets.REGISTRY_REPOSITORY }}
+          username: ${{ secrets.REGISTRY_USERNAME }}
+          password: ${{ secrets.REGISTRY_PASSWORD }}
+          tags: ${{ steps.build_image.outputs.tags }}

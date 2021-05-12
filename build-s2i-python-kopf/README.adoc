@@ -77,7 +77,7 @@ oc create -f imagestream.yaml
 
 === Python Kopf Operator Examples
 
-xref:examples/simple/README.adoc[Simple Example]
+xref:examples/kopf-simple/README.adoc[Simple Example]
 
 xref:examples/openshift-template-deployer/README.adoc[OpenShift Template Deployer]
 
@@ -135,7 +135,7 @@ A simple operator example is provided in the `examples/` directory.
 If testing the source-to-image build in an OpenShift cluster then you may use the example build template provided.
 
 --------------------------------------------------
-oc process --local -f examples/simple/build-template.yaml \
+oc process --local -f examples/kopf-simple/build-template.yaml \
 -p FROM_IMAGE=$(oc get is python-kopf-s2i -o jsonpath="{.status.tags[?(@.tag=='latest')].items[0].dockerImageReference}") \
 | oc apply -f -
 --------------------------------------------------

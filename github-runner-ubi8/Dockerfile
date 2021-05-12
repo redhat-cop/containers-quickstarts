@@ -1,14 +1,6 @@
 FROM registry.access.redhat.com/ubi8/ubi:latest  
 
-ARG GITHUB_RUNNER_VERSION="2.267.1"
-
-ENV GITHUB_ENDPOINT="github.com" \
-    RUNNER_NAME="" \
-    GITHUB_PAT="" \
-    GITHUB_OWNER="" \
-    GITHUB_REPOSITORY="" \
-    RUNNER_WORKDIR="_work" \
-    RUNNER_LABELS="self-hosted,Linux,X64"
+ARG GITHUB_RUNNER_VERSION="2.276.0"
 
 LABEL summary="Supports running a GitHub self-hosted runner." \
     description="Self-hosted GitHub runner" \
@@ -27,8 +19,8 @@ RUN dnf update -y && \
 
 WORKDIR /home/github
 
-RUN curl -Ls https://github.com/actions/runner/releases/download/v${GITHUB_RUNNER_VERSION}/actions-runner-linux-x64-${GITHUB_RUNNER_VERSION}.tar.gz | tar xz \
-    && ./bin/installdependencies.sh && \
+RUN curl -Ls https://github.com/actions/runner/releases/download/v${GITHUB_RUNNER_VERSION}/actions-runner-linux-x64-${GITHUB_RUNNER_VERSION}.tar.gz | tar xzvC /home/github \
+    && /home/github/bin/installdependencies.sh && \
     dnf clean all
 
 COPY entrypoint.sh ./entrypoint.sh

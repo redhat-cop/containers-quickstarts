@@ -1,5 +1,5 @@
 #invoke npm in jenkinsfile: sh "scl enable rh-nodejs6 'npm run build'"
-FROM quay.io/openshift/origin-jenkins-agent-base:4.4
+FROM quay.io/openshift/origin-jenkins-agent-base:4.6
 
 ENV NODEJS_VERSION=12 \
     NPM_CONFIG_PREFIX=$HOME/.npm-global \
@@ -8,10 +8,10 @@ ENV NODEJS_VERSION=12 \
 RUN curl --silent --location https://rpm.nodesource.com/setup_${NODEJS_VERSION}.x | bash -
 
 RUN INSTALL_PKGS="nodejs" && \
-    yum $DISABLE_REPOS install -y --setopt=tsflags=nodocs --disablerepo='rhel-*' \
+    dnf $DISABLE_REPOS install -y --setopt=tsflags=nodocs --disablerepo='rhel-*' \
       $INSTALL_PKGS && \
     rpm -V $INSTALL_PKGS && \
-    yum clean all -y && \
+    dnf clean all -y && \
     rm -rf /var/cache/yum && \
     npm install --unsafe-perm -g npm-audit-html npm-audit-ci-wrapper sonar-scanner || cat /home/jenkins/.npm/_logs/*-debug.log && \
     chown root:root /home/jenkins -R && \

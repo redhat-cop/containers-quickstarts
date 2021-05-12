@@ -15,9 +15,9 @@ spec:
       labels:
         {{- include "chart.selectorLabels" . | nindent 8 }}
     spec:
-    {{- with .Values.affinity }}
+    {{- if .Values.ha.enabled }}
       affinity:
-        {{- toYaml . | nindent 8 }}
+        {{- include "chart.enableHA" . | nindent 8 }}
     {{- end }}
       containers:
       - env:
@@ -49,8 +49,8 @@ spec:
             command: ["rabbitmq-diagnostics", "status"]
           initialDelaySeconds: 60
           # See https://www.rabbitmq.com/monitoring.html for monitoring frequency recommendations.
-          periodSeconds: 60
-          timeoutSeconds: 15
+          periodSeconds: 30
+          timeoutSeconds: 5
         name: {{ include "chart.fullname" . }}
         ports:
         - name: http
@@ -59,13 +59,16 @@ spec:
         - name: amqp
           protocol: TCP
           containerPort: 5672
+        - name: prometheus
+          protocol: TCP
+          containerPort: 15692
         securityContext:
           {{- toYaml .Values.securityContext | nindent 12 }}
         readinessProbe:
           exec:
             # Learn more at https://www.rabbitmq.com/monitoring.html#health-checks.
             command: ["rabbitmq-diagnostics", "check_port_connectivity"]
-          initialDelaySeconds: 20
+          initialDelaySeconds: 10
           periodSeconds: 60
           timeoutSeconds: 10
         resources:
@@ -110,6 +113,8 @@ spec:
   volumeClaimTemplates:
   - metadata:
       name: mnesia
+      labels:
+        {{- include "chart.selectorLabels" . | nindent 8 }}
     spec:
       accessModes: [ "ReadWriteOnce" ]
       resources:

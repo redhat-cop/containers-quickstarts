@@ -142,22 +142,22 @@ load _helpers
 
   local match_key=$(echo "${affinity}" | yq r - \
   "${pod_anti_affinity}[0].labelSelector.matchExpressions[0].key")
-  [ "${match_key}" == "statefulset" ]
+  [ "${match_key}" == "app.kubernetes.io/name" ]
 
   local match_values=$(echo "${affinity}" | yq r - \
   "${pod_anti_affinity}[0].labelSelector.matchExpressions[0].values[0]")
-  [ "${match_values}" == "redhat-cop" ]
+  [ "${match_values}" == "$(name_prefix)" ]
 
   local topology_key=$(echo "${affinity}" | yq r - "${pod_anti_affinity}[0].topologyKey")
   [ "${topology_key}" == "kubernetes.io/hostname" ]
 }
 
-@test "statefulset: custom affinity" {
+@test "statefulset: custom affinity settings" {
   cd $(chart_dir)
   local affinity=$(helm template -s templates/deployment.yaml \
-  --set 'affinity.podAntiAffinity.requiredDuringSchedulingIgnoredDuringExecution[0].labelSelector.matchExpressions[0].key=statefulset' \
-  --set 'affinity.podAntiAffinity.requiredDuringSchedulingIgnoredDuringExecution[0].labelSelector.matchExpressions[0].values[0]=custom' \
-  --set 'affinity.podAntiAffinity.requiredDuringSchedulingIgnoredDuringExecution[0].topologyKey=kubernetes.io/instance' \
+  --set 'ha.label.key=statefulset' \
+  --set 'ha.label.value=custom' \
+  --set 'ha.topologyKey=kubernetes.io/instance' \
   . | yq r - 'spec.template.spec.affinity')
   [ -n "${affinity}" ]
 

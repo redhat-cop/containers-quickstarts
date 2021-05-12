@@ -43,6 +43,10 @@ service:
       protocol: TCP
       port: 5672
       targetPort: 5672
+    - name: prometheus
+      protocol: TCP
+      port: 15692
+      targetPort: 15692
 
 ingress:
   enabled: false
@@ -69,13 +73,9 @@ nodeSelector: {}
 
 tolerations: []
 
-affinity:
-  podAntiAffinity:
-    requiredDuringSchedulingIgnoredDuringExecution:
-      - labelSelector:
-          matchExpressions:
-            - key: statefulset
-              operator: In
-              values:
-                - redhat-cop
-        topologyKey: kubernetes.io/hostname
+ha:
+  enabled: true
+  label:
+    key: app.kubernetes.io/name
+    value: rabbitmq
+  topologyKey: kubernetes.io/hostname
