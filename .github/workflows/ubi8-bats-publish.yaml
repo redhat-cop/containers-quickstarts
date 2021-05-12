@@ -40,7 +40,7 @@ jobs:
           tags: "${{ steps.image_tags.outputs.IMAGE_TAGS }}"
       - name: Push to Quay
         id: push_to_quay
-        uses: redhat-actions/push-to-registry@v2
+        uses: redhat-actions/push-to-registry@v2.3.1
         with:
           image: ${{ steps.build_image.outputs.image }}
           registry: ${{ secrets.REGISTRY_URI }}/${{ secrets.REGISTRY_REPOSITORY }}
