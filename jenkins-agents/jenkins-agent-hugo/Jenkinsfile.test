@@ -1,0 +1,17 @@
+pipeline {
+    agent {
+        label 'jenkins-agent-hugo'
+    }
+
+    stages {
+        stage ('Run Test') {
+            steps {
+              sh """
+                  hugo version
+              """
+            }
+        }
+
+    }
+
+}
