@@ -1,4 +1,4 @@
-FROM quay.io/openshift/origin-jenkins-agent-base:4.6
+FROM quay.io/openshift/origin-jenkins-agent-base:4.7
 
 LABEL com.redhat.component="jenkins-agent-rust-ubi7-docker" \
       name="openshift/origin-jenkins-agent-rust-ubi7" \

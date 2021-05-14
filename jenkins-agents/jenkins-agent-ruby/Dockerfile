@@ -1,4 +1,4 @@
-FROM quay.io/openshift/origin-jenkins-agent-base:4.6
+FROM quay.io/openshift/origin-jenkins-agent-base:4.7
 
 ARG RUBY_VERSION=2.6
 ARG OC_VERSION=4.4
