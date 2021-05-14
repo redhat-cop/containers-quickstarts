@@ -1,9 +1,9 @@
-FROM quay.io/openshift/origin-jenkins-agent-base:4.6
+FROM quay.io/openshift/origin-jenkins-agent-base:4.7
 ARG ANSIBLE_VERSION=2.9.13
 
 LABEL \
       release="1" \
-      version="4.6" \
+      version="4.7" \
       architecture="x86_64" \
       io.k8s.display-name="Jenkins Agent Ansible" \
       name="openshift/origin-jenkins-agent-ansible-ubi8" \

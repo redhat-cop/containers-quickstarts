@@ -7,7 +7,7 @@ templates_repo_ref: v1.4.16
 jenkins_agents:
   build:
     ansible:
-      BUILDER_IMAGE_NAME: quay.io/openshift/origin-jenkins-agent-base:4.6
+      BUILDER_IMAGE_NAME: quay.io/openshift/origin-jenkins-agent-base:4.7
       DOCKERFILE_PATH: Dockerfile
       NAME: jenkins-agent-ansible
       SOURCE_CONTEXT_DIR: jenkins-agents/jenkins-agent-ansible
@@ -20,12 +20,12 @@ jenkins_agents:
     erlang: {}
     golang: {}
     graalvm:
-      BUILDER_IMAGE_NAME: quay.io/openshift/origin-jenkins-agent-maven:4.6
+      BUILDER_IMAGE_NAME: quay.io/openshift/origin-jenkins-agent-maven:4.7
     gradle: {}
     helm: {}
     mongodb: {}
     mvn:
-      BUILDER_IMAGE_NAME: quay.io/openshift/origin-jenkins-agent-maven:4.6
+      BUILDER_IMAGE_NAME: quay.io/openshift/origin-jenkins-agent-maven:4.7
     npm: {}
     python: {}
     ruby: {}
