@@ -43,7 +43,7 @@ objects:
 parameters:
 - description: Path within Git repository to build; empty for root of repository
   name: CONTEXT_DIR
-  value: gitlab-runners/ubi7-gitlab-runner
+  value: ubi7-gitlab-runner
 - description: Git branch/tag reference
   name: SOURCE_REPOSITORY_REF
   value: master

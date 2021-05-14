@@ -4,12 +4,13 @@ on:
   pull_request:
     paths:
       - build-s2i-python-kopf/**
+      - .github/workflows/build-s2i-python-kopf-pr.yaml
 jobs:
   test:
     env:
       CONTEXT_DIR: build-s2i-python-kopf
       IMAGE_NAME: python-kopf-s2i
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-18.04
     steps:
       - uses: actions/checkout@master
       - name: Check and verify version.json
@@ -25,31 +26,35 @@ jobs:
           echo ::set-output name=MINOR_VERSION::${VERSION%.*}
           sed -i -e "s/^FROM .*/FROM ${IMAGE_NAME}:${VERSION}/" ${CONTEXT_DIR}/examples/kopf-simple/Dockerfile
       - name: Build s2i image
-        uses: docker/build-push-action@v1
+        uses: redhat-actions/buildah-build@v2
         with:
-          path: ${{ env.CONTEXT_DIR }}
-          push: false
-          repository: ${{ env.IMAGE_NAME }}
+          context: ${{ env.CONTEXT_DIR }}
+          dockerfiles: |
+            ./${{ env.CONTEXT_DIR }}/Dockerfile
+          image: ${{ env.IMAGE_NAME }}
+          oci: true
           tags: ${{ steps.check_version.outputs.VERSION }}
       - name: Build kopf-simple example from s2i image
-        uses: docker/build-push-action@v1
+        uses: redhat-actions/buildah-build@v2
         with:
-          path: ${{ env.CONTEXT_DIR }}/examples/kopf-simple
-          push: false
-          repository: ${{ env.IMAGE_NAME }}-example
+          context: ${{ env.CONTEXT_DIR }}/examples/kopf-simple
+          dockerfiles: |
+            ./${{ env.CONTEXT_DIR }}/examples/kopf-simple
+          image: ${{ env.IMAGE_NAME }}-example
+          oci: true
           tags: ${{ steps.check_version.outputs.VERSION }}
       - name: Test image
         run: |
           EXAMPLE_IMAGE="${IMAGE_NAME}-example:${{ steps.check_version.outputs.VERSION }}"
 
           echo "Checking kopf version..."
-          KOPF_VERSION="$(docker run --entrypoint '/bin/sh' $EXAMPLE_IMAGE -c 'kopf --version')"
+          KOPF_VERSION="$(podman run --entrypoint '/bin/sh' $EXAMPLE_IMAGE -c 'kopf --version')"
           if [[ "$KOPF_VERSION" != 'kopf, version ${{ steps.check_version.outputs.MINOR_VERSION }}' ]]; then
             echo "$KOPF_VERSION not expected ${{ steps.check_version.outputs.MINOR_VERSION }}"
           fi
 
           echo "Checking example operator.py..."
-          docker run --entrypoint '/bin/sh' $EXAMPLE_IMAGE -c 'python3 -m py_compile /opt/app-root/operator/operator.py'
+          podman run --entrypoint '/bin/sh' $EXAMPLE_IMAGE -c 'python3 -m py_compile /opt/app-root/operator/operator.py'
 
           echo "Check example requirements were installed..."
-          docker run --entrypoint '/bin/sh' $EXAMPLE_IMAGE -c 'python3 -c "import yaml"'
+          podman run --entrypoint '/bin/sh' $EXAMPLE_IMAGE -c 'python3 -c "import yaml"'

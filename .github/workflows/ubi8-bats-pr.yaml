@@ -3,12 +3,13 @@ on:
   pull_request:
     paths:
       - utilities/ubi8-bats/**
+      - .github/workflows/ubi8-bats-pr.yaml
 jobs:
   build:
     env:
       context: utilities/ubi8-bats
       image_name: ubi8-bats
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-18.04
     steps:
       - uses: actions/checkout@v1
       - name: Check and verify version.json

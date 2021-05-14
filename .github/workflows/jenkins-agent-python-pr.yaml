@@ -3,12 +3,13 @@ on:
   pull_request:
     paths:
       - jenkins-agents/jenkins-agent-python/**
+      - .github/workflows/jenkins-agent-python-pr.yaml
 jobs:
   build:
     env:
       context: jenkins-agents/jenkins-agent-python
       image_name: jenkins-agent-python
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-18.04
     steps:
       - uses: actions/checkout@v1
       - name: Check and verify version.json
@@ -17,15 +18,17 @@ jobs:
           echo -n ::set-output name=IMAGE_TAGS::
           echo $(jq -r '.version' ${context}/version.json)
       - name: Build image
-        uses: docker/build-push-action@v1
+        uses: redhat-actions/buildah-build@v2
         with:
-          path: ${{ env.context }}
-          push: false
-          repository: ${{ env.image_name }}
+          context: ${{ env.context }}
+          dockerfiles: |
+            ./${{ env.context }}/Dockerfile
+          image: ${{ env.image_name }}
+          oci: true
           tags: ${{ steps.check_version.outputs.IMAGE_TAGS }}
       - name: Test image
         run: |
-          echo "Running: docker run ${image_name}:${{ steps.check_version.outputs.IMAGE_TAGS }} python --version"
-          docker run ${image_name}:${{ steps.check_version.outputs.IMAGE_TAGS }} python --version
-          echo "Running: docker run ${image_name}:${{ steps.check_version.outputs.IMAGE_TAGS }} pip --version"
-          docker run ${image_name}:${{ steps.check_version.outputs.IMAGE_TAGS }} pip --version
+          echo "Running: podman run ${image_name}:${{ steps.check_version.outputs.IMAGE_TAGS }} python --version"
+          podman run ${image_name}:${{ steps.check_version.outputs.IMAGE_TAGS }} python --version
+          echo "Running: podman run ${image_name}:${{ steps.check_version.outputs.IMAGE_TAGS }} pip --version"
+          podman run ${image_name}:${{ steps.check_version.outputs.IMAGE_TAGS }} pip --version

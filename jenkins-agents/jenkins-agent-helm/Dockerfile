@@ -1,21 +1,24 @@
-FROM quay.io/openshift/origin-jenkins-agent-base:4.6
+FROM quay.io/openshift/origin-jenkins-agent-base:4.7
 
-ARG VERSION=3.2.0
+ARG VERSION=3.5.2
 ARG YQ_VERSION=v4.5.1
-ARG CT_VERSION=3.0.0-rc.1
-ARG OPENSHIFT_CLIENT_VERSION=4.4.13
+ARG CT_VERSION=3.3.1
+ARG OPENSHIFT_CLIENT_VERSION=4.7.5
+ARG CONFTEST_VERSION=0.23.0
 
 ## Required in order to avoid ct "ascii codec can't encode character" error
 ENV PYTHONIOENCODING=utf-8
 
 COPY ubi8.repo /tmp/
 
-## Install helm and yq
-RUN curl -skL -o /tmp/helm.tar.gz https://get.helm.sh/helm-v${VERSION}-linux-amd64.tar.gz && \ 
+## Install helm and yq and conftest
+RUN curl -skL -o /tmp/helm.tar.gz https://get.helm.sh/helm-v${VERSION}-linux-amd64.tar.gz && \
+    curl -skL -o /tmp/conftest.tar.gz https://github.com/open-policy-agent/conftest/releases/download/v${CONFTEST_VERSION}/conftest_${CONFTEST_VERSION}_Linux_x86_64.tar.gz && \
     tar -C /tmp -xzf /tmp/helm.tar.gz && \
-    mv /tmp/linux-amd64/helm /usr/local/bin && \
-    chmod -R 775 /usr/local/bin/helm && \
-    rm -rf /tmp/helm.tar.gz && \
+    tar -C /tmp -xzf /tmp/conftest.tar.gz && \
+    mv -v /tmp/linux-amd64/helm /tmp/conftest /usr/local/bin && \
+    chmod -R 775 /usr/local/bin/helm /usr/local/bin/conftest && \
+    rm -rf /tmp/*.tar.gz && \
     rm -rf /tmp/linux-amd64 && \
     curl -sL  https://github.com/mikefarah/yq/releases/download/${YQ_VERSION}/yq_linux_amd64 -o /usr/local/bin/yq && \
     chmod -R 775 /usr/local/bin/yq

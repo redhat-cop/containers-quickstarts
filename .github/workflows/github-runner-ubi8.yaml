@@ -6,15 +6,17 @@ on:
       - master
     paths:
       - github-runner-ubi8/**
+      - .github/workflows/github-runner-ubi8.yaml
   pull_request:
     paths:
       - github-runner-ubi8/**
+      - .github/workflows/github-runner-ubi8.yaml
 jobs:
   publish:
     env:
       CONTEXT_DIR: github-runner-ubi8
       IMAGE_NAME: github-runner-ubi8
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-18.04
     steps:
       - uses: actions/checkout@master
       - name: Get image tags
