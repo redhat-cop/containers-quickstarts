@@ -23,6 +23,7 @@ jenkins_agents:
       BUILDER_IMAGE_NAME: quay.io/openshift/origin-jenkins-agent-maven:4.6
     gradle: {}
     helm: {}
+    hugo: {}
     mongodb: {}
     mvn:
       BUILDER_IMAGE_NAME: quay.io/openshift/origin-jenkins-agent-maven:4.6
@@ -68,6 +69,12 @@ test_pipelines:
     helm:
       NAME: jenkins-agent-helm
       PIPELINE_CONTEXT_DIR: jenkins-agents/jenkins-agent-helm
+      PIPELINE_FILENAME: Jenkinsfile.test
+      PIPELINE_SOURCE_REPOSITORY_REF: "{{ agent_repo_ref }}"
+      PIPELINE_SOURCE_REPOSITORY_URL: "{{ repository_url }}"
+    hugo:
+      NAME: jenkins-agent-hugo
+      PIPELINE_CONTEXT_DIR: jenkins-agents/jenkins-agent-hugo
       PIPELINE_FILENAME: Jenkinsfile.test
       PIPELINE_SOURCE_REPOSITORY_REF: "{{ agent_repo_ref }}"
       PIPELINE_SOURCE_REPOSITORY_URL: "{{ repository_url }}"
