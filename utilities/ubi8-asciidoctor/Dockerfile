@@ -31,8 +31,6 @@ USER root
 
 # Installing Ruby Gems needed in the image
 # including asciidoctor itself
-# TODO: have to find Lasem dev libs     "asciidoctor-mathematical:${ASCIIDOCTOR_MATHEMATICAL_VERSION}" \
-# TODO: have to find a way to get graphviz and java working
 
 RUN dnf install -y \
     python3 \
