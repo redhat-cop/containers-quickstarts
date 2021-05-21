@@ -1,13 +1,13 @@
 pipeline {
     agent {
-      label 'jenkins-agent-zap'
+      label 'jenkins-agent-mongodb'
     }
 
     stages {
         stage ('Run Test') {
             steps {
               sh """
-                  /zap/zap-baseline.py -h
+                  mongo --version
               """
             }
         }
