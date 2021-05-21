@@ -1,8 +1,6 @@
+# This dockerfile builds the zap stable release
 FROM centos:centos7
 LABEL maintainer="Deven Phillips <deven.phillips@redhat.com>"
-
-ARG ZAPROXY_VERSION="2.9.0"
-ARG WEBSWING_VERSION="2.5.10"
 
 RUN yum install -y epel-release && \
     yum clean all && \
@@ -14,14 +12,15 @@ RUN yum install -y epel-release && \
     xorg-x11-server-Xvfb openbox xterm \
     net-tools python-pip \
     firefox nss_wrapper java-1.8.0-openjdk-headless \
-    java-1.8.0-openjdk-devel nss_wrapper && \
+    java-1.8.0-openjdk-devel nss_wrapper git && \
     yum clean all && \
-    curl https://bootstrap.pypa.io/pip/2.7/get-pip.py --output get-pip.py && chmod 755 get-pip.py && ./get-pip.py && \
     pip install --upgrade pip && \
     pip install zapcli && \
     pip install python-owasp-zap-v2.4 && \
-    mkdir -p /zap/{wrk,webswing} && \
+    mkdir -p /zap/wrk && \
     mkdir -p /var/lib/jenkins/.vnc
+
+ADD zap /zap/
 
 # Copy the entrypoint
 COPY configuration/* /var/lib/jenkins/
@@ -33,23 +32,21 @@ ENV JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64/ \
     HOME=/var/lib/jenkins \
     ZAP_PORT=8080
 
+COPY policies /var/lib/jenkins/.ZAP/policies/
 COPY .xinitrc /var/lib/jenkins/
 
 WORKDIR /zap
-RUN curl -sL https://github.com/zaproxy/zaproxy/releases/download/v${ZAPROXY_VERSION}/ZAP_${ZAPROXY_VERSION}_Linux.tar.gz | tar zx --strip-components=1 && \
-    curl -sL https://bitbucket.org/meszarv/webswing/get/${WEBSWING_VERSION}.tar.gz | tar zx --strip-components=1 -C webswing && \
-    rm -rf webswing/demo && \
+# Download and expand the latest stable release 
+RUN curl -s https://raw.githubusercontent.com/zaproxy/zap-admin/master/ZapVersions-dev.xml | xmlstarlet sel -t -v //url |grep -i Linux | wget -q --content-disposition -i - -O - | tar zx --strip-components=1 && \
+    curl -s -L https://bitbucket.org/meszarv/webswing/downloads/webswing-2.3-distribution.zip | jar -x && \
     touch AcceptedLicense && \
-    git clone --depth 1 --branch v${ZAPROXY_VERSION} https://github.com/zaproxy/zaproxy /tmp/zaproxy && \
-    rsync -av /tmp/zaproxy/docker/{policies,scripts,zap*} /zap/ && \
-    rsync -av /tmp/zaproxy/docker/policies /var/lib/jenkins/.ZAP/ && \
-    rsync -av /tmp/zaproxy/docker/webswing.config /zap/webswing/webswing.config && \
-    rm -rf /tmp/zaproxy && \
-    touch /.dockerenv && \
     chown root:root /zap -R && \
     chown root:root -R /var/lib/jenkins && \
     chmod 777 /var/lib/jenkins -R && \
     chmod 777 /zap -R
+    
+
+ADD webswing.config /zap/webswing-2.3/webswing.config
 
 WORKDIR /var/lib/jenkins
 
