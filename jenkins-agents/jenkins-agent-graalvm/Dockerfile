@@ -1,5 +1,5 @@
-FROM quay.io/openshift/origin-jenkins-agent-maven:4.6
-ARG GRAAL_VERSION=21.0.0.0.Final
+FROM quay.io/openshift/origin-jenkins-agent-maven:4.7
+ARG GRAAL_VERSION=20.3.1.2.Final
 ENV GRAALVM_HOME=/opt/mandrelJDK
 ENV GRAAL_CE_URL=https://github.com/graalvm/mandrel/releases/download/mandrel-${GRAAL_VERSION}/mandrel-java11-linux-amd64-${GRAAL_VERSION}.tar.gz
 ARG HELM_VERSION=3.5.3

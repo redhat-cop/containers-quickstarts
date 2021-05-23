@@ -1,4 +1,4 @@
-FROM quay.io/openshift/origin-jenkins-agent-base:4.6
+FROM quay.io/openshift/origin-jenkins-agent-base:4.7
 
 ARG GO_VERSION=1.15.6
 ARG SONAR_SCANNER_VERSION=4.5.0.2216
