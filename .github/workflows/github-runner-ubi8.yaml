@@ -33,7 +33,7 @@ jobs:
           fi
           ( IFS=$','; echo "${TAGS[*]}" )
       - name: Build and publish image to Quay
-        uses: docker/build-push-action@v1
+        uses: docker/build-push-action@v2.5.0
         with:
           path: ${{ env.CONTEXT_DIR }}
           registry: quay.io
