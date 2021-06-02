@@ -2,10 +2,10 @@ FROM quay.io/openshift/origin-jenkins-agent-maven:4.7
 ARG GRAAL_VERSION=20.3.1.2.Final
 ENV GRAALVM_HOME=/opt/mandrelJDK
 ENV GRAAL_CE_URL=https://github.com/graalvm/mandrel/releases/download/mandrel-${GRAAL_VERSION}/mandrel-java11-linux-amd64-${GRAAL_VERSION}.tar.gz
-ARG HELM_VERSION=3.5.2
+ARG HELM_VERSION=3.5.3
 ARG JQ_VERSION=1.6
 ARG OC_VERSION=4.6
-ARG YQ_VERSION=4.5.1
+ARG YQ_VERSION=4.6.3
 
 ADD settings.xml $HOME/.m2/settings.xml
 ADD ubi8.repo /tmp/ubi8.repo
