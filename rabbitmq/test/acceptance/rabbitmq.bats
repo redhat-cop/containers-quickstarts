@@ -1,6 +1,8 @@
 #!/usr/bin/env bats
 
 JOB_ID=$(cat /dev/urandom | tr -dc 'a-z0-9' | fold -w 5 | head -1)
+REPO_URL=${REPO_URL:-https://github.com/redhat-cop/containers-quickstarts}
+REPO_REF=${REPO_REF:-master}
 
 load _helpers
 
@@ -12,7 +14,9 @@ setup_file() {
 
   project_action create $JOB_ID
 
-  helm install "$(name_prefix)" . --namespace rabbitmq-acceptance-${JOB_ID}
+  helm install "$(name_prefix)" . \
+    --namespace rabbitmq-acceptance-${JOB_ID} \
+    --set build.enabled=true,build.repositoryRef=${REPO_REF},build.repositoryUrl=${REPO_URL},image.repository=image-registry.openshift-image-registry.svc:5000/rabbitmq-acceptance-${JOB_ID}/$(name_prefix)
   wait_for_running $(name_prefix)-2
 }
 
@@ -22,10 +26,10 @@ setup_file() {
   [ "$?" == "0" ]
 }
 
-@test "rabbitmq/ha: should have \$LANG set to 'en_US.UTF-8'" {
+@test "rabbitmq/ha: should have \$LANG set to 'C.UTF-8'" {
   # Ensure locale is set to UTF-8
   lang_var=$(oc exec "$(name_prefix)-0" -- printenv LANG)
-  [ "${lang_var}" == "en_US.UTF-8" ]
+  [ "${lang_var}" == "C.UTF-8" ]
 }
 
 @test "rabbitmq/ha: should not have any alarms" {
