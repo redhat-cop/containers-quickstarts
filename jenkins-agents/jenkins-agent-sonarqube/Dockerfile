@@ -65,10 +65,10 @@ ENV NODEJS_VERSION=12 \
 RUN curl --silent --location https://rpm.nodesource.com/setup_${NODEJS_VERSION}.x | bash -
 
 RUN INSTALL_PKGS="nodejs" && \
-    dnf $DISABLE_REPOS install -y --setopt=tsflags=nodocs --disablerepo='rhel-*' \
+    yum $DISABLE_REPOS install -y --setopt=tsflags=nodocs --disablerepo='rhel-*' \
       $INSTALL_PKGS && \
     rpm -V $INSTALL_PKGS && \
-    dnf clean all -y && \
+    yum clean all -y && \
     rm -rf /var/cache/yum && \
     npm install --unsafe-perm -g npm-audit-html npm-audit-ci-wrapper sonar-scanner || cat /home/jenkins/.npm/_logs/*-debug.log && \
     chown root:root /home/jenkins -R && \
