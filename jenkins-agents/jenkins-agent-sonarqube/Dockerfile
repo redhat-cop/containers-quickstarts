@@ -22,7 +22,7 @@
 
 # USER 1001
 
-FROM quay.io/openshift/origin-jenkins-agent-base:4.5 as sonarpython
+FROM quay.io/openshift/origin-jenkins-agent-base:4.6
 
 EXPOSE 8080
 
@@ -58,8 +58,6 @@ ENV BASH_ENV=/usr/share/container-scripts/scl_enable \
     PROMPT_COMMAND=". /usr/share/container-scripts/scl_enable"
 
 
-FROM quay.io/openshift/origin-jenkins-agent-base:4.6 as sonarnpm
-
 ENV NODEJS_VERSION=12 \
     NPM_CONFIG_PREFIX=$HOME/.npm-global \
     PATH=$HOME/node_modules/.bin/:$HOME/.npm-global/bin/:$PATH
@@ -77,8 +75,6 @@ RUN INSTALL_PKGS="nodejs" && \
     chmod 775 /home/jenkins/.config -R && \
     chmod 775 /home/jenkins/.npm -R
 
-
-FROM quay.io/openshift/origin-jenkins-agent-maven:4.4 as soanarmaven
 
 USER root
 
