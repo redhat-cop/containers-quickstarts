@@ -22,7 +22,7 @@
 
 # USER 1001
 
-FROM quay.io/openshift/origin-jenkins-agent-base:4.6
+FROM quay.io/openshift/origin-jenkins-agent-base:4.5 as sonarpython
 
 EXPOSE 8080
 
@@ -58,6 +58,8 @@ ENV BASH_ENV=/usr/share/container-scripts/scl_enable \
     PROMPT_COMMAND=". /usr/share/container-scripts/scl_enable"
 
 
+FROM quay.io/openshift/origin-jenkins-agent-base:4.6 as sonarnpm
+
 ENV NODEJS_VERSION=12 \
     NPM_CONFIG_PREFIX=$HOME/.npm-global \
     PATH=$HOME/node_modules/.bin/:$HOME/.npm-global/bin/:$PATH
@@ -65,16 +67,18 @@ ENV NODEJS_VERSION=12 \
 RUN curl --silent --location https://rpm.nodesource.com/setup_${NODEJS_VERSION}.x | bash -
 
 RUN INSTALL_PKGS="nodejs" && \
-    yum $DISABLE_REPOS install -y --setopt=tsflags=nodocs --disablerepo='rhel-*' \
+    dnf $DISABLE_REPOS install -y --setopt=tsflags=nodocs --disablerepo='rhel-*' \
       $INSTALL_PKGS && \
     rpm -V $INSTALL_PKGS && \
-    yum clean all -y && \
+    dnf clean all -y && \
     rm -rf /var/cache/yum && \
     npm install --unsafe-perm -g npm-audit-html npm-audit-ci-wrapper sonar-scanner || cat /home/jenkins/.npm/_logs/*-debug.log && \
     chown root:root /home/jenkins -R && \
     chmod 775 /home/jenkins/.config -R && \
     chmod 775 /home/jenkins/.npm -R
 
+
+FROM quay.io/openshift/origin-jenkins-agent-maven:4.4 as soa
 
 USER root
 
