@@ -34,8 +34,6 @@ ENV PYTHON_VERSION=3.8 \
     LANG=en_US.UTF-8 \
     PIP_NO_CACHE_DIR=off
 
-ADD ubi8.repo /tmp/ubi8.repo
-
 RUN INSTALL_PKGS=" \
       python38 python38-devel nss_wrapper httpd httpd-devel mod_ssl mod_ldap \
       mod_session atlas-devel gcc-gfortran libffi-devel libtool-ltdl enchant" && \
