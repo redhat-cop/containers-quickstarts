@@ -1,0 +1,29 @@
+---
+
+tower_ocp_namespace: 'tower-ocp'
+
+openshift_templates_raw: "https://raw.githubusercontent.com/redhat-cop/openshift-templates"
+openshift_templates_raw_version_tag: "v1.4.15"
+
+tower_ocp_namespace_params:
+  NAMESPACE: '{{ tower_ocp_namespace }}'
+  NAMESPACE_DISPLAY_NAME: 'Tower Namespace'
+  NAMESPACE_DESCRIPTION: 'Ansible Tower and associated resources are deployed to this namespace'
+
+openshift_cluster_content:
+  - object: projectrequest
+    content:
+      - name: 'tower-projects'
+        template: '{{ openshift_templates_raw }}/{{ openshift_templates_raw_version_tag }}/project-requests/create-project.yml'
+        params_from_vars: '{{ tower_ocp_namespace_params }}'
+        action: create
+        tags:
+          - namespaces
+          - tower-ocp
+  - object: tower-ocp
+    content:
+      - name: 'tower-ocp'
+        namespace: '{{ tower_ocp_namespace }}'
+        template: '{{ inventory_dir }}/../.openshift/templates/tower-ocp-custom-image.yml'
+        tags:
+          - tower-ocp

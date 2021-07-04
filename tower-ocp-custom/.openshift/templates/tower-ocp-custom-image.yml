@@ -1,0 +1,77 @@
+---
+apiVersion: template.openshift.io/v1
+kind: Template
+labels:
+  template: tower-ocp
+metadata:
+  annotations:
+    description: Custom Ansible Tower builder
+    tags: tower
+  name: tower-ocp
+objects:
+  - apiVersion: build.openshift.io/v1
+    kind: BuildConfig
+    metadata:
+      name: 'tower-ocp'
+    spec:
+      output:
+        to:
+          kind: 'ImageStreamTag'
+          name: 'tower-ocp:${TOWER_IMAGE_VERSION}-custom'
+      source:
+        dockerfile: |
+          FROM ""
+
+          USER root
+          RUN yum install -y \
+                https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
+          RUN yum install -y \
+                python-devel \
+                pandoc
+
+          RUN curl --fail -sL https://mirror.openshift.com/pub/openshift-v4/clients/oc/${OC_CLIENT_VERSION}/linux/oc.tar.gz | tar -C /usr/local/bin/ -xzf -
+          RUN umask 0022
+          RUN virtualenv /var/lib/awx/venv/ansible
+          RUN /var/lib/awx/venv/ansible/bin/pip install \
+                ansible==2.9.18 \
+                boto==2.49.0 \
+                boto3==1.9.200 \
+                awscli==1.16.210 \
+                ansible-tower-cli==3.3.6 \
+                pytz==2021.1
+
+          RUN rm -rf /var/cache/yum
+          USER awx
+
+      strategy:
+        dockerStrategy:
+          from:
+            kind: DockerImage
+            name: ${TOWER_IMAGE}:${TOWER_IMAGE_VERSION}
+      triggers:
+        - type: ConfigChange
+        - imageChangeParams:
+            automatic: true
+            from:
+              kind: ImageStreamTag
+              name: tower-ocp:${TOWER_IMAGE_VERSION}-custom
+  - apiVersion: image.openshift.io/v1
+    kind: ImageStream
+    metadata:
+      name: tower-ocp
+    spec:
+      lookupPolicy:
+        local: true
+parameters:
+  - description: Ansible Tower Base Image
+    name: TOWER_IMAGE
+    required: true
+    value: registry.redhat.io/ansible-tower-38/ansible-tower-rhel7
+  - description: Ansible Tower Base Image Version
+    name: TOWER_IMAGE_VERSION
+    required: true
+    value: '3.8.2'
+  - description: Openshift Client Version
+    name: OC_CLIENT_VERSION
+    required: true
+    value: '4.6'
