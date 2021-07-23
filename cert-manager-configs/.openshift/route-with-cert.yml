@@ -9,7 +9,7 @@ labels:
   template: "vanity-route-certificate"
 objects:
   - kind: Certificate
-    apiVersion: cert-manager.io/v1alpha2
+    apiVersion: cert-manager.io/v1
     metadata:
       name: "${NAME}-certificate"
       namespace: ${NAMESPACE}
