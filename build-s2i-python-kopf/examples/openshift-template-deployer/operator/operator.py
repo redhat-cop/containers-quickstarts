@@ -95,6 +95,11 @@ def deploy_app(owner_reference, config, logger):
         for line in oc_apply_result.stdout.decode('utf-8').splitlines():
             logger.info(line)
 
+@kopf.on.startup()
+def configure(settings: kopf.OperatorSettings, **_):
+    # Disable scanning for CustomResourceDefinitions
+    settings.scanning.disabled = True
+
 @kopf.on.create('', 'v1', 'configmaps', labels={config_map_label: kopf.PRESENT})
 def on_create_config_map(body, logger, **_):
     logger.info("New app ConfigMap '%s'", body['metadata']['name'])
