@@ -39,7 +39,7 @@ objects:
       git:
         uri: ${GIT_REPO}
         ref: master
-      contextDir: build-s2i-python-kopf/examples/simple
+      contextDir: build-s2i-python-kopf/examples/kopf-simple
     strategy:
       sourceStrategy:
         from:
