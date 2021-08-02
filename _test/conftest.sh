@@ -196,6 +196,17 @@ setup_file() {
   [ "$status" -eq 0 ]
 }
 
+@test "tower-ocp-custom/.openshift" {
+  tmp=$(split_files "tower-ocp-custom/.openshift")
+
+  namespaces=$(get_rego_namespaces "ocp\.deprecated\.*")
+  cmd="conftest test ${tmp} --output tap ${namespaces}"
+  run ${cmd}
+
+  print_info "${status}" "${output}" "${cmd}" "${tmp}"
+  [ "$status" -eq 0 ]
+}
+
 @test "ubi7-gitlab-runner/.openshift" {
   tmp=$(split_files "ubi7-gitlab-runner/.openshift")
 

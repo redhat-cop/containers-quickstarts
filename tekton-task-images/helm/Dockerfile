@@ -4,7 +4,7 @@ USER root
 
 ENV YQ_VERSION=4.11.2
 
-RUN microdnf install --assumeyes --nodocs tar gzip && \
+RUN microdnf install --assumeyes --nodocs openssl tar gzip && \
     microdnf update && \
     microdnf clean all
 
