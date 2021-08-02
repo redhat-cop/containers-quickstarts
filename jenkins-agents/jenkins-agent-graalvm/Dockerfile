@@ -25,7 +25,7 @@ RUN rm -f /etc/yum.repos.d/*.repo && \
     curl -Lo /usr/local/bin/yq https://github.com/mikefarah/yq/releases/download/v${YQ_VERSION}/yq_linux_amd64 && \
     chmod +x /usr/local/bin/yq && \
     rm -f /usr/bin/oc && \
-    curl -L https://mirror.openshift.com/pub/openshift-v4/x86_64/clients/ocp/${OC_VERSION}/openshift-install-linux.tar.gz | tar -C /usr/local/bin -xzf - && \
+    curl -L https://mirror.openshift.com/pub/openshift-v4/x86_64/clients/ocp/${OC_VERSION}/openshift-client-linux.tar.gz | tar -C /usr/local/bin -xzf - && \
     ### Cleanup
     dnf clean all && \
     rm -rf /var/cache/yum
