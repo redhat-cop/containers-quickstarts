@@ -13,7 +13,7 @@ ADD ubi8.repo /tmp/ubi8.repo
 USER root
 RUN rm -f /etc/yum.repos.d/*.repo && \
     mv /tmp/ubi8.repo /etc/yum.repos.d/ubi8.repo && \
-    dnf -y update && \
+    dnf -y update --allowerasing && \
     dnf install -y gcc gcc-c++ glibc-static glibc-devel zlib-devel && \
     ### tools
     mkdir -p ${GRAALVM_HOME} && \
