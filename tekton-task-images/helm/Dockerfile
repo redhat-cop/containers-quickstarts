@@ -4,7 +4,7 @@ USER root
 
 ARG YQ_VERSION=4.11.2
 
-RUN microdnf install --assumeyes --nodocs openssl tar gzip && \
+RUN microdnf install --assumeyes --nodocs openssl tar findutils gzip && \
     microdnf update && \
     microdnf clean all
 
