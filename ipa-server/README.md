@@ -26,14 +26,15 @@ ansible-playbook -i ./applier roles/openshift-applier/playbooks/openshift-cluste
 
 ### Parameters
 
-namespace: name of the project to create (and deploy to)
-app_name: name of what you would like to call your app. This will create the app at a route called <app>.example.com
-base_openshift_url: the base of the url that the app will be created at. (i.e. if your apps are created at myapp.apps.mycluster.com, the base_openshift_url should be apps.mycluster.com)
-realm: the realm that you would like to create inside of IdM (i.e. EXAMPLE.COM)
-admin_password: admin password for login
-openshift_templates_version: version of the openshift_templates repo to use (i.e. vX.Y.Z)
-ipa_templates_version: version of the https://github.com/freeipa/freeipa-container repo to use (right now this is an appropriate git hash)
-deployment_timeout: number of seconds before the deployment container times out
+|:param:|:description:|:default:|
+|namespace|name of the namespace/project to create (and deploy to)|ipa|
+|app_name|name of what you would like to call your app. This will create the app at a route called <app>.example.com|ipa|
+|base_openshift_url|the base of the url that the app will be created at. (i.e. if your apps are created at myapp.apps.mycluster.com, the base_openshift_url should be apps.mycluster.com)|apps.example.com|
+|realm|the realm that you would like to create inside of IdM (i.e. EXAMPLE.COM)|EXAMPLE.COM|
+|admin_password|The desired IPA/IdM admin password for login|Password123|
+|openshift_templates_version|version of the openshift_templates repo to use (i.e. vX.Y.Z)|see seed-hosts.yml|
+|ipa_templates_version|version of the https://github.com/freeipa/freeipa-container repo to use (right now this is an appropriate git hash)|see seed-hosts.yml|
+|deployment_timeout|number of seconds before the deployment container times out|1000|
 
 ### :heavy_exclamation_mark: Warnings and Common Errors :heavy_exclamation_mark:
 
