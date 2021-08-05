@@ -9,6 +9,8 @@ reviewers:
   - sabre1041
   - springdo
   - tylerauerbeck
+  - ckavili
+  - eformat
 approvers:
   - etsauer
   - oybed
@@ -18,3 +20,5 @@ approvers:
   - tylerauerbeck
   - springdo
   - garethahealy
+  - ckavili
+  - eformat
