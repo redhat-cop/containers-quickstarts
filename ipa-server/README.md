@@ -26,7 +26,8 @@ ansible-playbook -i ./applier roles/openshift-applier/playbooks/openshift-cluste
 
 ### Parameters
 
-|:param:|:description:|:default:|
+|param|description|default|
+|:---:|:---------:|:-----:|
 |namespace|name of the namespace/project to create (and deploy to)|ipa|
 |app_name|name of what you would like to call your app. This will create the app at a route called <app>.example.com|ipa|
 |base_openshift_url|the base of the url that the app will be created at. (i.e. if your apps are created at myapp.apps.mycluster.com, the base_openshift_url should be apps.mycluster.com)|apps.example.com|
