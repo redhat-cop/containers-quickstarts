@@ -1,0 +1,18 @@
+pipeline {
+    agent {
+      label 'jenkins-agent-python-and-cpp'
+    }
+
+    stages {
+        stage ('Run Test') {
+            steps {
+              sh """
+                  python -V
+                  g++ -v
+              """
+            }
+        }
+
+    }
+
+}
