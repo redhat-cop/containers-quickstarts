@@ -14,8 +14,7 @@ ADD ubi8.repo /tmp/ubi8.repo
 
 RUN INSTALL_PKGS=" \
       python38 python38-devel nss_wrapper httpd httpd-devel mod_ssl mod_ldap \
-      mod_session atlas-devel gcc-gfortran libffi-devel libtool-ltdl enchant \
-      g++ libpcre3 libpcre3-dev locales" && \
+      mod_session atlas-devel gcc-gfortran libffi-devel libtool-ltdl enchant" && \
     rm -f /etc/yum.repos.d/*.repo && \
     mv /tmp/ubi8.repo /etc/yum.repos.d && \
     dnf -y --setopt=tsflags=nodocs install $INSTALL_PKGS && \
@@ -25,17 +24,10 @@ RUN INSTALL_PKGS=" \
     python3 -m pip install --upgrade pip && \
     python3 -m pip install twine
 
-RUN wget https://prdownloads.sourceforge.net/swig/swig-3.0.12.tar.gz \
-    && chmod 777 swig-3.0.12.tar.gz \
-    && tar -xzvf swig-3.0.12.tar.gz \
-    && cd swig-3.0.12 \
-    && ./configure --prefix=/swig/swig \
-    && make \
-    && make install \
-    && sed -i 's|export PATH|export SWIG_PATH=/swig/swig/bin\nexport PATH=$SWIG_PATH:$PATH |g' /etc/profile \
-    && echo "LC_ALL=en_US.UTF-8" >> /etc/environment \
-    && echo "en_US.UTF-8 UTF-8" >> /etc/locale.gen \
-    && echo "LANG=en_US.UTF-8" > /etc/locale.conf \
-    && locale-gen en_US.UTF-8
+# installing Swig (for binding Python to C++) separately, as it is not currently
+# available among the UBI-8 packages:
+# https://access.redhat.com/articles/4238681#ajax-reply-comment-1775201
+RUN dnf -y --setopt=tsflags=nodocs install \
+    http://mirror.centos.org/centos/8/AppStream/x86_64/os/Packages/swig-3.0.12-19.module_el8.3.0+557+3d058e38.x86_64.rpm
 
 USER 1001

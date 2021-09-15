@@ -1,6 +1,6 @@
 pipeline {
     agent {
-      label 'jenkins-agent-python-and-cpp'
+      label 'jenkins-agent-python-and-swig'
     }
 
     stages {
