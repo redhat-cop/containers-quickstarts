@@ -7,14 +7,24 @@ Provides a docker image of a runtime including both Python and C++ for use as a 
 ## Run local
 For local running and experimentation run `docker run -i -t jenkins-agent-python-and-swig /bin/bash` and have a play once inside the container.
 
-## Build in OpenShift
+## Build in OpenShift...
+### ...from master:
 ```bash
 oc process -f ../../.openshift/templates/jenkins-agent-generic-template.yml \
     -p NAME=jenkins-agent-python-and-swig \
     -p SOURCE_CONTEXT_DIR=jenkins-agents/jenkins-agent-python-and-swig \
     -p DOCKERFILE_PATH=Dockerfile \
     -p BUILDER_IMAGE_NAME=quay.io/openshift/origin-jenkins-agent-base:4.6 \
-    -p SOURCE_REPOSITORY_REF=feature/jenkins-agent-with-python-and-swig \
+    | oc create -f -
+```
+### ...from another branch (to test it out):
+```bash
+oc process -f ../../.openshift/templates/jenkins-agent-generic-template.yml \
+    -p NAME=jenkins-agent-python-and-swig \
+    -p SOURCE_CONTEXT_DIR=jenkins-agents/jenkins-agent-python-and-swig \
+    -p DOCKERFILE_PATH=Dockerfile \
+    -p BUILDER_IMAGE_NAME=quay.io/openshift/origin-jenkins-agent-base:4.6 \
+    -p SOURCE_REPOSITORY_REF=<your_branch_name> \
     | oc create -f -
 ```
 For all params see the list in the `../../.openshift/templates/jenkins-agent-generic-template.yml` or run `oc process --parameters -f ../../.openshift/templates/jenkins-agent-generic-template.yml`.
