@@ -1,0 +1,17 @@
+pipeline {
+    agent {
+        label 'jenkins-agent-cosign'
+    }
+
+    stages {
+        stage ('Run Test') {
+            steps {
+              sh """
+                  cosign version
+              """
+            }
+        }
+
+    }
+
+}

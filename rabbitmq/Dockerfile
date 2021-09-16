@@ -1,8 +1,8 @@
-FROM registry.access.redhat.com/ubi8/ubi-minimal:8.3
+FROM registry.access.redhat.com/ubi8/ubi-minimal:8.4
 
-ARG ERLANG_VERSION=23.2.5
+ARG ERLANG_VERSION=24.0.5
 ARG RABBITMQ_AUTOCLUSTER_VERSION=0.10.0
-ARG RABBITMQ_VERSION=3.8.13
+ARG RABBITMQ_VERSION=3.8.22
 
 ARG INSTALL_PKGS="\
     hostname \
@@ -15,7 +15,7 @@ LABEL io.k8s.description="Lightweight open source message broker" \
       io.openshift.expose-services="4369:epmd, 5671:amqp, 5672:amqp, 25672:http" \
       io.openshift.tags="rabbitmq"
 
-ENV GPG_KEY=0A9AF2115F4687BD29803A206B73A36E6026DFCA \
+ENV GPG_KEY=0x0A9AF2115F4687BD29803A206B73A36E6026DFCA \
     HOME=/var/lib/rabbitmq \
     RABBITMQ_HOME=/opt/rabbitmq \
     RABBITMQ_LOGS=- \
@@ -34,7 +34,7 @@ RUN set -xe && \
     curl -Lo rabbitmq-server.tar.xz.asc https://github.com/rabbitmq/rabbitmq-server/releases/download/v${RABBITMQ_VERSION}/rabbitmq-server-generic-unix-${RABBITMQ_VERSION}.tar.xz.asc && \
     export GNUPGHOME="$(mktemp -d)" && \
     env | grep GNUPG && \
-    gpg --keyserver hkp://ha.pool.sks-keyservers.net:80 --recv-keys "$GPG_KEY" && \
+    gpg --keyserver hkp://keyserver.ubuntu.com --recv-keys "$GPG_KEY" && \
     gpg --batch --verify rabbitmq-server.tar.xz.asc rabbitmq-server.tar.xz && \
     rm -rf "$GNUPGHOME" && \
     mkdir -p "$RABBITMQ_HOME" && \
