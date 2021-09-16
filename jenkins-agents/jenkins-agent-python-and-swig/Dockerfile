@@ -1,4 +1,4 @@
-FROM quay.io/openshift/origin-jenkins-agent-base:4.5
+FROM quay.io/openshift/origin-jenkins-agent-base:4.9
 
 EXPOSE 8080
 
@@ -10,7 +10,7 @@ ENV PYTHON_VERSION=3.8 \
     LANG=en_US.UTF-8 \
     PIP_NO_CACHE_DIR=off
 
-ADD ubi.repo /etc/yum.repos.d/ubi.repo
+ADD ubi8.repo /etc/yum.repos.d/ubi8.repo
 
 RUN INSTALL_PKGS=" \
       rh-python38 rh-python38-python-devel rh-python38-python-setuptools rh-python38-python-wheel rh-python38-python-pip nss_wrapper \
@@ -34,7 +34,7 @@ ENV BASH_ENV=/usr/share/container-scripts/scl_enable \
     PROMPT_COMMAND=". /usr/share/container-scripts/scl_enable"
 
 # installing Swig (for binding Python to C++) separately, as it is not currently
-# available among the UBI-8 packages:
+# available among the UBI packages:
 # https://access.redhat.com/articles/4238681#ajax-reply-comment-1775201
 RUN yum -y --setopt=tsflags=nodocs --disablerepo='rhel-*' install \
     http://mirror.centos.org/centos/8/AppStream/x86_64/os/Packages/swig-3.0.12-19.module_el8.3.0+557+3d058e38.x86_64.rpm
