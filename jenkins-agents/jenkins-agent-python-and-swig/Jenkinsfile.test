@@ -33,9 +33,9 @@ pipeline {
               //     cd ..
               //     pip install --no-index --find-links ./jamspell_source jamspell
               // """
-              //sh """
-              //    pip install jamspell==0.0.12
-              //"""
+              sh """
+                 pip install jamspell==0.0.12
+              """
             //   sh """
             //       make -v
             //       cmake --version
