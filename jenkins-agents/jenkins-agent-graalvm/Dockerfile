@@ -4,7 +4,7 @@ ENV GRAALVM_HOME=/opt/mandrelJDK
 ENV GRAAL_CE_URL=https://github.com/graalvm/mandrel/releases/download/mandrel-${GRAAL_VERSION}/mandrel-java11-linux-amd64-${GRAAL_VERSION}.tar.gz
 ARG HELM_VERSION=3.6.3
 ARG JQ_VERSION=1.6
-ARG OC_VERSION=4.8.2
+ARG OC_VERSION=4.8
 ARG YQ_VERSION=4.11.2
 
 ADD settings.xml $HOME/.m2/settings.xml
@@ -25,7 +25,8 @@ RUN rm -f /etc/yum.repos.d/*.repo && \
     curl -Lo /usr/local/bin/yq https://github.com/mikefarah/yq/releases/download/v${YQ_VERSION}/yq_linux_amd64 && \
     chmod +x /usr/local/bin/yq && \
     rm -f /usr/bin/oc && \
-    curl -L https://mirror.openshift.com/pub/openshift-v4/x86_64/clients/ocp/${OC_VERSION}/openshift-client-linux.tar.gz | tar -C /usr/local/bin -xzf - && \
+    curl -sL https://mirror.openshift.com/pub/openshift-v4/clients/ocp/stable-${OC_VERSION}/openshift-client-linux.tar.gz \
+    | tar zxf - -C /usr/local/bin oc kubectl && \
     ### Cleanup
     dnf clean all && \
     rm -rf /var/cache/yum
