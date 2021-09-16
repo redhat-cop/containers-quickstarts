@@ -13,7 +13,8 @@ oc process -f ../../.openshift/templates/jenkins-agent-generic-template.yml \
     -p NAME=jenkins-agent-python-and-swig \
     -p SOURCE_CONTEXT_DIR=jenkins-agents/jenkins-agent-python-and-swig \
     -p DOCKERFILE_PATH=Dockerfile \
-    -p BUILDER_IMAGE_NAME=quay.io/openshift/origin-jenkins-agent-base:4.6\
+    -p BUILDER_IMAGE_NAME=quay.io/openshift/origin-jenkins-agent-base:4.6 \
+    -p SOURCE_REPOSITORY_REF=feature/jenkins-agent-with-python-and-swig \
     | oc create -f -
 ```
 For all params see the list in the `../../.openshift/templates/jenkins-agent-generic-template.yml` or run `oc process --parameters -f ../../.openshift/templates/jenkins-agent-generic-template.yml`.
