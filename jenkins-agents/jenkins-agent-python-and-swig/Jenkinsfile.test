@@ -8,7 +8,7 @@ pipeline {
             steps {
               sh """
                   python -V
-                  g++ -v
+                  swig -v
               """
             }
         }
