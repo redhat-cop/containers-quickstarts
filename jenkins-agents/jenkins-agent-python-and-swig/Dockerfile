@@ -10,18 +10,17 @@ ENV PYTHON_VERSION=3.8 \
     LANG=en_US.UTF-8 \
     PIP_NO_CACHE_DIR=off
 
-ADD ubi8.repo /etc/yum.repos.d
+ADD ubi8.repo /tmp/ubi8.repo
 
 RUN INSTALL_PKGS=" \
       python38 python38-devel nss_wrapper httpd httpd-devel mod_ssl mod_ldap \
       mod_session atlas-devel gcc-gfortran libffi-devel libtool-ltdl enchant" && \
-    DISABLE_REPOS=--disablerepo='rhel-*' && \
-    yum -y localinstall http://mirror.centos.org/centos/7/os/x86_64/Packages/libtirpc-0.2.4-0.16.el7.x86_64.rpm && \
-    yum $DISABLE_REPOS install -y yum-utils && \
-    yum -y --setopt=tsflags=nodocs $DISABLE_REPOS install $INSTALL_PKGS && \
-    yum -y clean all --enablerepo='*' && \
-    source scl_source enable python38 && \
-    scl enable python38 bash && \
+    rm -f /etc/yum.repos.d/*.repo && \
+    mv /tmp/ubi8.repo /etc/yum.repos.d && \
+    dnf -y --setopt=tsflags=nodocs install $INSTALL_PKGS && \
+    rpm -V $INSTALL_PKGS && \
+    dnf -y clean all && \
+    alternatives --set python3 /usr/bin/python3.8 && \
     python3 -m pip install --upgrade pip && \
     python3 -m pip install twine
 
