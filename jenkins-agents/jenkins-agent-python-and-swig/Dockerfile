@@ -47,4 +47,18 @@ RUN wget https://cmake.org/files/v3.12/cmake-3.12.3.tar.gz \
     && make -j$(nproc) \
     && make install
 
+# installing Boost:
+RUN wget https://cfhcable.dl.sourceforge.net/project/boost/boost/1.54.0/boost_1_54_0.tar.gz \
+    && tar -xzf boost_1_* \
+    && cd boost_1_* \
+    && ./bootstrap.sh --prefix=/opt/boost \
+    && ./b2 install --prefix=/opt/boost --with=all
+
+    # && yum -y --setopt=tsflags=nodocs --disablerepo='rhel-*' install \
+    # http://mirror.centos.org/centos/8/AppStream/x86_64/os/Packages/boost-1.66.0-10.el8.x86_64.rpm \
+    # && yum -y --setopt=tsflags=nodocs --disablerepo='rhel-*' install \
+    # http://mirror.centos.org/centos/8/AppStream/x86_64/os/Packages/boost-thread-1.66.0-10.el8.x86_64.rpm \
+    # && yum -y --setopt=tsflags=nodocs --disablerepo='rhel-*' install \
+    # http://mirror.centos.org/centos/8/AppStream/x86_64/os/Packages/boost-devel-1.66.0-10.el8.i686.rpm
+
 USER 1001

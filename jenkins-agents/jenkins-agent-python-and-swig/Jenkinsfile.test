@@ -11,6 +11,53 @@ pipeline {
                   gcc --version
                   swig -version
               """
+              // sh """
+              //     pip download --dest ./jamspell_source jamspell==0.0.12
+              //     cd ./jamspell_source
+              //     tar -xf jamspell-0.0.12.tar.gz
+              //     rm -rf jamspell-0.0.12.tar.gz
+              //     ls
+              //     echo '------------------------------------------------------------------------------------'
+              //     cat ./jamspell-0.0.12/jamspell/CMakeLists.txt
+              //     echo 'option(USE_BOOST_CONVERT "use Boost.Locale instead of std::codecvt for string conversion" ON)' >> ./jamspell-0.0.12/jamspell/CMakeLists.txt
+              //     cat ./jamspell-0.0.12/jamspell/CMakeLists.txt
+              //     echo '------------------------------------------------------------------------------------'
+              //     cat ./jamspell-0.0.12/contrib/CMakeLists.txt
+              //     echo 'option(USE_BOOST_CONVERT "use Boost.Locale instead of std::codecvt for string conversion" ON)' >> ./jamspell-0.0.12/contrib/CMakeLists.txt
+              //     cat ./jamspell-0.0.12/contrib/CMakeLists.txt
+              //     echo '------------------------------------------------------------------------------------'
+              //     ls
+              //     tar -czvf jamspell-0.0.12.tar.gz jamspell-0.0.12
+              //     rm -rf jamspell-0.0.12
+              //     ls
+              //     cd ..
+              //     pip install --no-index --find-links ./jamspell_source jamspell
+              // """
+              //sh """
+              //    pip install jamspell==0.0.12
+              //"""
+              sh """
+                  make -v
+                  cmake --version
+                  git clone https://github.com/bakwc/JamSpell.git
+                  ls
+                  cd JamSpell
+                  ls
+                  # echo '------------------------------------------------------------------------------------'
+                  # cat ./CMakeLists.txt
+                  # sed --in-place 's/option(USE_BOOST_CONVERT "use Boost.Locale instead of std::codecvt for string conversion" OFF)/option(USE_BOOST_CONVERT "use Boost.Locale instead of std::codecvt for string conversion" ON)/' ./CMakeLists.txt
+                  # cat ./CMakeLists.txt
+                  # echo '------------------------------------------------------------------------------------'
+                  mkdir build
+                  cd build
+                  cmake -DBOOST_ROOT=/usr/local -DUSE_BOOST_CONVERT=ON ..
+                  make
+                  ls
+                  cd ..
+                  ls
+                  cd ..
+                  ls
+              """
             }
         }
 
