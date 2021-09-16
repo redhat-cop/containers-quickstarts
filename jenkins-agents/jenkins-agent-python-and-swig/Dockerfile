@@ -1,4 +1,4 @@
-FROM quay.io/openshift/origin-jenkins-agent-base:4.9
+FROM quay.io/openshift/origin-jenkins-agent-base:4.5
 
 EXPOSE 8080
 
@@ -38,5 +38,8 @@ ENV BASH_ENV=/usr/share/container-scripts/scl_enable \
 # https://access.redhat.com/articles/4238681#ajax-reply-comment-1775201
 RUN yum -y --setopt=tsflags=nodocs --disablerepo='rhel-*' install \
     http://mirror.centos.org/centos/8/AppStream/x86_64/os/Packages/swig-3.0.12-19.module_el8.3.0+557+3d058e38.x86_64.rpm
+
+RUN yum -y --setopt=tsflags=nodocs --disablerepo='rhel-*' install \
+    http://mirror.centos.org/centos/8/AppStream/x86_64/os/Packages/gcc-toolset-9-runtime-9.0-4.el8.x86_64.rpm
 
 USER 1001
