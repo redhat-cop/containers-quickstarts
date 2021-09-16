@@ -39,7 +39,12 @@ ENV BASH_ENV=/usr/share/container-scripts/scl_enable \
 RUN yum -y --setopt=tsflags=nodocs --disablerepo='rhel-*' install \
     http://mirror.centos.org/centos/8/AppStream/x86_64/os/Packages/swig-3.0.12-19.module_el8.3.0+557+3d058e38.x86_64.rpm
 
-RUN yum -y --setopt=tsflags=nodocs --disablerepo='rhel-*' install \
-    http://mirror.centos.org/centos/8/AppStream/x86_64/os/Packages/gcc-toolset-9-runtime-9.0-4.el8.x86_64.rpm
+# installing cmake:
+RUN wget https://cmake.org/files/v3.12/cmake-3.12.3.tar.gz \
+    && tar zxvf cmake-3.* \
+    && cd cmake-3.* \
+    && ./bootstrap --prefix=/usr/local \
+    && make -j$(nproc) \
+    && make install
 
 USER 1001
