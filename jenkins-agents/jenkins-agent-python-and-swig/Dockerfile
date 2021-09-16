@@ -14,7 +14,8 @@ ADD ubi8.repo /tmp/ubi8.repo
 
 RUN INSTALL_PKGS=" \
       python38 python38-devel nss_wrapper httpd httpd-devel mod_ssl mod_ldap \
-      mod_session atlas-devel gcc-gfortran libffi-devel libtool-ltdl enchant" && \
+      mod_session atlas-devel gcc-gfortran libffi-devel libtool-ltdl enchant \
+      gcc-c++" && \
     rm -f /etc/yum.repos.d/*.repo && \
     mv /tmp/ubi8.repo /etc/yum.repos.d && \
     dnf -y --setopt=tsflags=nodocs install $INSTALL_PKGS && \
