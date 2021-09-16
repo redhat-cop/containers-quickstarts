@@ -10,7 +10,7 @@ ENV PYTHON_VERSION=3.8 \
     LANG=en_US.UTF-8 \
     PIP_NO_CACHE_DIR=off
 
-ADD ubi8.repo /etc/yum.repos.d/ubi8.repo
+ADD ubi.repo /etc/yum.repos.d/ubi.repo
 
 RUN INSTALL_PKGS=" \
       rh-python38 rh-python38-python-devel rh-python38-python-setuptools rh-python38-python-wheel rh-python38-python-pip nss_wrapper \
