@@ -36,28 +36,28 @@ pipeline {
               //sh """
               //    pip install jamspell==0.0.12
               //"""
-              sh """
-                  make -v
-                  cmake --version
-                  git clone https://github.com/bakwc/JamSpell.git
-                  ls
-                  cd JamSpell
-                  ls
-                  # echo '------------------------------------------------------------------------------------'
-                  # cat ./CMakeLists.txt
-                  # sed --in-place 's/option(USE_BOOST_CONVERT "use Boost.Locale instead of std::codecvt for string conversion" OFF)/option(USE_BOOST_CONVERT "use Boost.Locale instead of std::codecvt for string conversion" ON)/' ./CMakeLists.txt
-                  # cat ./CMakeLists.txt
-                  # echo '------------------------------------------------------------------------------------'
-                  mkdir build
-                  cd build
-                  cmake -DBOOST_ROOT=/usr/local -DUSE_BOOST_CONVERT=ON ..
-                  make
-                  ls
-                  cd ..
-                  ls
-                  cd ..
-                  ls
-              """
+            //   sh """
+            //       make -v
+            //       cmake --version
+            //       git clone https://github.com/bakwc/JamSpell.git
+            //       ls
+            //       cd JamSpell
+            //       ls
+            //       # echo '------------------------------------------------------------------------------------'
+            //       # cat ./CMakeLists.txt
+            //       # sed --in-place 's/option(USE_BOOST_CONVERT "use Boost.Locale instead of std::codecvt for string conversion" OFF)/option(USE_BOOST_CONVERT "use Boost.Locale instead of std::codecvt for string conversion" ON)/' ./CMakeLists.txt
+            //       # cat ./CMakeLists.txt
+            //       # echo '------------------------------------------------------------------------------------'
+            //       mkdir build
+            //       cd build
+            //       cmake -DBOOST_ROOT=/usr/local -DUSE_BOOST_CONVERT=ON ..
+            //       make
+            //       ls
+            //       cd ..
+            //       ls
+            //       cd ..
+            //       ls
+            //   """
             }
         }
 
