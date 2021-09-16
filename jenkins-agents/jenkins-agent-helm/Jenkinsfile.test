@@ -15,6 +15,7 @@ pipeline {
                   oc version
                   kubectl version
                   conftest --version
+                  kube-linter version
               """
             }
         }
