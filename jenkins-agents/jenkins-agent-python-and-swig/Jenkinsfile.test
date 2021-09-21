@@ -1,0 +1,19 @@
+pipeline {
+    agent {
+      label 'jenkins-agent-python-and-swig'
+    }
+
+    stages {
+        stage ('Run Test') {
+            steps {
+              sh """
+                  python -V
+                  gcc --version
+                  swig -version
+              """
+            }
+        }
+
+    }
+
+}
