@@ -1,10 +1,10 @@
-FROM registry.access.redhat.com/ubi8/ubi-minimal:8.3
+FROM registry.access.redhat.com/ubi8/ubi-minimal:8.4
 
 USER root
 
 ARG YQ_VERSION=4.11.2
 
-RUN microdnf install --assumeyes --nodocs openssl tar findutils gzip && \
+RUN microdnf install --assumeyes --nodocs openssl tar git findutils gzip && \
     microdnf update && \
     microdnf clean all
 
