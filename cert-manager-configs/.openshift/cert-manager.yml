@@ -16,7 +16,7 @@ objects:
       name: aws-secret-access-key-secret
     type: Opaque
   - kind: ClusterIssuer
-    apiVersion: cert-manager.io/v1alpha2
+    apiVersion: cert-manager.io/v1
     metadata:
       name: "${NAME}-production"
     spec:

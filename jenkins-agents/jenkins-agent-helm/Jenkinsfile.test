@@ -7,7 +7,7 @@ pipeline {
         stage ('Run Test') {
             steps {
               sh """
-                  helm help
+                  helm version
                   ct version
                   ls -l ${HOME}/.ct
                   git version
@@ -15,6 +15,8 @@ pipeline {
                   oc version
                   kubectl version
                   conftest --version
+                  yq --version
+                  kube-linter version
               """
             }
         }

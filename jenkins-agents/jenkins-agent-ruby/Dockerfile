@@ -1,7 +1,7 @@
-FROM quay.io/openshift/origin-jenkins-agent-base:4.6
+FROM quay.io/openshift/origin-jenkins-agent-base:4.8
 
 ARG RUBY_VERSION=2.6
-ARG OC_VERSION=4.4
+ARG OC_VERSION=4.8
 
 ENV SUMMARY="Platform for building and running Ruby $RUBY_VERSION applications" \
     DESCRIPTION="Ruby $RUBY_VERSION available as docker container is a base platform for \
@@ -41,8 +41,8 @@ RUN rm -f /etc/yum.repos.d/*.repo && \
     dnf clean all -y && \
     rm -rf /var/cache/dnf
 
-RUN curl -L https://mirror.openshift.com/pub/openshift-v4/clients/oc/${OC_VERSION}/linux/oc.tar.gz | tar -C /usr/local/bin -xzf - && \
-    chmod +x /usr/local/bin/oc
+RUN curl -sL https://mirror.openshift.com/pub/openshift-v4/clients/ocp/stable-${OC_VERSION}/openshift-client-linux.tar.gz \
+    | tar zxf - -C /usr/local/bin oc kubectl
 
 # Copy extra files to the image.
 COPY ./root/ /

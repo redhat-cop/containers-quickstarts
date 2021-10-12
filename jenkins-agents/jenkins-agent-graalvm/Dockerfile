@@ -1,11 +1,11 @@
-FROM quay.io/openshift/origin-jenkins-agent-maven:4.6
-ARG GRAAL_VERSION=20.3.1.2.Final
+FROM quay.io/openshift/origin-jenkins-agent-maven:4.8
+ARG GRAAL_VERSION=20.3.3.0-Final
 ENV GRAALVM_HOME=/opt/mandrelJDK
 ENV GRAAL_CE_URL=https://github.com/graalvm/mandrel/releases/download/mandrel-${GRAAL_VERSION}/mandrel-java11-linux-amd64-${GRAAL_VERSION}.tar.gz
-ARG HELM_VERSION=3.5.2
+ARG HELM_VERSION=3.6.3
 ARG JQ_VERSION=1.6
-ARG OC_VERSION=4.6
-ARG YQ_VERSION=4.5.1
+ARG OC_VERSION=4.8
+ARG YQ_VERSION=4.11.2
 
 ADD settings.xml $HOME/.m2/settings.xml
 ADD ubi8.repo /tmp/ubi8.repo
@@ -13,6 +13,7 @@ ADD ubi8.repo /tmp/ubi8.repo
 USER root
 RUN rm -f /etc/yum.repos.d/*.repo && \
     mv /tmp/ubi8.repo /etc/yum.repos.d/ubi8.repo && \
+    dnf -y update --allowerasing && \
     dnf install -y gcc gcc-c++ glibc-static glibc-devel zlib-devel && \
     ### tools
     mkdir -p ${GRAALVM_HOME} && \
@@ -24,7 +25,8 @@ RUN rm -f /etc/yum.repos.d/*.repo && \
     curl -Lo /usr/local/bin/yq https://github.com/mikefarah/yq/releases/download/v${YQ_VERSION}/yq_linux_amd64 && \
     chmod +x /usr/local/bin/yq && \
     rm -f /usr/bin/oc && \
-    curl -L http://mirror.openshift.com/pub/openshift-v4/clients/oc/${OC_VERSION}/linux/oc.tar.gz | tar -C /usr/local/bin -xzf - && \
+    curl -sL https://mirror.openshift.com/pub/openshift-v4/clients/ocp/stable-${OC_VERSION}/openshift-client-linux.tar.gz \
+    | tar zxf - -C /usr/local/bin oc kubectl && \
     ### Cleanup
     dnf clean all && \
     rm -rf /var/cache/yum

@@ -46,7 +46,7 @@ objects:
         nLRbwHOoq7hHwg==
         -----END CERTIFICATE-----
   - kind: Certificate
-    apiVersion: cert-manager.io/v1alpha2
+    apiVersion: cert-manager.io/v1
     metadata:
       name: "api-${NAME}-cert"
       namespace: ${API_CERT_NAMESPACE}
@@ -58,7 +58,7 @@ objects:
       dnsNames:
         - "api.${DNS_DOMAIN}"
   - kind: Certificate
-    apiVersion: cert-manager.io/v1alpha2
+    apiVersion: cert-manager.io/v1
     metadata:
       name: ingress-${NAME}-cert
       namespace: ${INGRESS_CERT_NAMESPACE}

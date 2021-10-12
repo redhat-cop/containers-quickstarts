@@ -84,3 +84,4 @@ RUN pip3 install --no-cache-dir \
 USER 1001
 
 CMD ["/bin/bash"]
+

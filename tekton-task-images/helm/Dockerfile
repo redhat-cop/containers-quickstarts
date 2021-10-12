@@ -1,15 +1,23 @@
-FROM registry.access.redhat.com/ubi8/ubi-minimal:8.3
+FROM registry.access.redhat.com/ubi8/ubi-minimal:8.4
 
 USER root
 
-RUN microdnf install --assumeyes --nodocs tar gzip && \
+ARG YQ_VERSION=4.11.2
+
+RUN microdnf install --assumeyes --nodocs openssl tar git findutils gzip && \
     microdnf update && \
     microdnf clean all
 
 ADD VERSION /tmp/version
+# helm
 RUN source /tmp/version && \
-  curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 && \
-  chmod 700 get_helm.sh && \
-  ./get_helm.sh --version ${HELM_VERSION}
+    curl -sL https://get.helm.sh/helm-v${HELM_VERSION}-linux-amd64.tar.gz | \
+    tar zxf - -C /usr/local/bin --strip-components 1 linux-amd64/helm && \
+    echo "⚓️⚓️⚓️⚓️⚓️"
+
+# yq
+RUN curl -sLo /usr/local/bin/yq https://github.com/mikefarah/yq/releases/download/v${YQ_VERSION}/yq_linux_amd64 && \
+    chmod +x /usr/local/bin/yq && \
+    echo "🦨🦨🦨🦨🦨"
 
 USER 1001

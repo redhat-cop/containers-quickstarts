@@ -1,8 +1,8 @@
-FROM quay.io/openshift/origin-jenkins-agent-base:4.6
+FROM quay.io/openshift/origin-jenkins-agent-base:4.8
 
 LABEL com.redhat.component="jenkins-agent-rust-ubi7-docker" \
       name="openshift/origin-jenkins-agent-rust-ubi7" \
-      version="4.4" \
+      version="4.8" \
       architecture="x86_64" \
       release="1" \
       io.k8s.display_name="Jenkins Agent Rust" \

@@ -12,6 +12,12 @@ imagePullSecrets: []
 nameOverride: rabbitmq
 fullnameOverride: ""
 
+build:
+  enabled: false
+  contextDir: rabbitmq
+  repositoryRef: master
+  repositoryUrl: https://github.com/redhat-cop/containers-quickstarts
+
 serviceAccount:
   # Specifies whether a service account should be created
   create: true

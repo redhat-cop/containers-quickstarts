@@ -1,4 +1,4 @@
-FROM quay.io/openshift/origin-jenkins-agent-base:4.6
+FROM quay.io/openshift/origin-jenkins-agent-base:4.8
 
 ARG ERLANG_VERSION=22.1.4
 ARG REBAR3_VERSION=3.12.0
