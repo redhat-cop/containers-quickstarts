@@ -31,7 +31,6 @@ USER root
 # including asciidoctor itself
 
 RUN dnf install -y \
-    python3 \
     python3-devel \
     git \
     ruby \
