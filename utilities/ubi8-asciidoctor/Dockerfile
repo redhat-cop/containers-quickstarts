@@ -2,32 +2,30 @@ FROM registry.access.redhat.com/ubi8:latest
 
 LABEL MAINTAINERS="Red Hat Services"
 
-ARG asciidoctor_version=2.0.15
+ARG asciidoctor_version=2.0.16
 ARG asciidoctor_confluence_version=0.0.2
-ARG asciidoctor_pdf_version=1.6.0
-ARG asciidoctor_diagram_version=2.1.2
+ARG asciidoctor_pdf_version=1.6.1
+ARG asciidoctor_diagram_version=2.2.1
 ARG asciidoctor_epub3_version=1.5.1
 ARG asciidoctor_mathematical_version=0.3.5
 ARG asciidoctor_revealjs_version=4.1.0
-ARG kramdown_asciidoc_version=1.0.1
+ARG kramdown_asciidoc_version=2.0.0
 ARG asciidoctor_bibtex_version=0.8.0
-ARG pandoc_version=2.13
+ARG pandoc_version=2.14.2
 
 
 ENV ASCIIDOCTOR_VERSION=${asciidoctor_version} \
-  ASCIIDOCTOR_CONFLUENCE_VERSION=${asciidoctor_confluence_version} \
-  ASCIIDOCTOR_PDF_VERSION=${asciidoctor_pdf_version} \
-  ASCIIDOCTOR_DIAGRAM_VERSION=${asciidoctor_diagram_version} \
-  ASCIIDOCTOR_EPUB3_VERSION=${asciidoctor_epub3_version} \
-  ASCIIDOCTOR_MATHEMATICAL_VERSION=${asciidoctor_mathematical_version} \
-  ASCIIDOCTOR_REVEALJS_VERSION=${asciidoctor_revealjs_version} \
-  KRAMDOWN_ASCIIDOC_VERSION=${kramdown_asciidoc_version} \
-  ASCIIDOCTOR_BIBTEX_VERSION=${asciidoctor_bibtex_version} \
-  PANDOC_VERSION=${pandoc_version}
-
+    ASCIIDOCTOR_CONFLUENCE_VERSION=${asciidoctor_confluence_version} \
+    ASCIIDOCTOR_PDF_VERSION=${asciidoctor_pdf_version} \
+    ASCIIDOCTOR_DIAGRAM_VERSION=${asciidoctor_diagram_version} \
+    ASCIIDOCTOR_EPUB3_VERSION=${asciidoctor_epub3_version} \
+    ASCIIDOCTOR_MATHEMATICAL_VERSION=${asciidoctor_mathematical_version} \
+    ASCIIDOCTOR_REVEALJS_VERSION=${asciidoctor_revealjs_version} \
+    KRAMDOWN_ASCIIDOC_VERSION=${kramdown_asciidoc_version} \
+    ASCIIDOCTOR_BIBTEX_VERSION=${asciidoctor_bibtex_version} \
+   PANDOC_VERSION=${pandoc_version}
 
 USER root
-
 
 # Installing Ruby Gems needed in the image
 # including asciidoctor itself
@@ -36,9 +34,9 @@ RUN dnf install -y \
     python3-devel \
     git \
     ruby \
-    make \ 
+    make \
     gcc \
-    redhat-rpm-config \ 
+    redhat-rpm-config \
     ruby-devel \
     && gem install --no-document \
     "asciidoctor:${ASCIIDOCTOR_VERSION}" \
@@ -56,9 +54,10 @@ RUN dnf install -y \
     slim \
     thread_safe \
     tilt \
-    "asciidoctor-bibtex:${ASCIIDOCTOR_BIBTEX_VERSION}" \ 
-  && rm -rf /usr/local/share/gems/cache \
-  && dnf clean all && rm -rf /var/lib/dnf
+    "asciidoctor-bibtex:${ASCIIDOCTOR_BIBTEX_VERSION}" \
+    && rm -rf /usr/local/share/gems/cache \
+    && dnf clean all \
+    && rm -rf /var/lib/dnf
 
 # install pandoc
 RUN curl -L https://github.com/jgm/pandoc/releases/download/${PANDOC_VERSION}/pandoc-${PANDOC_VERSION}-linux-amd64.tar.gz | tar xvz --strip-components 1 -C /usr/local/
@@ -69,6 +68,7 @@ VOLUME /documents
 RUN mkdir /home/work \
     && chgrp -R 0 /home/work \
     && chmod -R g=u /home/work
+
 ENV HOME=/home/work
 
 # Installing Python dependencies for additional
@@ -82,4 +82,3 @@ RUN pip3 install --no-cache-dir \
 USER 1001
 
 CMD ["/bin/bash"]
-
