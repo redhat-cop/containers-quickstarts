@@ -15,33 +15,31 @@ ARG pandoc_version=2.14.2
 
 
 ENV ASCIIDOCTOR_VERSION=${asciidoctor_version} \
-  ASCIIDOCTOR_CONFLUENCE_VERSION=${asciidoctor_confluence_version} \
-  ASCIIDOCTOR_PDF_VERSION=${asciidoctor_pdf_version} \
-  ASCIIDOCTOR_DIAGRAM_VERSION=${asciidoctor_diagram_version} \
-  ASCIIDOCTOR_EPUB3_VERSION=${asciidoctor_epub3_version} \
-  ASCIIDOCTOR_MATHEMATICAL_VERSION=${asciidoctor_mathematical_version} \
-  ASCIIDOCTOR_REVEALJS_VERSION=${asciidoctor_revealjs_version} \
-  KRAMDOWN_ASCIIDOC_VERSION=${kramdown_asciidoc_version} \
-  ASCIIDOCTOR_BIBTEX_VERSION=${asciidoctor_bibtex_version} \
-  PANDOC_VERSION=${pandoc_version}
-
+    ASCIIDOCTOR_CONFLUENCE_VERSION=${asciidoctor_confluence_version} \
+    ASCIIDOCTOR_PDF_VERSION=${asciidoctor_pdf_version} \
+    ASCIIDOCTOR_DIAGRAM_VERSION=${asciidoctor_diagram_version} \
+    ASCIIDOCTOR_EPUB3_VERSION=${asciidoctor_epub3_version} \
+    ASCIIDOCTOR_MATHEMATICAL_VERSION=${asciidoctor_mathematical_version} \
+    ASCIIDOCTOR_REVEALJS_VERSION=${asciidoctor_revealjs_version} \
+    KRAMDOWN_ASCIIDOC_VERSION=${kramdown_asciidoc_version} \
+    ASCIIDOCTOR_BIBTEX_VERSION=${asciidoctor_bibtex_version} \
+   PANDOC_VERSION=${pandoc_version}
 
 USER root
-
 
 # Installing Ruby Gems needed in the image
 # including asciidoctor itself
 
 RUN dnf install -y \
-  python3 \
-  python3-devel \
-  git \
-  ruby \
-  make \
-  gcc \
-  redhat-rpm-config \
-  ruby-devel \
-  && gem install --no-document \
+    python3 \
+    python3-devel \
+    git \
+    ruby \
+    make \
+    gcc \
+    redhat-rpm-config \
+    ruby-devel \
+    && gem install --no-document \
     "asciidoctor:${ASCIIDOCTOR_VERSION}" \
     "asciidoctor-confluence:${ASCIIDOCTOR_CONFLUENCE_VERSION}" \
     "asciidoctor-diagram:${ASCIIDOCTOR_DIAGRAM_VERSION}" \
@@ -71,6 +69,7 @@ VOLUME /documents
 RUN mkdir /home/work \
     && chgrp -R 0 /home/work \
     && chmod -R g=u /home/work
+
 ENV HOME=/home/work
 
 # Installing Python dependencies for additional
@@ -84,4 +83,3 @@ RUN pip3 install --no-cache-dir \
 USER 1001
 
 CMD ["/bin/bash"]
-
