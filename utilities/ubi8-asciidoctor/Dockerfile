@@ -2,16 +2,16 @@ FROM registry.access.redhat.com/ubi8:latest
 
 LABEL MAINTAINERS="Red Hat Services"
 
-ARG asciidoctor_version=2.0.15
+ARG asciidoctor_version=2.0.16
 ARG asciidoctor_confluence_version=0.0.2
-ARG asciidoctor_pdf_version=1.6.0
-ARG asciidoctor_diagram_version=2.1.2
+ARG asciidoctor_pdf_version=1.6.1
+ARG asciidoctor_diagram_version=2.2.1
 ARG asciidoctor_epub3_version=1.5.1
 ARG asciidoctor_mathematical_version=0.3.5
 ARG asciidoctor_revealjs_version=4.1.0
-ARG kramdown_asciidoc_version=1.0.1
+ARG kramdown_asciidoc_version=2.0.0
 ARG asciidoctor_bibtex_version=0.8.0
-ARG pandoc_version=2.13
+ARG pandoc_version=2.14.2
 
 
 ENV ASCIIDOCTOR_VERSION=${asciidoctor_version} \
@@ -32,33 +32,20 @@ USER root
 # Installing Ruby Gems needed in the image
 # including asciidoctor itself
 
-RUN dnf install -y \
-    python3 \
-    git \
-    ruby \
-    make \ 
-    gcc \
-    redhat-rpm-config \ 
-    ruby-devel \
-    && gem install --no-document \
+RUN dnf install -y \ python3 \ git \ ruby \ make \ gcc \
+    redhat-rpm-config \ ruby-devel \ && gem install --no-document \
     "asciidoctor:${ASCIIDOCTOR_VERSION}" \
     "asciidoctor-confluence:${ASCIIDOCTOR_CONFLUENCE_VERSION}" \
     "asciidoctor-diagram:${ASCIIDOCTOR_DIAGRAM_VERSION}" \
-    "asciidoctor-epub3:${ASCIIDOCTOR_EPUB3_VERSION}" \
-    asciimath \
+    "asciidoctor-epub3:${ASCIIDOCTOR_EPUB3_VERSION}" \ asciimath \
     "asciidoctor-pdf:${ASCIIDOCTOR_PDF_VERSION}" \
-    "asciidoctor-revealjs:${ASCIIDOCTOR_REVEALJS_VERSION}" \
-    coderay \
-    epubcheck-ruby:4.2.4.0 \
-    haml \
-    "kramdown-asciidoc:${KRAMDOWN_ASCIIDOC_VERSION}" \
-    rouge \
-    slim \
-    thread_safe \
-    tilt \
-    "asciidoctor-bibtex:${ASCIIDOCTOR_BIBTEX_VERSION}" \ 
-  && rm -rf /usr/local/share/gems/cache \
-  && dnf clean all && rm -rf /var/lib/dnf
+    "asciidoctor-revealjs:${ASCIIDOCTOR_REVEALJS_VERSION}" \ coderay \
+    epubcheck-ruby:4.2.4.0 \ haml \
+    "kramdown-asciidoc:${KRAMDOWN_ASCIIDOC_VERSION}" \ rouge \ slim \
+    thread_safe \ tilt \
+    "asciidoctor-bibtex:${ASCIIDOCTOR_BIBTEX_VERSION}" \ && rm -rf
+    /usr/local/share/gems/cache \ && dnf clean all && rm -rf
+    /var/lib/dnf
 
 # install pandoc
 RUN curl -L https://github.com/jgm/pandoc/releases/download/${PANDOC_VERSION}/pandoc-${PANDOC_VERSION}-linux-amd64.tar.gz | tar xvz --strip-components 1 -C /usr/local/
@@ -82,4 +69,3 @@ RUN pip3 install --no-cache-dir \
 USER 1001
 
 CMD ["/bin/bash"]
-
