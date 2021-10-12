@@ -32,20 +32,35 @@ USER root
 # Installing Ruby Gems needed in the image
 # including asciidoctor itself
 
-RUN dnf install -y \ python3 \ git \ ruby \ make \ gcc \
-    redhat-rpm-config \ ruby-devel \ && gem install --no-document \
+RUN dnf install -y \
+  python3 \
+  python3-devel \
+  git \
+  ruby \
+  make \
+  gcc \
+  redhat-rpm-config \
+  ruby-devel \
+  && gem install --no-document \
     "asciidoctor:${ASCIIDOCTOR_VERSION}" \
     "asciidoctor-confluence:${ASCIIDOCTOR_CONFLUENCE_VERSION}" \
     "asciidoctor-diagram:${ASCIIDOCTOR_DIAGRAM_VERSION}" \
-    "asciidoctor-epub3:${ASCIIDOCTOR_EPUB3_VERSION}" \ asciimath \
+    "asciidoctor-epub3:${ASCIIDOCTOR_EPUB3_VERSION}" \
+    asciimath \
     "asciidoctor-pdf:${ASCIIDOCTOR_PDF_VERSION}" \
-    "asciidoctor-revealjs:${ASCIIDOCTOR_REVEALJS_VERSION}" \ coderay \
-    epubcheck-ruby:4.2.4.0 \ haml \
-    "kramdown-asciidoc:${KRAMDOWN_ASCIIDOC_VERSION}" \ rouge \ slim \
-    thread_safe \ tilt \
-    "asciidoctor-bibtex:${ASCIIDOCTOR_BIBTEX_VERSION}" \ && rm -rf
-    /usr/local/share/gems/cache \ && dnf clean all && rm -rf
-    /var/lib/dnf
+    "asciidoctor-revealjs:${ASCIIDOCTOR_REVEALJS_VERSION}" \
+    coderay \
+    epubcheck-ruby:4.2.4.0 \
+    haml \
+    "kramdown-asciidoc:${KRAMDOWN_ASCIIDOC_VERSION}" \
+    rouge \
+    slim \
+    thread_safe \
+    tilt \
+    "asciidoctor-bibtex:${ASCIIDOCTOR_BIBTEX_VERSION}" \
+    && rm -rf /usr/local/share/gems/cache \
+    && dnf clean all \
+    && rm -rf /var/lib/dnf
 
 # install pandoc
 RUN curl -L https://github.com/jgm/pandoc/releases/download/${PANDOC_VERSION}/pandoc-${PANDOC_VERSION}-linux-amd64.tar.gz | tar xvz --strip-components 1 -C /usr/local/
