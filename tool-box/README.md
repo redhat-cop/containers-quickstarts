@@ -6,15 +6,16 @@ This container exists to help people that can't install ansible, git or other ne
 
 ## What's in the box? 👱‍♂
 
-- `oc` version 4.4.7
+- `oc` version 4.9.5
 - `ansible` v2.9 (stable from `pip`)
 - `python` v3.6
 - `git` 2.18.4
+- `zip`
 - `unzip` 6.0-43
 - `jq` v1.6
 - `odo` 1.2.1
-- `helm` Client v3.2.1
-- `tkn` Client v0.9.0
+- `helm` Client v3.2.3
+- `tkn` Client v0.21.0
 
 If you need something not here, let us know in an issue or submit a PR.
 
