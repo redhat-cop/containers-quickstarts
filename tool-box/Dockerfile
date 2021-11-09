@@ -19,6 +19,7 @@ RUN curl -o jq --fail -sL https://github.com/stedolan/jq/releases/download/jq-${
 
 RUN mkdir -m 775 $HOME && \
     chmod 775 /etc/passwd && \
+    pip3 install --upgrade pip && \
     pip3 install git+https://github.com/ansible/ansible.git@stable-${ANSIBLE_VERSION}
 
 RUN curl --fail -s https://get.helm.sh/helm-${HELM_VERSION}-linux-amd64.tar.gz | tar -xvz && \
