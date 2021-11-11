@@ -34,7 +34,9 @@ RUN set -x \
      && rm -rf /var/cache/dnf \
      && alternatives --set python3 /usr/bin/python3.8 \
      && python3 -m pip install ${PIP_PKGS} \
-    && echo
+     && chmod -R 775 /etc/alternatives \
+     && chmod -R 775 /var/lib/alternatives \
+     && echo
 
 USER 1001
 ENV \
