@@ -37,7 +37,9 @@ RUN INSTALL_PKGS="git python38 python38-pip" && \
     dnf -y clean all && \
     alternatives --set python3 /usr/bin/python3.8 && \
     python3 -m pip install yamale==3.0.1 && \
-    python3 -m pip install yamllint==1.24.1
+    python3 -m pip install yamllint==1.24.1 && \
+    chmod -R 775 /var/lib/alternatives && \
+    chmod -R 775 /etc/alternatives
 
 ## Install oc and kubectl
 RUN curl -sL https://mirror.openshift.com/pub/openshift-v4/clients/ocp/stable-${OPENSHIFT_CLIENT_VERSION}/openshift-client-linux.tar.gz \
