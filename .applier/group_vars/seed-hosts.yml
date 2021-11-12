@@ -7,7 +7,7 @@ templates_repo_ref: v1.4.16
 jenkins_agents:
   build:
     ansible:
-      BUILDER_IMAGE_NAME: quay.io/openshift/origin-jenkins-agent-base:4.7
+      BUILDER_IMAGE_NAME: quay.io/openshift/origin-jenkins-agent-base:4.9
       DOCKERFILE_PATH: Dockerfile
       NAME: jenkins-agent-ansible
       SOURCE_CONTEXT_DIR: jenkins-agents/jenkins-agent-ansible
@@ -16,17 +16,17 @@ jenkins_agents:
     arachni: {}
     argocd: {}
     conftest:
-      BUILDER_IMAGE_NAME: quay.io/redhat-cop/jenkins-agent-python:v1.0
+      BUILDER_IMAGE_NAME: quay.io/redhat-cop/jenkins-agent-python:v1.1
+    cosign: {}
     erlang: {}
     golang: {}
-    graalvm:
-      BUILDER_IMAGE_NAME: quay.io/openshift/origin-jenkins-agent-maven:4.7
+    graalvm: {}
     gradle: {}
     helm: {}
     hugo: {}
+    image-mgmt: {}
     mongodb: {}
-    mvn:
-      BUILDER_IMAGE_NAME: quay.io/openshift/origin-jenkins-agent-maven:4.7
+    mvn: {}
     npm: {}
     python: {}
     ruby: {}
@@ -57,6 +57,12 @@ test_pipelines:
     conftest:
       NAME: jenkins-agent-conftest
       PIPELINE_CONTEXT_DIR: jenkins-agents/jenkins-agent-conftest
+      PIPELINE_FILENAME: Jenkinsfile.test
+      PIPELINE_SOURCE_REPOSITORY_REF: "{{ agent_repo_ref }}"
+      PIPELINE_SOURCE_REPOSITORY_URL: "{{ repository_url }}"
+    cosign:
+      NAME: jenkins-agent-cosign
+      PIPELINE_CONTEXT_DIR: jenkins-agents/jenkins-agent-cosign
       PIPELINE_FILENAME: Jenkinsfile.test
       PIPELINE_SOURCE_REPOSITORY_REF: "{{ agent_repo_ref }}"
       PIPELINE_SOURCE_REPOSITORY_URL: "{{ repository_url }}"
