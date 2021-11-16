@@ -91,7 +91,7 @@ $ oc rsh rabbitmq-1 rabbitmqctl cluster_status --formatter json | tail -1 | jq '
 ```
 
 ## Testing
-This quickstart is using [bats](/bats-core/bats-core) for unit and acceptance testing of the included Helm chart.
+This quickstart is using [bats](https://github.com/bats-core/bats-core) for unit and acceptance testing of the included Helm chart.
 
 ### Unit testing
 The unit tests will test features of the Helm chart and also requires [yq](https://github.com/mikefarah/yq).
