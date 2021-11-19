@@ -38,6 +38,10 @@ RUN dnf install -y \
     gcc \
     redhat-rpm-config \
     ruby-devel \
+    zlib-devel \
+    libjpeg-turbo-devel \
+    java-11-openjdk-headless \
+    fontconfig \
     && gem install --no-document \
     "asciidoctor:${ASCIIDOCTOR_VERSION}" \
     "asciidoctor-confluence:${ASCIIDOCTOR_CONFLUENCE_VERSION}" \
