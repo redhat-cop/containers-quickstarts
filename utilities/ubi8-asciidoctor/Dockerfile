@@ -11,7 +11,7 @@ ARG asciidoctor_mathematical_version=0.3.5
 ARG asciidoctor_revealjs_version=4.1.0
 ARG kramdown_asciidoc_version=2.0.0
 ARG asciidoctor_bibtex_version=0.8.0
-ARG pandoc_version=2.14.2
+ARG pandoc_version=2.16.2
 
 
 ENV ASCIIDOCTOR_VERSION=${asciidoctor_version} \
@@ -27,17 +27,17 @@ ENV ASCIIDOCTOR_VERSION=${asciidoctor_version} \
 
 USER root
 
-# Installing Ruby Gems needed in the image
-# including asciidoctor itself
-
 RUN dnf install -y \
     python3-devel \
     git \
-    ruby \
     make \
     gcc \
     redhat-rpm-config \
     ruby-devel \
+    zlib-devel \
+    libjpeg-turbo-devel \
+    java-11-openjdk-headless \
+    fontconfig \
     && gem install --no-document \
     "asciidoctor:${ASCIIDOCTOR_VERSION}" \
     "asciidoctor-confluence:${ASCIIDOCTOR_CONFLUENCE_VERSION}" \
@@ -82,3 +82,4 @@ RUN pip3 install --no-cache-dir \
 USER 1001
 
 CMD ["/bin/bash"]
+
