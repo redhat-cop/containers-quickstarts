@@ -1,13 +1,13 @@
 FROM registry.access.redhat.com/ubi8
 
-ENV OC_VERSION=4.5.10 \
-    ODO_VERSION=v1.2.6 \
+ENV OC_VERSION=4.9.5 \
+    ODO_VERSION=v2.3.1 \
     ANSIBLE_VERSION=2.9 \
     JQ_VERSION=1.6 \
     HELM_VERSION=v3.2.3 \
-    TEKTON_VERSION=0.12.1 \
+    TEKTON_VERSION=0.21.0 \
     HOME=/home/tool-box \
-    INSTALL_PKGS="git vim unzip python36"
+    INSTALL_PKGS="git vim zip unzip python36"
 
 RUN yum -y update && \
     yum -y install $INSTALL_PKGS && \
@@ -19,6 +19,7 @@ RUN curl -o jq --fail -sL https://github.com/stedolan/jq/releases/download/jq-${
 
 RUN mkdir -m 775 $HOME && \
     chmod 775 /etc/passwd && \
+    pip3 install --upgrade pip && \
     pip3 install git+https://github.com/ansible/ansible.git@stable-${ANSIBLE_VERSION}
 
 RUN curl --fail -s https://get.helm.sh/helm-${HELM_VERSION}-linux-amd64.tar.gz | tar -xvz && \

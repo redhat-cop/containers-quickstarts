@@ -1,15 +1,17 @@
 FROM registry.access.redhat.com/ubi8/go-toolset:latest as builder
 
-ARG SKOPEO_VERSION=1.1.1
+ARG SKOPEO_VERSION=1.5.0
 
 USER root
 
 RUN curl -L https://github.com/containers/skopeo/archive/v${SKOPEO_VERSION}.tar.gz | tar -C /tmp -zxf - && \
     mv /tmp/skopeo-${SKOPEO_VERSION} /tmp/skopeo && \
     cd /tmp/skopeo && \
-    make binary-local DISABLE_CGO=1
+    make BUILDTAGS=containers_image_openpgp DISABLE_DOCS=1 CGO_ENABLED=0 GO_DYN_FLAGS=
 
-FROM quay.io/openshift/origin-jenkins-agent-base:4.8
+FROM quay.io/openshift/origin-jenkins-agent-base:4.9
+
+ARG OC_VERSION=4.8
 
 MAINTAINER Andrew Block <ablock@redhat.com>
 
@@ -22,9 +24,10 @@ LABEL com.redhat.component="jenkins-agent-image-mgmt" \
 
 USER root
 
-RUN mkdir -p /etc/containers
+RUN mkdir -p /etc/containers && \
+    curl -L https://mirror.openshift.com/pub/openshift-v4/clients/ocp/stable-${OC_VERSION}/openshift-client-linux.tar.gz | tar zxvf - -C /usr/bin oc
 
 COPY --from=builder /tmp/skopeo/default-policy.json /etc/containers/policy.json
-COPY --from=builder /tmp/skopeo/skopeo /usr/bin/
+COPY --from=builder /tmp/skopeo/bin/skopeo /usr/bin/
 
 USER 1001

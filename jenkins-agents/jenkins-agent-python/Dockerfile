@@ -1,4 +1,4 @@
-FROM quay.io/openshift/origin-jenkins-agent-base:4.8
+FROM quay.io/openshift/origin-jenkins-agent-base:4.9
 
 EXPOSE 8080
 
@@ -22,6 +22,8 @@ RUN INSTALL_PKGS=" \
     dnf -y clean all && \
     alternatives --set python3 /usr/bin/python3.8 && \
     python3 -m pip install --upgrade pip && \
-    python3 -m pip install twine
+    python3 -m pip install twine && \
+    chmod -R 775 /var/lib/alternatives && \
+    chmod -R 775 /etc/alternatives
 
 USER 1001

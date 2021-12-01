@@ -1,7 +1,7 @@
 Jenkins Agent for Container and Image Management
 =============================
 
-Jenkins [Agent](https://wiki.jenkins-ci.org/display/JENKINS/Distributed+builds) that enables various container and image management capabilities and is optimized for deployment to a Jenkins instance running in the OpenShift Container Platform.
+Jenkins [Agent](https://www.jenkins.io/doc/developer/distributed-builds/) that enables various container and image management capabilities and is optimized for deployment to a Jenkins instance running in the OpenShift Container Platform.
 
 ## Primary Components
 

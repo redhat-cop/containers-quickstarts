@@ -17,6 +17,7 @@ pipeline {
                   conftest --version
                   yq --version
                   kube-linter version
+                  java -version
               """
             }
         }

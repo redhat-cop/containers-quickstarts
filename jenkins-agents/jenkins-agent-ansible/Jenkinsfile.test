@@ -9,6 +9,7 @@ pipeline {
                 sh """
                     ansible --version
                     molecule --version
+                    java -version
                 """
             }
         }

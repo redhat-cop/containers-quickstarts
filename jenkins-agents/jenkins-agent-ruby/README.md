@@ -1,6 +1,6 @@
 # Jenkins agent image for building Ruby applications
 
-Jenkins [Agent](https://wiki.jenkins-ci.org/display/JENKINS/Distributed+builds) that enables building of Ruby source code and optimized for deployment to a Jenkins instance running in the OpenShift Container Platform.
+Jenkins [Agent](https://www.jenkins.io/doc/developer/distributed-builds/) that enables building of Ruby source code and optimized for deployment to a Jenkins instance running in the OpenShift Container Platform.
 
 ## Primary Components
 

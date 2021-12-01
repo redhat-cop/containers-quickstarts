@@ -1,4 +1,4 @@
-FROM quay.io/openshift/origin-jenkins-agent-base:4.8
+FROM quay.io/openshift/origin-jenkins-agent-base:4.9
 
 ENV HUGO_VERSION=0.83.1
 

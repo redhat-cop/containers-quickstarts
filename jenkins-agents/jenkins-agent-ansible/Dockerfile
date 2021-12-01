@@ -1,4 +1,4 @@
-FROM quay.io/openshift/origin-jenkins-agent-base:4.8
+FROM quay.io/openshift/origin-jenkins-agent-base:4.9
 ARG ANSIBLE_VERSION=2.9.13
 
 LABEL \
@@ -34,7 +34,9 @@ RUN set -x \
      && rm -rf /var/cache/dnf \
      && alternatives --set python3 /usr/bin/python3.8 \
      && python3 -m pip install ${PIP_PKGS} \
-    && echo
+     && chmod -R 775 /etc/alternatives \
+     && chmod -R 775 /var/lib/alternatives \
+     && echo
 
 USER 1001
 ENV \
