@@ -27,7 +27,6 @@ objects:
                 https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
           RUN yum install -y \
                 python-devel \
-                helm \
                 pandoc
 
           RUN curl --fail -sL https://mirror.openshift.com/pub/openshift-v4/clients/oc/${OC_CLIENT_VERSION}/linux/oc.tar.gz | tar -C /usr/local/bin/ -xzf -
