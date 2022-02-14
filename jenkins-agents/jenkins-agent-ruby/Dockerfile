@@ -29,13 +29,13 @@ ADD ubi8.repo /tmp/ubi8.repo
 
 RUN rm -f /etc/yum.repos.d/*.repo && \
     mv /tmp/ubi8.repo /etc/yum.repos.d/ubi8.repo && \
-    dnf -y -x filesystem distro-sync && \
+    dnf -y distro-sync && \
     dnf -y module list ruby && \
     dnf -y module reset ruby && \
     dnf -y module enable ruby:${RUBY_VERSION} && \
-    dnf --allowerasing -y -x filesystem distro-sync && \
+    dnf --allowerasing -y distro-sync && \
     dnf -y module install ruby:${RUBY_VERSION} && \
-    INSTALL_PKGS="ruby ruby-devel rubygem-rake rubygem-bundler autoconf automake" && \
+    INSTALL_PKGS="ruby ruby-devel rubygem-rake rubygem-bundler autoconf automake gcc make redhat-rpm-config" && \
     dnf install -y --setopt=tsflags=nodocs $INSTALL_PKGS && rpm -V $INSTALL_PKGS && \
     dnf remove -y origin-clients && \
     dnf clean all -y && \
