@@ -1,7 +1,7 @@
 FROM quay.io/openshift/origin-jenkins-agent-base:4.9
 
-ARG RUBY_VERSION=2.6
-ARG OC_VERSION=4.8
+ARG RUBY_VERSION=2.7
+ARG OC_VERSION=4.9
 
 ENV SUMMARY="Platform for building and running Ruby $RUBY_VERSION applications" \
     DESCRIPTION="Ruby $RUBY_VERSION available as docker container is a base platform for \
