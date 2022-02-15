@@ -14,15 +14,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@master
+
       - name: Get image tags
         id: image_tags
-        run: |
-          # version.json should have semantic version: vMAJOR.MINOR.PATCH
-          VERSION=$(jq -r '.version' ${CONTEXT_DIR}/version.json)
-          # Publish to latest, minor, and patch tags
-          TAGS=('latest' "${VERSION}" "${VERSION%.*}")
-          # Set IMAGE_TAGS output for use in next step
-          echo "::set-output name=IMAGE_TAGS::${TAGS[*]}"
+        uses: redhat-cop/github-actions/get-image-version@master
+        with:
+          IMAGE_CONTEXT_DIR: ${{ env.CONTEXT_DIR }}
+
       - name: Build image
         id: build_image
         uses: redhat-actions/buildah-build@v2
