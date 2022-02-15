@@ -9,7 +9,7 @@ jobs:
     env:
       context: utilities/ubi8-asciidoctor
       image_name: ubi8-asciidoctor
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v1
       - name: Check and verify version.json
