@@ -13,7 +13,7 @@ jobs:
     env:
       context: tekton-task-images/conftest
       image_name: tekton-task-conftest
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@master
       - name: Get image tags

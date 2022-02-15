@@ -16,7 +16,7 @@ jobs:
     env:
       CONTEXT_DIR: github-runner-ubi8
       IMAGE_NAME: github-runner-ubi8
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@master
       - name: Get image tags

@@ -10,7 +10,7 @@ jobs:
     env:
       CONTEXT_DIR: build-s2i-python-kopf
       IMAGE_NAME: python-kopf-s2i
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@master
       - name: Check and verify version.json

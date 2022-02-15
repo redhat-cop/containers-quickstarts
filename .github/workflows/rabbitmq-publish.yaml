@@ -13,7 +13,7 @@ jobs:
     env:
       context: rabbitmq
       image_name: rabbitmq
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@master
       - name: Get image tags
