@@ -2,6 +2,7 @@ FROM registry.access.redhat.com/ubi8:latest
 
 LABEL MAINTAINERS="Red Hat Services"
 
+ARG RUBY_VERSION=2.7
 ARG asciidoctor_version=2.0.16
 ARG asciidoctor_confluence_version=0.0.2
 ARG asciidoctor_pdf_version=1.6.1
@@ -26,6 +27,9 @@ ENV ASCIIDOCTOR_VERSION=${asciidoctor_version} \
    PANDOC_VERSION=${pandoc_version}
 
 USER root
+
+RUN dnf -y module enable ruby:${RUBY_VERSION} && \
+    dnf -y module install ruby:${RUBY_VERSION}
 
 RUN dnf install -y \
     python3-devel \
