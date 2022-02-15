@@ -13,7 +13,7 @@ jobs:
     env:
       context: utilities/ubi8-git
       image_name: ubi8-git
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@master
       - name: Get image tags

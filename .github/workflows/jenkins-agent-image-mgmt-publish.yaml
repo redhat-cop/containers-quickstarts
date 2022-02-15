@@ -13,7 +13,7 @@ jobs:
     env:
       context: jenkins-agents/jenkins-agent-image-mgmt
       image_name: jenkins-agent-image-mgmt
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@master
       - name: Get image tags
