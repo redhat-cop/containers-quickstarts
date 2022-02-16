@@ -1,0 +1,25 @@
+---
+name: build-s2i-jekyll-pr
+on:
+  pull_request:
+    paths:
+      - build-s2i-jekyll/**
+      - .github/workflows/build-s2i-jekyll-pr.yaml
+jobs:
+  build:
+    env:
+      context: build-s2i-jekyll
+      image_name: build-s2i-jekyll
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Build image
+        uses: redhat-actions/buildah-build@v2
+        with:
+          context: ${{ env.context }}
+          dockerfiles: |
+            ./${{ env.context }}/Dockerfile
+          image: ${{ env.image_name }}
+          oci: true
+          tags: "latest"

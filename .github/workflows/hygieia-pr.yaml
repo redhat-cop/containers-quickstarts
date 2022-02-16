@@ -1,0 +1,25 @@
+---
+name: hygieia-pr
+on:
+  pull_request:
+    paths:
+      - hygieia/**
+      - .github/workflows/hygieia-pr.yaml
+jobs:
+  build:
+    env:
+      context: hygieia
+      image_name: hygieia
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Build image
+        uses: redhat-actions/buildah-build@v2
+        with:
+          context: ${{ env.context }}
+          dockerfiles: |
+            ./${{ env.context }}/Dockerfile
+          image: ${{ env.image_name }}
+          oci: true
+          tags: "latest"

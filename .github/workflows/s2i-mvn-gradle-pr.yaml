@@ -1,0 +1,25 @@
+---
+name: s2i-mvn-gradle-pr
+on:
+  pull_request:
+    paths:
+      - s2i-mvn-gradle/**
+      - .github/workflows/s2i-mvn-gradle-pr.yaml
+jobs:
+  build:
+    env:
+      context: s2i-mvn-gradle
+      image_name: s2i-mvn-gradle
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Build image
+        uses: redhat-actions/buildah-build@v2
+        with:
+          context: ${{ env.context }}
+          dockerfiles: |
+            ./${{ env.context }}/Dockerfile
+          image: ${{ env.image_name }}
+          oci: true
+          tags: "latest"
