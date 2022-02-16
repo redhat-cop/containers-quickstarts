@@ -1,0 +1,25 @@
+---
+name: toolbox-pr
+on:
+  pull_request:
+    paths:
+      - toolbox/**
+      - .github/workflows/toolbox-pr.yaml
+jobs:
+  build:
+    env:
+      context: toolbox
+      image_name: toolbox
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Build image
+        uses: redhat-actions/buildah-build@v2
+        with:
+          context: ${{ env.context }}
+          dockerfiles: |
+            ./${{ env.context }}/Dockerfile
+          image: ${{ env.image_name }}
+          oci: true
+          tags: "latest"
