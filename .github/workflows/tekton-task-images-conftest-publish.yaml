@@ -13,17 +13,18 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@master
+
+      - name: Convert VERSION to version.json
+        run: |
+          version=$(cat ${{ env.context }}/VERSION | cut -d"=" -f2)
+          jq -c --null-input --arg version "v$version" '{ "version": $version }' > ${{ env.context }}/version.json
+
       - name: Get image tags
         id: image_tags
-        run: |
-          echo -n ::set-output name=IMAGE_TAGS::
-           # exposes variable CONFTEST_VERSION
-          source ${context}/VERSION
-          TAGS=('latest')
-          if [ "${CONFTEST_VERSION}" ] && [ "${CONFTEST_VERSION}" != "latest" ]; then
-              TAGS+=("${CONFTEST_VERSION}")
-          fi
-          echo "${TAGS[*]}"
+        uses: redhat-cop/github-actions/get-image-version@master
+        with:
+          IMAGE_CONTEXT_DIR: ${{ env.context }}
+
       - name: Build image
         id: build_image
         uses: redhat-actions/buildah-build@v2
