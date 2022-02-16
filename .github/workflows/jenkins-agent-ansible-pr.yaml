@@ -1,0 +1,25 @@
+---
+name: jenkins-agent-ansible-pr
+on:
+  pull_request:
+    paths:
+      - jenkins-agents/jenkins-agent-ansible/**
+      - .github/workflows/jenkins-agent-ansible-pr.yaml
+jobs:
+  build:
+    env:
+      context: jenkins-agents/jenkins-agent-ansible
+      image_name: jenkins-agent-ansible
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Build image
+        uses: redhat-actions/buildah-build@v2
+        with:
+          context: ${{ env.context }}
+          dockerfiles: |
+            ./${{ env.context }}/Dockerfile
+          image: ${{ env.image_name }}
+          oci: true
+          tags: "latest"

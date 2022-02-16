@@ -1,0 +1,25 @@
+---
+name: jenkins-agent-arachni-pr
+on:
+  pull_request:
+    paths:
+      - jenkins-agents/jenkins-agent-arachni/**
+      - .github/workflows/jenkins-agent-arachni-pr.yaml
+jobs:
+  build:
+    env:
+      context: jenkins-agents/jenkins-agent-arachni
+      image_name: jenkins-agent-arachni
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Build image
+        uses: redhat-actions/buildah-build@v2
+        with:
+          context: ${{ env.context }}
+          dockerfiles: |
+            ./${{ env.context }}/Dockerfile
+          image: ${{ env.image_name }}
+          oci: true
+          tags: "latest"
