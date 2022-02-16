@@ -1,5 +1,5 @@
 # openjdk-gradle
-FROM registry.access.redhat.com/rhel 
+FROM registry.access.redhat.com/ubi8/ubi:latest
 
 # TODO: Put the maintainer name in the image metadata
 LABEL maintainer="Abhishek Singh <abhishek@linux.com>" \
@@ -11,7 +11,7 @@ LABEL maintainer="Abhishek Singh <abhishek@linux.com>" \
 
 # TODO: Rename the builder environment variable to inform users about application you provide them
 ENV BUILDER_VERSION 1.0
-ENV MAVEN_VERSION 3.5.3
+ENV MAVEN_VERSION 3.8.4
 ENV GRADLE_VERSION 4.8
 
 # TODO: Install required packages here:
@@ -26,7 +26,7 @@ RUN INSTALL_PKGS="tar unzip which lsof java-1.8.0-openjdk java-1.8.0-openjdk-dev
     mkdir -p /opt/app-root/src && chmod -R a+rwX /opt/app-root/src
 
 # Install Maven 3.5.3
-RUN curl -O http://apache.mirrors.tds.net/maven/maven-3/$MAVEN_VERSION/binaries/apache-maven-$MAVEN_VERSION-bin.tar.gz && \
+RUN curl -O https://dlcdn.apache.org/maven/maven-3/$MAVEN_VERSION/binaries/apache-maven-$MAVEN_VERSION-bin.tar.gz && \
     tar -C /usr/local -zxf apache-maven-$MAVEN_VERSION-bin.tar.gz && \
     rm -rf apache-maven-$MAVEN_VERSION-bin.tar.gz && \
     mv /usr/local/apache-maven-$MAVEN_VERSION /usr/local/maven && \
