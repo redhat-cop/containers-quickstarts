@@ -1,0 +1,18 @@
+controller:
+  JCasC:
+    configScripts:
+      seed-jobs: |
+        jobs:
+          - script: >
+              folder('containers-quickstarts')
+          - script: >
+              pipelineJob('containers-quickstarts/${JENKINS_AGENT}') {
+                definition {
+                  cps {
+                    script('''
+                      ${JENKINSFILE}
+                    '''.stripIndent())
+                    sandbox()
+                  }
+                }
+              }
