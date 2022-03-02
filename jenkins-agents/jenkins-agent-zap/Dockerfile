@@ -1,4 +1,4 @@
-FROM centos:centos7
+FROM quay.io/centos/centos:centos7
 LABEL maintainer="Deven Phillips <deven.phillips@redhat.com>"
 
 ARG ZAPROXY_VERSION="2.9.0"
