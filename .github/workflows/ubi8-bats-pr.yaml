@@ -11,7 +11,7 @@ jobs:
       image_name: ubi8-bats
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
 
       - name: Check and verify version.json
         id: check_version

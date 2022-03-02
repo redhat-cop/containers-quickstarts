@@ -12,7 +12,7 @@ jobs:
       image_name: s2i-mvn-gradle
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
 
       - name: Build image
         uses: redhat-actions/buildah-build@v2
