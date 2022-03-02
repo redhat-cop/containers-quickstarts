@@ -31,8 +31,7 @@ jenkins_agents:
     python: {}
     ruby: {}
     rust: {}
-    zap:
-      BUILDER_IMAGE_NAME: centos:centos7
+    zap: {}
 
 test_pipelines:
   deploy:
