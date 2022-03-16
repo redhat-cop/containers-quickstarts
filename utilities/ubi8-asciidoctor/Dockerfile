@@ -13,6 +13,7 @@ ARG asciidoctor_revealjs_version=4.1.0
 ARG kramdown_asciidoc_version=2.0.0
 ARG asciidoctor_bibtex_version=0.8.0
 ARG pandoc_version=2.16.2
+ARG asciidoctor_reducer_version=1.0.0.alpha.8
 
 
 ENV ASCIIDOCTOR_VERSION=${asciidoctor_version} \
@@ -24,7 +25,8 @@ ENV ASCIIDOCTOR_VERSION=${asciidoctor_version} \
     ASCIIDOCTOR_REVEALJS_VERSION=${asciidoctor_revealjs_version} \
     KRAMDOWN_ASCIIDOC_VERSION=${kramdown_asciidoc_version} \
     ASCIIDOCTOR_BIBTEX_VERSION=${asciidoctor_bibtex_version} \
-   PANDOC_VERSION=${pandoc_version}
+    PANDOC_VERSION=${pandoc_version} \
+    ASCIIDOCTOR_REDUCER_VERSION=${asciidoctor_reducer_version}
 
 USER root
 
@@ -59,6 +61,7 @@ RUN dnf install -y \
     thread_safe \
     tilt \
     "asciidoctor-bibtex:${ASCIIDOCTOR_BIBTEX_VERSION}" \
+    "asciidoctor-reducer:${ASCIIDOCTOR_REDUCER_VERSION}" \
     && rm -rf /usr/local/share/gems/cache \
     && dnf clean all \
     && rm -rf /var/lib/dnf
