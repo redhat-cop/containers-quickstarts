@@ -1,0 +1,25 @@
+---
+name: jenkins-agent-golang-pr
+on:
+  pull_request:
+    paths:
+      - jenkins-agents/jenkins-agent-golang/**
+      - .github/workflows/jenkins-agent-golang-pr.yaml
+jobs:
+  build:
+    env:
+      context: jenkins-agents/jenkins-agent-golang
+      image_name: jenkins-agent-golang
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Build image
+        uses: redhat-actions/buildah-build@v2
+        with:
+          context: ${{ env.context }}
+          dockerfiles: |
+            ./${{ env.context }}/Dockerfile
+          image: ${{ env.image_name }}
+          oci: true
+          tags: "latest"
