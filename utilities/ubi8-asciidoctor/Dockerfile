@@ -84,9 +84,9 @@ RUN pip3 install --no-cache-dir \
        actdiag \
        'blockdiag[pdf]' \
        'nwdiag[pdf]' \
-       seqdiag
+       seqdiag \
+       lxml
 
 USER 1001
 
 CMD ["/bin/bash"]
-
