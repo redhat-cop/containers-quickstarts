@@ -7,21 +7,63 @@ JENKINS_CHART_VERSION=${2:-3.11.10}
 AGENT_PATH="jenkins-agents/${AGENT}"
 SCRIPT_DIR=$(dirname -- "$(readlink -f "${BASH_SOURCE[0]}" || realpath "${BASH_SOURCE[0]}")")
 
+function do_until {
+  local url=$1
+  local token=${2:-}
+  local http_code=$3
+  local timesup=$4
+  local msg=${5:-Timed out while waiting...}
+  local timeout=0
+
+  [[ -n ${token} ]] && auth="--user admin:${token}" || auth=""
+  until [[ $(curl -sL -w %{http_code} ${url} ${auth} -o /dev/null) == ${http_code} ]]
+  do
+    if [[ ${timeout} -gt ${timesup} ]]
+    then
+      echo "${msg}"
+      exit 1
+    fi
+    sleep 5
+    let "timeout += 5"
+  done
+}
+
+function do_until_json {
+  local url=$1
+  local token=${2:-}
+  local json_expr=$3
+  local json_value=$4
+  local timesup=$5
+  local msg=${6:-Timed out while waiting...}
+  local timeout=0
+
+  [[ -n ${token} ]] && auth="--user admin:${token}" || auth=""
+  until [[ $(curl -sL ${url} ${auth} | jq -r ${json_expr}) == ${json_value} ]]
+  do
+    if [[ ${timeout} -gt ${timesup} ]]
+    then
+      echo "${msg}"
+      exit 1
+    fi
+    sleep 2
+    let "timeout += 2"
+  done
+}
+
+function get_build_logs {
+  curl -s http://localhost/job/containers-quickstarts/job/${AGENT}/lastBuild/logText/progressiveText --user admin:${token}
+}
+
 if [[ -d ${AGENT_PATH} ]]
 then
   # Create KinD cluster and load required container images
-  kind create cluster --config ${SCRIPT_DIR}/kind-config.yaml
-  for image in kiwigrid/k8s-sidecar:1.15.0 jenkins/jenkins:lts-jdk11 ${AGENT}:latest
-  do
-    if [[ "${image}" =~ "${AGENT}" ]]
-    then
-      podman save ${image} | docker load
-      docker tag localhost/${image} ${image}
-    else
-      docker pull docker.io/${image}
-    fi
-    kind load docker-image ${image}
-  done
+  if [[ $(kind get clusters | head -1) != "kind" ]]
+  then
+    kind create cluster --config ${SCRIPT_DIR}/kind-config.yaml
+  fi
+  podman save ${AGENT}:latest | docker load
+  docker tag localhost/${AGENT}:latest ${AGENT}:latest
+  kind load docker-image ${AGENT}:latest
   # Create Nginx Ingress controller
   kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/main/deploy/static/provider/kind/deploy.yaml
   echo "### Wait for Ingress controller to install ###"
@@ -45,43 +87,32 @@ then
     jenkinsci/jenkins
   # Make sure Jenkins is available 
   echo "### Wait for Jenkins instance to become ready ###"
-  until [[ $(curl -s -w %{http_code} http://localhost/login -o /dev/null) == "200" ]]
-  do
-    sleep 5
-  done
+  do_until "http://localhost/login" "" 200 300 "Timed out waiting for Jenkins to become ready..."
 
   # Create a Jenkins api token 
   secret=$(kubectl get secret -n jenkins jenkins -o jsonpath='{.data.jenkins-admin-password}' | base64 -d)
-  crumb=$(curl -sk https://localhost/crumbIssuer/api/json --user admin:${secret} --cookie-jar /tmp/cookies | jq -r '.crumb')
-  token=$(curl -sk https://localhost/me/descriptorByName/jenkins.security.ApiTokenProperty/generateNewToken --data 'newTokenName=foo' --user admin:${secret} -H "Jenkins-Crumb: ${crumb}" --cookie /tmp/cookies | jq -r '.data.tokenValue')
+  crumb=$(curl -s http://localhost/crumbIssuer/api/json --user admin:${secret} --cookie-jar /tmp/cookies | jq -r '.crumb')
+  if [ -z ${crumb} ]
+  then
+    echo "Failed to create Jenkins Crumb, exiting..."
+    exit 2
+  fi
+  token=$(curl -s http://localhost/me/descriptorByName/jenkins.security.ApiTokenProperty/generateNewToken --data 'newTokenName=foo' --user admin:${secret} -H "Jenkins-Crumb: ${crumb}" --cookie /tmp/cookies | jq -r '.data.tokenValue')
+  if [ -z ${token} ]
+  then
+    echo "Failed to create Jenkins Token, exiting..."
+    exit 2
+  fi
 
   # Start and monitor build
   echo "Starting build for ${AGENT}..."
-  curl -s -XPOST http://localhost/job/containers-quickstarts/job/${AGENT}/build --user admin:${token}
   timeout=0
-  until [[ $(curl -s http://localhost/job/containers-quickstarts/job/${AGENT}/lastBuild/api/json --user admin:${token} -w %{http_code} -o /dev/null) == "200" ]]
-  do
-    if [[ ${timeout} -gt 60 ]]
-    then
-      echo "Timed out waiting for build to be created..."
-      exit 1
-    fi
-    sleep 2
-    let "timeout += 2"
-  done
+  do_until "http://localhost/job/containers-quickstarts/job/${AGENT}" ${token} 200 60 "Timed out waiting for build to start..."
+  curl -s -XPOST http://localhost/job/containers-quickstarts/job/${AGENT}/build --user admin:${token}
+  do_until "http://localhost/job/containers-quickstarts/job/${AGENT}/lastBuild/api/json" ${token} 200 60 "Timed out waiting for build to be created..."
 
   echo "Waiting for build to start..."
-  timeout=0
-  until [[ $(curl -s http://localhost/job/containers-quickstarts/job/${AGENT}/lastBuild/api/json --user admin:${token} | jq -r '.building') == "true" ]]
-  do
-    if [[ ${timeout} -gt 60 ]]
-    then
-      echo "Timed out waiting for build to start..."
-      exit 1
-    fi
-    sleep 2
-    let "timeout += 2"
-  done 
+  do_until_json "http://localhost/job/containers-quickstarts/job/${AGENT}/lastBuild/api/json" ${token} ".building" "true" 60 "Timed out waiting for build to start..."
 
   echo "Build in progress..."
   timeout=0
@@ -90,12 +121,13 @@ then
     if [[ ${timeout} -gt 300 ]]
     then
       echo "Timed out waiting for build to finish..."
+      get_build_logs
       exit 1
     fi
     sleep 2
     let "timeout += 2"
   done
-  curl -s http://localhost/job/containers-quickstarts/job/${AGENT}/lastBuild/logText/progressiveText --user admin:${token}
+  get_build_logs
   JOB_STATUS=$(curl -s http://localhost/job/containers-quickstarts/job/${AGENT}/lastBuild/api/json --user admin:${token} | jq -r '.result')
   kind delete cluster --name kind
   if [[ ${JOB_STATUS} != "SUCCESS" ]]
