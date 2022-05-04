@@ -1,7 +1,7 @@
 FROM quay.io/openshift/origin-jenkins-agent-base:4.9
 
-ENV ARGOCD_VERSION=2.0.5 \
-    YQ_VERSION=v4.11.1
+ENV ARGOCD_VERSION=2.2.3 \
+    YQ_VERSION=v4.16.2
 
 RUN curl -sL  https://github.com/argoproj/argo-cd/releases/download/v${ARGOCD_VERSION}/argocd-linux-amd64 -o /usr/local/bin/argocd && \
     chmod -R 775 /usr/local/bin/argocd && \

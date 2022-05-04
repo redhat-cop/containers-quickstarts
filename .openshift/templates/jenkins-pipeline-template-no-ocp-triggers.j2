@@ -8,6 +8,8 @@ metadata:
     build: {{ params.NAME | d('jenkins-agent-' + agent) }}
     name: {{ params.NAME ~ '-pipeline' | d('jenkins-agent-' + agent + '-pipeline') }}
     type: pipeline
+  annotations:
+    deprecated: "https://docs.openshift.com/container-platform/4.3/release_notes/ocp-4-3-release-notes.html#ocp-4-3-deprecated-features"
   name: {{ params.NAME ~ '-pipeline' | d('jenkins-agent-' + agent + '-pipeline') }}
 spec:
   runPolicy: {{ params.RUN_POLICY | d('Serial') }}

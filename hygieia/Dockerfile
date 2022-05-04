@@ -1,7 +1,7 @@
-FROM java:latest
+FROM registry.access.redhat.com/ubi8/openjdk-8:1.11
 
 USER root
 
-RUN yum install -y git
+RUN microdnf install -y git
 
 USER 1001
