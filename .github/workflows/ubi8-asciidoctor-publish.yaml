@@ -1,5 +1,7 @@
 name: ubi8-asciidoctor-publish
 on:
+  schedule:
+  - cron: '0 1 * * *' # everyday at 1am
   push:
     paths:
       - utilities/ubi8-asciidoctor/version.json
