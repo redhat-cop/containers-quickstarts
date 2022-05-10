@@ -5,7 +5,7 @@ ARG JQ_VERSION=1.6
 ARG OC_VERSION=4.8
 ARG YQ_VERSION=4.6.3
 
-ENV NODEJS_VERSION=12 \
+ENV NODEJS_VERSION=16 \
     NPM_CONFIG_PREFIX=$HOME/.npm-global \
     PATH=$HOME/node_modules/.bin/:$HOME/.npm-global/bin/:$PATH
 
@@ -19,7 +19,6 @@ RUN INSTALL_PKGS="nodejs" && \
     rm -rf /var/cache/yum && \
     npm install --unsafe-perm -g npm-audit-html npm-audit-ci-wrapper sonar-scanner || cat /home/jenkins/.npm/_logs/*-debug.log && \
     chown root:root /home/jenkins -R && \
-    chmod 775 /home/jenkins/.config -R && \
     chmod 775 /home/jenkins/.npm -R && \
     curl -Lo /usr/local/bin/jq https://github.com/stedolan/jq/releases/download/jq-${JQ_VERSION}/jq-linux64 && \
     chmod +x /usr/local/bin/jq && \
