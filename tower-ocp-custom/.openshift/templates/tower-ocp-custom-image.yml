@@ -41,8 +41,8 @@ objects:
                 ansible-tower-cli==3.3.6 \
                 pytz==2021.1
 
-          RUN /usr/bin/python3 -m venv /var/lib/awx/venv/ansible-phy3
-          RUN source /var/lib/awx/venv/ansible-phy3/bin/activate && \
+          RUN /usr/bin/python3 -m venv /var/lib/awx/venv/ansible-python3
+          RUN source /var/lib/awx/venv/ansible-python3/bin/activate && \
               umask 0022 && \
               python3 -m pip install --upgrade --no-cache-dir pip setuptools wheel && \
               python3 -m pip install --no-cache-dir \
