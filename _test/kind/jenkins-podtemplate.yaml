@@ -1,0 +1,12 @@
+agent:
+  podTemplates:
+    jenkins-agent: |
+      - name: ${JENKINS_AGENT}
+        label: ${JENKINS_AGENT}
+        serviceAccount: jenkins
+        yamlMergeStrategy: override
+        containers:
+          - name: jnlp
+            args: "^${computer.jnlpmac} ^${computer.name}"
+            image: ${JENKINS_AGENT}:latest
+            workingDir: /tmp

@@ -9,7 +9,7 @@ pipeline {
               sh """
                   helm version
                   ct version
-                  ls -l ${HOME}/.ct
+                  ls -l \$HOME/.ct
                   git version
                   python --version
                   oc version
