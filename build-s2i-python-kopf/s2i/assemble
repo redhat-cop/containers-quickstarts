@@ -20,7 +20,7 @@ else
     cp --preserve=mode --recursive operator /opt/app-root/
 fi
 
-if [[ -s /opt/app-root/src/requirements.txt ]]; then
+if [[ -s requirements.txt ]]; then
     pip3 install --upgrade --cache-dir /tmp/.pip-cache -r requirements.txt
     rm -rf /tmp/.pip-cache
 fi
