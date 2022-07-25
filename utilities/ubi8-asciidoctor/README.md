@@ -1,16 +1,17 @@
 # ubi8-asciidoctor
 
-A utility image for the UBI8 image + asciidoctor. 
+A utility image for the UBI8 image + asciidoctor.
 
 Contains the primary used asciidoctor-pdf for generating reports.
 
-It's base is from https://github.com/asciidoctor/docker-asciidoctor but now ubi based.
+It's base is from <https://github.com/asciidoctor/docker-asciidoctor> but now ubi based.
 
 ## Purpose
 
 Useful for environments where these libraries/tools are needed such as:
+
 * local development
-* CI tools that do not require specific CI tooling configuraiton, such as GiLab Jobs.
+* CI tools that do not require specific CI tooling configuration, such as GiLab Jobs.
 
 ## Published
 
