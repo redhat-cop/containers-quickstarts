@@ -5,6 +5,10 @@ commands:
     group:
       isDefault: true
       kind: build
+<<<<<<< HEAD
+=======
+    hotReloadCapable: false
+>>>>>>> ac04c59 (Update devfile for updated odo version)
     workingDir: ${PROJECT_SOURCE}
   id: s2i-assemble
 - exec:
@@ -17,7 +21,7 @@ commands:
   id: s2i-run
 components:
 - container:
-    image: quay.io/redhat-cop/python-kopf-s2i
+    image: quay.io/redhat-cop/python-kopf-s2i:latest
     mountSources: true
     sourceMapping: /tmp/projects
   name: s2i-builder
