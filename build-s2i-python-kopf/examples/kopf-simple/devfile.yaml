@@ -5,10 +5,6 @@ commands:
     group:
       isDefault: true
       kind: build
-<<<<<<< HEAD
-=======
-    hotReloadCapable: false
->>>>>>> ac04c59 (Update devfile for updated odo version)
     workingDir: ${PROJECT_SOURCE}
   id: s2i-assemble
 - exec:
