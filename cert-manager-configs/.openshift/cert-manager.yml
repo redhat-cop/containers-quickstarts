@@ -33,6 +33,7 @@ objects:
               route53:
                 region: ${AWS_REGION}
                 accessKeyID: ${AWS_ACCESS_KEY_ID}
+                hostedZoneID: ${AWS_HOSTED_ZONE_ID}
                 secretAccessKeySecretRef:
                   name: "aws-secret-access-key-secret"
                   key: "aws-secret-access-key"
@@ -54,3 +55,5 @@ parameters:
     required: true
   - name: ACME_EMAIL
     required: true
+  - name: AWS_HOSTED_ZONE_ID
+    required: false

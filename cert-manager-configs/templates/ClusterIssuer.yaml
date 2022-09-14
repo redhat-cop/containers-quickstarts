@@ -28,6 +28,9 @@ spec:
           route53:
             region: {{ .Values.aws.region }}
             accessKeyID: {{ .Values.aws.accessKeyId }}
+      {{- if .Values.aws.hostedZoneId }}
+            hostedZoneID: {{ .Values.aws.hostedZoneId }}
+      {{- end }}
             secretAccessKeySecretRef:
               name: "aws-secret-access-key-secret"
               key: "aws-secret-access-key"
