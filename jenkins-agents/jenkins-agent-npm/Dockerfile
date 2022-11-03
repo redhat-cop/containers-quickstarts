@@ -25,7 +25,8 @@ RUN INSTALL_PKGS="nodejs" && \
     curl -Lo /usr/local/bin/yq https://github.com/mikefarah/yq/releases/download/v${YQ_VERSION}/yq_linux_amd64 && \
     chmod +x /usr/local/bin/yq && \
     rm -f /usr/bin/oc && \
-    curl -sL https://mirror.openshift.com/pub/openshift-v4/clients/ocp/stable-${OC_VERSION}/openshift-client-linux.tar.gz \
+    curl -sL https://mirror.openshift.com/pub/openshift-v4/clients/ocp/stable-${OC_VERSION}/openshift-client-linux.tar.gz && \
+    git config --global http.sslVerify false && \
     | tar zxf - -C /usr/local/bin oc kubectl
 
 USER 1001
