@@ -12,7 +12,7 @@ RUN yum install -y epel-release && \
     xmlstarlet git x11vnc gettext tar \
     xorg-x11-server-Xvfb openbox xterm \
     net-tools python-pip \
-    firefox nss_wrapper java-1.8.0-openjdk-headless \
+    firefox nss_wrapper java-11-openjdk-headless \
     java-11-openjdk-devel nss_wrapper \
     unzip && \
     yum clean all && \
