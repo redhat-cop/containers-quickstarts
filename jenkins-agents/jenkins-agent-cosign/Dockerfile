@@ -2,6 +2,8 @@ FROM quay.io/openshift/origin-jenkins-agent-base:4.9
 
 USER root
 
+LABEL testing
+
 ARG COSIGN_VERSION=1.7.2
 
 # Install cosign
