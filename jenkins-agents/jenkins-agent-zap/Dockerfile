@@ -8,12 +8,12 @@ RUN yum install -y epel-release && \
     yum install -y redhat-rpm-config \
     make automake autoconf gcc gcc-c++ \
     libstdc++ libstdc++-devel \
-    java-1.8.0-openjdk wget curl \
+    java-11-openjdk wget curl \
     xmlstarlet git x11vnc gettext tar \
     xorg-x11-server-Xvfb openbox xterm \
     net-tools python-pip \
-    firefox nss_wrapper java-1.8.0-openjdk-headless \
-    java-1.8.0-openjdk-devel nss_wrapper \
+    firefox nss_wrapper java-11-openjdk-headless \
+    java-11-openjdk-devel nss_wrapper \
     unzip && \
     yum clean all && \
     curl https://bootstrap.pypa.io/pip/2.7/get-pip.py --output get-pip.py && chmod 755 get-pip.py && ./get-pip.py && \
