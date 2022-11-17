@@ -2,7 +2,7 @@ FROM quay.io/openshift/origin-jenkins-agent-base:4.9
 
 USER root
 
-LABEL testing
+LABEL testing=tryit
 
 ARG COSIGN_VERSION=1.7.2
 
