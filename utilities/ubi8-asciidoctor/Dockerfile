@@ -2,6 +2,7 @@ FROM registry.access.redhat.com/ubi8:latest
 
 LABEL MAINTAINERS="Red Hat Services"
 
+ARG ARCH=amd64
 ARG RUBY_VERSION=3.0
 ARG asciidoctor_version=2.0.17
 ARG asciidoctor_confluence_version=0.0.2
@@ -43,6 +44,7 @@ RUN dnf install -y \
     redhat-rpm-config \
     ruby-devel \
     zlib-devel \
+    python3-lxml \
     libjpeg-turbo-devel \
     java-11-openjdk-headless \
     fontconfig \
@@ -69,7 +71,7 @@ RUN dnf install -y \
     && rm -rf /var/lib/dnf
 
 # install pandoc
-RUN curl -L https://github.com/jgm/pandoc/releases/download/${PANDOC_VERSION}/pandoc-${PANDOC_VERSION}-linux-amd64.tar.gz | tar xvz --strip-components 1 -C /usr/local/ pandoc-${PANDOC_VERSION}/bin/pandoc
+RUN curl -L https://github.com/jgm/pandoc/releases/download/${PANDOC_VERSION}/pandoc-${PANDOC_VERSION}-linux-${ARCH}.tar.gz | tar xvz --strip-components 1 -C /usr/local/ pandoc-${PANDOC_VERSION}/bin/pandoc
 
 WORKDIR /documents
 VOLUME /documents

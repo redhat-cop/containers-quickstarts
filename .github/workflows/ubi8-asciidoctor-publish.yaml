@@ -22,6 +22,11 @@ jobs:
         with:
           IMAGE_CONTEXT_DIR: ${{ env.context }}
 
+      - name: Install qemu dependency
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y qemu-user-static
+
       - name: Build image
         id: build_image
         uses: redhat-actions/buildah-build@v2
@@ -30,6 +35,7 @@ jobs:
           dockerfiles: |
             ./${{ env.context }}/Dockerfile
           image: ${{ env.image_name }}
+          platforms: linux/amd64,linux/arm64
           tags: "${{ steps.image_tags.outputs.IMAGE_TAGS }}"
 
       - name: Push to ghcr.io
