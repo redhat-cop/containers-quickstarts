@@ -46,7 +46,7 @@ fi
 if [[ "${KOPF_PEERING}" ]]; then
     KOPF_OPTIONS="${KOPF_OPTIONS} --peering=${KOPF_PEERING}"
     if [[ "${KOPF_NAMESPACE}" ]]; then
-        oc get kopfpeering.kopf.dev ${KOPF_PEERING} ||  oc create -f - <<EOF
+        oc get kopfpeering.kopf.dev ${KOPF_PEERING} >/dev/null 2>&1 ||  oc create -f - <<EOF
 apiVersion: kopf.dev/v1
 kind: KopfPeering
 metadata:
@@ -54,7 +54,7 @@ metadata:
   name: $KOPF_PEERING
 EOF
     else
-        oc get clusterkopfpeering.kopf.dev ${KOPF_PEERING} ||  oc create -f - <<EOF
+        oc get clusterkopfpeering.kopf.dev ${KOPF_PEERING} >/dev/null 2>&1 ||  oc create -f - <<EOF
 apiVersion: kopf.dev/v1
 kind: ClusterKopfPeering
 metadata:

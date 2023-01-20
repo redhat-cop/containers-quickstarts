@@ -1,15 +1,16 @@
+
 ---
-name: jenkins-agent-golang-pr
+name: jenkins-agent-ci-pr
 on:
   pull_request:
     paths:
-      - jenkins-agents/jenkins-agent-golang/**
-      - .github/workflows/jenkins-agent-golang-pr.yaml
+      - _test/kind/**
+      - .github/workflows/jenkins-agent-ci-pr.yaml
 jobs:
   build:
     env:
-      context: jenkins-agents/jenkins-agent-golang
-      image_name: jenkins-agent-golang
+      context: jenkins-agents/jenkins-agent-ansible
+      image_name: jenkins-agent-ansible
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3

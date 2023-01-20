@@ -1,0 +1,11 @@
+controller:
+  additionalPlugins:
+    - job-dsl:1.78.3
+  ingress:
+    enabled: true
+persistence:
+  enabled: false
+rbac:
+  readSecrets: true
+serviceAccount:
+  create: true
