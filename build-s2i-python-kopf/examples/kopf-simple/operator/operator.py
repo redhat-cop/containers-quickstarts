@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+import asyncio
 import kopf
 import kubernetes_asyncio
 import os
@@ -9,13 +10,7 @@ import yaml
 
 operator_domain = os.environ.get('OPERATOR_DOMAIN', 'kopf-simple.example.com')
 config_map_label = operator_domain + '/config'
-
-if os.path.exists('/var/run/secrets/kubernetes.io/serviceaccount'):
-    kubernetes_asyncio.config.load_incluster_config()
-else:
-    kubernetes_asyncio.config.load_kube_config()
-
-core_v1_api = kubernetes_asyncio.client.CoreV1Api()
+core_v1_api = None
 
 def random_string(length=8, character_set=''):
     '''
@@ -120,6 +115,12 @@ async def manage_secret_for_config_map(name, namespace, config_map, logger):
     '''
     Create secrets based on config_map.
     '''
+    task = asyncio.create_task(
+        __manage_secret_for_config_map(name, namespace, config_map, logger)
+    )
+    await task
+
+async def __manage_secret_for_config_map(name, namespace, config_map, logger):
     config = load_config_map(config_map)
     owner_reference = owner_reference_from_resource(config_map)
     secret = await get_secret(name, namespace)
@@ -133,9 +134,18 @@ async def manage_secret_for_config_map(name, namespace, config_map, logger):
     await update_config_map_status(name, namespace, config_map, secret)
 
 @kopf.on.startup()
-def configure(settings: kopf.OperatorSettings, **_):
+async def configure(settings: kopf.OperatorSettings, **_):
+    global core_v1_api
+
     # Disable scanning for Namespaces and CustomResourceDefinitions
     settings.scanning.disabled = True
+
+    if os.path.exists('/var/run/secrets/kubernetes.io/serviceaccount'):
+        kubernetes_asyncio.config.load_incluster_config()
+    else:
+        await kubernetes_asyncio.config.load_kube_config()
+
+    core_v1_api = kubernetes_asyncio.client.CoreV1Api()
 
 @kopf.on.create('', 'v1', 'configmaps', labels={config_map_label: kopf.PRESENT})
 async def on_create_config_map(body, name, namespace, logger, **_):
