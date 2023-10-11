@@ -1,0 +1,38 @@
+name: fc-asciidoctor-pr
+on:
+  pull_request:
+    paths:
+      - utilities/fc-asciidoctor/**
+      - .github/workflows/fc-asciidoctor-pr.yaml
+jobs:
+  build:
+    env:
+      context: utilities/fc-asciidoctor
+      image_name: fc-asciidoctor
+    runs-on: ubuntu-18.04
+    steps:
+      - uses: actions/checkout@v1
+      - name: Check and verify version.json
+        id: check_version
+        run: |
+          echo -n ::set-output name=IMAGE_TAGS::
+          echo $(jq -r '.version' ${context}/version.json)
+      - name: Build image
+        uses: redhat-actions/buildah-build@v2
+        with:
+          context: ${{ env.context }}
+          dockerfiles: |
+            ./${{ env.context }}/Dockerfile
+          image: ${{ env.image_name }}
+          oci: true
+          tags: ${{ steps.check_version.outputs.IMAGE_TAGS }}
+      - name: Test image
+        run: |
+          echo "Running: podman run ${image_name}:${{ steps.check_version.outputs.IMAGE_TAGS }} git --version"
+          podman run ${image_name}:${{ steps.check_version.outputs.IMAGE_TAGS }} git --version
+          echo "Running: podman run ${image_name}:${{ steps.check_version.outputs.IMAGE_TAGS }} asciidoctor --version"
+          podman run ${image_name}:${{ steps.check_version.outputs.IMAGE_TAGS }} asciidoctor --version
+          echo "Running: podman run ${image_name}:${{ steps.check_version.outputs.IMAGE_TAGS }} asciidoctor-pdf --version"
+          podman run ${image_name}:${{ steps.check_version.outputs.IMAGE_TAGS }} asciidoctor-pdf --version
+          echo "Running: podman run ${image_name}:${{ steps.check_version.outputs.IMAGE_TAGS }} pandoc --version"
+          podman run ${image_name}:${{ steps.check_version.outputs.IMAGE_TAGS }} pandoc --version
