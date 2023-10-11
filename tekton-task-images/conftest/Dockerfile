@@ -1,7 +1,7 @@
-FROM registry.access.redhat.com/ubi8/ubi-minimal:8.3
+FROM registry.access.redhat.com/ubi9/ubi-minimal:9.1
 
-RUN microdnf install --assumeyes --nodocs tar gzip && \
-    microdnf update && \
+RUN microdnf install -y --nodocs tar gzip && \
+    microdnf update -y && \
     microdnf clean all 
 
 ADD VERSION /tmp/version

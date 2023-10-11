@@ -10,18 +10,23 @@ shopt -s dotglob
 
 
 mkdir /opt/app-root/src -p
-cp --preserve=mode --recursive /tmp/src/operator /opt/app-root/
-rm -rf /tmp/src/operator
-cp --preserve=mode --recursive /tmp/src/* /opt/app-root/src/
-rm -rf /tmp/src
+if [[ -d /tmp/src ]]; then
+    cp --preserve=mode --recursive /tmp/src/operator /opt/app-root/
+    rm -rf /tmp/src/operator
+    cp --preserve=mode --recursive /tmp/src/* /opt/app-root/src/
+    cd /opt/app-root/src
+    rm -rf /tmp/src
+else
+    cp --preserve=mode --recursive operator /opt/app-root/
+fi
 
-if [[ -s /opt/app-root/src/requirements.txt ]]; then
-    pip3 install --upgrade --cache-dir /tmp/.pip-cache -r /opt/app-root/src/requirements.txt
+if [[ -s requirements.txt ]]; then
+    pip3 install --upgrade --cache-dir /tmp/.pip-cache -r requirements.txt
     rm -rf /tmp/.pip-cache
 fi
 
-if [[ -s /opt/app-root/src/kopf-opt.sh ]]; then
-    mv /opt/app-root/src/kopf-opt.sh /opt/app-root/kopf-opt.sh
+if [[ -s kopf-opt.sh ]]; then
+    mv kopf-opt.sh /opt/app-root/kopf-opt.sh
 fi
 
 # Fix up permissions.

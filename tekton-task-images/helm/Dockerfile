@@ -1,11 +1,11 @@
-FROM registry.access.redhat.com/ubi8/ubi-minimal:8.4
+FROM registry.access.redhat.com/ubi9/ubi-minimal:9.1
 
 USER root
 
-ARG YQ_VERSION=4.11.2
+ARG YQ_VERSION=4.23.1
 
-RUN microdnf install --assumeyes --nodocs openssl tar git findutils gzip && \
-    microdnf update && \
+RUN microdnf install -y --nodocs openssl tar git findutils gzip && \
+    microdnf update -y && \
     microdnf clean all
 
 ADD VERSION /tmp/version

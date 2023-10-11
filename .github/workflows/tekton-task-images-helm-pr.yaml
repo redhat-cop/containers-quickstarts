@@ -9,16 +9,21 @@ jobs:
     env:
       context: tekton-task-images/helm
       image_name: helm
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v1
-      - name: Get image tags
-        id: check_version
+      - uses: actions/checkout@v3
+
+      - name: Convert VERSION to version.json
         run: |
-          echo -n ::set-output name=IMAGE_TAGS::
-           # exposes variable HELM_VERSION
-          source ${context}/VERSION
-          echo ${HELM_VERSION}
+          version=$(cat ${{ env.context }}/VERSION | cut -d"=" -f2)
+          jq -c --null-input --arg version "v$version" '{ "version": $version }' > ${{ env.context }}/version.json
+
+      - name: Check and verify version.json
+        id: check_version
+        uses: redhat-cop/github-actions/get-image-version@master
+        with:
+          IMAGE_CONTEXT_DIR: ${{ env.context }}
+
       - name: Build image
         uses: redhat-actions/buildah-build@v2
         with:
@@ -30,5 +35,5 @@ jobs:
           tags: ${{ steps.check_version.outputs.IMAGE_TAGS }}
       - name: Test image contains the version of the binary
         run: |
-          echo "Running: podman run ${image_name}:${{ steps.check_version.outputs.IMAGE_TAGS }} helm version"
-          podman run ${image_name}:${{ steps.check_version.outputs.IMAGE_TAGS }} helm version | grep ${{ steps.check_version.outputs.IMAGE_TAGS }}
+          echo "Running: podman run ${image_name}:${{ steps.check_version.outputs.VERSION }} helm version"
+          podman run ${image_name}:${{ steps.check_version.outputs.VERSION }} helm version | grep ${{ steps.check_version.outputs.VERSION }}

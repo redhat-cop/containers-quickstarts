@@ -1,0 +1,30 @@
+---
+name: jenkins-agent-cosign-pr
+on:
+  pull_request:
+    paths:
+      - jenkins-agents/jenkins-agent-cosign/**
+      - .github/workflows/jenkins-agent-cosign-pr.yaml
+jobs:
+  build:
+    env:
+      context: jenkins-agents/jenkins-agent-cosign
+      image_name: jenkins-agent-cosign
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Build image
+        uses: redhat-actions/buildah-build@v2
+        with:
+          context: ${{ env.context }}
+          dockerfiles: |
+            ./${{ env.context }}/Dockerfile
+          image: ${{ env.image_name }}
+          oci: true
+          tags: "latest"
+
+      - name: Test image
+        run: |
+          echo "Testing ${{ env.image_name }}"
+          ./_test/kind/setup.sh ${{ env.image_name }}

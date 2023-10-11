@@ -1,7 +1,8 @@
 #!/usr/bin/env python
 
+import asyncio
 import kopf
-import kubernetes
+import kubernetes_asyncio
 import os
 import random
 import string
@@ -9,14 +10,7 @@ import yaml
 
 operator_domain = os.environ.get('OPERATOR_DOMAIN', 'kopf-simple.example.com')
 config_map_label = operator_domain + '/config'
-
-if os.path.exists('/var/run/secrets/kubernetes.io/serviceaccount'):
-    kubernetes.config.load_incluster_config()
-else:
-    kubernetes.config.load_kube_config()
-
-core_v1_api = kubernetes.client.CoreV1Api()
-custom_objects_api = kubernetes.client.CustomObjectsApi()
+core_v1_api = None
 
 def random_string(length=8, character_set=''):
     '''
@@ -27,7 +21,7 @@ def random_string(length=8, character_set=''):
     return ''.join(random.choice(character_set) for i in range(length))
 
 def owner_reference_from_resource(resource):
-    return kubernetes.client.V1OwnerReference(
+    return kubernetes_asyncio.client.V1OwnerReference(
         api_version = resource['apiVersion'],
         controller = True,
         block_owner_deletion = False,
@@ -52,22 +46,22 @@ def load_config_map(config_map):
         raise kopf.PermanentError('Config data secretNames must be a list')
     return config
 
-def get_secret(name, namespace):
+async def get_secret(name, namespace):
     '''
     Read namespaced secret, return None if not found.
     '''
     try:
-        return core_v1_api.read_namespaced_secret(name, namespace)
-    except kubernetes.client.rest.ApiException as e:
+        return await core_v1_api.read_namespaced_secret(name, namespace)
+    except kubernetes_asyncio.client.rest.ApiException as e:
         if e.status == 404:
             return None
         raise
 
-def update_config_map_status(name, namespace, config_map, secret):
+async def update_config_map_status(name, namespace, config_map, secret):
     '''
     Update status into ConfigMap data
     '''
-    core_v1_api.patch_namespaced_config_map(name, namespace, dict(
+    await core_v1_api.patch_namespaced_config_map(name, namespace, dict(
         data = dict(
             status = yaml.safe_dump(dict(
                 secret = dict(
@@ -82,16 +76,16 @@ def update_config_map_status(name, namespace, config_map, secret):
         )
     ))
 
-def create_secret(config, name, namespace, owner_reference, logger):
+async def create_secret(config, name, namespace, owner_reference, logger):
     secret_data = dict()
 
     for secret_name in config['secretNames']:
         secret_data[secret_name] = random_string()
 
-    secret = core_v1_api.create_namespaced_secret(
+    secret = await core_v1_api.create_namespaced_secret(
         namespace,
-        kubernetes.client.V1Secret(
-            metadata = kubernetes.client.V1ObjectMeta(
+        kubernetes_asyncio.client.V1Secret(
+            metadata = kubernetes_asyncio.client.V1ObjectMeta(
                 name = name,
                 owner_references = [owner_reference]
             ),
@@ -101,7 +95,7 @@ def create_secret(config, name, namespace, owner_reference, logger):
     logger.info('Created secret %s', secret.metadata.name)
     return secret
 
-def manage_secret_values(config, secret, logger):
+async def manage_secret_values(config, secret, logger):
     '''
     Add any required values to secret.
     '''
@@ -111,39 +105,54 @@ def manage_secret_values(config, secret, logger):
            new_secret_data[secret_name] = random_string()
     if new_secret_data:
         secret.string_data = new_secret_data
-        secret = core_v1_api.replace_namespaced_secret(secret.metadata.name, secret.metadata.namespace, secret)
+        secret = await core_v1_api.replace_namespaced_secret(secret.metadata.name, secret.metadata.namespace, secret)
         logger.info('Updated secret %s', secret.metadata.name)
     else:
         logger.debug('No change for secret %s', secret.metadata.name)
     return secret
 
-def manage_secret_for_config_map(name, namespace, config_map, logger):
+async def manage_secret_for_config_map(name, namespace, config_map, logger):
     '''
     Create secrets based on config_map.
     '''
+    task = asyncio.create_task(
+        __manage_secret_for_config_map(name, namespace, config_map, logger)
+    )
+    await task
+
+async def __manage_secret_for_config_map(name, namespace, config_map, logger):
     config = load_config_map(config_map)
     owner_reference = owner_reference_from_resource(config_map)
-    secret = get_secret(name, namespace)
+    secret = await get_secret(name, namespace)
     if secret:
         if not secret.metadata.owner_references \
         or not secret.metadata.owner_references[0] == owner_reference:
             raise kopf.TemporaryError('Unable to manage secret, not the owner!')
-        secret = manage_secret_values(config, secret, logger)
+        secret = await manage_secret_values(config, secret, logger)
     else:
-        secret = create_secret(config, name, namespace, owner_reference, logger)
-    update_config_map_status(name, namespace, config_map, secret)
+        secret = await create_secret(config, name, namespace, owner_reference, logger)
+    await update_config_map_status(name, namespace, config_map, secret)
 
 @kopf.on.startup()
-def configure(settings: kopf.OperatorSettings, **_):
+async def configure(settings: kopf.OperatorSettings, **_):
+    global core_v1_api
+
     # Disable scanning for Namespaces and CustomResourceDefinitions
     settings.scanning.disabled = True
 
+    if os.path.exists('/var/run/secrets/kubernetes.io/serviceaccount'):
+        kubernetes_asyncio.config.load_incluster_config()
+    else:
+        await kubernetes_asyncio.config.load_kube_config()
+
+    core_v1_api = kubernetes_asyncio.client.CoreV1Api()
+
 @kopf.on.create('', 'v1', 'configmaps', labels={config_map_label: kopf.PRESENT})
-def on_create_config_map(body, name, namespace, logger, **_):
+async def on_create_config_map(body, name, namespace, logger, **_):
     logger.info("New app ConfigMap '%s'", name)
-    manage_secret_for_config_map(name, namespace, body, logger)
+    await manage_secret_for_config_map(name, namespace, body, logger)
 
 @kopf.on.update('', 'v1', 'configmaps', labels={config_map_label: kopf.PRESENT})
-def on_create_config_map(body, name, namespace, logger, **_):
+async def on_create_config_map(body, name, namespace, logger, **_):
     logger.info("New app ConfigMap '%s'", name)
-    manage_secret_for_config_map(name, namespace, body, logger)
+    await manage_secret_for_config_map(name, namespace, body, logger)

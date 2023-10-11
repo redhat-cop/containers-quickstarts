@@ -9,14 +9,21 @@ jobs:
     env:
       context: utilities/ubi8-asciidoctor
       image_name: ubi8-asciidoctor
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v1
+      - uses: actions/checkout@v3
+
       - name: Check and verify version.json
         id: check_version
+        uses: redhat-cop/github-actions/get-image-version@master
+        with:
+          IMAGE_CONTEXT_DIR: ${{ env.context }}
+
+      - name: Install qemu dependency
         run: |
-          echo -n ::set-output name=IMAGE_TAGS::
-          echo $(jq -r '.version' ${context}/version.json)
+          sudo apt-get update
+          sudo apt-get install -y qemu-user-static
+
       - name: Build image
         uses: redhat-actions/buildah-build@v2
         with:
@@ -24,15 +31,20 @@ jobs:
           dockerfiles: |
             ./${{ env.context }}/Dockerfile
           image: ${{ env.image_name }}
+          platforms: linux/amd64,linux/arm64
           oci: true
           tags: ${{ steps.check_version.outputs.IMAGE_TAGS }}
+
       - name: Test image
         run: |
-          echo "Running: podman run ${image_name}:${{ steps.check_version.outputs.IMAGE_TAGS }} git --version"
-          podman run ${image_name}:${{ steps.check_version.outputs.IMAGE_TAGS }} git --version
-          echo "Running: podman run ${image_name}:${{ steps.check_version.outputs.IMAGE_TAGS }} asciidoctor --version"
-          podman run ${image_name}:${{ steps.check_version.outputs.IMAGE_TAGS }} asciidoctor --version
-          echo "Running: podman run ${image_name}:${{ steps.check_version.outputs.IMAGE_TAGS }} asciidoctor-pdf --version"
-          podman run ${image_name}:${{ steps.check_version.outputs.IMAGE_TAGS }} asciidoctor-pdf --version
-          echo "Running: podman run ${image_name}:${{ steps.check_version.outputs.IMAGE_TAGS }} pandoc --version"
-          podman run ${image_name}:${{ steps.check_version.outputs.IMAGE_TAGS }} pandoc --version
+          echo "Running: podman run ${image_name}:${{ steps.check_version.outputs.VERSION }} git --version"
+          podman run ${image_name}:${{ steps.check_version.outputs.VERSION }} git --version
+
+          echo "Running: podman run ${image_name}:${{ steps.check_version.outputs.VERSION }} asciidoctor --version"
+          podman run ${image_name}:${{ steps.check_version.outputs.VERSION }} asciidoctor --version
+
+          echo "Running: podman run ${image_name}:${{ steps.check_version.outputs.VERSION }} asciidoctor-pdf --version"
+          podman run ${image_name}:${{ steps.check_version.outputs.VERSION }} asciidoctor-pdf --version
+
+          echo "Running: podman run ${image_name}:${{ steps.check_version.outputs.VERSION }} pandoc --version"
+          podman run ${image_name}:${{ steps.check_version.outputs.VERSION }} pandoc --version
