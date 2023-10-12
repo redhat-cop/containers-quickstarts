@@ -6,7 +6,6 @@ ARG ARCH=amd64
 ARG RUBY_VERSION=3.1
 ARG asciidoctor_version=2.0.20
 ARG asciidoctor_confluence_version=0.0.2
-<<<<<<< HEAD
 ARG asciidoctor_pdf_version=2.3.9
 ARG asciidoctor_diagram_version=2.2.14
 ARG asciidoctor_epub3_version=1.5.1
