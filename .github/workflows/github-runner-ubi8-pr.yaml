@@ -12,7 +12,7 @@ jobs:
       IMAGE_NAME: github-runner-ubi8
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: Check and verify version.json
         id: check_version

@@ -11,7 +11,7 @@ jobs:
       image_name: conftest
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: Convert VERSION to version.json
         run: |
