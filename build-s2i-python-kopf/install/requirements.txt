@@ -3,4 +3,4 @@ kubernetes==26.1.0
 kubernetes-asyncio==24.2.3
 openshift==0.13.1
 pykube-ng==22.9.0
-uvloop==0.17.0
+uvloop==0.19.0
