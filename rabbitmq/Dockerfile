@@ -1,4 +1,4 @@
-FROM registry.access.redhat.com/ubi8/ubi-minimal:8.4
+FROM registry.access.redhat.com/ubi8/ubi-minimal:8.9-1029@sha256:87bcbfedfd70e67aab3875fff103bade460aeff510033ebb36b7efa009ab6639
 
 ARG ERLANG_VERSION=24.0.5
 ARG RABBITMQ_AUTOCLUSTER_VERSION=0.10.0
