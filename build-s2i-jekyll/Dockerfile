@@ -1,4 +1,4 @@
-FROM ruby:2.4.0-alpine
+FROM ruby:2.7.8-alpine@sha256:371668748735a808d1fd1c506878e09f40cb542ffc758cfa7eb124f90827e8d9
 
 LABEL io.k8s.description="A Platform for Building Websites from Markdown" \
     io.k8s.display-name="Jekyll Builder" \
