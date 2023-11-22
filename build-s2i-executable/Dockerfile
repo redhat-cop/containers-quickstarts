@@ -1,4 +1,4 @@
-FROM registry.access.redhat.com/ubi7/ubi-minimal:7.6
+FROM registry.access.redhat.com/ubi7/ubi-minimal:7.9-1242@sha256:5ba8e7e3b99b12a3af91b603a6250a149dae865eaf19d4ee22f383f13a04a0fb
 
 LABEL \
     io.k8s.display-name="Executable Applications" \
