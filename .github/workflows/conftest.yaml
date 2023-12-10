@@ -10,6 +10,6 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Conftest
-        uses: redhat-cop/github-actions/confbatstest@master
+        uses: redhat-cop/github-actions/confbatstest@v4
         with:
           tests: _test/conftest.sh
