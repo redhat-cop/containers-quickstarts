@@ -106,3 +106,27 @@ To enable actions in your fork:
 ## Contributing
 
 Checkout out our [contribution guide](./CONTRIBUTING.md) for more details on how to contribute content to this repo.
+
+## No longer maintained
+[build-docker-generic](build-docker-generic)
+[build-s2i-executable](build-s2i-executable)
+[build-s2i-gows](build-s2i-gows)
+[build-s2i-jekyll](build-s2i-jekyll)
+[build-s2i-liberty](build-s2i-liberty)
+[cert-manager-configs](cert-manager-configs)
+[deprecated](deprecated)
+[github-runner-ubi8](github-runner-ubi8)
+[gitlab-ce](gitlab-ce)
+[gogs](gogs)
+[hoverfly](hoverfly)
+[hygieia](hygieia)
+[ipa-server](ipa-server)
+[jenkins-masters](jenkins-masters)
+[mongodb](mongodb)
+[ocp4-logging](ocp4-logging)
+[rabbitmq](rabbitmq)
+[s2i-mvn-gradle](s2i-mvn-gradle)
+[sonarqube](sonarqube)
+[tower-ocp-custom](tower-ocp-custom)
+[ubi7-gitlab-runner](ubi7-gitlab-runner)
+[zalenium](zalenium)

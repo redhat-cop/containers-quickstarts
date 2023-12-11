@@ -1,0 +1,13 @@
+# https://github.com/orgs/redhat-cop/teams/day-in-the-life-mergers
+* @redhat-cop/day-in-the-life-mergers
+
+# Used by the EMEA Labs
+jenkins-agents/* @ckavili @eformat @springdo
+tekton-task-images/* @ckavili @eformat @springdo
+ipa-server/* @ckavili @eformat
+
+# Used by the GPTE Team
+build-s2i-python-kopf/* @jkupferer
+
+# Used by the CER Team
+utilities/* @buuhsmead @itewk @branic
