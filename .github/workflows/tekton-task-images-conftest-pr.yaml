@@ -4,6 +4,10 @@ on:
     paths:
       - tekton-task-images/conftest/**
       - .github/workflows/tekton-task-images-conftest-pr.yaml
+
+# Declare default permissions as read only.
+permissions: read-all
+
 jobs:
   build:
     env:
@@ -15,7 +19,7 @@ jobs:
 
       - name: Convert VERSION to version.json
         run: |
-          version=$(cat ${{ env.context }}/VERSION | cut -d"=" -f2)
+          version=$(sed -n '2p' ${{ env.context }}/VERSION | cut -d"=" -f2)
           jq -c --null-input --arg version "v$version" '{ "version": $version }' > ${{ env.context }}/version.json
 
       - name: Check and verify version.json
@@ -33,6 +37,7 @@ jobs:
           image: ${{ env.image_name }}
           oci: true
           tags: ${{ steps.check_version.outputs.IMAGE_TAGS }}
+
       - name: Test image
         run: |
           echo "Running: podman run ${image_name}:${{ steps.check_version.outputs.VERSION }} conftest version"

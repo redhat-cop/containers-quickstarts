@@ -4,6 +4,10 @@ on:
     paths:
       - tekton-task-images/helm/**
       - .github/workflows/tekton-task-images-helm-pr.yaml
+
+# Declare default permissions as read only.
+permissions: read-all
+
 jobs:
   build:
     env:
@@ -33,6 +37,7 @@ jobs:
           image: ${{ env.image_name }}
           oci: true
           tags: ${{ steps.check_version.outputs.IMAGE_TAGS }}
+
       - name: Test image contains the version of the binary
         run: |
           echo "Running: podman run ${image_name}:${{ steps.check_version.outputs.VERSION }} helm version"

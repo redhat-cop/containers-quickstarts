@@ -1,1 +1,2 @@
+# renovate: datasource=github-releases depName=open-policy-agent/conftest
 CONFTEST_VERSION=0.41.0
