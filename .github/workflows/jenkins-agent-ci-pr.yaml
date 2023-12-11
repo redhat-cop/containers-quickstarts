@@ -13,10 +13,10 @@ jobs:
       image_name: jenkins-agent-ansible
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4
 
       - name: Build image
-        uses: redhat-actions/buildah-build@v2
+        uses: redhat-actions/buildah-build@b4dc19b4ba891854660ab1f88a097d45aa158f76 # v2
         with:
           context: ${{ env.context }}
           dockerfiles: |

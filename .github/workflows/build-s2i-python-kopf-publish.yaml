@@ -13,17 +13,17 @@ jobs:
       REGISTRY: ${{ secrets.REGISTRY_URI }}
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4
 
       - name: Get image tags
         id: image_tags
-        uses: redhat-cop/github-actions/get-image-version@v4
+        uses: redhat-cop/github-actions/get-image-version@11f2ce27643eb7c76ac3623cb99d9b08be30d762 # v4
         with:
           IMAGE_CONTEXT_DIR: ${{ env.CONTEXT_DIR }}
 
       - name: Build image
         id: build_image
-        uses: redhat-actions/buildah-build@v2
+        uses: redhat-actions/buildah-build@b4dc19b4ba891854660ab1f88a097d45aa158f76 # v2
         with:
           context: ${{ env.CONTEXT_DIR }}
           dockerfiles: |
@@ -32,7 +32,7 @@ jobs:
           tags: "${{ steps.image_tags.outputs.IMAGE_TAGS }}"
 
       - name: Push to ghcr.io
-        uses: redhat-actions/push-to-registry@v2
+        uses: redhat-actions/push-to-registry@9986a6552bc4571882a4a67e016b17361412b4df # v2
         with:
           image: ${{ steps.build_image.outputs.image }}
           registry: ghcr.io/${{ github.repository }}
@@ -43,7 +43,7 @@ jobs:
       - name: Push to Quay
         if: ${{ env.REGISTRY }} != ""
         id: push_to_quay
-        uses: redhat-actions/push-to-registry@v2
+        uses: redhat-actions/push-to-registry@9986a6552bc4571882a4a67e016b17361412b4df # v2
         with:
           image: ${{ steps.build_image.outputs.image }}
           registry: ${{ secrets.REGISTRY_URI }}/${{ secrets.REGISTRY_REPOSITORY }}
