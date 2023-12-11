@@ -3,5 +3,28 @@
   "extends": [
     "config:best-practices",
     "schedule:earlyMondays"
+  ],
+  "ignorePaths": [
+    "**/build-docker-generic/**",
+    "**/build-s2i-executable/**",
+    "**/build-s2i-gows/**",
+    "**/build-s2i-jekyll/**",
+    "**/build-s2i-liberty/**",
+    "**/cert-manager-configs/**",
+    "**/deprecated/**",
+    "**/github-runner-ubi8/**",
+    "**/gitlab-ce/**",
+    "**/gogs/**",
+    "**/hoverfly/**",
+    "**/hygieia/**",
+    "**/jenkins-masters/**",
+    "**/mongodb/**",
+    "**/ocp4-logging/**",
+    "**/rabbitmq/**",
+    "**/s2i-mvn-gradle/**",
+    "**/sonarqube/**",
+    "**/tower-ocp-custom/**",
+    "**/ubi7-gitlab-runner/**",
+    "**/zalenium/**"
   ]
 }
