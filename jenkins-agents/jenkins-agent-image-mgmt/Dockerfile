@@ -9,7 +9,7 @@ RUN curl -L https://github.com/containers/skopeo/archive/v${SKOPEO_VERSION}.tar.
     cd /tmp/skopeo && \
     make BUILDTAGS=containers_image_openpgp DISABLE_DOCS=1 CGO_ENABLED=0 GO_DYN_FLAGS=
 
-FROM quay.io/openshift/origin-jenkins-agent-base:4.9
+FROM quay.io/openshift/origin-jenkins-agent-base:4.16@sha256:9e63c022e118b87917bf4af8253f706ec5cde1c20be58fb1ad7b42a2a72b2023
 
 ARG OC_VERSION=4.9
 
