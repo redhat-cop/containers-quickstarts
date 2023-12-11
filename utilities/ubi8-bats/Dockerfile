@@ -1,4 +1,4 @@
-FROM registry.access.redhat.com/ubi8/ubi-minimal@sha256:87bcbfedfd70e67aab3875fff103bade460aeff510033ebb36b7efa009ab6639
+FROM registry.access.redhat.com/ubi8/ubi-minimal
 
 LABEL io.k8s.description="OCP Bats"
 LABEL io.k8s.display-name="OCP Bats"

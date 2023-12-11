@@ -1,5 +1,5 @@
 #invoke npm in jenkinsfile: sh "scl enable rh-nodejs6 'npm run build'"
-FROM quay.io/openshift/origin-jenkins-agent-base:4.9@sha256:94025d11174dbf836427236733d1b82010a21cf83c5321ec168db761fc2c28e7
+FROM quay.io/openshift/origin-jenkins-agent-base:4.9
 
 ARG JQ_VERSION=1.6
 ARG OC_VERSION=4.8

@@ -1,4 +1,4 @@
-FROM quay.io/centos/centos:centos7@sha256:e4ca2ed0202e76be184e75fb26d14bf974193579039d5573fb2348664deef76e
+FROM quay.io/centos/centos:centos7
 
 ARG ZAPROXY_VERSION="2.9.0"
 ARG WEBSWING_VERSION="22.2"
