@@ -4,6 +4,10 @@ on:
     paths:
       - utilities/ubi8-bats/**
       - .github/workflows/ubi8-bats-pr.yaml
+
+# Declare default permissions as read only.
+permissions: read-all
+
 jobs:
   build:
     env:

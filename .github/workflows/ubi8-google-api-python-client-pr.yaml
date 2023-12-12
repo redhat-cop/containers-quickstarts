@@ -4,6 +4,10 @@ on:
     paths:
       - utilities/ubi8-google-api-python-client/**
       - .github/workflows/ubi8-google-api-python-client-pr.yaml
+
+# Declare default permissions as read only.
+permissions: read-all
+
 jobs:
   build:
     env:

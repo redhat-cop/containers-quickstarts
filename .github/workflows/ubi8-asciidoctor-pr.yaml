@@ -4,6 +4,10 @@ on:
     paths:
       - utilities/ubi8-asciidoctor/**
       - .github/workflows/ubi8-asciidoctor-pr.yaml
+
+# Declare default permissions as read only.
+permissions: read-all
+
 jobs:
   build:
     env:
