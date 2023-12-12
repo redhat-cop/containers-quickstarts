@@ -4,6 +4,10 @@ on:
     paths:
       - jenkins-agents/jenkins-agent-image-mgmt/**
       - .github/workflows/jenkins-agent-image-mgmt-pr.yaml
+
+# Declare default permissions as read only.
+permissions: read-all
+
 jobs:
   build:
     env:

@@ -6,6 +6,10 @@ on:
     paths:
       - _test/kind/**
       - .github/workflows/jenkins-agent-ci-pr.yaml
+
+# Declare default permissions as read only.
+permissions: read-all
+
 jobs:
   build:
     env:

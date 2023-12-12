@@ -5,6 +5,10 @@ on:
     paths:
       - jenkins-agents/jenkins-agent-graalvm/**
       - .github/workflows/jenkins-agent-graalvm-pr.yaml
+
+# Declare default permissions as read only.
+permissions: read-all
+
 jobs:
   build:
     env:
