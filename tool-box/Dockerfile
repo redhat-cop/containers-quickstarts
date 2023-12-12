@@ -1,14 +1,21 @@
-FROM registry.access.redhat.com/ubi8
+FROM registry.access.redhat.com/ubi8:8.9
 
-ENV OC_VERSION=stable-4.12 \
+ENV HOME=/home/tool-box \
+    INSTALL_PKGS="git iputils procps-ng python39 vim unzip zip" \
+    # renovate: datasource=repology depName=homebrew/openshift-cli
+    OC_VERSION=stable-4.12 \
+    # renovate: datasource=github-releases depName=openshift/rosa
     ROSA_VERSION=1.2.15 \
+    # renovate: datasource=github-releases depName=redhat-developer/odo
     ODO_VERSION=v3.9.0 \
+    # renovate: datasource=pypi depName=ansible-core
     ANSIBLE_VERSION=2.14.5 \
+    # renovate: datasource=github-releases depName=stedolan/jq
     JQ_VERSION=1.6 \
+    # renovate: datasource=github-releases depName=helm/helm
     HELM_VERSION=v3.11.3 \
-    TEKTON_VERSION=0.30.1 \
-    HOME=/home/tool-box \
-    INSTALL_PKGS="git iputils procps-ng python39 vim unzip zip"
+    # renovate: datasource=github-releases depName=tektoncd/cli
+    TEKTON_VERSION=0.30.1
 
 RUN yum -y update && \
     yum -y install $INSTALL_PKGS && \
