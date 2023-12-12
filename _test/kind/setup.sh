@@ -3,6 +3,7 @@
 set -euo pipefail
 
 AGENT=$1
+## todo: renovate config for below
 JENKINS_CHART_VERSION="4.9.1"
 AGENT_PATH="jenkins-agents/${AGENT}"
 SCRIPT_DIR=$(dirname -- "$(readlink -f "${BASH_SOURCE[0]}" || realpath "${BASH_SOURCE[0]}")")

@@ -1,10 +1,16 @@
 FROM quay.io/openshift/origin-jenkins-agent-base:4.9
 
+# renovate: datasource=github-releases depName=helm/helm
 ARG VERSION=3.5.2
+# renovate: datasource=github-releases depName=mikefarah/yq
 ARG YQ_VERSION=v4.5.1
+# renovate: datasource=github-releases depName=helm/chart-testing
 ARG CT_VERSION=3.3.1
+# renovate: datasource=repology depName=homebrew/openshift-cli
 ARG OPENSHIFT_CLIENT_VERSION=4.8
+# renovate: datasource=github-releases depName=open-policy-agent/conftest
 ARG CONFTEST_VERSION=0.23.0
+# renovate: datasource=github-releases depName=stackrox/kube-linter
 ARG KUBE_LINTER_VERSION=0.2.3
 
 ## Required in order to avoid ct "ascii codec can't encode character" error

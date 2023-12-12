@@ -1,7 +1,8 @@
-FROM quay.io/openshift/origin-jenkins-agent-base:4.9
+FROM quay.io/openshift/origin-jenkins-agent-base:4.14
 
 USER root
 
+# renovate: datasource=github-releases depName=sigstore/cosign
 ARG COSIGN_VERSION=2.0.2
 
 # Install cosign
