@@ -5,6 +5,10 @@ on:
     paths:
       - jenkins-agents/jenkins-agent-golang/**
       - .github/workflows/jenkins-agent-golang-pr.yaml
+
+# Declare default permissions as read only.
+permissions: read-all
+
 jobs:
   build:
     env:

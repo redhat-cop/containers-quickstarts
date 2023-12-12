@@ -5,6 +5,10 @@ on:
     paths:
       - jenkins-agents/jenkins-agent-cosign/**
       - .github/workflows/jenkins-agent-cosign-pr.yaml
+
+# Declare default permissions as read only.
+permissions: read-all
+
 jobs:
   build:
     env:

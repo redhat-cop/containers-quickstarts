@@ -5,6 +5,10 @@ on:
     paths:
       - jenkins-agents/jenkins-agent-mvn/**
       - .github/workflows/jenkins-agent-mvn-pr.yaml
+
+# Declare default permissions as read only.
+permissions: read-all
+
 jobs:
   build:
     env:

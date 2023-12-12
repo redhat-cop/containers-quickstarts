@@ -4,6 +4,10 @@ on:
     paths:
       - jenkins-agents/jenkins-agent-python/**
       - .github/workflows/jenkins-agent-python-pr.yaml
+
+# Declare default permissions as read only.
+permissions: read-all
+
 jobs:
   build:
     env:

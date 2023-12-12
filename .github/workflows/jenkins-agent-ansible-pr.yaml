@@ -5,6 +5,10 @@ on:
     paths:
       - jenkins-agents/jenkins-agent-ansible/**
       - .github/workflows/jenkins-agent-ansible-pr.yaml
+
+# Declare default permissions as read only.
+permissions: read-all
+
 jobs:
   build:
     env:

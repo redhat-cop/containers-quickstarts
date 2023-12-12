@@ -5,6 +5,10 @@ on:
     paths:
       - jenkins-agents/jenkins-agent-argocd/**
       - .github/workflows/jenkins-agent-argocd-pr.yaml
+
+# Declare default permissions as read only.
+permissions: read-all
+
 jobs:
   build:
     env:

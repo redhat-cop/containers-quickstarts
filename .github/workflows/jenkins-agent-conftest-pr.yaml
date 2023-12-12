@@ -5,6 +5,10 @@ on:
     paths:
       - jenkins-agents/jenkins-agent-conftest/**
       - .github/workflows/jenkins-agent-conftest-pr.yaml
+
+# Declare default permissions as read only.
+permissions: read-all
+
 jobs:
   build:
     env:

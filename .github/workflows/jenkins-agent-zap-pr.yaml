@@ -5,6 +5,10 @@ on:
     paths:
       - jenkins-agents/jenkins-agent-zap/**
       - .github/workflows/jenkins-agent-zap-pr.yaml
+
+# Declare default permissions as read only.
+permissions: read-all
+
 jobs:
   build:
     env:

@@ -5,6 +5,10 @@ on:
     paths:
       - jenkins-agents/jenkins-agent-gradle/**
       - .github/workflows/jenkins-agent-gradle-pr.yaml
+
+# Declare default permissions as read only.
+permissions: read-all
+
 jobs:
   build:
     env:

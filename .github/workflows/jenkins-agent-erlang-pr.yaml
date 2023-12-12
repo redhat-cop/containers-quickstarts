@@ -5,6 +5,10 @@ on:
     paths:
       - jenkins-agents/jenkins-agent-erlang/**
       - .github/workflows/jenkins-agent-erlang-pr.yaml
+
+# Declare default permissions as read only.
+permissions: read-all
+
 jobs:
   build:
     env:
