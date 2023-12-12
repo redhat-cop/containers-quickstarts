@@ -1,8 +1,11 @@
 #invoke npm in jenkinsfile: sh "scl enable rh-nodejs6 'npm run build'"
-FROM quay.io/openshift/origin-jenkins-agent-base:4.9
+FROM quay.io/openshift/origin-jenkins-agent-base:4.14
 
+# renovate: datasource=github-releases depName=stedolan/jq
 ARG JQ_VERSION=1.6
+# renovate: datasource=repology depName=homebrew/openshift-cli
 ARG OC_VERSION=4.8
+# renovate: datasource=github-releases depName=mikefarah/yq
 ARG YQ_VERSION=4.6.3
 
 ENV NODEJS_VERSION=16 \

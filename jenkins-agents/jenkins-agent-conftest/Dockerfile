@@ -1,8 +1,11 @@
-FROM quay.io/redhat-cop/jenkins-agent-python:v1.1@sha256:64caef557f4045bc3dbe3e8b55b6ccf36a1ffc0963d0dbdaca3200ed7c2763e6
+FROM quay.io/redhat-cop/jenkins-agent-python:v1.1@sha256:5a6ed0e5066d0a58c88158cfdcc66a199178d282094510f910e53c6b5ef9cad3
 # ^ needed to install the python yq library 🐍
 
+# renovate: datasource=github-releases depName=bats-core/bats-core
 ARG BATS_VERSION=1.2.0
+# renovate: datasource=github-releases depName=mikefarah/yq
 ARG YQ_VERSION=2.12.0
+# renovate: datasource=github-releases depName=open-policy-agent/conftest
 ARG CONFTEST_VERSION=0.23.0
 
 USER root

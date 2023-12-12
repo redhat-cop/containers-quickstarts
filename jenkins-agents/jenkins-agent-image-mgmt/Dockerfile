@@ -1,5 +1,6 @@
-FROM registry.access.redhat.com/ubi8/go-toolset:latest as builder
+FROM registry.access.redhat.com/ubi8/go-toolset:1.20 as builder
 
+# renovate: datasource=github-releases depName=containers/skopeo
 ARG SKOPEO_VERSION=1.5.2
 
 USER root
@@ -9,9 +10,10 @@ RUN curl -L https://github.com/containers/skopeo/archive/v${SKOPEO_VERSION}.tar.
     cd /tmp/skopeo && \
     make BUILDTAGS=containers_image_openpgp DISABLE_DOCS=1 CGO_ENABLED=0 GO_DYN_FLAGS=
 
-FROM quay.io/openshift/origin-jenkins-agent-base:4.9
+FROM quay.io/openshift/origin-jenkins-agent-base:4.14
 
-ARG OC_VERSION=4.9
+#todo
+ARG OC_VERSION=4.14
 
 MAINTAINER Andrew Block <ablock@redhat.com>
 

@@ -16,6 +16,18 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4
+        with:
+          fetch-depth: 0
+
+      - name: Check if version.json has been bumped
+        id: changes
+        run: echo "changed=$(git --no-pager diff --name-only origin/master origin/${GITHUB_HEAD_REF} | grep "${context}/version.json" | wc -l)" >> $GITHUB_OUTPUT
+
+      - name: Fail if version.json not bumped
+        if: steps.changes.outputs.changed == 0
+        run: |
+          echo "${context}/version.json has not changed. Publishing the same tag removes the SHA, which causes issues. Failing."
+          exit 1
 
       - name: Check and verify version.json
         id: check_version

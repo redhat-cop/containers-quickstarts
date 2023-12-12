@@ -1,10 +1,15 @@
 FROM quay.io/openshift/origin-jenkins-agent-maven:4.14@sha256:4a8671c25216b1b44bf47a363ec37d503568fa2f75ef1a010e2284ac1cc5df46
+
 ARG GRAAL_VERSION=20.3.3.0-Final
 ENV GRAALVM_HOME=/opt/mandrelJDK
 ENV GRAAL_CE_URL=https://github.com/graalvm/mandrel/releases/download/mandrel-${GRAAL_VERSION}/mandrel-java11-linux-amd64-${GRAAL_VERSION}.tar.gz
+# renovate: datasource=github-releases depName=helm/helm
 ARG HELM_VERSION=3.6.3
+# renovate: datasource=github-releases depName=stedolan/jq
 ARG JQ_VERSION=1.6
+# renovate: datasource=repology depName=homebrew/openshift-cli
 ARG OC_VERSION=4.8
+# renovate: datasource=github-releases depName=mikefarah/yq
 ARG YQ_VERSION=4.11.2
 
 ADD settings.xml $HOME/.m2/settings.xml
