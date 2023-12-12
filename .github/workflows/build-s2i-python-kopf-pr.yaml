@@ -5,6 +5,10 @@ on:
     paths:
       - build-s2i-python-kopf/**
       - .github/workflows/build-s2i-python-kopf-pr.yaml
+
+# Declare default permissions as read only.
+permissions: read-all
+
 jobs:
   test:
     env:
