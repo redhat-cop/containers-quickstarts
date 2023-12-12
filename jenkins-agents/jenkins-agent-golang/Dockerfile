@@ -1,6 +1,7 @@
-FROM quay.io/openshift/origin-jenkins-agent-base:4.9
+FROM quay.io/openshift/origin-jenkins-agent-base:4.14
 
-ARG GO_VERSION=1.15.6
+# renovate: datasource=golang-version depName=go
+ARG GO_VERSION=1.20
 ARG SONAR_SCANNER_VERSION=4.5.0.2216
 ENV GOROOT=/usr/local/go \
     GOPATH=/usr/src/go
@@ -16,10 +17,11 @@ RUN curl -L -o /tmp/sonar-scanner.zip https://binaries.sonarsource.com/Distribut
     mv sonar-scanner-* sonar-scanner && \
     ln -s /opt/sonar-scanner/bin/sonar-scanner /usr/local/bin/sonar-scanner && \
     chmod 755 /usr/local/bin/sonar-scanner
+
 RUN curl -L https://dl.google.com/go/go${GO_VERSION}.linux-amd64.tar.gz \
     | tar zxf - -C /usr/local/ && \
     mkdir -p /usr/src/go/src/redhat && \
-    go get -u github.com/golang/dep/cmd/dep && \
+    mkdir -p ${HOME}/.cache/go-build && \
     chown -R 1001 /usr/src/go && \
     chown -R 1001 /usr/local/go && \
     chown -R 1001 ${HOME}/.cache/go-build && \

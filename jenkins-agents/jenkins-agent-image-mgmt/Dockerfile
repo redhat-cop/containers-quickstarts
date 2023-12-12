@@ -1,17 +1,19 @@
-FROM registry.access.redhat.com/ubi8/go-toolset:latest as builder
+FROM registry.access.redhat.com/ubi8/go-toolset:1.20 as builder
 
-ARG SKOPEO_VERSION=1.5.2
+# renovate: datasource=github-releases depName=containers/skopeo
+ARG SKOPEO_VERSION=v1.13.0
 
 USER root
 
-RUN curl -L https://github.com/containers/skopeo/archive/v${SKOPEO_VERSION}.tar.gz | tar -C /tmp -zxf - && \
-    mv /tmp/skopeo-${SKOPEO_VERSION} /tmp/skopeo && \
+RUN curl -L https://github.com/containers/skopeo/archive/${SKOPEO_VERSION}.tar.gz | tar -C /tmp -zxf - && \
+    mv /tmp/skopeo-${SKOPEO_VERSION//v} /tmp/skopeo && \
     cd /tmp/skopeo && \
     make BUILDTAGS=containers_image_openpgp DISABLE_DOCS=1 CGO_ENABLED=0 GO_DYN_FLAGS=
 
-FROM quay.io/openshift/origin-jenkins-agent-base:4.9
+FROM quay.io/openshift/origin-jenkins-agent-base:4.14
 
-ARG OC_VERSION=4.9
+# renovate: datasource=repology depName=homebrew/openshift-cli
+ARG OC_VERSION=4.14.0
 
 MAINTAINER Andrew Block <ablock@redhat.com>
 
@@ -25,7 +27,7 @@ LABEL com.redhat.component="jenkins-agent-image-mgmt" \
 USER root
 
 RUN mkdir -p /etc/containers && \
-    curl -L https://mirror.openshift.com/pub/openshift-v4/clients/ocp/stable-${OC_VERSION}/openshift-client-linux.tar.gz | tar zxvf - -C /usr/bin oc
+    curl -L https://mirror.openshift.com/pub/openshift-v4/clients/ocp/${OC_VERSION}/openshift-client-linux.tar.gz | tar zxvf - -C /usr/bin oc
 
 COPY --from=builder /tmp/skopeo/default-policy.json /etc/containers/policy.json
 COPY --from=builder /tmp/skopeo/bin/skopeo /usr/bin/

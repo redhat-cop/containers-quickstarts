@@ -13,7 +13,6 @@ jobs:
     env:
       context: utilities/ubi8-google-api-python-client
       image_name: ubi8-google-api-python-client
-      REGISTRY: ${{ secrets.REGISTRY_URI }}
     runs-on: ubuntu-latest
     permissions:
       packages: write
@@ -38,7 +37,7 @@ jobs:
 
       - name: Push to ghcr.io
         uses: redhat-actions/push-to-registry@9986a6552bc4571882a4a67e016b17361412b4df # v2
-        if: ${{ !contains(github.head_ref, 'renovate') }}
+        if: ${{ !contains(github.ref, 'renovate') }}
         with:
           image: ${{ steps.build_image.outputs.image }}
           registry: ghcr.io/${{ github.repository }}
@@ -47,8 +46,9 @@ jobs:
           tags: ${{ steps.build_image.outputs.tags }}
 
       - name: Push to Quay
-        if: ${{ env.REGISTRY }} != "" && ${{ !contains(github.head_ref, 'renovate') }}
-        id: push_to_quay
+        env:
+          REGISTRY_URI: ${{ secrets.REGISTRY_URI }}
+        if: ${{ env.REGISTRY_URI  != '' && !contains(github.ref, 'renovate') }}
         uses: redhat-actions/push-to-registry@9986a6552bc4571882a4a67e016b17361412b4df # v2
         with:
           image: ${{ steps.build_image.outputs.image }}

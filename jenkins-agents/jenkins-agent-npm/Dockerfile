@@ -1,8 +1,11 @@
 #invoke npm in jenkinsfile: sh "scl enable rh-nodejs6 'npm run build'"
-FROM quay.io/openshift/origin-jenkins-agent-base:4.9
+FROM quay.io/openshift/origin-jenkins-agent-base:4.14
 
+# renovate: datasource=github-releases depName=stedolan/jq
 ARG JQ_VERSION=1.6
-ARG OC_VERSION=4.8
+# renovate: datasource=repology depName=homebrew/openshift-cli
+ARG OC_VERSION=4.8.0
+# renovate: datasource=github-releases depName=mikefarah/yq
 ARG YQ_VERSION=4.6.3
 
 ENV NODEJS_VERSION=16 \
@@ -25,7 +28,7 @@ RUN INSTALL_PKGS="nodejs" && \
     curl -Lo /usr/local/bin/yq https://github.com/mikefarah/yq/releases/download/v${YQ_VERSION}/yq_linux_amd64 && \
     chmod +x /usr/local/bin/yq && \
     rm -f /usr/bin/oc && \
-    curl -sL https://mirror.openshift.com/pub/openshift-v4/clients/ocp/stable-${OC_VERSION}/openshift-client-linux.tar.gz \
+    curl -sL https://mirror.openshift.com/pub/openshift-v4/clients/ocp/${OC_VERSION}/openshift-client-linux.tar.gz \
     | tar zxf - -C /usr/local/bin oc kubectl
 
 USER 1001
