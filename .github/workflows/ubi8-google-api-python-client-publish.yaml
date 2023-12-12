@@ -4,6 +4,10 @@ on:
     paths:
       - utilities/ubi8-google-api-python-client/version.json
       - .github/workflows/ubi8-google-api-python-client-publish.yaml
+
+# Declare default permissions as read only.
+permissions: read-all
+
 jobs:
   build:
     env:
@@ -11,6 +15,8 @@ jobs:
       image_name: ubi8-google-api-python-client
       REGISTRY: ${{ secrets.REGISTRY_URI }}
     runs-on: ubuntu-latest
+    permissions:
+      packages: write
     steps:
       - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4
 

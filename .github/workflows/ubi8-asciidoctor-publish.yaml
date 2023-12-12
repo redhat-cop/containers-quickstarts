@@ -6,6 +6,10 @@ on:
     paths:
       - utilities/ubi8-asciidoctor/version.json
       - .github/workflows/ubi8-asciidoctor-publish.yaml
+
+# Declare default permissions as read only.
+permissions: read-all
+
 jobs:
   build:
     env:
@@ -13,6 +17,8 @@ jobs:
       image_name: ubi8-asciidoctor
       REGISTRY: ${{ secrets.REGISTRY_URI }}
     runs-on: ubuntu-latest
+    permissions:
+      packages: write
     steps:
       - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4
 
