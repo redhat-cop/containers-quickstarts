@@ -1,4 +1,4 @@
-FROM registry.access.redhat.com/ubi8:8.9
+FROM registry.access.redhat.com/ubi8:8.9-1028@sha256:449da7f8f2ef6285a8445a1e31af57a97b9dae5dcf009b1629c59742c89c68c3
 
 ENV HOME=/home/tool-box \
     INSTALL_PKGS="git iputils procps-ng python39 vim unzip zip" \
