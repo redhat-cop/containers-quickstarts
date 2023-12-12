@@ -1,7 +1,7 @@
 FROM quay.io/openshift/origin-jenkins-agent-base:4.9
 
-ARG RUBY_VERSION=2.7
-ARG OC_VERSION=4.9
+ARG RUBY_VERSION=3.1
+ARG OC_VERSION=4.14
 
 ENV SUMMARY="Platform for building and running Ruby $RUBY_VERSION applications" \
     DESCRIPTION="Ruby $RUBY_VERSION available as docker container is a base platform for \
@@ -35,7 +35,7 @@ RUN rm -f /etc/yum.repos.d/*.repo && \
     dnf -y module enable ruby:${RUBY_VERSION} && \
     dnf --allowerasing -y distro-sync && \
     dnf -y module install ruby:${RUBY_VERSION} && \
-    INSTALL_PKGS="ruby ruby-devel rubygem-rake rubygem-bundler autoconf automake gcc make redhat-rpm-config" && \
+    INSTALL_PKGS="ruby ruby-devel rubygem-rake rubygem-bundler libyaml-devel autoconf automake gcc make redhat-rpm-config" && \
     dnf install -y --setopt=tsflags=nodocs $INSTALL_PKGS && rpm -V $INSTALL_PKGS && \
     dnf remove -y origin-clients && \
     dnf clean all -y && \
