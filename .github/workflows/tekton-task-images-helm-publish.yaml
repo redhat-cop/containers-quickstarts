@@ -4,6 +4,10 @@ on:
     paths:
       - tekton-task-images/helm/VERSION
       - .github/workflows/tekton-task-images-helm-publish.yaml
+
+# Declare default permissions as read only.
+permissions: read-all
+
 jobs:
   build:
     env:
@@ -11,12 +15,14 @@ jobs:
       image_name: tekton-task-helm
       REGISTRY: ${{ secrets.REGISTRY_URI }}
     runs-on: ubuntu-latest
+    permissions:
+      packages: write
     steps:
       - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4
 
       - name: Convert VERSION to version.json
         run: |
-          version=$(cat ${{ env.context }}/VERSION | cut -d"=" -f2)
+          version=$(sed -n '2p' ${{ env.context }}/VERSION | cut -d"=" -f2)
           jq -c --null-input --arg version "v$version" '{ "version": $version }' > ${{ env.context }}/version.json
 
       - name: Get image tags
