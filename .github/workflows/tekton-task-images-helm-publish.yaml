@@ -23,7 +23,7 @@ jobs:
       - name: Convert VERSION to version.json
         run: |
           version=$(sed -n '2p' ${{ env.context }}/VERSION | cut -d"=" -f2)
-          jq -c --null-input --arg version "v$version" '{ "version": $version }' > ${{ env.context }}/version.json
+          jq -c --null-input --arg version "$version" '{ "version": $version }' > ${{ env.context }}/version.json
 
       - name: Get image tags
         id: image_tags

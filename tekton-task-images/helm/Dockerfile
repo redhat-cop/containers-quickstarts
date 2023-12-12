@@ -12,7 +12,7 @@ RUN microdnf install -y --nodocs openssl tar git findutils gzip && \
 ADD VERSION /tmp/version
 # helm
 RUN source /tmp/version && \
-    curl -sL https://get.helm.sh/helm-v${HELM_VERSION}-linux-amd64.tar.gz | \
+    curl -sL https://get.helm.sh/helm-${HELM_VERSION}-linux-amd64.tar.gz | \
     tar zxf - -C /usr/local/bin --strip-components 1 linux-amd64/helm && \
     echo "⚓️⚓️⚓️⚓️⚓️"
 
