@@ -5,6 +5,10 @@ on:
     paths:
       - build-s2i-python-kopf/version.json
       - .github/workflows/build-s2i-python-kopf-publish.yaml
+
+# Declare default permissions as read only.
+permissions: read-all
+
 jobs:
   publish:
     env:
@@ -12,6 +16,8 @@ jobs:
       IMAGE_NAME: python-kopf-s2i
       REGISTRY: ${{ secrets.REGISTRY_URI }}
     runs-on: ubuntu-latest
+    permissions:
+      packages: write
     steps:
       - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4
 
