@@ -13,7 +13,7 @@ RUN curl -L https://github.com/containers/skopeo/archive/${SKOPEO_VERSION}.tar.g
 FROM quay.io/openshift/origin-jenkins-agent-base:4.14
 
 # renovate: datasource=repology depName=homebrew/openshift-cli
-ARG OC_VERSION=4.14.0
+ARG OC_VERSION=4.14.3
 
 MAINTAINER Andrew Block <ablock@redhat.com>
 
