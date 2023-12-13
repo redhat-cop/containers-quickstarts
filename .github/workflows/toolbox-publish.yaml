@@ -44,15 +44,3 @@ jobs:
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GITHUB_TOKEN }}
           tags: ${{ steps.build_image.outputs.tags }}
-
-      - name: Push to Quay
-        env:
-          REGISTRY_URI: ${{ secrets.REGISTRY_URI }}
-        if: ${{ env.REGISTRY_URI  != '' && !contains(github.ref, 'renovate') }}
-        uses: redhat-actions/push-to-registry@9986a6552bc4571882a4a67e016b17361412b4df # v2
-        with:
-          image: ${{ steps.build_image.outputs.image }}
-          registry: ${{ secrets.REGISTRY_URI }}/${{ secrets.REGISTRY_REPOSITORY }}
-          username: ${{ secrets.REGISTRY_USERNAME }}
-          password: ${{ secrets.REGISTRY_PASSWORD }}
-          tags: ${{ steps.build_image.outputs.tags }}
