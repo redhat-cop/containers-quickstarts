@@ -1,7 +1,7 @@
 FROM quay.io/openshift/origin-jenkins-agent-base:4.14
 
 # renovate: datasource=github-releases depName=rabbitmq/erlang-rpm
-ARG ERLANG_VERSION=v22.3.4
+ARG ERLANG_VERSION=v26.2
 # renovate: datasource=github-releases depName=erlang/rebar3
 ARG REBAR3_VERSION=3.12.0
 
