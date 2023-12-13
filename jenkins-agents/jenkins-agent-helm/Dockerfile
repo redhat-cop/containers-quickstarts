@@ -3,7 +3,7 @@ FROM quay.io/openshift/origin-jenkins-agent-base:4.9
 # renovate: datasource=github-releases depName=helm/helm
 ARG HELM_VERSION=v3.13.2
 # renovate: datasource=github-releases depName=mikefarah/yq
-ARG YQ_VERSION=v4.5.1
+ARG YQ_VERSION=v4.40.5
 # renovate: datasource=github-releases depName=helm/chart-testing
 ARG CT_VERSION=v3.3.1
 # renovate: datasource=repology depName=homebrew/openshift-cli

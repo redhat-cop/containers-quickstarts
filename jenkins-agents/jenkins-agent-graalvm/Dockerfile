@@ -10,7 +10,7 @@ ARG JQ_VERSION=1.6
 # renovate: datasource=repology depName=homebrew/openshift-cli
 ARG OC_VERSION=4.8.0
 # renovate: datasource=github-releases depName=mikefarah/yq
-ARG YQ_VERSION=v4.11.2
+ARG YQ_VERSION=v4.40.5
 
 ADD settings.xml $HOME/.m2/settings.xml
 ADD ubi8.repo /tmp/ubi8.repo
