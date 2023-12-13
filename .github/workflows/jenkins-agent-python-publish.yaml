@@ -13,7 +13,6 @@ jobs:
     env:
       context: jenkins-agents/jenkins-agent-python
       image_name: jenkins-agent-python
-      REGISTRY: ${{ secrets.REGISTRY_URI }}
     runs-on: ubuntu-latest
     permissions:
       packages: write
@@ -47,7 +46,7 @@ jobs:
           tags: ${{ steps.build_image.outputs.tags }}
 
       - name: Push to Quay
-        if: ${{ env.REGISTRY }} != "" && ${{ !contains(github.head_ref, 'renovate') }}
+        if: ${{ secrets.REGISTRY_URI }} != "" && ${{ !contains(github.head_ref, 'renovate') }}
         id: push_to_quay
         uses: redhat-actions/push-to-registry@9986a6552bc4571882a4a67e016b17361412b4df # v2
         with:
