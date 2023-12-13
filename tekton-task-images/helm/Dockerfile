@@ -1,5 +1,5 @@
 # Builder
-FROM registry.access.redhat.com/ubi9/ubi:9.3-1475@sha256:a340f4b9fb261a75c84666a3dccb88e193a116da3cebabaf9bcdc33609b61172 AS builder
+FROM registry.access.redhat.com/ubi9/ubi:9.3 AS builder
 
 # renovate: datasource=github-releases depName=mikefarah/yq
 ARG YQ_VERSION=v4.40.5
