@@ -16,7 +16,7 @@ ENV JQ_VERSION=1.6
 # renovate: datasource=github-releases depName=helm/helm
 ENV HELM_VERSION=v3.11.3
 # renovate: datasource=github-releases depName=tektoncd/cli
-ENV TEKTON_VERSION=v0.30.1
+ENV TEKTON_VERSION=v0.33.0
 
 RUN yum -y update && \
     yum -y install $INSTALL_PKGS && \
