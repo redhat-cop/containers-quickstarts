@@ -1,7 +1,7 @@
 FROM registry.access.redhat.com/ubi8/go-toolset:1.20 as builder
 
 # renovate: datasource=github-releases depName=containers/skopeo
-ARG SKOPEO_VERSION=v1.13.0
+ARG SKOPEO_VERSION=v1.14.0
 
 USER root
 
