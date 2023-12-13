@@ -6,7 +6,7 @@ ARG BATS_VERSION=v1.2.0
 # renovate: datasource=pypi depName=yq
 ARG YQ_VERSION=2.12.0
 # renovate: datasource=github-releases depName=open-policy-agent/conftest
-ARG CONFTEST_VERSION=v0.46.0
+ARG CONFTEST_VERSION=v0.47.0
 
 USER root
 
