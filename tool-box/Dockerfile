@@ -10,7 +10,7 @@ ENV ROSA_VERSION=v1.2.15
 # renovate: datasource=github-releases depName=redhat-developer/odo
 ENV ODO_VERSION=v3.9.0
 # renovate: datasource=pypi depName=ansible-core
-ENV ANSIBLE_CORE_VERSION=2.14.5
+ENV ANSIBLE_CORE_VERSION=2.16.2
 # renovate: datasource=github-releases depName=stedolan/jq
 ENV JQ_VERSION=1.6
 # renovate: datasource=github-releases depName=helm/helm
