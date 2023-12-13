@@ -7,7 +7,7 @@ ARG YQ_VERSION=v4.5.1
 # renovate: datasource=github-releases depName=helm/chart-testing
 ARG CT_VERSION=v3.3.1
 # renovate: datasource=repology depName=homebrew/openshift-cli
-ARG OPENSHIFT_CLIENT_VERSION=4.8.0
+ARG OPENSHIFT_CLIENT_VERSION=4.14.3
 # renovate: datasource=github-releases depName=open-policy-agent/conftest
 ARG CONFTEST_VERSION=v0.47.0
 # renovate: datasource=github-releases depName=stackrox/kube-linter

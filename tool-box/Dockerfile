@@ -4,7 +4,7 @@ ENV HOME=/home/tool-box \
     INSTALL_PKGS="git iputils procps-ng python311 vim unzip zip"
 
 # renovate: datasource=repology depName=homebrew/openshift-cli
-ENV OC_VERSION=stable-4.12
+ENV OC_VERSION=4.14.3
 # renovate: datasource=github-releases depName=openshift/rosa
 ENV ROSA_VERSION=v1.2.15
 # renovate: datasource=github-releases depName=redhat-developer/odo

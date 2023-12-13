@@ -4,7 +4,7 @@ FROM quay.io/openshift/origin-jenkins-agent-base:4.14
 # renovate: datasource=github-releases depName=stedolan/jq
 ARG JQ_VERSION=1.6
 # renovate: datasource=repology depName=homebrew/openshift-cli
-ARG OC_VERSION=4.8.0
+ARG OC_VERSION=4.14.3
 # renovate: datasource=github-releases depName=mikefarah/yq
 ARG YQ_VERSION=4.6.3
 
