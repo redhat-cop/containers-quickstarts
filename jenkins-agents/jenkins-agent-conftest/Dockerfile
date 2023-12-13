@@ -1,4 +1,4 @@
-FROM quay.io/redhat-cop/jenkins-agent-python:v1.1@sha256:5a6ed0e5066d0a58c88158cfdcc66a199178d282094510f910e53c6b5ef9cad3
+FROM quay.io/redhat-cop/jenkins-agent-python:v1.2@sha256:772883ab10e73868280a3c5d53e9037156308d6b74434eb33cbc4dae6066dddb
 # ^ needed to install the python yq library 🐍
 
 # renovate: datasource=github-releases depName=bats-core/bats-core
