@@ -1,4 +1,4 @@
-FROM registry.access.redhat.com/ubi9/ubi:9.3 AS builder
+FROM registry.access.redhat.com/ubi9/ubi:9.3-1361.1699548029@sha256:6b95efc134c2af3d45472c0a2f88e6085433df058cc210abb2bb061ac4d74359 AS builder
 
 SHELL ["/bin/bash", "-c"]
 
