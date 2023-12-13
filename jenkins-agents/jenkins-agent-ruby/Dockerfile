@@ -1,4 +1,4 @@
-FROM quay.io/openshift/origin-jenkins-agent-base:4.14
+FROM quay.io/openshift/origin-jenkins-agent-base:4.9
 
 ARG RUBY_VERSION=3.1
 # renovate: datasource=repology depName=homebrew/openshift-cli
