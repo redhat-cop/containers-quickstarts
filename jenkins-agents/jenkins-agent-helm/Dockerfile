@@ -11,7 +11,7 @@ ARG OPENSHIFT_CLIENT_VERSION=4.14.3
 # renovate: datasource=github-releases depName=open-policy-agent/conftest
 ARG CONFTEST_VERSION=v0.47.0
 # renovate: datasource=github-releases depName=stackrox/kube-linter
-ARG KUBE_LINTER_VERSION=v0.6.4
+ARG KUBE_LINTER_VERSION=v0.6.5
 
 ## Required in order to avoid ct "ascii codec can't encode character" error
 ENV PYTHONIOENCODING=utf-8 \
