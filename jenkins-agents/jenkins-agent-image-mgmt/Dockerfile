@@ -1,4 +1,4 @@
-FROM registry.access.redhat.com/ubi8/go-toolset:1.20 as builder
+FROM registry.access.redhat.com/ubi8/go-toolset:1.20.10-3@sha256:c78305ff7360bdacdd790225ca10478e08dd6fcbc037bcd176acdf4a552995da as builder
 
 # renovate: datasource=github-releases depName=containers/skopeo
 ARG SKOPEO_VERSION=v1.14.0
