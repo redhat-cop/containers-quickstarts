@@ -5,7 +5,7 @@ ARG HELM_VERSION=v3.13.2
 # renovate: datasource=github-releases depName=mikefarah/yq
 ARG YQ_VERSION=v4.5.1
 # renovate: datasource=github-releases depName=helm/chart-testing
-ARG CT_VERSION=v3.3.1
+ARG CT_VERSION=v3.10.1
 # renovate: datasource=repology depName=homebrew/openshift-cli
 ARG OPENSHIFT_CLIENT_VERSION=4.8.0
 # renovate: datasource=github-releases depName=open-policy-agent/conftest
