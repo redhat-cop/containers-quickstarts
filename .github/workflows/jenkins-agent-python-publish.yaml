@@ -46,7 +46,9 @@ jobs:
           tags: ${{ steps.build_image.outputs.tags }}
 
       - name: Push to Quay
-        if: ${{ secrets.REGISTRY_URI }} != "" && ${{ !contains(github.head_ref, 'renovate') }}
+        env:
+          REGISTRY_URI: ${{ secrets.REGISTRY_URI }}
+        if: ${{ env.REGISTRY_URI  != "" && !contains(github.head_ref, 'renovate') }}
         id: push_to_quay
         uses: redhat-actions/push-to-registry@9986a6552bc4571882a4a67e016b17361412b4df # v2
         with:
