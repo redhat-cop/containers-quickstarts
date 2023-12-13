@@ -1,7 +1,7 @@
 FROM quay.io/openshift/origin-jenkins-agent-base:4.9
 
 # renovate: datasource=pypi depName=ansible
-ARG ANSIBLE_VERSION=2.9.13
+ARG ANSIBLE_VERSION=2.10.7
 
 LABEL \
       release="1" \
