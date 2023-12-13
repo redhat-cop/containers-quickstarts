@@ -10,7 +10,7 @@ RUN curl -L https://github.com/containers/skopeo/archive/${SKOPEO_VERSION}.tar.g
     cd /tmp/skopeo && \
     make BUILDTAGS=containers_image_openpgp DISABLE_DOCS=1 CGO_ENABLED=0 GO_DYN_FLAGS=
 
-FROM quay.io/openshift/origin-jenkins-agent-base:4.14
+FROM quay.io/openshift/origin-jenkins-agent-base:4.14@sha256:1284ffe5b63ee7da4c4463d5f44b471fd42ce01c06f5c72edc195a30dcc1f7f4
 
 # renovate: datasource=repology depName=homebrew/openshift-cli
 ARG OC_VERSION=4.14.3
