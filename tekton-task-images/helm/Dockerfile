@@ -3,7 +3,7 @@ FROM registry.access.redhat.com/ubi9/ubi-minimal:9.3-1361.1699548032@sha256:c777
 USER root
 
 # renovate: datasource=github-releases depName=mikefarah/yq
-ARG YQ_VERSION=4.23.1
+ARG YQ_VERSION=v4.40.5
 
 RUN microdnf install -y --nodocs openssl tar git findutils gzip && \
     microdnf update -y && \
