@@ -1,7 +1,7 @@
 FROM quay.io/openshift/origin-jenkins-agent-base:4.9@sha256:94025d11174dbf836427236733d1b82010a21cf83c5321ec168db761fc2c28e7
 
-# renovate: datasource=pypi depName=ansible
-ARG ANSIBLE_VERSION=2.10.7
+# renovate: datasource=pypi depName=ansible-core
+ARG ANSIBLE_CORE_VERSION=2.16.2
 
 LABEL \
       release="1" \
@@ -20,11 +20,9 @@ ARG PIP_PKGS="\
         paramiko \
         openshift \
         kubernetes \
-        ansible==${ANSIBLE_VERSION} \
+        ansible-core==${ANSIBLE_CORE_VERSION} \
 "
-ARG DNF_PKGS="\
-        python38-pip \
-"
+ARG DNF_PKGS="python311"
 
 ADD ubi8.repo /tmp/ubi8.repo
 
@@ -34,7 +32,9 @@ RUN set -x \
      && dnf install ${DNF_FLAGS} ${DNF_PKGS} \
      && dnf ${DNF_FLAGS} clean all \
      && rm -rf /var/cache/dnf \
-     && alternatives --set python3 /usr/bin/python3.8 \
+     && alternatives --set python3 /usr/bin/python3.11 \
+     && python3 -m ensurepip --default-pip  \
+     && python3 -m pip install --upgrade pip  \
      && python3 -m pip install ${PIP_PKGS} \
      && chmod -R 775 /etc/alternatives \
      && chmod -R 775 /var/lib/alternatives \
