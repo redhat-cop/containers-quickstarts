@@ -19,7 +19,7 @@ jobs:
 
       - name: Check if version.json has been bumped
         id: changes
-        run: echo "changed=$(git status --porcelain ${context}/version.json | wc -l)" >> $GITHUB_OUTPUT
+        run: echo "changed=$(git --no-pager diff --name-only origin/master jenkins-bases | grep "${context}/version.json" | wc -l)" >> $GITHUB_OUTPUT
 
       - name: Fail if version.json not bumped
         if: steps.changes.outputs.changed == 0
