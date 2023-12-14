@@ -1,29 +1,13 @@
-FROM registry.access.redhat.com/ubi8
+FROM registry.access.redhat.com/ubi8/ubi:8.9
 
 LABEL maintainer="Red Hat Services"
 
-# Update image
-RUN dnf update -y && rm -rf /var/cache/yum
-
-# Install packages
-RUN dnf install -y \
-  git \
-  python36 \
-  python3-pip \
-  python3-numpy \
-  python3-scipy \
-  python3-setuptools \
-  python3-six \
-  && dnf clean all
-
-# Install Python modules
-RUN pip3 install --upgrade \
-  pip \
-  google-api-python-client \
-  google-auth-httplib2 \
-  google-auth-oauthlib \
-  oauth2client
+COPY requirements.txt /requirements.txt
+RUN dnf update -y && \
+    dnf install -y git python3.11 python3.11-pip python3.11-setuptools python3.11-numpy python3.11-scipy python3.11-six && \
+    dnf clean all && \
+    pip3.11 install --no-cache-dir -r /requirements.txt
 
 # Copy in custom helper scripts
-add ./root /
+COPY ./root /
 RUN chmod u+x /usr/local/bin/upload-file-to-google-drive
