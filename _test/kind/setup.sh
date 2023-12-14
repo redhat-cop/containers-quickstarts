@@ -138,12 +138,30 @@ then
   timeout=0
   while [[ $(curl -s http://localhost/job/containers-quickstarts/job/${AGENT}/lastBuild/api/json --user admin:${token} | jq -r '.building') == "true" ]]
   do
+    if [[ ${timeout} -eq 60 ]]
+    then
+      echo "## Things are taking a while... lets check on the logs..."
+      kubectl logs --tail=-1 -l app.kubernetes.io/component=jenkins-controller -n jenkins
+    fi
+
     if [[ ${timeout} -gt 300 ]]
     then
       echo "Timed out waiting for build to finish..."
+      echo "## Build logs"
       get_build_logs
+
+      echo "## Pods"
+      kubectl get pods -n jenkins
+      kubectl get events -n jenkins
+
+      echo "## Controller logs"
+      kubectl logs --tail=-1 -l app.kubernetes.io/component=jenkins-controller -n jenkins
+
+      echo "## Agent logs"
+      kubectl logs --tail=-1 -l jenkins/jenkins-jenkins-agent=true -n jenkins
       exit 1
     fi
+
     sleep 2
     let "timeout += 2"
   done
