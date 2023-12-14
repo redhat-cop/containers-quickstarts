@@ -1,11 +1,7 @@
-FROM registry.access.redhat.com/ubi8
+FROM registry.access.redhat.com/ubi8/ubi:8.9
 
 LABEL maintainer="Red Hat Services"
 
-# Update image
-RUN dnf update -y && rm -rf /var/cache/yum
-
-# Install packages
-RUN dnf install -y \
-  git \
-  && dnf clean all
+RUN dnf update -y && \
+    dnf install -y --nodocs git && \
+    dnf clean all
