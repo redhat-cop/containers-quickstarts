@@ -1,11 +1,9 @@
 name: jenkins-agent-python-publish
 on:
   push:
-    branches:
-      - jenkins-cleanup
-    #paths:
-    #  - jenkins-agents/jenkins-agent-python/version.json
-    #  - .github/workflows/jenkins-agent-python-publish.yaml
+    paths:
+      - jenkins-agents/jenkins-agent-python/version.json
+      - .github/workflows/jenkins-agent-python-publish.yaml
 
 # Declare default permissions as read only.
 permissions: read-all
