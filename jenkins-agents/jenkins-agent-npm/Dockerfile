@@ -1,34 +1,47 @@
-#invoke npm in jenkinsfile: sh "scl enable rh-nodejs6 'npm run build'"
-FROM quay.io/openshift/origin-jenkins-agent-base:4.14@sha256:1284ffe5b63ee7da4c4463d5f44b471fd42ce01c06f5c72edc195a30dcc1f7f4
+# Builder
+FROM registry.access.redhat.com/ubi9/ubi:9.3-1476@sha256:fc300be6adbdf2ca812ad01efd0dee2a3e3f5d33958ad6cd99159e25e9ee1398 AS builder
 
-# renovate: datasource=github-releases depName=stedolan/jq
-ARG JQ_VERSION=1.6
-# renovate: datasource=repology depName=homebrew/openshift-cli
-ARG OC_VERSION=4.14.5
 # renovate: datasource=github-releases depName=mikefarah/yq
 ARG YQ_VERSION=v4.40.5
+# renovate: datasource=github-releases depName=stedolan/jq
+ARG JQ_VERSION=1.6
 
-ENV NODEJS_VERSION=16 \
-    NPM_CONFIG_PREFIX=$HOME/.npm-global \
-    PATH=$HOME/node_modules/.bin/:$HOME/.npm-global/bin/:$PATH
-
-RUN curl -sL https://rpm.nodesource.com/setup_${NODEJS_VERSION}.x | bash -
-
-RUN INSTALL_PKGS="nodejs" && \
-    dnf $DISABLE_REPOS install -y --setopt=tsflags=nodocs --disablerepo='rhel-*' \
-      $INSTALL_PKGS && \
-    rpm -V $INSTALL_PKGS && \
-    dnf clean all -y && \
-    rm -rf /var/cache/yum && \
-    npm install --unsafe-perm -g npm-audit-html npm-audit-ci-wrapper sonar-scanner || cat /home/jenkins/.npm/_logs/*-debug.log && \
-    chown root:root /home/jenkins -R && \
-    chmod 775 /home/jenkins/.npm -R && \
-    curl -Lo /usr/local/bin/jq https://github.com/stedolan/jq/releases/download/jq-${JQ_VERSION}/jq-linux64 && \
-    chmod +x /usr/local/bin/jq && \
-    curl -Lo /usr/local/bin/yq https://github.com/mikefarah/yq/releases/download/v${YQ_VERSION}/yq_linux_amd64 && \
+RUN curl -L "https://github.com/mikefarah/yq/releases/download/${YQ_VERSION}/yq_linux_amd64" -o /usr/local/bin/yq && \
     chmod +x /usr/local/bin/yq && \
-    rm -f /usr/bin/oc && \
-    curl -sL https://mirror.openshift.com/pub/openshift-v4/clients/ocp/${OC_VERSION}/openshift-client-linux.tar.gz \
-    | tar zxf - -C /usr/local/bin oc kubectl
+    yq --version
+
+RUN curl -L "https://github.com/stedolan/jq/releases/download/jq-${JQ_VERSION}/jq-linux64" -o /usr/local/bin/jq && \
+    chmod +x /usr/local/bin/jq && \
+    jq --version
+
+# Runnable
+FROM ghcr.io/garethahealy/containers-quickstarts/jenkins-agent:v4.14
+
+# renovate: datasource=repology depName=ubi_8/nodejs
+ARG NODEJS_VERSION=20
+
+LABEL name="redhat-cop/jenkins-agent-npm" \
+      io.k8s.display-name="Jenkins Agent npm" \
+      io.k8s.description="The jenkins agent npm." \
+      com.redhat.component="redhat-cop/containers-quickstarts/jenkins-agent-npm"
+
+ENV NPM_CONFIG_PREFIX="$HOME/.npm-global" \
+    PATH="$HOME/node_modules/.bin/:$HOME/.npm-global/bin/:$PATH"
+
+USER root
+
+COPY package.json /tmp/package.json
+RUN dnf module enable -y nodejs:${NODEJS_VERSION} && \
+    dnf install --nodocs -y nodejs && \
+    dnf clean all && \
+    npm install -g /tmp
+
+COPY --from=builder /usr/local/bin/yq /usr/local/bin/yq
+COPY --from=builder /usr/local/bin/jq /usr/local/bin/jq
 
 USER 1001
+
+RUN yq --version && \
+    jq --version && \
+    npm -v && \
+    node -v

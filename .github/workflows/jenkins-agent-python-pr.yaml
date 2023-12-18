@@ -21,7 +21,7 @@ jobs:
 
       - name: Check if version.json has been bumped
         id: changes
-        run: echo "changed=$(git --no-pager diff --name-only origin/master HEAD | grep "${context}/version.json" | wc -l)" >> $GITHUB_OUTPUT
+        run: echo "changed=$(git --no-pager diff --name-only origin/main HEAD | grep "${context}/version.json" | wc -l)" >> $GITHUB_OUTPUT
 
       - name: Fail if version.json not bumped
         if: steps.changes.outputs.changed == 0
@@ -34,6 +34,11 @@ jobs:
         uses: redhat-cop/github-actions/get-image-version@11f2ce27643eb7c76ac3623cb99d9b08be30d762 # v4
         with:
           IMAGE_CONTEXT_DIR: ${{ env.context }}
+
+      - uses: hadolint/hadolint-action@54c9adbab1582c2ef04b2016b760714a4bfde3cf # v3.1.0
+        with:
+          dockerfile: ${{ env.context }}/Dockerfile
+          ignore: DL3041
 
       - name: Build image
         uses: redhat-actions/buildah-build@b4dc19b4ba891854660ab1f88a097d45aa158f76 # v2
