@@ -21,7 +21,7 @@
 @test "oc: version" {
   run oc version
   [ "${status}" -eq 0 ]
-  [[ "${lines[0]}" =~ 4.14.3 ]]
+  [[ "${lines[0]}" =~ 4.14 ]]
 }
 
 @test "yq: version" {

@@ -1,13 +1,16 @@
-FROM quay.io/openshift/origin-jenkins-agent-base:4.14@sha256:1284ffe5b63ee7da4c4463d5f44b471fd42ce01c06f5c72edc195a30dcc1f7f4
+FROM ghcr.io/garethahealy/containers-quickstarts/jenkins-agent:v4.14
+
+LABEL name="redhat-cop/jenkins-agent-mongodb" \
+      io.k8s.display-name="Jenkins Agent mongodb" \
+      io.k8s.description="The jenkins agent mongodb." \
+      com.redhat.component="redhat-cop/containers-quickstarts/jenkins-agent-mongodb"
 
 USER root
 
-COPY mongodb-org-3.6.repo /tmp/
-
-RUN rm -f /etc/yum.repos.d/*.repo && \
-    mv /tmp/*.repo /etc/yum.repos.d/ && \
-    dnf --setopt=tsflags=nodocs install -y mongodb-org-tools mongodb-org-shell  && \
-    dnf clean all -y && \
-    rm -rf /var/cache/dnf
+COPY mongodb-org.repo /etc/yum.repos.d/
+RUN dnf install --nodocs -y mongodb-org-tools mongodb-org-shell && \
+    dnf clean all
 
 USER 1001
+
+RUN mongo --version
