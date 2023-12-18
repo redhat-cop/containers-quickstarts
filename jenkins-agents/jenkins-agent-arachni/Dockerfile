@@ -14,7 +14,7 @@ RUN curl -L "https://github.com/Arachni/arachni/releases/download/${ARACHNI_VERS
     chmod -R 775 /arachni
 
 # Runnable
-FROM ghcr.io/garethahealy/containers-quickstarts/jenkins-agent:v4.14
+FROM ghcr.io/redhat-cop/containers-quickstarts/jenkins-agent:v4.14
 
 LABEL name="redhat-cop/jenkins-agent-arachni" \
       io.k8s.display-name="Jenkins Agent Arachni" \

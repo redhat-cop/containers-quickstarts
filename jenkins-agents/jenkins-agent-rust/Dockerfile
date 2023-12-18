@@ -1,4 +1,4 @@
-FROM ghcr.io/garethahealy/containers-quickstarts/jenkins-agent:v4.14
+FROM ghcr.io/redhat-cop/containers-quickstarts/jenkins-agent:v4.14
 
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 
