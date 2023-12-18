@@ -7,7 +7,7 @@ RUN curl -L "https://github.com/erlang/rebar3/releases/download/${REBAR3_VERSION
     chmod +x /usr/local/bin/rebar3
 
 # Runnable
-FROM ghcr.io/garethahealy/containers-quickstarts/jenkins-agent:v4.14
+FROM ghcr.io/redhat-cop/containers-quickstarts/jenkins-agent:v4.14
 
 SHELL ["/bin/bash", "-c"]
 
