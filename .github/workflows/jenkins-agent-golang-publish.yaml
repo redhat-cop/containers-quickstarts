@@ -1,0 +1,46 @@
+name: jenkins-agent-golang-publish
+on:
+  push:
+    paths:
+      - jenkins-agents/jenkins-agent-golang/version.json
+      - .github/workflows/jenkins-agent-golang-publish.yaml
+
+# Declare default permissions as read only.
+permissions: read-all
+
+jobs:
+  build:
+    env:
+      context: jenkins-agents/jenkins-agent-golang
+      image_name: jenkins-agent-golang
+    runs-on: ubuntu-latest
+    permissions:
+      packages: write
+    steps:
+      - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4
+
+      - name: Get image tags
+        id: image_tags
+        uses: redhat-cop/github-actions/get-image-version@11f2ce27643eb7c76ac3623cb99d9b08be30d762 # v4
+        with:
+          IMAGE_CONTEXT_DIR: ${{ env.context }}
+
+      - name: Build image
+        id: build_image
+        uses: redhat-actions/buildah-build@b4dc19b4ba891854660ab1f88a097d45aa158f76 # v2
+        with:
+          context: ${{ env.context }}
+          dockerfiles: |
+            ./${{ env.context }}/Dockerfile
+          image: ${{ env.image_name }}
+          tags: "${{ steps.image_tags.outputs.IMAGE_TAGS }}"
+
+      - name: Push to ghcr.io
+        uses: redhat-actions/push-to-registry@9986a6552bc4571882a4a67e016b17361412b4df # v2
+        if: ${{ !contains(github.ref, 'renovate') }}
+        with:
+          image: ${{ steps.build_image.outputs.image }}
+          registry: ghcr.io/${{ github.repository }}
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+          tags: ${{ steps.build_image.outputs.tags }}

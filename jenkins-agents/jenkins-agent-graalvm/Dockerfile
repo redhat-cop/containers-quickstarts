@@ -1,41 +1,58 @@
-FROM quay.io/openshift/origin-jenkins-agent-maven:4.14@sha256:4a8671c25216b1b44bf47a363ec37d503568fa2f75ef1a010e2284ac1cc5df46
+# Builder
+FROM registry.access.redhat.com/ubi9/ubi:9.3-1476@sha256:fc300be6adbdf2ca812ad01efd0dee2a3e3f5d33958ad6cd99159e25e9ee1398 AS builder
 
-ARG GRAAL_VERSION=20.3.3.0-Final
-ENV GRAALVM_HOME=/opt/mandrelJDK
-ENV GRAAL_CE_URL=https://github.com/graalvm/mandrel/releases/download/mandrel-${GRAAL_VERSION}/mandrel-java11-linux-amd64-${GRAAL_VERSION}.tar.gz
-# renovate: datasource=github-releases depName=helm/helm
-ARG HELM_VERSION=v3.6.3
+SHELL ["/bin/bash", "-c"]
+
+# renovate: datasource=github-releases depName=graalvm/mandrel
+ARG GRAAL_VERSION=mandrel-21.3.4.0-Final
 # renovate: datasource=github-releases depName=stedolan/jq
 ARG JQ_VERSION=1.6
-# renovate: datasource=repology depName=homebrew/openshift-cli
-ARG OC_VERSION=4.14.5
 # renovate: datasource=github-releases depName=mikefarah/yq
 ARG YQ_VERSION=v4.40.5
+# renovate: datasource=github-releases depName=helm/helm
+ARG HELM_VERSION=v3.13.3
 
-ADD settings.xml $HOME/.m2/settings.xml
-ADD ubi8.repo /tmp/ubi8.repo
+RUN curl -L "https://github.com/graalvm/mandrel/releases/download/${GRAAL_VERSION}/mandrel-java11-linux-amd64-${GRAAL_VERSION//mandrel-}.tar.gz" -o mandrel-java11.tar.gz && \
+    tar -xzf mandrel-java11.tar.gz && \
+    mv "mandrel-java11-${GRAAL_VERSION//mandrel-}" /opt/mandrel-java11
+
+RUN curl -L "https://github.com/stedolan/jq/releases/download/jq-${JQ_VERSION}/jq-linux64" -o /usr/local/bin/jq && \
+    chmod +x /usr/local/bin/jq && \
+    jq --version
+
+RUN curl -L "https://github.com/mikefarah/yq/releases/download/${YQ_VERSION}/yq_linux_amd64" -o /usr/local/bin/yq && \
+    chmod +x /usr/local/bin/yq && \
+    yq --version
+
+RUN curl -L "https://get.helm.sh/helm-${HELM_VERSION}-linux-amd64.tar.gz" -o /tmp/helm.tar.gz && \
+    tar -xzf /tmp/helm.tar.gz && \
+    mv linux-amd64/helm /usr/local/bin/helm && \
+    helm version
+
+# Runnable
+FROM ghcr.io/redhat-cop/containers-quickstarts/jenkins-agent-mvn:v4.14
+
+LABEL name="redhat-cop/jenkins-agent-graalvm" \
+      io.k8s.display-name="Jenkins Agent graalvm" \
+      io.k8s.description="The jenkins agent graalvm." \
+      com.redhat.component="redhat-cop/containers-quickstarts/jenkins-agent-graalvm"
 
 USER root
-RUN rm -f /etc/yum.repos.d/*.repo && \
-    mv /tmp/ubi8.repo /etc/yum.repos.d/ubi8.repo && \
-    dnf -y update --allowerasing && \
-    dnf install -y gcc gcc-c++ glibc-static glibc-devel zlib-devel && \
-    ### tools
-    mkdir -p ${GRAALVM_HOME} && \
-    cd ${GRAALVM_HOME} && \
-    curl -fsSL $GRAAL_CE_URL | tar -xzC ${GRAALVM_HOME} --strip-components=1 && \
-    curl -Lo /usr/local/bin/jq https://github.com/stedolan/jq/releases/download/jq-${JQ_VERSION}/jq-linux64 && \
-    chmod +x /usr/local/bin/jq && \
-    curl -L https://get.helm.sh/helm-${HELM_VERSION}-linux-amd64.tar.gz | tar --strip-components=1 -C /usr/local/bin -xzf - linux-amd64/helm && \
-    curl -Lo /usr/local/bin/yq https://github.com/mikefarah/yq/releases/download/${YQ_VERSION}/yq_linux_amd64 && \
-    chmod +x /usr/local/bin/yq && \
-    rm -f /usr/bin/oc && \
-    curl -sL https://mirror.openshift.com/pub/openshift-v4/clients/ocp/${OC_VERSION}/openshift-client-linux.tar.gz \
-    | tar zxf - -C /usr/local/bin oc kubectl && \
-    ### Cleanup
-    dnf clean all && \
-    rm -rf /var/cache/yum
+
+RUN dnf install --nodocs -y gcc gcc-c++ glibc-static glibc-devel zlib-devel && \
+    dnf clean all
+
+COPY --from=builder /usr/local/bin/jq /usr/local/bin/jq
+COPY --from=builder /usr/local/bin/yq /usr/local/bin/yq
+COPY --from=builder /usr/local/bin/helm /usr/local/bin/helm
+COPY --from=builder /opt/mandrel-java11 /opt/mandrel-java11
 
 USER 1001
-WORKDIR ${USER_HOME_DIR}
-ENV PATH ${PATH}:${GRAALVM_HOME}/bin
+
+ENV GRAALVM_HOME=/opt/mandrel-java11
+ENV PATH="${PATH}:${GRAALVM_HOME}/bin"
+
+RUN jq --version && \
+    yq --version && \
+    helm version && \
+    native-image --version
