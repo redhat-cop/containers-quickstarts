@@ -8,7 +8,7 @@ pipeline {
             steps {
               sh """
                   go version
-                  JAVA_HOME=/usr/lib/jvm/jre-11 sonar-scanner -v
+                  sonar-scanner -v
               """
             }
         }

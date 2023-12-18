@@ -1,35 +1,34 @@
-FROM registry.access.redhat.com/ubi8/go-toolset:1.20.10-3@sha256:c78305ff7360bdacdd790225ca10478e08dd6fcbc037bcd176acdf4a552995da as builder
+# Builder
+FROM registry.access.redhat.com/ubi9/go-toolset:1.20.10-6@sha256:077f292da8bea9ce7f729489cdbd217dd268ce300f3e216cb1fffb38de7daeb9 AS builder
+
+SHELL ["/bin/bash", "-c"]
+
+USER root
 
 # renovate: datasource=github-releases depName=containers/skopeo
 ARG SKOPEO_VERSION=v1.14.0
-
-USER root
-
-RUN curl -L https://github.com/containers/skopeo/archive/${SKOPEO_VERSION}.tar.gz | tar -C /tmp -zxf - && \
-    mv /tmp/skopeo-${SKOPEO_VERSION//v} /tmp/skopeo && \
-    cd /tmp/skopeo && \
+RUN curl -L "https://github.com/containers/skopeo/archive/${SKOPEO_VERSION}.tar.gz" -o /tmp/skopeo.tar.gz && \
+    tar -xzf /tmp/skopeo.tar.gz && \
+    mv skopeo-${SKOPEO_VERSION//v} /skopeo && \
+    pushd /skopeo && \
     make BUILDTAGS=containers_image_openpgp DISABLE_DOCS=1 CGO_ENABLED=0 GO_DYN_FLAGS=
 
-FROM quay.io/openshift/origin-jenkins-agent-base:4.14@sha256:1284ffe5b63ee7da4c4463d5f44b471fd42ce01c06f5c72edc195a30dcc1f7f4
+USER 1001
 
-# renovate: datasource=repology depName=homebrew/openshift-cli
-ARG OC_VERSION=4.14.5
+# Runnable
+FROM ghcr.io/redhat-cop/containers-quickstarts/jenkins-agent:v4.14
 
-MAINTAINER Andrew Block <ablock@redhat.com>
-
-LABEL com.redhat.component="jenkins-agent-image-mgmt" \
-      name="jenkins-agent-image-mgmt" \
-      architecture="x86_64" \
+LABEL name="redhat-cop/jenkins-agent-image-mgmt" \
       io.k8s.display-name="Jenkins Agent Image Management" \
       io.k8s.description="Image management tools on top of the jenkins agent base image" \
-      io.openshift.tags="openshift,jenkins,agent,copy"
+      com.redhat.component="redhat-cop/containers-quickstarts/jenkins-agent-image-mgmt"
 
 USER root
 
-RUN mkdir -p /etc/containers && \
-    curl -L https://mirror.openshift.com/pub/openshift-v4/clients/ocp/${OC_VERSION}/openshift-client-linux.tar.gz | tar zxvf - -C /usr/bin oc
-
-COPY --from=builder /tmp/skopeo/default-policy.json /etc/containers/policy.json
-COPY --from=builder /tmp/skopeo/bin/skopeo /usr/bin/
+RUN mkdir -p /etc/containers
+COPY --from=builder /skopeo/default-policy.json /etc/containers/policy.json
+COPY --from=builder /skopeo/bin/skopeo /usr/local/bin/skopeo
 
 USER 1001
+
+RUN skopeo --version

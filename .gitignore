@@ -15,3 +15,5 @@ policy/
 
 # BATS
 _test/test_helper/
+
+jenkins-agents/jenkins-agent-npm/node_modules
