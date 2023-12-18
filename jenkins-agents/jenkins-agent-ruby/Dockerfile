@@ -2,7 +2,7 @@ FROM quay.io/openshift/origin-jenkins-agent-base:4.14@sha256:1284ffe5b63ee7da4c4
 
 ARG RUBY_VERSION=3.1
 # renovate: datasource=repology depName=homebrew/openshift-cli
-ARG OC_VERSION=4.14.3
+ARG OC_VERSION=4.14.5
 
 ENV SUMMARY="Platform for building and running Ruby $RUBY_VERSION applications" \
     DESCRIPTION="Ruby $RUBY_VERSION available as docker container is a base platform for \
