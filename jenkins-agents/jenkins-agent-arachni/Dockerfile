@@ -5,7 +5,7 @@ SHELL ["/bin/bash", "-c"]
 
 # renovate: datasource=github-releases depName=Arachni/arachni
 ARG ARACHNI_VERSION=v1.6.0
-ARG WEB_VERSION=0.5.12
+ARG WEB_VERSION=0.6.0
 
 RUN curl -L "https://github.com/Arachni/arachni/releases/download/${ARACHNI_VERSION}/arachni-${ARACHNI_VERSION//v}-${WEB_VERSION}-linux-x86_64.tar.gz" -o /tmp/arachni.tar.gz && \
     tar --no-same-owner -xzf /tmp/arachni.tar.gz && \
