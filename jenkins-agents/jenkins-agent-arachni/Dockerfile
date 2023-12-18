@@ -4,7 +4,7 @@ FROM registry.access.redhat.com/ubi9/ubi:9.3-1476@sha256:fc300be6adbdf2ca812ad01
 SHELL ["/bin/bash", "-c"]
 
 # renovate: datasource=github-releases depName=Arachni/arachni
-ARG ARACHNI_VERSION=v1.5.1
+ARG ARACHNI_VERSION=v1.6.0
 ARG WEB_VERSION=0.5.12
 
 RUN curl -L "https://github.com/Arachni/arachni/releases/download/${ARACHNI_VERSION}/arachni-${ARACHNI_VERSION//v}-${WEB_VERSION}-linux-x86_64.tar.gz" -o /tmp/arachni.tar.gz && \
