@@ -40,6 +40,13 @@ jobs:
           dockerfile: ${{ env.context }}/Dockerfile
           ignore: DL3041
 
+      - name: Log into ghcr.io
+        uses: redhat-actions/podman-login@9184318aae1ee5034fbfbacc0388acf12669171f # v1
+        with:
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+          registry: ghcr.io
+
       - name: Build image
         uses: redhat-actions/buildah-build@b4dc19b4ba891854660ab1f88a097d45aa158f76 # v2
         with:
