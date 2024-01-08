@@ -4,7 +4,7 @@ FROM registry.access.redhat.com/ubi9/ubi:9.3-1476@sha256:fc300be6adbdf2ca812ad01
 SHELL ["/bin/bash", "-c"]
 
 # renovate: datasource=github-releases depName=open-policy-agent/conftest
-ARG CONFTEST_VERSION=v0.47.0
+ARG CONFTEST_VERSION=v0.48.0
 RUN curl -L "https://github.com/open-policy-agent/conftest/releases/download/${CONFTEST_VERSION}/conftest_${CONFTEST_VERSION//v}_Linux_x86_64.tar.gz" -o /tmp/conftest.tar.gz && \
     tar -xzf /tmp/conftest.tar.gz && \
     mv conftest /usr/local/bin/conftest && \
