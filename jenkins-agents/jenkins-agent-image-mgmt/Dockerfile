@@ -6,7 +6,7 @@ SHELL ["/bin/bash", "-c"]
 USER root
 
 # renovate: datasource=github-releases depName=containers/skopeo
-ARG SKOPEO_VERSION=v1.14.0
+ARG SKOPEO_VERSION=v1.14.1
 RUN curl -L "https://github.com/containers/skopeo/archive/${SKOPEO_VERSION}.tar.gz" -o /tmp/skopeo.tar.gz && \
     tar -xzf /tmp/skopeo.tar.gz && \
     mv skopeo-${SKOPEO_VERSION//v} /skopeo && \
