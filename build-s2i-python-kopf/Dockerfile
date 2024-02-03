@@ -2,8 +2,8 @@ FROM registry.access.redhat.com/ubi9/python-311:latest@sha256:8a067206cbdbf73a39
 
 MAINTAINER Johnathan Kupferer <jkupfere@redhat.com>
 
-ENV OPENSHIFT_CLIENT_VERSION=4.14.4 \
-    HELM_VERSION=3.13.0
+ENV OPENSHIFT_CLIENT_VERSION=4.14.9 \
+    HELM_VERSION=3.14.0
 
 LABEL io.k8s.description="Python Kopf - Kubernetes Operator Framework" \
       io.k8s.display-name="Kopf Operator" \
