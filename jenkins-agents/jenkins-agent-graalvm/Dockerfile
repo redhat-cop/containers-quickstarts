@@ -30,7 +30,7 @@ RUN curl -L "https://get.helm.sh/helm-${HELM_VERSION}-linux-amd64.tar.gz" -o /tm
     helm version
 
 # Runnable
-FROM ghcr.io/redhat-cop/containers-quickstarts/jenkins-agent-mvn:v4.14
+FROM ghcr.io/redhat-cop/containers-quickstarts/jenkins-agent-mvn:v4.14@sha256:c4491d40a41b2fd8c177f2b1b240531850900dd81c48e80a7cb8dc45a0a86586
 
 LABEL name="redhat-cop/jenkins-agent-graalvm" \
       io.k8s.display-name="Jenkins Agent graalvm" \
