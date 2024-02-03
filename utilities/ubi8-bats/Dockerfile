@@ -1,5 +1,5 @@
 # Builder
-FROM registry.access.redhat.com/ubi8/ubi:8.9-1028@sha256:449da7f8f2ef6285a8445a1e31af57a97b9dae5dcf009b1629c59742c89c68c3 AS builder
+FROM registry.access.redhat.com/ubi8/ubi:8.9-1107.1706791207@sha256:627867e53ad6846afba2dfbf5cef1d54c868a9025633ef0afd546278d4654eac AS builder
 
 SHELL ["/bin/bash", "-c"]
 
