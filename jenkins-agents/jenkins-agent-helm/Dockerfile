@@ -12,7 +12,7 @@ ARG HELM_VERSION=v3.13.3
 # renovate: datasource=github-releases depName=open-policy-agent/conftest
 ARG CONFTEST_VERSION=v0.48.0
 # renovate: datasource=github-releases depName=stackrox/kube-linter
-ARG KUBE_LINTER_VERSION=v0.6.5
+ARG KUBE_LINTER_VERSION=v0.6.7
 # renovate: datasource=github-releases depName=helm/chart-testing
 ARG CT_VERSION=v3.10.1
 
