@@ -32,7 +32,7 @@ RUN curl -L "https://github.com/mikefarah/yq/releases/download/${YQ_VERSION}/yq_
     yq --version
 
 # Runnable
-FROM registry.access.redhat.com/ubi8/ubi-minimal:8.9-1029@sha256:87bcbfedfd70e67aab3875fff103bade460aeff510033ebb36b7efa009ab6639
+FROM registry.access.redhat.com/ubi8/ubi-minimal:8.9-1108.1706691034@sha256:c9c8f91b030f13c44b195b728a0c43c29946b4a9094b2ee62ebaf9c9ee540bcc
 
 SHELL ["/bin/bash", "-c"]
 
