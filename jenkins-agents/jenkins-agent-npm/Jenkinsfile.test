@@ -13,8 +13,6 @@ pipeline {
         stage ('Run Test') {
             steps {
               sh """
-                  npm -v
-                  node -v
                   npm install
                   npm run build
               """
