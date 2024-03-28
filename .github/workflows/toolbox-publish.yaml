@@ -3,7 +3,7 @@ on:
   push:
     paths:
       - tool-box/**
-      - .github/workflows/toolbox-pr.yaml
+      - .github/workflows/toolbox-publish.yaml
 
 # Declare default permissions as read only.
 permissions: read-all
