@@ -39,8 +39,7 @@ RUN curl -L "https://github.com/stedolan/jq/releases/download/jq-${JQ_VERSION}/j
 
 RUN curl -L "https://github.com/mikefarah/yq/releases/download/v${YQ_VERSION}/yq_linux_amd64" -o /usr/local/bin/yq && \
     chmod +x /usr/local/bin/yq && \
-    yq --version && \
-    echo "success"
+    yq --version
 
 RUN curl -L "https://get.helm.sh/helm-${HELM_VERSION}-linux-amd64.tar.gz" -o /tmp/helm.tar.gz && \
     tar -xzf /tmp/helm.tar.gz && \
