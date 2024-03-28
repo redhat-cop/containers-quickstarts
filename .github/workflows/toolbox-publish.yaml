@@ -12,7 +12,7 @@ jobs:
   build:
     env:
       context: tool-box
-      image_name: toolbox
+      image_name: tool-box
     runs-on: ubuntu-latest
     permissions:
       packages: write
