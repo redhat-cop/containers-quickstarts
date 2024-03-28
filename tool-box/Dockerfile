@@ -37,9 +37,10 @@ RUN curl -L "https://github.com/stedolan/jq/releases/download/jq-${JQ_VERSION}/j
     chmod +x /usr/local/bin/jq && \
     jq --version
 
-RUN curl -sLo /usr/local/bin/yq https://github.com/mikefarah/yq/releases/download/v${YQ_VERSION}/yq_linux_amd64 && \
+RUN curl -L "https://github.com/mikefarah/yq/releases/download/v${YQ_VERSION}/yq_linux_amd64" -o /usr/local/bin/yq && \
     chmod +x /usr/local/bin/yq && \
-    yq --version
+    yq --version && \
+    echo "success"
 
 RUN curl -L "https://get.helm.sh/helm-${HELM_VERSION}-linux-amd64.tar.gz" -o /tmp/helm.tar.gz && \
     tar -xzf /tmp/helm.tar.gz && \
@@ -68,6 +69,7 @@ COPY --from=builder /usr/local/bin/kubectl /usr/local/bin/kubectl
 COPY --from=builder /usr/local/bin/rosa /usr/local/bin/rosa
 COPY --from=builder /usr/local/bin/odo /usr/local/bin/odo
 COPY --from=builder /usr/local/bin/jq /usr/local/bin/jq
+COPY --from=builder /usr/local/bin/yq /usr/local/bin/yq
 COPY --from=builder /usr/local/bin/helm /usr/local/bin/helm
 COPY --from=builder /usr/local/bin/tkn /usr/local/bin/tkn
 
