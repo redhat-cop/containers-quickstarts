@@ -1,5 +1,5 @@
 # Builder
-FROM registry.access.redhat.com/ubi9/go-toolset:1.20.12-3.1711009139@sha256:e6d05044bc8e291d05cf336f13fbbab03a4e35438cbf72d609c55b3420c80d9a AS builder
+FROM registry.access.redhat.com/ubi9/go-toolset:1.20.12-3.1712567214@sha256:47ebbc1171d2e8cc54fada0674302da7eba7875b0fd58188742ec8aa4ca5f701 AS builder
 
 SHELL ["/bin/bash", "-c"]
 
