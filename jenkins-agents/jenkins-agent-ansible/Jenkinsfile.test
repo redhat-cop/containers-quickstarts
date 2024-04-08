@@ -16,6 +16,8 @@ pipeline {
                     ansible --version
                     molecule --version
                     java -version
+
+                    ansible-galaxy collection install community.general
                 """
             }
         }
