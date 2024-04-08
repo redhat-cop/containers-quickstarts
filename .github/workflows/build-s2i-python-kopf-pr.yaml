@@ -29,7 +29,7 @@ jobs:
           sed -i -e "s/^FROM .*/FROM ${IMAGE_NAME}:${{ steps.check_version.outputs.VERSION }}/" ${CONTEXT_DIR}/examples/kopf-simple/Dockerfile
 
       - name: Build s2i image
-        uses: redhat-actions/buildah-build@b4dc19b4ba891854660ab1f88a097d45aa158f76 # v2
+        uses: redhat-actions/buildah-build@7a95fa7ee0f02d552a32753e7414641a04307056 # v2
         with:
           context: ${{ env.CONTEXT_DIR }}
           dockerfiles: |
@@ -39,7 +39,7 @@ jobs:
           tags: ${{ steps.check_version.outputs.VERSION }}
 
       - name: Build kopf-simple example from s2i image
-        uses: redhat-actions/buildah-build@b4dc19b4ba891854660ab1f88a097d45aa158f76 # v2
+        uses: redhat-actions/buildah-build@7a95fa7ee0f02d552a32753e7414641a04307056 # v2
         with:
           context: ${{ env.CONTEXT_DIR }}/examples/kopf-simple
           dockerfiles: |
