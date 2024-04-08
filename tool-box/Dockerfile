@@ -14,7 +14,7 @@ ARG JQ_VERSION=1.6
 # renovate: datasource=github-releases depName=helm/helm
 ARG HELM_VERSION=v3.14.0
 # renovate: datasource=github-releases depName=tektoncd/cli
-ARG TEKTON_VERSION=v0.34.0
+ARG TEKTON_VERSION=v0.36.0
 # renovate: datasource=github-releases depName=mikefarah/yq
 ARG YQ_VERSION=4.43.1
 
