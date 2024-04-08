@@ -104,7 +104,7 @@ then
     jenkinsci/jenkins
 
   echo "### Checking statefulset config ###"
-  sleep 30
+  sleep 60
 
   kubectl get statefulsets -n jenkins
   kubectl describe statefulsets/jenkins -n jenkins
@@ -116,6 +116,7 @@ then
   echo "### init ###"
   kubectl logs statefulsets/jenkins -c init -n jenkins
 
+  sleep 60
   echo "### jenkins ###"
   kubectl logs statefulsets/jenkins -c jenkins -n jenkins
 
