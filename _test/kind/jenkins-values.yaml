@@ -1,6 +1,6 @@
 controller:
   additionalPlugins:
-    - job-dsl:1.78.3
+    - job-dsl:1.87
   ingress:
     enabled: true
 persistence:

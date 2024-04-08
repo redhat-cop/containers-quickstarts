@@ -3,8 +3,8 @@
 set -euo pipefail
 
 AGENT=$1
-## todo: renovate config for below
-JENKINS_CHART_VERSION="4.9.1"
+# renovate: datasource=github-releases depName=jenkinsci/helm-charts
+JENKINS_CHART_VERSION="5.1.5"
 AGENT_PATH="jenkins-agents/${AGENT}"
 SCRIPT_DIR=$(dirname -- "$(readlink -f "${BASH_SOURCE[0]}" || realpath "${BASH_SOURCE[0]}")")
 
@@ -66,8 +66,10 @@ then
   podman save ${AGENT}:latest | docker load
   docker tag localhost/${AGENT}:latest ${AGENT}:latest
   kind load docker-image ${AGENT}:latest
+
   # Create Nginx Ingress controller
   kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/main/deploy/static/provider/kind/deploy.yaml
+
   echo "### Wait for Ingress controller to install ###"
   kubectl wait --namespace ingress-nginx \
     --for=condition=ready pod \
@@ -82,6 +84,7 @@ then
   # Use Helm to deploy and configure Jenkins
   helm repo add jenkinsci https://charts.jenkins.io --force-update
   helm repo update
+
   echo "### Jenkins content will look like... ###"
   helm template jenkins \
       --version ${JENKINS_CHART_VERSION} \
@@ -100,8 +103,23 @@ then
     -f ${TPL_TEMP}/jenkins-casc-config-scripts.yaml \
     jenkinsci/jenkins
 
+  echo "### Checking statefulset config ###"
+  sleep 30
+
   kubectl get statefulsets -n jenkins
   kubectl describe statefulsets/jenkins -n jenkins
+
+  echo "### Checking pod logs... ###"
+  echo "### config-reload-init ###"
+  kubectl logs statefulsets/jenkins -c config-reload-init -n jenkins
+
+  echo "### init ###"
+  kubectl logs statefulsets/jenkins -c init -n jenkins
+
+  echo "### jenkins ###"
+  kubectl logs statefulsets/jenkins -c jenkins -n jenkins
+
+  echo "### Waiting for deployment... ###"
   kubectl rollout status statefulsets/jenkins --watch=true --timeout=5m -n jenkins
 
   # Make sure Jenkins is available
