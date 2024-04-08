@@ -17,7 +17,7 @@ LABEL name="redhat-cop/jenkins-agent-erlang" \
       com.redhat.component="redhat-cop/containers-quickstarts/jenkins-agent-erlang"
 
 # renovate: datasource=github-releases depName=rabbitmq/erlang-rpm
-ARG ERLANG_VERSION=v26.2.1
+ARG ERLANG_VERSION=v26.2.3
 
 USER root
 
