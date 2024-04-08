@@ -18,6 +18,7 @@
     "**/gogs/**",
     "**/hoverfly/**",
     "**/hygieia/**",
+    "**/jenkins-agents/jenkins-agent-arachni/**",
     "**/jenkins-masters/**",
     "**/mongodb/**",
     "**/ocp4-logging/**",
