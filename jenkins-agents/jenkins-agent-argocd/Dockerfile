@@ -4,7 +4,7 @@ FROM registry.access.redhat.com/ubi9/ubi:9.3-1476@sha256:fc300be6adbdf2ca812ad01
 SHELL ["/bin/bash", "-c"]
 
 # renovate: datasource=github-releases depName=argoproj/argo-cd
-ARG ARGOCD_VERSION=v2.9.6
+ARG ARGOCD_VERSION=v2.10.6
 # renovate: datasource=github-releases depName=mikefarah/yq
 ARG YQ_VERSION=v4.40.5
 
