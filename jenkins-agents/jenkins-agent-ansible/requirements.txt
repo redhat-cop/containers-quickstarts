@@ -2,4 +2,4 @@ molecule
 paramiko
 openshift
 kubernetes
-ansible-core==2.16.3
+ansible-core==2.16.5
