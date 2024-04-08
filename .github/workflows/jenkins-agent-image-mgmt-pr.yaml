@@ -35,7 +35,7 @@ jobs:
           registry: ghcr.io
 
       - name: Build image
-        uses: redhat-actions/buildah-build@b4dc19b4ba891854660ab1f88a097d45aa158f76 # v2
+        uses: redhat-actions/buildah-build@7a95fa7ee0f02d552a32753e7414641a04307056 # v2
         with:
           context: ${{ env.context }}
           dockerfiles: |
