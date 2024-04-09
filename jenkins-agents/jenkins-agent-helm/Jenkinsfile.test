@@ -24,6 +24,9 @@ pipeline {
                   yq --version
                   kube-linter version
                   java -version
+
+                  helm repo add jenkinsci https://charts.jenkins.io --force-update
+                  helm repo update
               """
             }
         }

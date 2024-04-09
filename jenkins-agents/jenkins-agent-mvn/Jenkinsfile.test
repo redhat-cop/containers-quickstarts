@@ -14,6 +14,8 @@ pipeline {
             steps {
               sh """
                   mvn --version
+
+                  mvn dependency:get -DgroupId=org.apache.maven -DartifactId=maven-core -Dversion=2.2.1 -Dpackaging=jar
               """
             }
         }

@@ -16,7 +16,7 @@ pipeline {
                   npm -v
                   node -v
 
-                  npm i express
+                  npm install express
               """
             }
         }
