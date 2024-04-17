@@ -2,7 +2,7 @@
 FROM registry.access.redhat.com/ubi9/ubi:9.3-1610@sha256:66233eebd72bb5baa25190d4f55e1dc3fff3a9b77186c1f91a0abdb274452072 AS builder
 
 # renovate: datasource=github-releases depName=erlang/rebar3
-ARG REBAR3_VERSION=3.22.1
+ARG REBAR3_VERSION=3.23.0
 RUN curl -L "https://github.com/erlang/rebar3/releases/download/${REBAR3_VERSION}/rebar3" -o /usr/local/bin/rebar3 && \
     chmod +x /usr/local/bin/rebar3
 
