@@ -4,7 +4,7 @@ FROM registry.access.redhat.com/ubi9/ubi:9.3-1610@sha256:66233eebd72bb5baa25190d
 SHELL ["/bin/bash", "-c"]
 
 # renovate: datasource=repology depName=homebrew/openshift-cli
-ARG OC_VERSION=4.14.8
+ARG OC_VERSION=4.15.11
 # renovate: datasource=github-releases depName=openshift/rosa
 ARG ROSA_VERSION=v1.2.37
 # renovate: datasource=github-releases depName=redhat-developer/odo
