@@ -12,7 +12,7 @@ ARG ODO_VERSION=v3.15.0
 # renovate: datasource=github-releases depName=stedolan/jq
 ARG JQ_VERSION=1.6
 # renovate: datasource=github-releases depName=helm/helm
-ARG HELM_VERSION=v3.14.3
+ARG HELM_VERSION=v3.15.0
 # renovate: datasource=github-releases depName=tektoncd/cli
 ARG TEKTON_VERSION=v0.36.0
 # renovate: datasource=github-releases depName=mikefarah/yq
