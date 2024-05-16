@@ -4,19 +4,19 @@ FROM registry.access.redhat.com/ubi9/ubi:9.3-1610@sha256:66233eebd72bb5baa25190d
 SHELL ["/bin/bash", "-c"]
 
 # renovate: datasource=repology depName=homebrew/openshift-cli
-ARG OC_VERSION=4.14.8
+ARG OC_VERSION=stable-4.15
 # renovate: datasource=github-releases depName=openshift/rosa
-ARG ROSA_VERSION=v1.2.37
+ARG ROSA_VERSION=latest
 # renovate: datasource=github-releases depName=redhat-developer/odo
 ARG ODO_VERSION=v3.15.0
 # renovate: datasource=github-releases depName=stedolan/jq
-ARG JQ_VERSION=1.6
+ARG JQ_VERSION=1.7.1
 # renovate: datasource=github-releases depName=helm/helm
-ARG HELM_VERSION=v3.14.3
+ARG HELM_VERSION=v3.15.0
 # renovate: datasource=github-releases depName=tektoncd/cli
-ARG TEKTON_VERSION=v0.36.0
+ARG TEKTON_VERSION=v0.37.0
 # renovate: datasource=github-releases depName=mikefarah/yq
-ARG YQ_VERSION=4.43.1
+ARG YQ_VERSION=v4.44.1
 
 RUN curl -L "https://mirror.openshift.com/pub/openshift-v4/clients/ocp/${OC_VERSION}/openshift-client-linux.tar.gz" -o /tmp/openshift-client-linux.tar.gz && \
     tar --no-same-owner -xzf /tmp/openshift-client-linux.tar.gz && \
@@ -24,7 +24,7 @@ RUN curl -L "https://mirror.openshift.com/pub/openshift-v4/clients/ocp/${OC_VERS
     oc version --client && \
     kubectl version --client
 
-RUN curl -L "https://mirror.openshift.com/pub/openshift-v4/x86_64/clients/rosa/${ROSA_VERSION//v}/rosa-linux.tar.gz" -o /tmp/rosa-linux.tar.gz && \
+RUN curl -L "https://mirror.openshift.com/pub/openshift-v4/x86_64/clients/rosa/${ROSA_VERSION}/rosa-linux.tar.gz" -o /tmp/rosa-linux.tar.gz && \
     tar --no-same-owner -xzf /tmp/rosa-linux.tar.gz && \
     mv rosa /usr/local/bin && \
     rosa version
@@ -33,11 +33,11 @@ RUN curl -L "https://mirror.openshift.com/pub/openshift-v4/clients/odo/${ODO_VER
     chmod +x /usr/local/bin/odo && \
     odo version --client
 
-RUN curl -L "https://github.com/stedolan/jq/releases/download/jq-${JQ_VERSION}/jq-linux64" -o /usr/local/bin/jq  && \
+RUN curl -L "https://github.com/jqlang/jq/releases/download/jq-${JQ_VERSION}/jq-linux-amd64" -o /usr/local/bin/jq  && \
     chmod +x /usr/local/bin/jq && \
     jq --version
 
-RUN curl -L "https://github.com/mikefarah/yq/releases/download/v${YQ_VERSION}/yq_linux_amd64" -o /usr/local/bin/yq && \
+RUN curl -L "https://github.com/mikefarah/yq/releases/download/${YQ_VERSION}/yq_linux_amd64" -o /usr/local/bin/yq && \
     chmod +x /usr/local/bin/yq && \
     yq --version
 
