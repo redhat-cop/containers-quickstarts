@@ -14,7 +14,7 @@ ARG CONFTEST_VERSION=v0.52.0
 # renovate: datasource=github-releases depName=stackrox/kube-linter
 ARG KUBE_LINTER_VERSION=v0.6.8
 # renovate: datasource=github-releases depName=helm/chart-testing
-ARG CT_VERSION=v3.10.1
+ARG CT_VERSION=v3.11.0
 
 RUN curl -L "https://github.com/stedolan/jq/releases/download/jq-${JQ_VERSION}/jq-linux64" -o /usr/local/bin/jq && \
     chmod +x /usr/local/bin/jq && \
