@@ -2,7 +2,7 @@
 FROM registry.access.redhat.com/ubi9/ubi:9.3-1610@sha256:66233eebd72bb5baa25190d4f55e1dc3fff3a9b77186c1f91a0abdb274452072 AS builder
 
 # renovate: datasource=github-releases depName=mikefarah/yq
-ARG YQ_VERSION=v4.43.1
+ARG YQ_VERSION=v4.44.1
 # renovate: datasource=github-releases depName=stedolan/jq
 ARG JQ_VERSION=1.6
 
