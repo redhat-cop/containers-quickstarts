@@ -6,7 +6,7 @@ SHELL ["/bin/bash", "-c"]
 # renovate: datasource=repology depName=homebrew/openshift-cli
 ARG OC_VERSION=4.15.11
 # renovate: datasource=github-releases depName=openshift/rosa
-ARG ROSA_VERSION=v1.2.37
+ARG ROSA_VERSION=v1.2.39
 # renovate: datasource=github-releases depName=redhat-developer/odo
 ARG ODO_VERSION=v3.15.0
 # renovate: datasource=github-releases depName=stedolan/jq
