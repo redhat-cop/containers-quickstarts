@@ -2,7 +2,7 @@
 FROM registry.access.redhat.com/ubi9/ubi:9.3-1610@sha256:66233eebd72bb5baa25190d4f55e1dc3fff3a9b77186c1f91a0abdb274452072  AS builder
 
 # renovate: datasource=repology depName=homebrew/openshift-cli
-ARG OC_VERSION=4.14.20
+ARG OC_VERSION=4.15.11
 RUN curl -L "https://mirror.openshift.com/pub/openshift-v4/clients/ocp/${OC_VERSION}/openshift-client-linux.tar.gz" -o /tmp/openshift-client-linux.tar.gz && \
     tar --no-same-owner -xzf /tmp/openshift-client-linux.tar.gz && \
     mv oc kubectl /usr/local/bin && \
