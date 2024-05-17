@@ -58,7 +58,7 @@ ENV HOME=/home/tool-box
 
 COPY requirements.txt /requirements.txt
 RUN dnf -y update && \
-    dnf -y install git iputils net-tools ping procps-ng python3.11 python3.11-pip tracepath traceroute vim unzip zip && \
+    dnf -y install git iputils net-tools procps-ng python3.11 python3.11-pip vim unzip zip && \
     dnf clean all && \
     pip3.11 install --no-cache-dir -r /requirements.txt && \
     ansible --version
