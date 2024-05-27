@@ -1,4 +1,4 @@
-FROM quay.io/redhat-cop/python-kopf-s2i:latest@sha256:cc0b00f324a277dc27a654d3d53189e4cb86f7b65a8ec77b31a108fdc6195276
+FROM quay.io/redhat-cop/python-kopf-s2i:latest@sha256:96d97b0569e85f291f7580714f0a161b46b598ccd5e52aa33074008acc0c6bed
 
 USER root
 
