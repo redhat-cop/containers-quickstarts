@@ -19,6 +19,7 @@
     "**/hoverfly/**",
     "**/hygieia/**",
     "**/jenkins-agents/jenkins-agent-arachni/**",
+    "**/jenkins-agents/jenkins-agent-zap/**",
     "**/jenkins-masters/**",
     "**/mongodb/**",
     "**/ocp4-logging/**",
