@@ -15,7 +15,7 @@ RUN curl -L "https://github.com/stedolan/jq/releases/download/jq-${JQ_VERSION}/j
     jq --version
 
 # Runnable
-FROM ghcr.io/redhat-cop/containers-quickstarts/jenkins-agent:v4.14
+FROM ghcr.io/redhat-cop/containers-quickstarts/jenkins-agent:v4.14@sha256:8509a820c0b059505d1642802edf19afacc1485d29cc18eb6b8c94ea7fa0b084
 
 # renovate: datasource=repology depName=ubi_8/nodejs
 ARG NODEJS_VERSION=20
