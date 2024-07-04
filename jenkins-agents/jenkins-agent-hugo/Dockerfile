@@ -6,7 +6,7 @@ SHELL ["/bin/bash", "-c"]
 USER root
 
 # renovate: datasource=github-releases depName=gohugoio/hugo
-ARG HUGO_VERSION=v0.126.1
+ARG HUGO_VERSION=v0.128.2
 RUN curl -L "https://github.com/gohugoio/hugo/releases/download/${HUGO_VERSION}/hugo_extended_${HUGO_VERSION//v}_Linux-64bit.tar.gz" -o /tmp/hugo.tar.gz && \
     tar -xzf /tmp/hugo.tar.gz && \
     mv hugo /usr/local/bin/hugo && \
