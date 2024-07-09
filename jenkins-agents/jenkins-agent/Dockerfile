@@ -10,7 +10,7 @@ RUN curl -L "https://mirror.openshift.com/pub/openshift-v4/clients/ocp/${OC_VERS
     kubectl version --client
 
 # Runnable
-FROM quay.io/openshift/origin-jenkins-agent-base:4.14@sha256:bd12bc228f46ccb09f6bde305c4da8d0a1fc127eafac19600ace14caa617b5b0
+FROM quay.io/openshift/origin-jenkins-agent-base:4.16@sha256:c241c971aef8b6fdfd98e3dcac04a98f4ac1fea0b87099f8cf740c1ce97fa3b5
 
 LABEL name="redhat-cop/jenkins-agent" \
       io.k8s.display-name="Jenkins Agent Base" \
