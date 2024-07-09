@@ -8,7 +8,7 @@ ARG OC_VERSION=4.15.12
 # renovate: datasource=github-releases depName=openshift/rosa
 ARG ROSA_VERSION=v1.2.41
 # renovate: datasource=github-releases depName=redhat-developer/odo
-ARG ODO_VERSION=v3.15.0
+ARG ODO_VERSION=v3.16.1
 # renovate: datasource=github-releases depName=stedolan/jq
 ARG JQ_VERSION=1.6
 # renovate: datasource=github-releases depName=helm/helm
