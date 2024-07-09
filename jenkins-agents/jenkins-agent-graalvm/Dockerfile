@@ -10,7 +10,7 @@ ARG JQ_VERSION=1.6
 # renovate: datasource=github-releases depName=mikefarah/yq
 ARG YQ_VERSION=v4.44.1
 # renovate: datasource=github-releases depName=helm/helm
-ARG HELM_VERSION=v3.15.0
+ARG HELM_VERSION=v3.15.2
 
 RUN curl -L "https://github.com/graalvm/mandrel/releases/download/${GRAAL_VERSION}/mandrel-java11-linux-amd64-${GRAAL_VERSION//mandrel-}.tar.gz" -o mandrel-java11.tar.gz && \
     tar -xzf mandrel-java11.tar.gz && \
