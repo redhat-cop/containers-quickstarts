@@ -16,7 +16,7 @@ ARG HELM_VERSION=v3.15.2
 # renovate: datasource=github-releases depName=tektoncd/cli
 ARG TEKTON_VERSION=v0.37.0
 # renovate: datasource=github-releases depName=mikefarah/yq
-ARG YQ_VERSION=4.44.1
+ARG YQ_VERSION=4.44.2
 
 RUN curl -L "https://mirror.openshift.com/pub/openshift-v4/clients/ocp/${OC_VERSION}/openshift-client-linux.tar.gz" -o /tmp/openshift-client-linux.tar.gz && \
     tar --no-same-owner -xzf /tmp/openshift-client-linux.tar.gz && \
