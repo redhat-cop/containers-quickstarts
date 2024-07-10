@@ -4,7 +4,7 @@ FROM registry.access.redhat.com/ubi8/ubi:8.10-1020@sha256:44d75007b39e0e1bbf1bcf
 SHELL ["/bin/bash", "-c"]
 
 # renovate: datasource=repology depName=homebrew/openshift-cli
-ARG OC_VERSION=4.15.12
+ARG OC_VERSION=4.16.0
 # renovate: datasource=github-releases depName=stedolan/jq
 ARG JQ_VERSION=1.6
 # renovate: datasource=github-releases depName=helm/helm
@@ -12,7 +12,7 @@ ARG HELM_VERSION=v3.15.2
 # renovate: datasource=github-releases depName=mikefarah/yq
 ARG YQ_VERSION=v4.44.2
 
-RUN curl -L "https://mirror.openshift.com/pub/openshift-v4/clients/ocp/${OC_VERSION}/openshift-client-linux.tar.gz" -o /tmp/openshift-client-linux.tar.gz && \
+RUN curl -L "https://mirror.openshift.com/pub/openshift-v4/clients/ocp/${OC_VERSION}/openshift-client-linux-amd64-rhel8.tar.gz" -o /tmp/openshift-client-linux.tar.gz && \
     tar --no-same-owner -xzf /tmp/openshift-client-linux.tar.gz && \
     mv oc kubectl /usr/local/bin && \
     oc version --client && \
