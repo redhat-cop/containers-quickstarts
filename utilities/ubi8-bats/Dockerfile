@@ -12,7 +12,7 @@ ARG HELM_VERSION=v3.15.2
 # renovate: datasource=github-releases depName=mikefarah/yq
 ARG YQ_VERSION=v4.44.2
 
-RUN curl -L "https://mirror.openshift.com/pub/openshift-v4/clients/ocp/${OC_VERSION}/openshift-client-linux.tar.gz" -o /tmp/openshift-client-linux.tar.gz && \
+RUN curl -L "https://mirror.openshift.com/pub/openshift-v4/clients/ocp/${OC_VERSION}/openshift-client-linux-amd64-rhel8.tar.gz" -o /tmp/openshift-client-linux.tar.gz && \
     tar --no-same-owner -xzf /tmp/openshift-client-linux.tar.gz && \
     mv oc kubectl /usr/local/bin && \
     oc version --client && \
