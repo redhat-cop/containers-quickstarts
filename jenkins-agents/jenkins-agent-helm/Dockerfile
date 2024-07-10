@@ -45,7 +45,7 @@ RUN curl -L "https://github.com/helm/chart-testing/releases/download/${CT_VERSIO
     ct version
 
 # Runnable
-FROM ghcr.io/redhat-cop/containers-quickstarts/jenkins-agent-python:v4.16
+FROM ghcr.io/redhat-cop/containers-quickstarts/jenkins-agent-python:v4.16@sha256:b62f2aa133beed11d77d9cb74f5df56d9a6f87dbd78724e54162f4a838fcec3f
 
 LABEL name="redhat-cop/jenkins-agent-helm" \
       io.k8s.display-name="Jenkins Agent helm" \

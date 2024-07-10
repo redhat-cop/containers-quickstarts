@@ -16,7 +16,7 @@ RUN curl -L "https://github.com/containers/skopeo/archive/${SKOPEO_VERSION}.tar.
 USER 1001
 
 # Runnable
-FROM ghcr.io/redhat-cop/containers-quickstarts/jenkins-agent:v4.16
+FROM ghcr.io/redhat-cop/containers-quickstarts/jenkins-agent:v4.16@sha256:431ef25a564d147d6355c72c69c6e185af68178bb69a3d2f763de184150282f5
 
 LABEL name="redhat-cop/jenkins-agent-image-mgmt" \
       io.k8s.display-name="Jenkins Agent Image Management" \
