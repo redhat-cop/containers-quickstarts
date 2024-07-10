@@ -1,4 +1,4 @@
-FROM ghcr.io/redhat-cop/containers-quickstarts/jenkins-agent:v4.14
+FROM ghcr.io/redhat-cop/containers-quickstarts/jenkins-agent:v4.16
 
 LABEL name="redhat-cop/jenkins-agent-mongodb" \
       io.k8s.display-name="Jenkins Agent mongodb" \
