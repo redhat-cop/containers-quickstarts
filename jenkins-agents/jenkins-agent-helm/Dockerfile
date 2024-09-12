@@ -8,7 +8,7 @@ ARG JQ_VERSION=1.6
 # renovate: datasource=github-releases depName=mikefarah/yq
 ARG YQ_VERSION=v4.44.2
 # renovate: datasource=github-releases depName=helm/helm
-ARG HELM_VERSION=v3.15.2
+ARG HELM_VERSION=v3.16.1
 # renovate: datasource=github-releases depName=open-policy-agent/conftest
 ARG CONFTEST_VERSION=v0.54.0
 # renovate: datasource=github-releases depName=stackrox/kube-linter
