@@ -1,4 +1,4 @@
-FROM registry.access.redhat.com/ubi8:latest@sha256:44d75007b39e0e1bbf1bcfd0721245add54c54c3f83903f8926fb4bef6827aa2
+FROM registry.access.redhat.com/ubi8:latest@sha256:fbfce63673a271ecb857faac4412442fe7aeb3a84f564d16a790ca7b5c8b7105
 
 LABEL MAINTAINERS="Red Hat Services"
 
