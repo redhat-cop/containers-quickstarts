@@ -5,7 +5,7 @@ RUN dnf install -y unzip && \
     dnf clean all
 
 # renovate: datasource=github-releases depName=gradle/gradle
-ARG GRADLE_VERSION=v8.10.1
+ARG GRADLE_VERSION=8.10.1
 RUN curl -L "https://services.gradle.org/distributions/gradle-${GRADLE_VERSION}-bin.zip" -o /tmp/gradle-bin.zip && \
     unzip -q /tmp/gradle-bin.zip -d /opt/gradle-bin && \
     mv /opt/gradle-bin/gradle-${GRADLE_VERSION} /opt/gradle
