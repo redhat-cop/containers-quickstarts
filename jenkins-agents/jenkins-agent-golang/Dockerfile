@@ -12,7 +12,7 @@ RUN curl -L "https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/son
     chmod +x /opt/sonar-scanner/bin/sonar-scanner
 
 # renovate: datasource=golang-version depName=go
-ARG GO_VERSION=1.22.5
+ARG GO_VERSION=1.23.1
 RUN curl -L "https://dl.google.com/go/go${GO_VERSION}.linux-amd64.tar.gz" -o /tmp/go.tar.gz && \
     tar -C /usr/local/ -xzf /tmp/go.tar.gz
 
