@@ -10,7 +10,7 @@ ARG YQ_VERSION=v4.44.2
 # renovate: datasource=github-releases depName=helm/helm
 ARG HELM_VERSION=v3.16.1
 # renovate: datasource=github-releases depName=open-policy-agent/conftest
-ARG CONFTEST_VERSION=v0.54.0
+ARG CONFTEST_VERSION=v0.55.0
 # renovate: datasource=github-releases depName=stackrox/kube-linter
 ARG KUBE_LINTER_VERSION=v0.6.8
 # renovate: datasource=github-releases depName=helm/chart-testing
