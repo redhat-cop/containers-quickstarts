@@ -1,4 +1,4 @@
-FROM registry.access.redhat.com/ubi9/python-311:latest@sha256:f470d16445af9210cb9001bca1c89775f10389480adaff2dd27abfd79b4ad6e2
+FROM registry.access.redhat.com/ubi9/python-311:latest@sha256:3dc479c15b8c8e1e09ca03a6eed59bc2d0f9d2e9291184468460f763999f5bf9
 
 MAINTAINER Johnathan Kupferer <jkupfere@redhat.com>
 
