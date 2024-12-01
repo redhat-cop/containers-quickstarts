@@ -15,7 +15,7 @@ RUN curl -L "https://github.com/gohugoio/hugo/releases/download/${HUGO_VERSION}/
 USER 1001
 
 # Runnable
-FROM ghcr.io/redhat-cop/containers-quickstarts/jenkins-agent:v4.16
+FROM ghcr.io/redhat-cop/containers-quickstarts/jenkins-agent:v4.16@sha256:0cfc7cc63168bacfa7bbda20d545b17110e42d4bf81ad9965ce4b0ef6d58b22d
 
 LABEL name="redhat-cop/jenkins-agent-hugo" \
       io.k8s.display-name="Jenkins Agent hugo" \
