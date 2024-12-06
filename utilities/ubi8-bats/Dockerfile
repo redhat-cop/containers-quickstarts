@@ -37,7 +37,7 @@ FROM registry.access.redhat.com/ubi8/ubi-minimal:8.10-1018@sha256:de2a0a20c1c3b3
 SHELL ["/bin/bash", "-c"]
 
 # renovate: datasource=github-releases depName=bats-core/bats-core
-ARG BATS_VERSION=v1.11.0
+ARG BATS_VERSION=v1.11.1
 
 LABEL io.k8s.description="OCP Bats"
 LABEL io.k8s.display-name="OCP Bats"
