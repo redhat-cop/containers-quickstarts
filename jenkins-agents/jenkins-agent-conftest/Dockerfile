@@ -21,7 +21,7 @@ LABEL name="redhat-cop/jenkins-agent-conftest" \
 SHELL ["/bin/bash", "-c"]
 
 # renovate: datasource=github-releases depName=bats-core/bats-core
-ARG BATS_VERSION=v1.11.0
+ARG BATS_VERSION=v1.11.1
 
 USER root
 
