@@ -8,7 +8,7 @@ ARG OC_VERSION=4.16.10
 # renovate: datasource=github-releases depName=stedolan/jq
 ARG JQ_VERSION=1.6
 # renovate: datasource=github-releases depName=helm/helm
-ARG HELM_VERSION=v3.16.1
+ARG HELM_VERSION=v3.16.4
 # renovate: datasource=github-releases depName=mikefarah/yq
 ARG YQ_VERSION=v4.44.3
 
