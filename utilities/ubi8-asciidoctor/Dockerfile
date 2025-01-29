@@ -17,7 +17,6 @@ ARG pandoc_version=3.2
 ARG asciidoctor_reducer_version=1.0.6
 ARG epubcheck_ruby_version=5.1.0.0
 
-
 ENV ASCIIDOCTOR_VERSION=${asciidoctor_version} \
     ASCIIDOCTOR_CONFLUENCE_VERSION=${asciidoctor_confluence_version} \
     ASCIIDOCTOR_PDF_VERSION=${asciidoctor_pdf_version} \
@@ -94,3 +93,4 @@ RUN pip3 install --no-cache-dir \
 USER 1001
 
 CMD ["/bin/bash"]
+
