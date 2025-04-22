@@ -27,6 +27,7 @@ jobs:
       - uses: hadolint/hadolint-action@54c9adbab1582c2ef04b2016b760714a4bfde3cf # v3.1.0
         with:
           dockerfile: ${{ env.context }}/Dockerfile
+          ignore: DL4006 # https://github.com/hadolint/hadolint/wiki/DL4006
 
       - name: Log into ghcr.io
         uses: redhat-actions/podman-login@4934294ad0449894bcd1e9f191899d7292469603 # v1
@@ -44,3 +45,8 @@ jobs:
           image: ${{ env.image_name }}
           oci: true
           tags: ${{ steps.check_version.outputs.IMAGE_TAGS }}
+
+      - name: Test image
+        run: |
+          echo "Testing ${{ env.image_name }}"
+          ./_test/kind/setup.sh ${{ env.image_name }}

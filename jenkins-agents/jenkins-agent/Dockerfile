@@ -31,7 +31,10 @@ RUN rm -f /etc/yum.repos.d/*.repo
 COPY ubi8.repo /etc/yum.repos.d/ubi8.repo
 
 RUN dnf -y update && \
+    dnf -y install java-21-openjdk-headless java-17-openjdk-headless && \
     dnf clean all
+
+RUN alternatives --set java "$(alternatives --display java | grep 'family java-21-openjdk' | cut -d ' ' -f 1)"
 
 COPY --from=builder /usr/local/bin/oc /usr/local/bin/oc
 COPY --from=builder /usr/local/bin/kubectl /usr/local/bin/kubectl
