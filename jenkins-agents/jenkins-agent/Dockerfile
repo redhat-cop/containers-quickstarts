@@ -2,7 +2,7 @@
 FROM registry.access.redhat.com/ubi9/ubi:9.4-1123.1719560047@sha256:081c96d1b1c7cd1855722d01f1ca53360510443737b1eb33284c6c4c330e537c  AS builder
 
 # renovate: datasource=repology depName=homebrew/openshift-cli
-ARG OC_VERSION=4.16.10
+ARG OC_VERSION=4.18.8
 RUN curl -L "https://mirror.openshift.com/pub/openshift-v4/clients/ocp/${OC_VERSION}/openshift-client-linux-amd64-rhel8.tar.gz" -o /tmp/openshift-client-linux.tar.gz && \
     tar --no-same-owner -xzf /tmp/openshift-client-linux.tar.gz && \
     mv oc kubectl /usr/local/bin && \
@@ -31,7 +31,10 @@ RUN rm -f /etc/yum.repos.d/*.repo
 COPY ubi8.repo /etc/yum.repos.d/ubi8.repo
 
 RUN dnf -y update && \
+    dnf -y install java-21-openjdk-headless java-17-openjdk-headless && \
     dnf clean all
+
+RUN alternatives --set java "$(alternatives --display java | grep 'family java-21-openjdk' | cut -d ' ' -f 1)"
 
 COPY --from=builder /usr/local/bin/oc /usr/local/bin/oc
 COPY --from=builder /usr/local/bin/kubectl /usr/local/bin/kubectl
