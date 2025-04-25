@@ -8,7 +8,7 @@ RUN curl -L "https://github.com/sigstore/cosign/releases/download/${COSIGN_VERSI
     cosign version
 
 # Runnable
-FROM ghcr.io/redhat-cop/containers-quickstarts/jenkins-agent:v4.16
+FROM ghcr.io/redhat-cop/containers-quickstarts/jenkins-agent:v4.18
 
 LABEL name="redhat-cop/jenkins-agent-cosign" \
       io.k8s.display-name="Jenkins Agent Cosign" \
