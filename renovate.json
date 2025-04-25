@@ -11,6 +11,7 @@
     "**/build-s2i-gows/**",
     "**/build-s2i-jekyll/**",
     "**/build-s2i-liberty/**",
+    "**/build-s2i-python-kopf/**",
     "**/cert-manager-configs/**",
     "**/deprecated/**",
     "**/github-runner-ubi8/**",
