@@ -4,7 +4,7 @@ FROM registry.access.redhat.com/ubi8/ubi:8.10-1132.1732635159@sha256:79d46e7029c
 SHELL ["/bin/bash", "-c"]
 
 # renovate: datasource=repology depName=homebrew/openshift-cli
-ARG OC_VERSION=4.16.10
+ARG OC_VERSION=4.18.9
 # renovate: datasource=github-releases depName=stedolan/jq
 ARG JQ_VERSION=1.6
 # renovate: datasource=github-releases depName=helm/helm
