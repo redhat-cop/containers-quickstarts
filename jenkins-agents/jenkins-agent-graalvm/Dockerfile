@@ -8,7 +8,7 @@ ARG GRAAL_VERSION=mandrel-21.3.4.0-Final
 # renovate: datasource=github-releases depName=stedolan/jq
 ARG JQ_VERSION=1.6
 # renovate: datasource=github-releases depName=mikefarah/yq
-ARG YQ_VERSION=v4.44.3
+ARG YQ_VERSION=v4.45.1
 # renovate: datasource=github-releases depName=helm/helm
 ARG HELM_VERSION=v3.17.3
 
