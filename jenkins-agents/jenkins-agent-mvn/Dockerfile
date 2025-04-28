@@ -1,4 +1,4 @@
-FROM ghcr.io/redhat-cop/containers-quickstarts/jenkins-agent:v4.18
+FROM ghcr.io/redhat-cop/containers-quickstarts/jenkins-agent:v4.18@sha256:44fdf156ad69a0801c151ca9b4f5271aa81e2508a7fd1de14109006bcf33fa6f
 
 LABEL name="redhat-cop/jenkins-agent-mvn" \
       io.k8s.display-name="Jenkins Agent mvn" \
