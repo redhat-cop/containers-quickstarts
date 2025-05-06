@@ -16,7 +16,7 @@ ARG HELM_VERSION=v3.17.3
 # renovate: datasource=github-releases depName=tektoncd/cli
 ARG TEKTON_VERSION=v0.40.0
 # renovate: datasource=github-releases depName=mikefarah/yq
-ARG YQ_VERSION=4.45.2
+ARG YQ_VERSION=v4.45.2
 
 RUN curl -L "https://mirror.openshift.com/pub/openshift-v4/clients/ocp/${OC_VERSION}/openshift-client-linux.tar.gz" -o /tmp/openshift-client-linux.tar.gz && \
     tar --no-same-owner -xzf /tmp/openshift-client-linux.tar.gz && \
@@ -37,7 +37,7 @@ RUN curl -L "https://github.com/stedolan/jq/releases/download/jq-${JQ_VERSION}/j
     chmod +x /usr/local/bin/jq && \
     jq --version
 
-RUN curl -L "https://github.com/mikefarah/yq/releases/download/v${YQ_VERSION}/yq_linux_amd64" -o /usr/local/bin/yq && \
+RUN curl -L "https://github.com/mikefarah/yq/releases/download/${YQ_VERSION}/yq_linux_amd64" -o /usr/local/bin/yq && \
     chmod +x /usr/local/bin/yq && \
     yq --version
 
