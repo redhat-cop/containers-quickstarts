@@ -22,7 +22,7 @@ jobs:
 
       - name: Get image tags
         id: image_tags
-        uses: redhat-cop/github-actions/get-image-version@e4729075dcd3f34946b80df6b1bfb952b9fee166 # v4
+        uses: redhat-cop/github-actions/get-image-version@e4729075dcd3f34946b80df6b1bfb952b9fee166 # v4.2
         with:
           IMAGE_CONTEXT_DIR: ${{ env.CONTEXT_DIR }}
 
