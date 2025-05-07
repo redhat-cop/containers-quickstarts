@@ -34,9 +34,9 @@
   "customManagers": [
     {
       "customType": "regex",
-      "fileMatch": [
-        "^.+\\/VERSION$",
-        "_test/kind/setup.sh"
+      "managerFilePatterns": [
+        "/^.+\\/VERSION$/",
+        "/_test/kind/setup.sh/"
       ],
       "matchStrings": [
         "# renovate: datasource=(?<datasource>[a-z-.]+?) depName=(?<depName>[^\\s]+?)(?: (?:lookupName|packageName)=(?<packageName>[^\\s]+?))?(?: versioning=(?<versioning>[^\\s]+?))?(?: extractVersion=(?<extractVersion>[^\\s]+?))?\\s+[A-Za-z0-9_]+?_VERSION=(?<currentValue>.+?)?\\s"
