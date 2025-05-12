@@ -17,7 +17,7 @@ RUN curl -L "https://github.com/mikefarah/yq/releases/download/${YQ_VERSION}/yq_
     yq --version
 
 # Runnable
-FROM ghcr.io/redhat-cop/containers-quickstarts/jenkins-agent:v4.18
+FROM ghcr.io/redhat-cop/containers-quickstarts/jenkins-agent:v4.18@sha256:a030f57a5805537195c4a5b0916406c03769c99f405736191fa28284a0b43a16
 
 LABEL name="redhat-cop/jenkins-agent-argocd" \
       io.k8s.display-name="Jenkins Agent ArgoCD" \
