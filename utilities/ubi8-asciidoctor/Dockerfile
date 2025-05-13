@@ -3,19 +3,19 @@ FROM registry.access.redhat.com/ubi8:latest@sha256:244e9858f9d8a2792a3dceb850b4f
 LABEL MAINTAINERS="Red Hat Services"
 
 ARG ARCH=amd64
-ARG RUBY_VERSION=3.1
+ARG RUBY_VERSION=3.3
 ARG asciidoctor_version=2.0.23
 ARG asciidoctor_confluence_version=0.0.2
-ARG asciidoctor_pdf_version=2.3.15
-ARG asciidoctor_diagram_version=2.3.0
-ARG asciidoctor_epub3_version=2.1.3
+ARG asciidoctor_pdf_version=2.3.19
+ARG asciidoctor_diagram_version=2.3.2
+ARG asciidoctor_epub3_version=2.2.0
 ARG asciidoctor_mathematical_version=0.3.5
-ARG asciidoctor_revealjs_version=5.1.0
+ARG asciidoctor_revealjs_version=5.2.0
 ARG kramdown_asciidoc_version=2.1.0
 ARG asciidoctor_bibtex_version=0.9.0
-ARG pandoc_version=3.2
-ARG asciidoctor_reducer_version=1.0.6
-ARG epubcheck_ruby_version=5.1.0.0
+ARG pandoc_version=3.6.4
+ARG asciidoctor_reducer_version=1.1.2
+ARG epubcheck_ruby_version=5.2.1.0
 
 
 ENV ASCIIDOCTOR_VERSION=${asciidoctor_version} \
