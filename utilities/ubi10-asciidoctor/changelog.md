@@ -24,8 +24,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [v3.0.0] - 2025-08-04
 
+
+## Added
+- changelog.md
+- basic-example.adoc
+- local-test-steps.txt 
+
 ### Changed
 - v2.2.1 is based on UBI8
 - v3.0.0 is based on ubi10/ruby-33
 - v3.0.0 has copied into directory ubi10-asciidoctor from ubi8-asciidoctor
+
  
