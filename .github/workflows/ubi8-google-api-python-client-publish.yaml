@@ -4,25 +4,30 @@ on:
     paths:
       - utilities/ubi8-google-api-python-client/version.json
       - .github/workflows/ubi8-google-api-python-client-publish.yaml
+
+# Declare default permissions as read only.
+permissions: read-all
+
 jobs:
   build:
     env:
       context: utilities/ubi8-google-api-python-client
       image_name: ubi8-google-api-python-client
-      REGISTRY: ${{ secrets.REGISTRY_URI }}
     runs-on: ubuntu-latest
+    permissions:
+      packages: write
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
 
       - name: Get image tags
         id: image_tags
-        uses: redhat-cop/github-actions/get-image-version@master
+        uses: redhat-cop/github-actions/get-image-version@561af5e610560aef3210ca7a08fe73b2add97648 # v4.5
         with:
           IMAGE_CONTEXT_DIR: ${{ env.context }}
 
       - name: Build image
         id: build_image
-        uses: redhat-actions/buildah-build@v2
+        uses: redhat-actions/buildah-build@7a95fa7ee0f02d552a32753e7414641a04307056 # v2
         with:
           context: ${{ env.context }}
           dockerfiles: |
@@ -31,7 +36,8 @@ jobs:
           tags: "${{ steps.image_tags.outputs.IMAGE_TAGS }}"
 
       - name: Push to ghcr.io
-        uses: redhat-actions/push-to-registry@v2
+        uses: redhat-actions/push-to-registry@5ed88d269cf581ea9ef6dd6806d01562096bee9c # v2
+        if: ${{ !contains(github.ref, 'renovate') }}
         with:
           image: ${{ steps.build_image.outputs.image }}
           registry: ghcr.io/${{ github.repository }}
@@ -40,9 +46,10 @@ jobs:
           tags: ${{ steps.build_image.outputs.tags }}
 
       - name: Push to Quay
-        if: ${{ env.REGISTRY }} != ""
-        id: push_to_quay
-        uses: redhat-actions/push-to-registry@v2
+        env:
+          REGISTRY_URI: ${{ secrets.REGISTRY_URI }}
+        if: ${{ env.REGISTRY_URI  != '' && !contains(github.ref, 'renovate') }}
+        uses: redhat-actions/push-to-registry@5ed88d269cf581ea9ef6dd6806d01562096bee9c # v2
         with:
           image: ${{ steps.build_image.outputs.image }}
           registry: ${{ secrets.REGISTRY_URI }}/${{ secrets.REGISTRY_REPOSITORY }}

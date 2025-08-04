@@ -4,12 +4,20 @@ pipeline {
     }
 
     stages {
+        stage ('Run Clone Test') {
+            steps {
+                sh "git clone https://github.com/redhat-cop/containers-quickstarts.git"
+            }
+        }
+
         stage ('Run Test') {
             steps {
                 sh """
                     ansible --version
                     molecule --version
                     java -version
+
+                    ansible-galaxy collection install community.general
                 """
             }
         }

@@ -4,17 +4,22 @@ pipeline {
     }
 
     stages {
+        stage ('Run Clone Test') {
+            steps {
+                sh "git clone https://github.com/redhat-cop/containers-quickstarts.git"
+            }
+        }
+
         stage ('Run Test') {
             steps {
               sh """
                   conftest --version
                   bats --version
                   yq --version
-                  echo "🦇"
+
+                  conftest pull github.com/redhat-cop/rego-policies.git//policy
               """
             }
         }
-
     }
-
 }

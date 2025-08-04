@@ -1,0 +1,8 @@
+{
+  "name": "jenkins-agent-npm",
+  "version": "1.0.0",
+  "description": "Provides a docker image of the nodejs v12 runtime with npm for use as a Jenkins agent.",
+  "devDependencies": {
+    "sonar-scanner": "3.1.0"
+  }
+}

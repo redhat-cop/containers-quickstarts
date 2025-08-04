@@ -1,4 +1,4 @@
-# jenkins-agent-zap
+# jenkins-agent-zap (Deprecated)
 
 Provides a docker image of the zap runtime for use as a Jenkins agent. The public docker registry version of OWASP's Zed Attack Proxy (ZAP) is not compatible with OpenShift without using privleged containers. This Docker image resolves that issue.
 

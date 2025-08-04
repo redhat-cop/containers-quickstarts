@@ -4,15 +4,21 @@ pipeline {
     }
 
     stages {
+        stage ('Run Clone Test') {
+            steps {
+                sh "git clone https://github.com/redhat-cop/containers-quickstarts.git"
+            }
+        }
+
         stage ('Run Test') {
             steps {
               sh """
                   go version
-                  JAVA_HOME=/usr/lib/jvm/jre-11 sonar-scanner -v
+                  sonar-scanner -v
+
+                  go install github.com/plexsystems/konstraint@latest
               """
             }
         }
-
     }
-
 }

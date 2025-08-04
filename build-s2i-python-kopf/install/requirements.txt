@@ -1,6 +1,6 @@
-kopf==1.36.1
-kubernetes==26.1.0
-kubernetes-asyncio==24.2.3
-openshift==0.13.1
-pykube-ng==22.9.0
-uvloop==0.17.0
+kopf==1.37.4
+kubernetes==31.0.0
+kubernetes-asyncio==32.0.0
+openshift==0.13.2
+pykube-ng==23.6.0
+uvloop==0.21.0

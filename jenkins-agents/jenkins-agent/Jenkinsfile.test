@@ -1,0 +1,21 @@
+pipeline {
+    agent {
+        label 'jenkins-agent'
+    }
+
+    stages {
+        stage ('Run Clone Test') {
+            steps {
+                sh "git clone https://github.com/redhat-cop/containers-quickstarts.git"
+            }
+        }
+
+        stage ('Run Test') {
+            steps {
+                sh """
+                    java --version
+                """
+            }
+        }
+    }
+}

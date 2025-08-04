@@ -1,0 +1,46 @@
+name: jenkins-agent-mongodb-publish
+on:
+  push:
+    paths:
+      - jenkins-agents/jenkins-agent-mongodb/version.json
+      - .github/workflows/jenkins-agent-mongodb-publish.yaml
+
+# Declare default permissions as read only.
+permissions: read-all
+
+jobs:
+  build:
+    env:
+      context: jenkins-agents/jenkins-agent-mongodb
+      image_name: jenkins-agent-mongodb
+    runs-on: ubuntu-latest
+    permissions:
+      packages: write
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
+
+      - name: Get image tags
+        id: image_tags
+        uses: redhat-cop/github-actions/get-image-version@561af5e610560aef3210ca7a08fe73b2add97648 # v4.5
+        with:
+          IMAGE_CONTEXT_DIR: ${{ env.context }}
+
+      - name: Build image
+        id: build_image
+        uses: redhat-actions/buildah-build@7a95fa7ee0f02d552a32753e7414641a04307056 # v2
+        with:
+          context: ${{ env.context }}
+          dockerfiles: |
+            ./${{ env.context }}/Dockerfile
+          image: ${{ env.image_name }}
+          tags: "${{ steps.image_tags.outputs.IMAGE_TAGS }}"
+
+      - name: Push to ghcr.io
+        uses: redhat-actions/push-to-registry@5ed88d269cf581ea9ef6dd6806d01562096bee9c # v2
+        if: ${{ !contains(github.ref, 'renovate') }}
+        with:
+          image: ${{ steps.build_image.outputs.image }}
+          registry: ghcr.io/${{ github.repository }}
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+          tags: ${{ steps.build_image.outputs.tags }}

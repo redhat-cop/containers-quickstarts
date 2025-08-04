@@ -153,7 +153,7 @@ oc start-build kopf-simple --from-dir=../ -F
 --------------------------------------------
 
 Description for how to deploy and test this example can be found in
-xref:examples/simple/README.adoc[Simple Example].
+xref:examples/kopf-simple/README.adoc[Simple Example].
 
 ==== Dockerfile
 

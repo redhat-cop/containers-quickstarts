@@ -1,11 +1,20 @@
-FROM quay.io/openshift/origin-jenkins-agent-base:4.9
+# Builder
+FROM registry.access.redhat.com/ubi9/ubi:9.5-1745854298@sha256:f4ebd46d3ba96feb016d798009e1cc2404c3a4ebdac8b2479a2ac053e59f41b4 AS builder
 
-USER root
+# renovate: datasource=github-releases depName=sigstore/cosign
+ARG COSIGN_VERSION=v2.5.0
+RUN curl -L "https://github.com/sigstore/cosign/releases/download/${COSIGN_VERSION}/cosign-linux-amd64" -o /usr/local/bin/cosign && \
+    chmod +x /usr/local/bin/cosign && \
+    cosign version
 
-ARG COSIGN_VERSION=2.0.2
+# Runnable
+FROM ghcr.io/redhat-cop/containers-quickstarts/jenkins-agent:v4.18
 
-# Install cosign
-RUN curl -sL -o /usr/local/bin/cosign https://github.com/sigstore/cosign/releases/download/v${COSIGN_VERSION}/cosign-linux-amd64 && \
-    chmod 755 /usr/local/bin/cosign
+LABEL name="redhat-cop/jenkins-agent-cosign" \
+      io.k8s.display-name="Jenkins Agent Cosign" \
+      io.k8s.description="The jenkins agent cosign." \
+      com.redhat.component="redhat-cop/containers-quickstarts/jenkins-agent-cosign"
 
-USER 1001
+COPY --from=builder /usr/local/bin/cosign /usr/local/bin/cosign
+
+RUN cosign version

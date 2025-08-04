@@ -1,29 +1,17 @@
-FROM quay.io/openshift/origin-jenkins-agent-base:4.9
+FROM ghcr.io/redhat-cop/containers-quickstarts/jenkins-agent:v4.18
 
-EXPOSE 8080
+LABEL name="redhat-cop/jenkins-agent-python" \
+      io.k8s.display-name="Jenkins Agent python" \
+      io.k8s.description="The jenkins agent python." \
+      com.redhat.component="redhat-cop/containers-quickstarts/jenkins-agent-python"
 
-ENV PYTHON_VERSION=3.9 \
-    PATH=$HOME/.local/bin/:$PATH \
-    PYTHONUNBUFFERED=1 \
-    PYTHONIOENCODING=UTF-8 \
-    LC_ALL=en_US.UTF-8 \
-    LANG=en_US.UTF-8 \
-    PIP_NO_CACHE_DIR=off
+USER root
 
-ADD ubi8.repo /tmp/ubi8.repo
-
-RUN INSTALL_PKGS=" \
-      python39 python39-devel nss_wrapper httpd httpd-devel mod_ssl mod_ldap \
-      mod_session atlas-devel gcc-gfortran libffi-devel libtool-ltdl enchant" && \
-    rm -f /etc/yum.repos.d/*.repo && \
-    mv /tmp/ubi8.repo /etc/yum.repos.d && \
-    dnf -y --setopt=tsflags=nodocs install $INSTALL_PKGS && \
-    rpm -V $INSTALL_PKGS && \
-    dnf -y clean all && \
-    alternatives --set python3 /usr/bin/python3.9 && \
-    python3 -m pip install --upgrade pip && \
-    python3 -m pip install twine && \
-    chmod -R 775 /var/lib/alternatives && \
-    chmod -R 775 /etc/alternatives
+COPY requirements.txt /requirements.txt
+RUN dnf -y install --nodocs python3.11 python3.11-devel python3.11-pip nss_wrapper httpd httpd-devel mod_ssl mod_ldap mod_session atlas-devel gcc-gfortran libffi-devel libtool-ltdl enchant && \
+    dnf clean all && \
+    pip3.11 install --no-cache-dir -r /requirements.txt
 
 USER 1001
+
+RUN  python -V

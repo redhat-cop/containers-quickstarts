@@ -1,0 +1,5 @@
+molecule
+paramiko
+openshift
+kubernetes
+ansible-core==2.18.5

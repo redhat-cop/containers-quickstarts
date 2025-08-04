@@ -1,23 +1,20 @@
-FROM quay.io/openshift/origin-jenkins-agent-base:4.9
+FROM ghcr.io/redhat-cop/containers-quickstarts/jenkins-agent:v4.18
 
-LABEL com.redhat.component="jenkins-agent-rust-ubi7-docker" \
-      name="openshift/origin-jenkins-agent-rust-ubi7" \
-      version="4.8" \
-      architecture="x86_64" \
-      release="1" \
-      io.k8s.display_name="Jenkins Agent Rust" \
-      io.k8s.description="The jenkins agent Rust image has the Rust toolchain on top of the jenkins agent base image" \
-      io.openshift.tag="openshift,jenkins,agent,rust"
+SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 
-ENV PATH=$PATH:$HOME/.cargo/bin
+LABEL name="redhat-cop/jenkins-agent-rust" \
+      io.k8s.display-name="Jenkins Agent rust" \
+      io.k8s.description="The jenkins agent rust." \
+      com.redhat.component="redhat-cop/containers-quickstarts/jenkins-agent-rust"
 
-ADD ubi8.repo /tmp/ubi8.repo
+ENV PATH="$PATH:$HOME/.cargo/bin"
 
-RUN INSTALL_PKGS="gcc" && \
-    rm -f /etc/yum.repos.d/*.repo && \
-    mv /tmp/ubi8.repo /etc/yum.repos.d && \
-    dnf install -y $INSTALL_PKGS && \
-    rm -rf /var/cache/dnf && \
+USER root
+
+RUN dnf install --nodocs -y gcc && \
+    dnf clean all && \
     curl https://sh.rustup.rs -sSf | sh -s -- -y
 
 USER 1001
+
+RUN rustc -V

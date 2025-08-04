@@ -4,6 +4,12 @@ pipeline {
     }
 
     stages {
+        stage ('Run Clone Test') {
+            steps {
+                sh "git clone https://github.com/redhat-cop/containers-quickstarts.git"
+            }
+        }
+
         stage ('Run Test') {
             steps {
               sh """
@@ -18,10 +24,11 @@ pipeline {
                   yq --version
                   kube-linter version
                   java -version
+
+                  helm repo add jenkinsci https://charts.jenkins.io --force-update
+                  helm repo update
               """
             }
         }
-
     }
-
 }

@@ -14,11 +14,12 @@ This container exists to help people that can't install ansible, git or other ne
 - `zip` (latest stable)
 - `unzip` (latest stable)
 - `jq` v1.6
+- `yq` v4.43.1
 - `odo` 3.9.9
 - `helm` Client v3.11.3
 - `tkn` Client v0.30.1
 - `iputils` (latest stable)
-- `procps-ng (latest stable)
+- `procps-ng` (latest stable)
 - `aws` (latest stable)
 
 If you need something not here, let us know in an issue or submit a PR.

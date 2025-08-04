@@ -4,6 +4,10 @@ on:
     paths:
       - utilities/ubi8-asciidoctor/**
       - .github/workflows/ubi8-asciidoctor-pr.yaml
+
+# Declare default permissions as read only.
+permissions: read-all
+
 jobs:
   build:
     env:
@@ -11,11 +15,11 @@ jobs:
       image_name: ubi8-asciidoctor
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
 
       - name: Check and verify version.json
         id: check_version
-        uses: redhat-cop/github-actions/get-image-version@master
+        uses: redhat-cop/github-actions/get-image-version@561af5e610560aef3210ca7a08fe73b2add97648 # v4.5
         with:
           IMAGE_CONTEXT_DIR: ${{ env.context }}
 
@@ -25,7 +29,7 @@ jobs:
           sudo apt-get install -y qemu-user-static
 
       - name: Build image
-        uses: redhat-actions/buildah-build@v2
+        uses: redhat-actions/buildah-build@7a95fa7ee0f02d552a32753e7414641a04307056 # v2
         with:
           context: ${{ env.context }}
           dockerfiles: |

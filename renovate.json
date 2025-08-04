@@ -1,0 +1,46 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": [
+    "config:best-practices",
+    "customManagers:dockerfileVersions",
+    "schedule:earlyMondays"
+  ],
+  "ignorePaths": [
+    "**/build-docker-generic/**",
+    "**/build-s2i-executable/**",
+    "**/build-s2i-gows/**",
+    "**/build-s2i-jekyll/**",
+    "**/build-s2i-liberty/**",
+    "**/build-s2i-python-kopf/**",
+    "**/cert-manager-configs/**",
+    "**/deprecated/**",
+    "**/github-runner-ubi8/**",
+    "**/gitlab-ce/**",
+    "**/gogs/**",
+    "**/hoverfly/**",
+    "**/hygieia/**",
+    "**/jenkins-agents/jenkins-agent-arachni/**",
+    "**/jenkins-agents/jenkins-agent-zap/**",
+    "**/jenkins-masters/**",
+    "**/mongodb/**",
+    "**/ocp4-logging/**",
+    "**/rabbitmq/**",
+    "**/s2i-mvn-gradle/**",
+    "**/sonarqube/**",
+    "**/tower-ocp-custom/**",
+    "**/ubi7-gitlab-runner/**",
+    "**/zalenium/**"
+  ],
+  "customManagers": [
+    {
+      "customType": "regex",
+      "managerFilePatterns": [
+        "/^.+\\/VERSION$/",
+        "/_test/kind/setup.sh/"
+      ],
+      "matchStrings": [
+        "# renovate: datasource=(?<datasource>[a-z-.]+?) depName=(?<depName>[^\\s]+?)(?: (?:lookupName|packageName)=(?<packageName>[^\\s]+?))?(?: versioning=(?<versioning>[^\\s]+?))?(?: extractVersion=(?<extractVersion>[^\\s]+?))?\\s+[A-Za-z0-9_]+?_VERSION=(?<currentValue>.+?)?\\s"
+      ]
+    }
+  ]
+}

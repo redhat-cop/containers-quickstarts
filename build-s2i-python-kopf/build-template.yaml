@@ -8,7 +8,7 @@ metadata:
 
 parameters:
 - name: FROM_IMAGE
-  value: registry.access.redhat.com/ubi9/python-311:latest
+  value: registry.access.redhat.com/ubi9/python-312:latest
 - name: GIT_REPO
   value: https://github.com/redhat-cop/containers-quickstarts.git
 - name: NAME
