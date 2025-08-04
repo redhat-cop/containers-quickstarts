@@ -1,0 +1,41 @@
+
+CURRENT_IMAGE="quay.io/redhat-cop/ubi8-asciidoctor:v2.2.0"
+TEST_IMAGE="ubi10-asciidoctor:latest"
+
+
+
+podman build -f Dockerfile -t "${TEST_IMAGE}"
+
+
+# Generate PDF with current global available image
+podman run \
+  --userns=keep-id \
+  --user="$(id -u):$(id -g)" \
+  --rm \
+  -v "$(PWD):/documents" \
+  --name asciidoctor \
+  ${CURRENT_IMAGE} \
+  asciidoctor-pdf \
+  -o basic-example-current.pdf \
+  basic-example.adoc
+
+
+
+# Generate PDF with local created image
+podman run \
+  --userns=keep-id \
+  --user="$(id -u):$(id -g)" \
+  --rm \
+  -v "$(PWD):/documents" \
+  --name asciidoctor \
+  ${TEST_IMAGE} \
+  asciidoctor-pdf \
+  -o basic-example-test.pdf \
+  basic-example.adoc
+
+# Check if there are differences
+## brew install diff-pdf 
+
+diff-pdf -v basic-example-current.pdf basic-example-test.pdf
+
+
