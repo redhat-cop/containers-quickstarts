@@ -1,4 +1,4 @@
-FROM registry.access.redhat.com/ubi8:latest@sha256:244e9858f9d8a2792a3dceb850b4fa8fdbd67babebfde42587bfa919d5d1ecef
+FROM registry.access.redhat.com/ubi8/python-312@sha256:f6f1544b9251e949922c642c404b42c359a624ff25942ddc2c85f3a65d88d1e6
 
 LABEL MAINTAINERS="Red Hat Services"
 
@@ -85,11 +85,11 @@ ENV HOME=/home/work
 # Installing Python dependencies for additional
 # functionnalities as diagrams or syntax highligthing
 RUN pip3 install --no-cache-dir \
-       actdiag \
-       'blockdiag[pdf]' \
-       'nwdiag[pdf]' \
-       seqdiag \
-       lxml
+    actdiag \
+    'blockdiag[pdf]' \
+    'nwdiag[pdf]' \
+    seqdiag \
+    lxml
 
 USER 1001
 
