@@ -20,7 +20,7 @@ jobs:
 
       - name: Check and verify version.json
         id: check_version
-        uses: redhat-cop/github-actions/get-image-version@561af5e610560aef3210ca7a08fe73b2add97648 # v4.5
+        uses: redhat-cop/github-actions/get-image-version@cc45c69b6655161f278271cd0c68ddcc1444a3f8 # v4.6
         with:
           IMAGE_CONTEXT_DIR: ${{ env.CONTEXT_DIR }}
 
