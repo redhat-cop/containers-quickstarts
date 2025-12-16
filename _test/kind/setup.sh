@@ -5,7 +5,7 @@ set -euo pipefail
 AGENT=$1
 
 # renovate: datasource=github-releases depName=jenkinsci/helm-charts
-JENKINS_CHART_VERSION="5.8.36"
+JENKINS_CHART_VERSION="5.8.114"
 AGENT_PATH="jenkins-agents/${AGENT}"
 SCRIPT_DIR=$(dirname -- "$(readlink -f "${BASH_SOURCE[0]}" || realpath "${BASH_SOURCE[0]}")")
 
@@ -64,8 +64,14 @@ then
     kind create cluster --config ${SCRIPT_DIR}/kind-config.yaml
   fi
 
+  echo "### Loading ${AGENT}:latest into docker storage"
   podman save ${AGENT}:latest | docker load
   docker tag localhost/${AGENT}:latest ${AGENT}:latest
+
+  sudo rm -rf "$AGENT_TOOLSDIRECTORY"
+  podman rmi --all --force
+  podman system prune --all --force
+
   kind load docker-image ${AGENT}:latest
 
   # Create Nginx Ingress controller

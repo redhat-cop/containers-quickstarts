@@ -1,6 +1,7 @@
+# https://github.com/jenkinsci/job-dsl-plugin
 controller:
   additionalPlugins:
-    - job-dsl:1.87
+    - job-dsl:1.93
   ingress:
     enabled: true
 persistence:

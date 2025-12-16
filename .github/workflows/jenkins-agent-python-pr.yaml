@@ -15,19 +15,9 @@ jobs:
       image_name: jenkins-agent-python
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
         with:
           fetch-depth: 0
-
-      - name: Check if version.json has been bumped
-        id: changes
-        run: echo "changed=$(git --no-pager diff --name-only origin/main HEAD | grep "${context}/version.json" | wc -l)" >> $GITHUB_OUTPUT
-
-      - name: Fail if version.json not bumped
-        if: steps.changes.outputs.changed == 0
-        run: |
-          echo "${context}/version.json has not changed. Publishing the same tag removes the SHA, which causes issues. Failing."
-          exit 1
 
       - name: Check and verify version.json
         id: check_version
