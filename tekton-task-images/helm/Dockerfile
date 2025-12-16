@@ -2,7 +2,7 @@
 FROM registry.access.redhat.com/ubi9/ubi:9.5-1745854298@sha256:f4ebd46d3ba96feb016d798009e1cc2404c3a4ebdac8b2479a2ac053e59f41b4 AS builder
 
 # renovate: datasource=github-releases depName=mikefarah/yq
-ARG YQ_VERSION=v4.45.2
+ARG YQ_VERSION=v4.50.1
 RUN curl -L "https://github.com/mikefarah/yq/releases/download/${YQ_VERSION}/yq_linux_amd64" -o /usr/local/bin/yq && \
     chmod +x /usr/local/bin/yq && \
     yq --version
