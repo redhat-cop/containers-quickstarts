@@ -6,7 +6,7 @@ SHELL ["/bin/bash", "-c"]
 # renovate: datasource=github-releases depName=argoproj/argo-cd
 ARG ARGOCD_VERSION=v2.14.21
 # renovate: datasource=github-releases depName=mikefarah/yq
-ARG YQ_VERSION=v4.45.2
+ARG YQ_VERSION=v4.50.1
 
 RUN curl -L "https://github.com/argoproj/argo-cd/releases/download/${ARGOCD_VERSION}/argocd-linux-amd64" -o /usr/local/bin/argocd && \
     chmod +x /usr/local/bin/argocd && \
