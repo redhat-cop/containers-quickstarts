@@ -64,8 +64,18 @@ then
     kind create cluster --config ${SCRIPT_DIR}/kind-config.yaml
   fi
 
+  echo "# Podman images:"
+  podman images
+
+  echo "# Disk space:"
+  df -h
+
   podman save ${AGENT}:latest | docker load
   docker tag localhost/${AGENT}:latest ${AGENT}:latest
+
+  echo "# Disk space after save/load:"
+  df -h
+
   kind load docker-image ${AGENT}:latest
 
   # Create Nginx Ingress controller
