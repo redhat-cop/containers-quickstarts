@@ -76,6 +76,12 @@ then
   echo "# Disk space after save/load:"
   df -h
 
+  podman rmi --all --force
+  podman system prune --all --force
+
+  echo "# Disk space after prune:"
+  df -h
+
   kind load docker-image ${AGENT}:latest
 
   # Create Nginx Ingress controller
