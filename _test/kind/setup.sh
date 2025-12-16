@@ -5,7 +5,7 @@ set -euo pipefail
 AGENT=$1
 
 # renovate: datasource=github-releases depName=jenkinsci/helm-charts
-JENKINS_CHART_VERSION="5.8.36"
+JENKINS_CHART_VERSION="5.8.114"
 AGENT_PATH="jenkins-agents/${AGENT}"
 SCRIPT_DIR=$(dirname -- "$(readlink -f "${BASH_SOURCE[0]}" || realpath "${BASH_SOURCE[0]}")")
 
