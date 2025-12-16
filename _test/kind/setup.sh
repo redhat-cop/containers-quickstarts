@@ -64,23 +64,13 @@ then
     kind create cluster --config ${SCRIPT_DIR}/kind-config.yaml
   fi
 
-  echo "# Podman images:"
-  podman images
-
-  echo "# Disk space:"
-  df -h
-
+  echo "### Loading ${AGENT}:latest into docker storage"
   podman save ${AGENT}:latest | docker load
   docker tag localhost/${AGENT}:latest ${AGENT}:latest
 
-  echo "# Disk space after save/load:"
-  df -h
-
+  sudo rm -rf "$AGENT_TOOLSDIRECTORY"
   podman rmi --all --force
   podman system prune --all --force
-
-  echo "# Disk space after prune:"
-  df -h
 
   kind load docker-image ${AGENT}:latest
 
