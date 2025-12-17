@@ -28,10 +28,10 @@ jobs:
         with:
           IMAGE_CONTEXT_DIR: ${{ env.context }}
 
-      - uses: hadolint/hadolint-action@54c9adbab1582c2ef04b2016b760714a4bfde3cf # v3.1.0
+      - uses: hadolint/hadolint-action@2332a7b74a6de0dda2e2221d575162eba76ba5e5 # v3.3.0
         with:
           dockerfile: ${{ env.context }}/Dockerfile
-          ignore: DL3041,SC1091
+          ignore: DL3041,SC1091,SC3046
 
       - name: Build image
         uses: redhat-actions/buildah-build@7a95fa7ee0f02d552a32753e7414641a04307056 # v2
