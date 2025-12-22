@@ -1,5 +1,5 @@
 # Builder
-FROM registry.access.redhat.com/ubi9/ubi:9.5-1745854298@sha256:f4ebd46d3ba96feb016d798009e1cc2404c3a4ebdac8b2479a2ac053e59f41b4 AS builder
+FROM registry.access.redhat.com/ubi9/ubi:9.7-1766364927@sha256:3816d303e75dec4da2d10eeb9e8651eef4393721598bea4690c607282635aa57 AS builder
 
 RUN dnf install -y unzip && \
     dnf clean all
