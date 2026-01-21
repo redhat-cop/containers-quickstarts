@@ -1,4 +1,6 @@
-FROM registry.access.redhat.com/ubi8/python-312@sha256:0de728ed4d9c6ff50645cbf56afed644b510c3d673348bbcf8d1ac2ca2d37157
+#FROM registry.access.redhat.com/ubi10@sha256:0f2f2f06299954f2e50cea0c878c33b8490eaadfc27cdc2b50d181d6ab44c5a9
+FROM registry.access.redhat.com/ubi10/ruby-33@sha256:14280dc6a535e2784d82525376a9c1b19f88f47ef9c05cdb2f707fc120718443
+
 
 LABEL MAINTAINERS="Red Hat Services"
 
@@ -13,7 +15,7 @@ ARG asciidoctor_mathematical_version=0.3.5
 ARG asciidoctor_revealjs_version=5.2.0
 ARG kramdown_asciidoc_version=2.1.0
 ARG asciidoctor_bibtex_version=0.9.0
-ARG pandoc_version=3.6.4
+ARG pandoc_version=3.7.0.2
 ARG asciidoctor_reducer_version=1.1.2
 ARG epubcheck_ruby_version=5.2.1.0
 
@@ -32,8 +34,8 @@ ENV ASCIIDOCTOR_VERSION=${asciidoctor_version} \
 
 USER root
 
-RUN dnf -y module enable ruby:${RUBY_VERSION} && \
-    dnf -y module install ruby:${RUBY_VERSION}
+#RUN dnf -y module enable ruby:${RUBY_VERSION} && \
+#    dnf -y module install ruby:${RUBY_VERSION}
 
 RUN dnf install -y \
     python3-devel \
@@ -45,7 +47,7 @@ RUN dnf install -y \
     zlib-devel \
     python3-lxml \
     libjpeg-turbo-devel \
-    java-11-openjdk-headless \
+    java-21-openjdk-headless \
     fontconfig \
     && gem install --no-document \
     "asciidoctor:${ASCIIDOCTOR_VERSION}" \
@@ -84,11 +86,11 @@ ENV HOME=/home/work
 # Installing Python dependencies for additional
 # functionnalities as diagrams or syntax highligthing
 RUN pip3 install --no-cache-dir \
-    actdiag \
-    'blockdiag[pdf]' \
-    'nwdiag[pdf]' \
-    seqdiag \
-    lxml
+       actdiag \
+       'blockdiag[pdf]' \
+       'nwdiag[pdf]' \
+       seqdiag \
+       lxml
 
 USER 1001
 
