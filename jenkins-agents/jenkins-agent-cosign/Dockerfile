@@ -1,5 +1,5 @@
 # Builder
-FROM registry.access.redhat.com/ubi9/ubi:9.5-1745854298@sha256:f4ebd46d3ba96feb016d798009e1cc2404c3a4ebdac8b2479a2ac053e59f41b4 AS builder
+FROM registry.access.redhat.com/ubi9/ubi:9.7-1769417801@sha256:c8df11b65b18fcf384d5b7fa53e2a92f381a2d9ad78b9de41dc6f2aa161a0e04 AS builder
 
 # renovate: datasource=github-releases depName=sigstore/cosign
 ARG COSIGN_VERSION=v2.5.0
