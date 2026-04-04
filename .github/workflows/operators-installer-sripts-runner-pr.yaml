@@ -1,0 +1,48 @@
+name: operators-installer-sripts-runner-pr
+on:
+  pull_request:
+    paths:
+      - operators-installer-sripts-runner/**
+      - .github/workflows/operators-installer-sripts-runner-pr.yaml
+
+# Declare default permissions as read only.
+permissions: read-all
+
+jobs:
+  build:
+    env:
+      context: operators-installer-sripts-runner
+      image_name: operators-installer-sripts-runner
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6
+
+      - name: Check and verify version.json
+        id: check_version
+        uses: redhat-cop/github-actions/get-image-version@cc45c69b6655161f278271cd0c68ddcc1444a3f8 # v4.6
+        with:
+          IMAGE_CONTEXT_DIR: ${{ env.context }}
+
+      - name: Install qemu dependency
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y qemu-user-static
+
+      - name: Build image
+        uses: redhat-actions/buildah-build@7a95fa7ee0f02d552a32753e7414641a04307056 # v2
+        with:
+          context: ${{ env.context }}
+          dockerfiles: |
+            ./${{ env.context }}/Dockerfile
+          image: ${{ env.image_name }}
+          platforms: linux/amd64
+          oci: true
+          tags: ${{ steps.check_version.outputs.IMAGE_TAGS }}
+
+      - name: Test image
+        run: |
+          echo "Test if python modual intalled: semver"
+          podman run ${image_name}:${{ steps.check_version.outputs.VERSION }} python -c "import semver"
+
+          echo "Test if python modual intalled: openshift_client"
+          podman run ${image_name}:${{ steps.check_version.outputs.VERSION }} python -c "import openshift_client"
