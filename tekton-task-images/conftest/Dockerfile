@@ -11,6 +11,6 @@ RUN source /tmp/version && \
     conftest --version
 
 # Runnable
-FROM registry.access.redhat.com/ubi9/ubi-micro:9.5-1746002938@sha256:839f16991579b023d4452eadd0efa925e438f8b73063afe4f75bdc6cf7a09b12
+FROM registry.access.redhat.com/ubi9/ubi-micro:9.8-1787778798@sha256:f332c99eb8f798a8486821c91937f10ad64ee83d7e739303be2df051040918f6
 
 COPY --from=builder /usr/local/bin/conftest /usr/local/bin/conftest
