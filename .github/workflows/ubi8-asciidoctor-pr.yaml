@@ -15,7 +15,7 @@ jobs:
       image_name: ubi8-asciidoctor
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
 
       - name: Check and verify version.json
         id: check_version
