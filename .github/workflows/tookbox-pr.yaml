@@ -11,6 +11,26 @@ permissions: read-all
 
 jobs:
   build:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - tag: "4.19"
+            tags: "4.19"
+            oc: "4.19.49"
+            helm: "v3.20.2"
+          - tag: "4.20"
+            tags: "4.20"
+            oc: "4.20.40"
+            helm: "v3.21.4"
+          - tag: "4.21"
+            tags: "4.21"
+            oc: "4.21.35"
+            helm: "v3.22.0"
+          - tag: "4.22"
+            tags: "4.22 latest"
+            oc: "4.22.16"
+            helm: "v3.22.0"
     env:
       context: tool-box
       image_name: toolbox
@@ -37,14 +57,17 @@ jobs:
             ./${{ env.context }}/Dockerfile
           image: ${{ env.image_name }}
           oci: true
-          tags: ${{ steps.check_version.outputs.VERSION }}
+          tags: ${{ matrix.tags }}
+          build-args: |
+            OC_VERSION=${{ matrix.oc }}
+            HELM_VERSION=${{ matrix.helm }}
 
-      - name: Test image contains helm
+      - name: Test image
+        env:
+          IMAGE_TAG: ${{ matrix.tag }}
         run: |
-          image="${image_name}:${{ steps.check_version.outputs.VERSION }}"
-          echo "Running: podman run ${image} helm version"
+          image="${image_name}:${IMAGE_TAG}"
+          podman run "${image}" oc version --client
+          podman run "${image}" kubectl version --client
           podman run "${image}" helm version
-          for client in oc oc-4.19 oc-4.20 oc-4.21 oc-4.22; do
-            echo "Running: podman run ${image} ${client} version --client"
-            podman run "${image}" "${client}" version --client
-          done
+          podman run "${image}" tkn version
