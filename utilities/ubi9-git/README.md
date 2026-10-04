@@ -29,6 +29,27 @@ podman run --rm \
   ubi9-git git --version
 ```
 
+## Supply chain
+
+The publish workflow builds `linux/amd64` and `linux/arm64`, writes an SPDX SBOM for each architecture, and signs the image with keyless Cosign. The workflow run checks that the signature and the SBOM attestation verify before it finishes.
+
+It runs when the Dockerfile or `version.json` changes, when someone starts it manually, and every day at 01:20 UTC. The daily run rebuilds Git from the current UBI repositories. Renovate opens a pull request when Red Hat publishes a new UBI 9 minimal digest. Merging that pull request publishes again.
+
+Verify a published image:
+
+```sh
+cosign verify \
+  --certificate-identity "https://github.com/redhat-cop/containers-quickstarts/.github/workflows/ubi9-git-publish.yaml@refs/heads/main" \
+  --certificate-oidc-issuer "https://token.actions.githubusercontent.com" \
+  ghcr.io/redhat-cop/containers-quickstarts/ubi9-git@<digest>
+
+cosign verify-attestation \
+  --type spdxjson \
+  --certificate-identity "https://github.com/redhat-cop/containers-quickstarts/.github/workflows/ubi9-git-publish.yaml@refs/heads/main" \
+  --certificate-oidc-issuer "https://token.actions.githubusercontent.com" \
+  ghcr.io/redhat-cop/containers-quickstarts/ubi9-git@<digest>
+```
+
 ## Published
 
-[https://quay.io/repository/redhat-cop/ubi9-git](https://quay.io/repository/redhat-cop/ubi9-git) via [GitHub Workflows](../../.github/workflows/ubi9-git-publish.yaml).
+[https://quay.io/repository/redhat-cop/ubi9-git](https://quay.io/repository/redhat-cop/ubi9-git) via [GitHub Workflows](../../.github/workflows/ubi9-git-publish.yaml). Pull-request builds upload the SBOMs as workflow artifacts.

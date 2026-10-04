@@ -14,6 +14,9 @@ jobs:
       context: utilities/ubi10-git
       image_name: ubi10-git
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      actions: write
     steps:
       - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6
 
@@ -28,6 +31,11 @@ jobs:
           dockerfile: ${{ env.context }}/Dockerfile
           ignore: DL3041
 
+      - name: Install qemu dependency
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y qemu-user-static
+
       - name: Build image
         uses: redhat-actions/buildah-build@7a95fa7ee0f02d552a32753e7414641a04307056 # v2
         with:
@@ -35,6 +43,7 @@ jobs:
           dockerfiles: |
             ./${{ env.context }}/Dockerfile
           image: ${{ env.image_name }}
+          platforms: linux/amd64,linux/arm64
           oci: true
           tags: ${{ steps.check_version.outputs.IMAGE_TAGS }}
 
@@ -49,3 +58,32 @@ jobs:
           podman run --rm "${image}" bash -c 'uid=""; while read -r key value _; do if [[ "$key" == "Uid:" ]]; then uid="$value"; fi; done < /proc/self/status; test "$uid" = 1001'
           echo "Checking git runs as an arbitrary non-root uid"
           podman run --rm --user 65532:0 "${image}" git --version
+
+      - name: Install Syft
+        run: |
+          version="1.54.0"
+          archive="syft_${version}_linux_amd64.tar.gz"
+          expected="54a87372498168b2d033e876fd41fa4e8035b872699e525a57046e1f2f09c860"
+          curl -fsSL -o "${archive}" "https://github.com/anchore/syft/releases/download/v${version}/${archive}"
+          echo "${expected}  ${archive}" | sha256sum -c -
+          mkdir -p "${HOME}/.local/bin"
+          tar -xzf "${archive}" -C "${HOME}/.local/bin" syft
+          echo "${HOME}/.local/bin" >> "${GITHUB_PATH}"
+
+      - name: Generate SBOMs
+        env:
+          IMAGE_VERSION: ${{ steps.check_version.outputs.VERSION }}
+        run: |
+          mkdir -p sbom
+          for platform in linux/amd64 linux/arm64; do
+            filename="${image_name}-${platform//\//-}.spdx.json"
+            syft "${image_name}:${IMAGE_VERSION}" --platform "${platform}" -o "spdx-json=sbom/${filename}"
+            test -s "sbom/${filename}"
+          done
+
+      - name: Upload SBOMs
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
+        with:
+          name: ubi10-git-sbom
+          path: sbom/*.spdx.json
+          retention-days: 14
