@@ -74,32 +74,21 @@ jobs:
         env:
           IMAGE_VERSION: ${{ steps.check_version.outputs.VERSION }}
         run: |
+          set -euo pipefail
           mkdir -p sbom
           manifest="${image_name}:${IMAGE_VERSION}"
-          podman manifest inspect "${manifest}" > /tmp/image-manifest.json
-          python3 << 'PY'
-          import json, os, pathlib, subprocess
-          image_name = os.environ["image_name"]
-          document = json.load(open("/tmp/image-manifest.json"))
-          entries = []
-          for item in document.get("manifests", []):
-              platform = item.get("platform") or {}
-              os_name = platform.get("os")
-              architecture = platform.get("architecture")
-              if not os_name or not architecture or architecture == "unknown":
-                  continue
-              entries.append((f"{os_name}/{architecture}", item["digest"]))
-          if not entries:
-              raise SystemExit(f"No platform images found for {image_name}")
-          for platform, digest in entries:
-              filename = f"sbom/{image_name}-{platform.replace('/', '-')}.spdx.json"
-              archive = f"/tmp/{image_name}-{platform.replace('/', '-')}.tar"
-              subprocess.run(["podman", "save", "--format", "oci-archive", "-o", archive, digest], check=True)
-              subprocess.run(["syft", f"oci-archive:{archive}", "-o", f"spdx-json={filename}"], check=True)
-              if pathlib.Path(filename).stat().st_size == 0:
-                  raise SystemExit(f"Empty SBOM: {filename}")
-              os.remove(archive)
-          PY
+          for platform in linux/amd64 linux/arm64; do
+            filename="sbom/${image_name}-${platform//\//-}.spdx.json"
+            rootfs="/tmp/${image_name}-${platform//\//-}-rootfs"
+            rm -rf "${rootfs}"
+            mkdir -p "${rootfs}"
+            container="$(podman create --pull never --platform "${platform}" "${manifest}")"
+            podman export "${container}" | tar -C "${rootfs}" -xf -
+            podman rm "${container}" >/dev/null
+            syft "dir:${rootfs}" -o "spdx-json=${filename}"
+            test -s "${filename}"
+            rm -rf "${rootfs}"
+          done
 
       - name: Upload SBOMs
         uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
