@@ -7,7 +7,7 @@ This container exists to help people that can't install ansible, git or other ne
 ## What's in the box? 👱‍♂
 
 - `oc` and `kubectl` match the image tag: `4.19`, `4.20`, `4.21`, or `4.22`. `latest` is `4.22`.
-- `helm` is the newest Helm 3 release whose Kubernetes support includes that OpenShift minor
+- `helm` is the newest maintained Helm 4 release whose Kubernetes support includes that OpenShift minor
 - `tkn` v0.45.2, the OpenShift Pipelines 1.23 CLI, which supports OpenShift 4.19 through 4.22
 - `rosa` version 1.2.15
 - `ansible` v2.14.5 (stable from `pip`)

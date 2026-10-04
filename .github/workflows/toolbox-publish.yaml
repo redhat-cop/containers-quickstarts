@@ -17,19 +17,19 @@ jobs:
           - tag: "4.19"
             tags: "4.19"
             oc: "4.19.49"
-            helm: "v3.20.2"
+            helm: "v4.1.4"
           - tag: "4.20"
             tags: "4.20"
             oc: "4.20.40"
-            helm: "v3.21.4"
+            helm: "v4.2.4"
           - tag: "4.21"
             tags: "4.21"
             oc: "4.21.35"
-            helm: "v3.22.0"
+            helm: "v4.3.0"
           - tag: "4.22"
             tags: "4.22 latest"
             oc: "4.22.16"
-            helm: "v3.22.0"
+            helm: "v4.3.0"
     env:
       context: tool-box
       image_name: tool-box
