@@ -41,5 +41,10 @@ jobs:
 
       - name: Test image contains helm
         run: |
-          echo "Running: podman run ${image_name}:${{ steps.check_version.outputs.VERSION }} helm version"
-          podman run ${image_name}:${{ steps.check_version.outputs.VERSION }} helm version
+          image="${image_name}:${{ steps.check_version.outputs.VERSION }}"
+          echo "Running: podman run ${image} helm version"
+          podman run "${image}" helm version
+          for client in oc oc-4.19 oc-4.20 oc-4.21 oc-4.22; do
+            echo "Running: podman run ${image} ${client} version --client"
+            podman run "${image}" "${client}" version --client
+          done

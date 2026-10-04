@@ -6,7 +6,7 @@ This container exists to help people that can't install ansible, git or other ne
 
 ## What's in the box? 👱‍♂
 
-- `oc` version stable-4.12
+- `oc` 4.22.16, also available as `oc-4.19`, `oc-4.20`, `oc-4.21`, and `oc-4.22`
 - `rosa` version 1.2.15
 - `ansible` v2.14.5 (stable from `pip`)
 - `python` v3.9

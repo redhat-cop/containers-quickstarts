@@ -4,7 +4,9 @@ FROM registry.access.redhat.com/ubi9/ubi:9.5-1745854298@sha256:f4ebd46d3ba96feb0
 SHELL ["/bin/bash", "-c"]
 
 # renovate: datasource=repology depName=homebrew/openshift-cli
-ARG OC_VERSION=4.18.10
+ARG OC_VERSION=4.22.16
+# Clients for clusters that are not on the newest minor. `oc` itself stays on OC_VERSION.
+ARG OC_EXTRA_VERSIONS="4.19.49 4.20.40 4.21.35"
 # renovate: datasource=github-releases depName=openshift/rosa
 ARG ROSA_VERSION=v1.2.53
 # renovate: datasource=github-releases depName=redhat-developer/odo
@@ -18,11 +20,20 @@ ARG TEKTON_VERSION=v0.40.0
 # renovate: datasource=github-releases depName=mikefarah/yq
 ARG YQ_VERSION=v4.50.1
 
-RUN curl -L "https://mirror.openshift.com/pub/openshift-v4/clients/ocp/${OC_VERSION}/openshift-client-linux.tar.gz" -o /tmp/openshift-client-linux.tar.gz && \
+RUN curl -fsSL "https://mirror.openshift.com/pub/openshift-v4/clients/ocp/${OC_VERSION}/openshift-client-linux.tar.gz" -o /tmp/openshift-client-linux.tar.gz && \
     tar --no-same-owner -xzf /tmp/openshift-client-linux.tar.gz && \
     mv oc kubectl /usr/local/bin && \
+    cp /usr/local/bin/oc "/usr/local/bin/oc-${OC_VERSION%.*}" && \
+    rm -f README.md && \
     oc version --client && \
-    kubectl version --client
+    kubectl version --client && \
+    for version in ${OC_EXTRA_VERSIONS}; do \
+      curl -fsSL "https://mirror.openshift.com/pub/openshift-v4/clients/ocp/${version}/openshift-client-linux.tar.gz" -o /tmp/openshift-client-linux.tar.gz && \
+      tar --no-same-owner -xzf /tmp/openshift-client-linux.tar.gz && \
+      mv oc "/usr/local/bin/oc-${version%.*}" && \
+      rm -f kubectl README.md && \
+      "/usr/local/bin/oc-${version%.*}" version --client ; \
+    done
 
 RUN curl -L "https://mirror.openshift.com/pub/openshift-v4/x86_64/clients/rosa/${ROSA_VERSION//v}/rosa-linux.tar.gz" -o /tmp/rosa-linux.tar.gz && \
     tar --no-same-owner -xzf /tmp/rosa-linux.tar.gz && \
@@ -63,8 +74,7 @@ RUN dnf -y update && \
     pip3.11 install --no-cache-dir -r /requirements.txt && \
     ansible --version
 
-COPY --from=builder /usr/local/bin/oc /usr/local/bin/oc
-COPY --from=builder /usr/local/bin/kubectl /usr/local/bin/kubectl
+COPY --from=builder /usr/local/bin/oc /usr/local/bin/oc-4.19 /usr/local/bin/oc-4.20 /usr/local/bin/oc-4.21 /usr/local/bin/oc-4.22 /usr/local/bin/kubectl /usr/local/bin/
 COPY --from=builder /usr/local/bin/rosa /usr/local/bin/rosa
 COPY --from=builder /usr/local/bin/odo /usr/local/bin/odo
 COPY --from=builder /usr/local/bin/jq /usr/local/bin/jq
