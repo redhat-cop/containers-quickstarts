@@ -83,9 +83,10 @@ jobs:
             container="$(podman create --pull never --platform "${platform}" "${manifest}")"
             podman export "${container}" | tar -C "${rootfs}" -xf -
             podman rm "${container}" >/dev/null
-            syft "dir:${rootfs}" -o "spdx-json=${filename}"
+            syft "dir:${rootfs}" --source-name "${image_name}" --source-version "${IMAGE_VERSION}" -o "spdx-json=${filename}"
             test -s "${filename}"
-            rm -rf "${rootfs}"
+            chmod -R u+w "${rootfs}" 2>/dev/null || true
+            rm -rf "${rootfs}" 2>/dev/null || true
           done
 
       - name: Upload SBOMs
