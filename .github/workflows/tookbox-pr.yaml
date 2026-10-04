@@ -43,3 +43,5 @@ jobs:
         run: |
           echo "Running: podman run ${image_name}:${{ steps.check_version.outputs.VERSION }} helm version"
           podman run ${image_name}:${{ steps.check_version.outputs.VERSION }} helm version
+          echo "Running: podman run ${image_name}:${{ steps.check_version.outputs.VERSION }} jq --version"
+          podman run ${image_name}:${{ steps.check_version.outputs.VERSION }} jq --version

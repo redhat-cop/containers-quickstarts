@@ -9,8 +9,8 @@ ARG OC_VERSION=4.18.10
 ARG ROSA_VERSION=v1.2.53
 # renovate: datasource=github-releases depName=redhat-developer/odo
 ARG ODO_VERSION=v3.16.1
-# renovate: datasource=github-releases depName=stedolan/jq
-ARG JQ_VERSION=1.6
+# renovate: datasource=github-releases depName=jqlang/jq extractVersion=^jq-(?<version>.+)$
+ARG JQ_VERSION=1.8.2
 # renovate: datasource=github-releases depName=helm/helm
 ARG HELM_VERSION=v3.17.3
 # renovate: datasource=github-releases depName=tektoncd/cli
@@ -33,7 +33,7 @@ RUN curl -L "https://mirror.openshift.com/pub/openshift-v4/clients/odo/${ODO_VER
     chmod +x /usr/local/bin/odo && \
     odo version --client
 
-RUN curl -L "https://github.com/stedolan/jq/releases/download/jq-${JQ_VERSION}/jq-linux64" -o /usr/local/bin/jq  && \
+RUN curl -L "https://github.com/jqlang/jq/releases/download/jq-${JQ_VERSION}/jq-linux64" -o /usr/local/bin/jq  && \
     chmod +x /usr/local/bin/jq && \
     jq --version
 

@@ -13,7 +13,7 @@ This container exists to help people that can't install ansible, git or other ne
 - `git` (latest stable)
 - `zip` (latest stable)
 - `unzip` (latest stable)
-- `jq` v1.6
+- `jq` v1.8.2
 - `yq` v4.43.1
 - `odo` 3.9.9
 - `helm` Client v3.11.3
