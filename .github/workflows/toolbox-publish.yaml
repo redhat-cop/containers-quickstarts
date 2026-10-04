@@ -10,6 +10,26 @@ permissions: read-all
 
 jobs:
   build:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - tag: "4.19"
+            tags: "4.19"
+            oc: "4.19.49"
+            helm: "v4.1.4"
+          - tag: "4.20"
+            tags: "4.20"
+            oc: "4.20.40"
+            helm: "v4.2.4"
+          - tag: "4.21"
+            tags: "4.21"
+            oc: "4.21.35"
+            helm: "v4.3.0"
+          - tag: "4.22"
+            tags: "4.22 latest"
+            oc: "4.22.16"
+            helm: "v4.3.0"
     env:
       context: tool-box
       image_name: tool-box
@@ -19,12 +39,6 @@ jobs:
     steps:
       - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6
 
-      - name: Get image tags
-        id: image_tags
-        uses: redhat-cop/github-actions/get-image-version@cc45c69b6655161f278271cd0c68ddcc1444a3f8 # v4.6
-        with:
-          IMAGE_CONTEXT_DIR: ${{ env.context }}
-
       - name: Build image
         id: build_image
         uses: redhat-actions/buildah-build@7a95fa7ee0f02d552a32753e7414641a04307056 # v2
@@ -33,7 +47,10 @@ jobs:
           dockerfiles: |
             ./${{ env.context }}/Dockerfile
           image: ${{ env.image_name }}
-          tags: "${{ steps.image_tags.outputs.IMAGE_TAGS }}"
+          tags: ${{ matrix.tags }}
+          build-args: |
+            OC_VERSION=${{ matrix.oc }}
+            HELM_VERSION=${{ matrix.helm }}
 
       - name: Push to ghcr.io
         uses: redhat-actions/push-to-registry@5ed88d269cf581ea9ef6dd6806d01562096bee9c # v2

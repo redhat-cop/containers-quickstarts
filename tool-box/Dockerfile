@@ -4,7 +4,7 @@ FROM registry.access.redhat.com/ubi9/ubi:9.5-1745854298@sha256:f4ebd46d3ba96feb0
 SHELL ["/bin/bash", "-c"]
 
 # renovate: datasource=repology depName=homebrew/openshift-cli
-ARG OC_VERSION=4.18.10
+ARG OC_VERSION=4.22.16
 # renovate: datasource=github-releases depName=openshift/rosa
 ARG ROSA_VERSION=v1.2.53
 # renovate: datasource=github-releases depName=redhat-developer/odo
@@ -12,9 +12,9 @@ ARG ODO_VERSION=v3.16.1
 # renovate: datasource=github-releases depName=stedolan/jq
 ARG JQ_VERSION=1.6
 # renovate: datasource=github-releases depName=helm/helm
-ARG HELM_VERSION=v3.17.3
+ARG HELM_VERSION=v4.3.0
 # renovate: datasource=github-releases depName=tektoncd/cli
-ARG TEKTON_VERSION=v0.40.0
+ARG TEKTON_VERSION=v0.45.2
 # renovate: datasource=github-releases depName=mikefarah/yq
 ARG YQ_VERSION=v4.50.1
 

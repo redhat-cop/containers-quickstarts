@@ -6,7 +6,9 @@ This container exists to help people that can't install ansible, git or other ne
 
 ## What's in the box? 👱‍♂
 
-- `oc` version stable-4.12
+- `oc` and `kubectl` match the image tag: `4.19`, `4.20`, `4.21`, or `4.22`. `latest` is `4.22`.
+- `helm` is the newest maintained Helm 4 release whose Kubernetes support includes that OpenShift minor
+- `tkn` v0.45.2, the OpenShift Pipelines 1.23 CLI, which supports OpenShift 4.19 through 4.22
 - `rosa` version 1.2.15
 - `ansible` v2.14.5 (stable from `pip`)
 - `python` v3.9
@@ -16,8 +18,6 @@ This container exists to help people that can't install ansible, git or other ne
 - `jq` v1.6
 - `yq` v4.43.1
 - `odo` 3.9.9
-- `helm` Client v3.11.3
-- `tkn` Client v0.30.1
 - `iputils` (latest stable)
 - `procps-ng` (latest stable)
 - `aws` (latest stable)
