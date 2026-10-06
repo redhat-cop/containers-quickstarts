@@ -1,5 +1,5 @@
 # Builder
-FROM registry.access.redhat.com/ubi9/ubi:9.5-1745854298@sha256:f4ebd46d3ba96feb016d798009e1cc2404c3a4ebdac8b2479a2ac053e59f41b4 AS builder
+FROM registry.access.redhat.com/ubi9/ubi:9.8-1790665138@sha256:094ea2ecfd3225af8f93807b99daa9ff33710fc705ebdf6e8466f46ed605585c AS builder
 
 SHELL ["/bin/bash", "-c"]
 
@@ -52,7 +52,7 @@ RUN curl -L "https://github.com/tektoncd/cli/releases/download/${TEKTON_VERSION}
     tkn version
 
 # Runnable
-FROM registry.access.redhat.com/ubi9/ubi:9.5-1745854298@sha256:f4ebd46d3ba96feb016d798009e1cc2404c3a4ebdac8b2479a2ac053e59f41b4
+FROM registry.access.redhat.com/ubi9/ubi:9.8-1790665138@sha256:094ea2ecfd3225af8f93807b99daa9ff33710fc705ebdf6e8466f46ed605585c
 
 ENV HOME=/home/tool-box
 
