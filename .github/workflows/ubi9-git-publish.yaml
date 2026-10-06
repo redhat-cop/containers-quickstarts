@@ -1,0 +1,189 @@
+name: ubi9-git-publish
+on:
+  schedule:
+    - cron: '20 1 * * *' # every day at 01:20 UTC
+  workflow_dispatch:
+  push:
+    paths:
+      - utilities/ubi9-git/version.json
+      - utilities/ubi9-git/Dockerfile
+      - .github/workflows/ubi9-git-publish.yaml
+
+# Declare default permissions as read only.
+permissions: read-all
+
+jobs:
+  build:
+    env:
+      context: utilities/ubi9-git
+      image_name: ubi9-git
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      actions: write
+      packages: write
+      id-token: write
+    steps:
+      - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6
+
+      - name: Get image tags
+        id: image_tags
+        uses: redhat-cop/github-actions/get-image-version@cc45c69b6655161f278271cd0c68ddcc1444a3f8 # v4.6
+        with:
+          IMAGE_CONTEXT_DIR: ${{ env.context }}
+
+      - name: Install qemu dependency
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y qemu-user-static
+
+      - name: Build image
+        id: build_image
+        uses: redhat-actions/buildah-build@7a95fa7ee0f02d552a32753e7414641a04307056 # v2
+        with:
+          context: ${{ env.context }}
+          dockerfiles: |
+            ./${{ env.context }}/Dockerfile
+          image: ${{ env.image_name }}
+          platforms: linux/amd64,linux/arm64
+          tags: "${{ steps.image_tags.outputs.IMAGE_TAGS }}"
+
+      - name: Test image
+        env:
+          IMAGE_VERSION: ${{ steps.image_tags.outputs.VERSION }}
+        run: |
+          image="${image_name}:${IMAGE_VERSION}"
+          podman run --rm "${image}" git --version
+          podman run --rm "${image}" bash -c 'uid=""; while read -r key value _; do if [[ "$key" == "Uid:" ]]; then uid="$value"; fi; done < /proc/self/status; test "$uid" = 1001'
+          podman run --rm --user 65532:0 "${image}" git --version
+
+      - name: Install Syft
+        run: |
+          version="1.54.0"
+          archive="syft_${version}_linux_amd64.tar.gz"
+          expected="54a87372498168b2d033e876fd41fa4e8035b872699e525a57046e1f2f09c860"
+          curl -fsSL -o "${archive}" "https://github.com/anchore/syft/releases/download/v${version}/${archive}"
+          echo "${expected}  ${archive}" | sha256sum -c -
+          mkdir -p "${HOME}/.local/bin"
+          tar -xzf "${archive}" -C "${HOME}/.local/bin" syft
+          echo "${HOME}/.local/bin" >> "${GITHUB_PATH}"
+
+      - name: Generate SBOMs
+        env:
+          IMAGE_VERSION: ${{ steps.image_tags.outputs.VERSION }}
+        run: |
+          set -euo pipefail
+          mkdir -p sbom
+          manifest="${image_name}:${IMAGE_VERSION}"
+          for platform in linux/amd64 linux/arm64; do
+            filename="sbom/${image_name}-${platform//\//-}.spdx.json"
+            rootfs="/tmp/${image_name}-${platform//\//-}-rootfs"
+            rm -rf "${rootfs}"
+            mkdir -p "${rootfs}"
+            container="$(podman create --pull never --platform "${platform}" "${manifest}")"
+            podman export "${container}" | tar -C "${rootfs}" -xf -
+            podman rm "${container}" >/dev/null
+            syft "dir:${rootfs}" --source-name "${image_name}" --source-version "${IMAGE_VERSION}" -o "spdx-json=${filename}"
+            test -s "${filename}"
+            chmod -R u+w "${rootfs}" 2>/dev/null || true
+            rm -rf "${rootfs}" 2>/dev/null || true
+          done
+
+      - name: Upload SBOMs
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
+        with:
+          name: ubi9-git-sbom
+          path: sbom/*.spdx.json
+          retention-days: 30
+
+      - name: Push to ghcr.io
+        if: ${{ !contains(github.ref, 'renovate') }}
+        uses: redhat-actions/push-to-registry@5ed88d269cf581ea9ef6dd6806d01562096bee9c # v2
+        with:
+          image: ${{ steps.build_image.outputs.image }}
+          registry: ghcr.io/${{ github.repository }}
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+          tags: ${{ steps.build_image.outputs.tags }}
+
+      - name: Resolve GHCR digest
+        id: image_digest
+        if: ${{ !contains(github.ref, 'renovate') }}
+        env:
+          IMAGE_VERSION: ${{ steps.image_tags.outputs.VERSION }}
+        run: |
+          ref="ghcr.io/${GITHUB_REPOSITORY}/${image_name}:${IMAGE_VERSION}"
+          podman pull "${ref}"
+          repo_digest="$(podman image inspect "${ref}" --format '{{index .RepoDigests 0}}')"
+          digest="${repo_digest##*@}"
+          if [[ "${digest}" != sha256:* ]]; then
+            echo "Could not resolve digest from ${repo_digest}" >&2
+            exit 1
+          fi
+          echo "digest=${digest}" >> "${GITHUB_OUTPUT}"
+
+      - name: Install Cosign
+        if: ${{ !contains(github.ref, 'renovate') }}
+        uses: sigstore/cosign-installer@6f9f17788090df1f26f669e9d70d6ae9567deba6 # v4.1.2
+
+      - name: Sign and verify GHCR image
+        if: ${{ !contains(github.ref, 'renovate') }}
+        env:
+          GHCR_USERNAME: ${{ github.actor }}
+          GHCR_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          IMAGE_DIGEST: ${{ steps.image_digest.outputs.digest }}
+        run: |
+          image="ghcr.io/${GITHUB_REPOSITORY}/${image_name}@${IMAGE_DIGEST}"
+          identity="https://github.com/${GITHUB_REPOSITORY}/.github/workflows/ubi9-git-publish.yaml@${GITHUB_REF}"
+          echo "${GHCR_TOKEN}" | cosign login ghcr.io -u "${GHCR_USERNAME}" --password-stdin
+          cosign sign --yes --recursive "${image}"
+          for sbom in sbom/*.spdx.json; do
+            cosign attest --yes --predicate "${sbom}" --type spdxjson "${image}"
+          done
+          cosign verify \
+            --certificate-identity "${identity}" \
+            --certificate-oidc-issuer "https://token.actions.githubusercontent.com" \
+            "${image}"
+          cosign verify-attestation \
+            --type spdxjson \
+            --certificate-identity "${identity}" \
+            --certificate-oidc-issuer "https://token.actions.githubusercontent.com" \
+            "${image}"
+
+      - name: Push to Quay
+        env:
+          REGISTRY_URI: ${{ secrets.REGISTRY_URI }}
+        if: ${{ env.REGISTRY_URI != '' && !contains(github.ref, 'renovate') }}
+        uses: redhat-actions/push-to-registry@5ed88d269cf581ea9ef6dd6806d01562096bee9c # v2
+        with:
+          image: ${{ steps.build_image.outputs.image }}
+          registry: ${{ secrets.REGISTRY_URI }}/${{ secrets.REGISTRY_REPOSITORY }}
+          username: ${{ secrets.REGISTRY_USERNAME }}
+          password: ${{ secrets.REGISTRY_PASSWORD }}
+          tags: ${{ steps.build_image.outputs.tags }}
+
+      - name: Sign and verify Quay image
+        env:
+          REGISTRY_URI: ${{ secrets.REGISTRY_URI }}
+          REGISTRY_REPOSITORY: ${{ secrets.REGISTRY_REPOSITORY }}
+          REGISTRY_USERNAME: ${{ secrets.REGISTRY_USERNAME }}
+          REGISTRY_PASSWORD: ${{ secrets.REGISTRY_PASSWORD }}
+          IMAGE_DIGEST: ${{ steps.image_digest.outputs.digest }}
+        if: ${{ env.REGISTRY_URI != '' && !contains(github.ref, 'renovate') }}
+        run: |
+          image="${REGISTRY_URI}/${REGISTRY_REPOSITORY}/${image_name}@${IMAGE_DIGEST}"
+          identity="https://github.com/${GITHUB_REPOSITORY}/.github/workflows/ubi9-git-publish.yaml@${GITHUB_REF}"
+          echo "${REGISTRY_PASSWORD}" | cosign login "${REGISTRY_URI}" -u "${REGISTRY_USERNAME}" --password-stdin
+          cosign sign --yes --recursive "${image}"
+          for sbom in sbom/*.spdx.json; do
+            cosign attest --yes --predicate "${sbom}" --type spdxjson "${image}"
+          done
+          cosign verify \
+            --certificate-identity "${identity}" \
+            --certificate-oidc-issuer "https://token.actions.githubusercontent.com" \
+            "${image}"
+          cosign verify-attestation \
+            --type spdxjson \
+            --certificate-identity "${identity}" \
+            --certificate-oidc-issuer "https://token.actions.githubusercontent.com" \
+            "${image}"
