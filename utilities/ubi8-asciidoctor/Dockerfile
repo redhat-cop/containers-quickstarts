@@ -1,4 +1,4 @@
-FROM registry.access.redhat.com/ubi8/python-312@sha256:0de728ed4d9c6ff50645cbf56afed644b510c3d673348bbcf8d1ac2ca2d37157
+FROM registry.access.redhat.com/ubi8/python-312@sha256:8498fbd121b59af59a5ba8ddab7d046e7d5be53e4741d67ac08733e94d884f3f
 
 LABEL MAINTAINERS="Red Hat Services"
 
