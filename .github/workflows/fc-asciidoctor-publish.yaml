@@ -1,0 +1,44 @@
+name: fc-asciidoctor-publish
+on:
+  push:
+    branches:
+      - master
+    tags:
+      - '*'
+    paths:
+      - utilities/fc-asciidoctor/version.json
+      - .github/workflows/fc-asciidoctor-publish.yaml
+jobs:
+  build:
+    env:
+      context: utilities/fc-asciidoctor
+      image_name: fc-asciidoctor
+    runs-on: ubuntu-18.04
+    steps:
+      - uses: actions/checkout@master
+
+      - name: Get image tags
+        id: image_tags
+        uses: redhat-cop/github-actions/get-image-version@master
+        with:
+          IMAGE_CONTEXT_DIR: ${{ env.CONTEXT_DIR }}
+
+      - name: Build image
+        id: build_image
+        uses: redhat-actions/buildah-build@v2
+        with:
+          context: ${{ env.context }}
+          dockerfiles: |
+            ./${{ env.context }}/Dockerfile
+          image: ${{ env.image_name }}
+          tags: "${{ steps.image_tags.outputs.IMAGE_TAGS }}"
+
+      - name: Push to Quay
+        id: push_to_quay
+        uses: redhat-actions/push-to-registry@v2
+        with:
+          image: ${{ steps.build_image.outputs.image }}
+          registry: ${{ secrets.REGISTRY_URI }}/${{ secrets.REGISTRY_REPOSITORY }}
+          username: ${{ secrets.REGISTRY_USERNAME }}
+          password: ${{ secrets.REGISTRY_PASSWORD }}
+          tags: ${{ steps.build_image.outputs.tags }}

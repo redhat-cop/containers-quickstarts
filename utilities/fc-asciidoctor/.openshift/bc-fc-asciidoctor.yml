@@ -1,0 +1,57 @@
+---
+apiVersion: template.openshift.io/v1
+kind: Template
+labels:
+  template: fc-asciidoctor
+metadata:
+  labels:
+    app.kubernetes.io/name: fc-asciidoctor
+    app.kubernetes.io/version: "1.2.0"
+  annotations:
+    description: asciidoctor utility image
+    tags: asciidoctor, fc
+  name: fc-asciidoctor
+objects:
+- apiVersion: build.openshift.io/v1
+  kind: BuildConfig
+  metadata:
+    name: "fc-asciidoctor"
+  spec:
+    output:
+      to:
+        kind: "ImageStreamTag"
+        name: "fc-asciidoctor:latest"
+    source:
+      contextDir: "${CONTEXT_DIR}"
+      git:
+        uri: "${SOURCE_REPOSITORY_URL}"
+        ref: "${SOURCE_REPOSITORY_REF}"
+    strategy:
+      dockerStrategy:
+        dockerfilePath: Dockerfile
+    resources:
+      requests:
+        cpu: 1
+        memory: "512Mi"
+      limits:
+        cpu: 2
+        memory: "1Gi"
+- apiVersion: image.openshift.io/v1
+  kind: ImageStream
+  metadata:
+    name: fc-asciidoctor
+  spec:
+    lookupPolicy:
+      local: true
+parameters:
+- description: Path within Git repository to build; empty for root of repository
+  name: CONTEXT_DIR
+  value: gitlab-runners/fc-asciidoctor
+- description: Git branch/tag reference
+  name: SOURCE_REPOSITORY_REF
+  value: master
+- description: Git source URL for application
+  name: SOURCE_REPOSITORY_URL
+  required: true
+  value: https://github.com/redhat-cop/containers-quickstarts
+
